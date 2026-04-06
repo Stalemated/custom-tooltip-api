@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips;
 
+import com.stalemated.customtooltips.config.TooltipConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 

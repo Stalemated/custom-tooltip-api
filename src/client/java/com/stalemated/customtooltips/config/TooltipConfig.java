@@ -1,5 +1,6 @@
-package com.stalemated.customtooltips;
+package com.stalemated.customtooltips.config;
 
+import com.stalemated.customtooltips.TooltipEntry;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
@@ -8,7 +9,9 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 public class TooltipConfig implements ConfigData {
 
     @Comment("""
-             Test comment
+             TODO
             """)
-    public TooltipEntry[] entries = new TooltipEntry[]{};
+    public TooltipEntry[] entries = new TooltipEntry[]{
+            // Add examples?
+    };
 }

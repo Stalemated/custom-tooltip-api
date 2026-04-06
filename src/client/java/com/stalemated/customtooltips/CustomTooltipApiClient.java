@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips;
 
+import com.stalemated.customtooltips.config.TooltipConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.gui.screen.Screen;
@@ -26,11 +27,21 @@ public class CustomTooltipApiClient implements ClientModInitializer {
 						continue;
 					}
 
-					if (entry.empty_line_before) {
-						lines.add(Text.empty());
+					int insertIndex = lines.size();
+
+					if ("TOP".equalsIgnoreCase(entry.position) && !lines.isEmpty()) {
+						insertIndex = 1;
 					}
 
-					lines.add(entry.getTextComponent());
+					if (entry.empty_line_before) {
+						lines.add(insertIndex, Text.empty());
+						if (insertIndex < lines.size()) insertIndex++;
+					}
+
+					for (Text component : entry.getTextComponents()) {
+						lines.add(insertIndex, component);
+						if (insertIndex < lines.size()) insertIndex++;
+					}
 				}
 			}
 		});
