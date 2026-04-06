@@ -17,20 +17,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/*import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;*/
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TooltipEntry {
+
+    public enum TooltipStyle {
+        SOLID, STATIC_GRADIENT, SLIDE_GRADIENT, BREATHING_GRADIENT, RAINBOW
+    }
+
+    public enum TooltipPosition {
+        TOP, BOTTOM
+    }
+
     public String target = "";
     public String[] text = new String[]{"Default text"};
 
-    // Available styles: SOLID, STATIC_GRADIENT, SLIDE_GRADIENT, BREATHING_GRADIENT, RAINBOW
-    public String style = "SOLID";
+    public TooltipStyle style = TooltipStyle.SOLID;
     public String[] colors = new String[]{"gray"};
 
-    // Available positions: TOP, BOTTOM
-    public String position = "BOTTOM";
+    public TooltipPosition position = TooltipPosition.BOTTOM;
 
     public boolean bold = false;
     public boolean italic = false;
@@ -44,7 +50,7 @@ public class TooltipEntry {
     public int offset = 0;
     public long tickrate = 1;
 
-    //public static final Logger LOGGER = LoggerFactory.getLogger("Custom Tooltip API");
+    public static final Logger LOGGER = LoggerFactory.getLogger("Custom Tooltip API");
 
     private transient boolean cachesInitialized = false;
     private transient boolean isTag = false;
@@ -57,7 +63,7 @@ public class TooltipEntry {
 
     public TooltipEntry() {}
 
-    public TooltipEntry(String target, String[] text, String style, String[] colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, String position, int offset, long tickrate) {
+    public TooltipEntry(String target, String[] text, TooltipStyle style, String[] colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int offset, long tickrate) {
         this.target = target;
         this.text = text;
         this.style = style;
@@ -97,12 +103,10 @@ public class TooltipEntry {
     public boolean matches(ItemStack stack) {
         initCaches();
 
-        if (!stack.isEmpty()) {
-            if (this.isTag && this.cachedTagKey != null) {
-                return stack.isIn(this.cachedTagKey);
-            } else if (!this.isTag && this.cachedItemId != null) {
-                return Registries.ITEM.getId(stack.getItem()).equals(this.cachedItemId);
-            }
+        if (this.isTag && this.cachedTagKey != null) {
+            return stack.isIn(this.cachedTagKey);
+        } else if (!this.isTag && this.cachedItemId != null) {
+            return Registries.ITEM.getId(stack.getItem()).equals(this.cachedItemId);
         }
 
         return false;
@@ -111,7 +115,7 @@ public class TooltipEntry {
     public List<Text> getTextComponents() {
         initCaches();
 
-        boolean isStatic = "SOLID".equalsIgnoreCase(this.style) || "STATIC_GRADIENT".equalsIgnoreCase(this.style);
+        boolean isStatic = this.style == TooltipStyle.SOLID || this.style == TooltipStyle.STATIC_GRADIENT;
         if (isStatic && this.cachedStaticText != null) {
             return this.cachedStaticText;
         }
@@ -123,21 +127,16 @@ public class TooltipEntry {
             MutableText processedText;
             Text baseText = Text.literal(line);
 
-            if (line.isBlank()) {
-                linesList.add(baseText);
-                continue;
-            }
-
-            if ("RAINBOW".equalsIgnoreCase(this.style)) {
+            if (this.style == TooltipStyle.RAINBOW) {
                 processedText = TextAPI.Styles.getRainbowGradient(baseText, this.offset, this.tickrate);
 
-            } else if ("STATIC_GRADIENT".equalsIgnoreCase(this.style) && this.isGradient) {
+            } else if (this.style == TooltipStyle.STATIC_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getStaticGradient(baseText, this.parsedColor1, this.parsedColor2);
 
-            } else if ("SLIDE_GRADIENT".equalsIgnoreCase(this.style) && this.isGradient) {
+            } else if (this.style == TooltipStyle.SLIDE_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getGradient(baseText, this.offset, this.parsedColor1, this.parsedColor2, this.tickrate);
 
-            } else if ("BREATHING_GRADIENT".equalsIgnoreCase(this.style) && this.isGradient) {
+            } else if (this.style == TooltipStyle.BREATHING_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getBreathingGradient(baseText, this.offset, this.parsedColor1, this.parsedColor2, this.tickrate);
 
             } else {

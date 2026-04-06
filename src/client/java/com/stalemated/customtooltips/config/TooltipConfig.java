@@ -35,7 +35,7 @@ public class TooltipConfig implements ConfigData {
                             "",
                             "+15% Critical Damage"
                     },
-                    "SLIDE_GRADIENT",
+                    TooltipEntry.TooltipStyle.SLIDE_GRADIENT,
                     new String[]{
                             "#59CDE9",
                             "#0A2A88"
@@ -47,7 +47,7 @@ public class TooltipConfig implements ConfigData {
                     false,
                     false,
                     true,
-                    "TOP",
+                    TooltipEntry.TooltipPosition.TOP,
                     0,
                     1
             )

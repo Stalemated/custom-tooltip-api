@@ -29,7 +29,7 @@ public class CustomTooltipApiClient implements ClientModInitializer {
 
 					int insertIndex = lines.size();
 
-					if ("TOP".equalsIgnoreCase(entry.position) && !lines.isEmpty()) {
+					if ((TooltipEntry.TooltipPosition.TOP == entry.position) && !lines.isEmpty()) {
 						insertIndex = 1;
 					}
 
