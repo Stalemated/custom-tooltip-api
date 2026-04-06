@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+/*import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;*/
 
 
 public class TooltipEntry {
@@ -44,7 +44,7 @@ public class TooltipEntry {
     public int offset = 0;
     public long tickrate = 1;
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("Custom Tooltip API");
+    //public static final Logger LOGGER = LoggerFactory.getLogger("Custom Tooltip API");
 
     private transient boolean cachesInitialized = false;
     private transient boolean isTag = false;
@@ -78,15 +78,11 @@ public class TooltipEntry {
         if (cachesInitialized) return;
 
         if (this.target != null && !this.target.isEmpty()) {
-            try {
-                if (this.target.startsWith("#")) {
-                    this.isTag = true;
-                    this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
-                } else {
-                    this.cachedItemId = new Identifier(this.target);
-                }
-            } catch (Exception e) {
-                LOGGER.warn("Invalid target: {}", this.target);
+            if (this.target.startsWith("#")) {
+                this.isTag = true;
+                this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
+            } else {
+                this.cachedItemId = new Identifier(this.target);
             }
         }
 
