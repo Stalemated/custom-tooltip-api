@@ -46,6 +46,15 @@ public class TooltipEntry {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Custom Tooltip API");
 
+    private transient boolean cachesInitialized = false;
+    private transient boolean isTag = false;
+    private transient TagKey<Item> cachedTagKey = null;
+    private transient Identifier cachedItemId = null;
+    private transient int parsedColor1 = 0xFFFFFF;
+    private transient int parsedColor2 = 0xFFFFFF;
+    private transient boolean isGradient = false;
+    private transient List<Text> cachedStaticText = null;
+
     public TooltipEntry() {}
 
     public TooltipEntry(String target, String[] text, String style, String[] colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, String position, int offset, long tickrate) {
@@ -65,24 +74,52 @@ public class TooltipEntry {
         this.tickrate = tickrate;
     }
 
-    public boolean matches(ItemStack stack) {
-        if (target == null || target.isEmpty()) return false;
+    private void initCaches() {
+        if (cachesInitialized) return;
 
-        try {
-            if (target.startsWith("#")) {
-                Identifier id = new Identifier(target.substring(1));
-                TagKey<Item> tagKey = TagKey.of(RegistryKeys.ITEM, id);
-                return stack.isIn(tagKey);
-            } else {
-                Identifier id = new Identifier(target);
-                return Registries.ITEM.getId(stack.getItem()).equals(id);
+        if (this.target != null && !this.target.isEmpty()) {
+            try {
+                if (this.target.startsWith("#")) {
+                    this.isTag = true;
+                    this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
+                } else {
+                    this.cachedItemId = new Identifier(this.target);
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Invalid target: {}", this.target);
             }
-        } catch (Exception e) {
-            return false;
         }
+
+        this.isGradient = this.colors != null && this.colors.length >= 2;
+        this.parsedColor1 = (this.colors != null && this.colors.length > 0) ? parseColor(this.colors[0]) : 0xFFFFFF;
+        this.parsedColor2 = this.isGradient ? parseColor(this.colors[1]) : 0xFFFFFF;
+        if (this.tickrate == 0) this.tickrate = 1;
+
+        this.cachesInitialized = true;
+    }
+
+    public boolean matches(ItemStack stack) {
+        initCaches();
+
+        if (!stack.isEmpty()) {
+            if (this.isTag && this.cachedTagKey != null) {
+                return stack.isIn(this.cachedTagKey);
+            } else if (!this.isTag && this.cachedItemId != null) {
+                return Registries.ITEM.getId(stack.getItem()).equals(this.cachedItemId);
+            }
+        }
+
+        return false;
     }
 
     public List<Text> getTextComponents() {
+        initCaches();
+
+        boolean isStatic = "SOLID".equalsIgnoreCase(this.style) || "STATIC_GRADIENT".equalsIgnoreCase(this.style);
+        if (isStatic && this.cachedStaticText != null) {
+            return this.cachedStaticText;
+        }
+
         List<Text> linesList = new ArrayList<>();
         if (this.text == null) return linesList;
 
@@ -90,27 +127,24 @@ public class TooltipEntry {
             MutableText processedText;
             Text baseText = Text.literal(line);
 
-            boolean isGradient = this.colors != null && this.colors.length >= 2;
-
-            int color1 = isGradient ? parseColor(this.colors[0]) : 0xFFFFFF;
-            int color2 = isGradient ? parseColor(this.colors[1]) : 0xFFFFFF;
-
-            this.tickrate = Math.max(1, this.tickrate);
+            if (line.isBlank()) {
+                linesList.add(baseText);
+                continue;
+            }
 
             if ("RAINBOW".equalsIgnoreCase(this.style)) {
                 processedText = TextAPI.Styles.getRainbowGradient(baseText, this.offset, this.tickrate);
 
-            } else if ("STATIC_GRADIENT".equalsIgnoreCase(this.style) && isGradient) {
-                processedText = TextAPI.Styles.getStaticGradient(baseText, color1, color2);
+            } else if ("STATIC_GRADIENT".equalsIgnoreCase(this.style) && this.isGradient) {
+                processedText = TextAPI.Styles.getStaticGradient(baseText, this.parsedColor1, this.parsedColor2);
 
-            } else if ("SLIDE_GRADIENT".equalsIgnoreCase(this.style) && isGradient) {
-                processedText = TextAPI.Styles.getGradient(baseText, this.offset, color1, color2, this.tickrate);
+            } else if ("SLIDE_GRADIENT".equalsIgnoreCase(this.style) && this.isGradient) {
+                processedText = TextAPI.Styles.getGradient(baseText, this.offset, this.parsedColor1, this.parsedColor2, this.tickrate);
 
-            } else if ("BREATHING_GRADIENT".equalsIgnoreCase(this.style) && isGradient) {
-                processedText = TextAPI.Styles.getBreathingGradient(baseText, this.offset, color1, color2, this.tickrate);
+            } else if ("BREATHING_GRADIENT".equalsIgnoreCase(this.style) && this.isGradient) {
+                processedText = TextAPI.Styles.getBreathingGradient(baseText, this.offset, this.parsedColor1, this.parsedColor2, this.tickrate);
 
             } else {
-                // Caída (Fallback) a SOLID color clásico
                 String colorStr = (this.colors != null && this.colors.length > 0) ? this.colors[0] : "gray";
                 processedText = applySolidStyle(Text.literal(line), colorStr);
             }
@@ -133,6 +167,10 @@ public class TooltipEntry {
             }
 
             linesList.add(processedText);
+        }
+
+        if (isStatic) {
+            this.cachedStaticText = linesList;
         }
 
         return linesList;
