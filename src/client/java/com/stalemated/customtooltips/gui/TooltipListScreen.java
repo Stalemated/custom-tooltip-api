@@ -7,6 +7,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class TooltipListScreen extends Screen {
     private final Screen parent;
     public TooltipListWidget listWidget;
@@ -23,7 +26,10 @@ public class TooltipListScreen extends Screen {
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+
             TooltipEntry newEntry = new TooltipEntry();
+            newEntry.colors = new ArrayList<>(Arrays.asList("gray"));
+            newEntry.text = new ArrayList<>(Arrays.asList("Default text"));
             config.entries.add(newEntry);
 
             AutoConfig.getConfigHolder(TooltipConfig.class).save();

@@ -7,6 +7,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Config(name = "custom_tooltips")
@@ -30,12 +31,19 @@ public class TooltipConfig implements ConfigData {
             'offset': Animation offset that desynchronizes different animations. Accepts integers.
             """)
     @ConfigEntry.Gui.CollapsibleObject
-    public List<TooltipEntry> entries = new ArrayList<>(List.of(
-            new TooltipEntry(
+    public List<TooltipEntry> entries = new ArrayList<>();
+
+    @Override
+    public void validatePostLoad() throws ValidationException {
+        if (entries == null) {
+            entries = new ArrayList<>();
+        }
+        if (entries.isEmpty()) {
+            entries.add(new TooltipEntry(
                     "#c:swords",
-                    new ArrayList<>(List.of("Assassin's Sword", "", "+15% Critical Damage")),
+                    new ArrayList<>(Arrays.asList("Assassin's Sword", "", "+15% Critical Damage")),
                     TooltipEntry.TooltipStyle.SLIDE_GRADIENT,
-                    new ArrayList<>(List.of("#59CDE9", "#0A2A88")),
+                    new ArrayList<>(Arrays.asList("#59CDE9", "#0A2A88")),
                     true,
                     false,
                     true,
@@ -46,6 +54,7 @@ public class TooltipConfig implements ConfigData {
                     TooltipEntry.TooltipPosition.TOP,
                     0,
                     1
-            )
-    ));
+            ));
+        }
+    }
 }

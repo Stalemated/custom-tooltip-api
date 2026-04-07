@@ -67,10 +67,7 @@ public class TooltipEntry {
     @ConfigEntry.Gui.Excluded
     private transient List<Text> cachedStaticText = null;
 
-    public TooltipEntry() {
-        this.text.add("Default text");
-        this.colors.add("gray");
-    }
+    public TooltipEntry() {}
 
     public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int offset, long tickrate) {
         this.target = target;
