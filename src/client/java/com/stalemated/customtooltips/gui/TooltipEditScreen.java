@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class TooltipEditScreen {
 
-    public static Screen create(Screen parent, TooltipEntry entry) {
+    public static Screen create(Screen parent, TooltipEntry entry, boolean isNew) {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
                 .setTitle(Text.translatable("customtooltips.tooltip_edit_screen.title"));
@@ -107,6 +107,10 @@ public class TooltipEditScreen {
                 .build());
 
         builder.setSavingRunnable(() -> {
+            if (isNew) {
+                TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+                config.entries.add(entry);
+            }
             AutoConfig.getConfigHolder(TooltipConfig.class).save();
             if (parent instanceof TooltipListScreen) {
                 ((TooltipListScreen) parent).listWidget.updateEntries();

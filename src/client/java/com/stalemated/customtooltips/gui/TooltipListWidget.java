@@ -44,7 +44,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         public Entry(TooltipListWidget parent, TooltipEntry tooltipEntry) {
             this.tooltipEntry = tooltipEntry;
 
-            this.editButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.edit_button"), button -> client.setScreen(TooltipEditScreen.create(client.currentScreen, this.tooltipEntry))).dimensions(0, 0, 50, 20).build();
+            this.editButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.edit_button"), button -> client.setScreen(TooltipEditScreen.create(client.currentScreen, this.tooltipEntry, false))).dimensions(0, 0, 50, 20).build();
 
             this.deleteButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.delete_button"), button -> {
                 TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();

@@ -1,8 +1,6 @@
 package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.config.TooltipConfig;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -25,16 +23,12 @@ public class TooltipListScreen extends Screen {
         this.addSelectableChild(this.listWidget);
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
-            TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
-
             TooltipEntry newEntry = new TooltipEntry();
             newEntry.colors = new ArrayList<>(Arrays.asList("gray"));
             newEntry.text = new ArrayList<>(Arrays.asList("Default text"));
-            config.entries.add(newEntry);
 
-            AutoConfig.getConfigHolder(TooltipConfig.class).save();
             if (this.client != null) {
-                this.client.setScreen(TooltipEditScreen.create(this, newEntry));
+                this.client.setScreen(TooltipEditScreen.create(this, newEntry, true));
             }
         }).dimensions(this.width / 2 - 100, this.height - 28, 200, 20).build());
     }
