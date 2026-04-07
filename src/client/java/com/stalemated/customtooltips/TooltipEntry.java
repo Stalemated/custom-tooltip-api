@@ -13,6 +13,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import elocindev.necronomicon.api.text.TextAPI;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import net.minecraft.util.InvalidIdentifierException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,11 +91,16 @@ public class TooltipEntry {
         if (cachesInitialized) return;
 
         if (this.target != null && !this.target.isEmpty()) {
-            if (this.target.startsWith("#")) {
-                this.isTag = true;
-                this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
-            } else {
-                this.cachedItemId = new Identifier(this.target);
+            try {
+                if (this.target.startsWith("#")) {
+                    this.isTag = true;
+                    this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
+                } else {
+                    this.cachedItemId = new Identifier(this.target);
+                }
+            } catch (InvalidIdentifierException e) {
+                this.cachedItemId = null;
+                this.cachedTagKey = null;
             }
         }
 
