@@ -52,6 +52,9 @@ dependencies {
 
 	// Necronomicon (Text API)
 	modImplementation "curse.maven:necronomicon-586157:${necronomicon_fileid}"
+
+	// Mod Menu
+	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
 processResources {

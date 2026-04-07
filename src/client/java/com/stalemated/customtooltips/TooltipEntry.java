@@ -12,13 +12,11 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import elocindev.necronomicon.api.text.TextAPI;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TooltipEntry {
 
@@ -31,11 +29,13 @@ public class TooltipEntry {
     }
 
     public String target = "";
-    public String[] text = new String[]{"Default text"};
+    public List<String> text = new ArrayList<>();
 
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     public TooltipStyle style = TooltipStyle.SOLID;
-    public String[] colors = new String[]{"gray"};
+    public List<String> colors = new ArrayList<>();
 
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
     public boolean bold = false;
@@ -50,24 +50,33 @@ public class TooltipEntry {
     public int offset = 0;
     public long tickrate = 1;
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("Custom Tooltip API");
-
+    @ConfigEntry.Gui.Excluded
     private transient boolean cachesInitialized = false;
+    @ConfigEntry.Gui.Excluded
     private transient boolean isTag = false;
+    @ConfigEntry.Gui.Excluded
     private transient TagKey<Item> cachedTagKey = null;
+    @ConfigEntry.Gui.Excluded
     private transient Identifier cachedItemId = null;
+    @ConfigEntry.Gui.Excluded
     private transient int parsedColor1 = 0xFFFFFF;
+    @ConfigEntry.Gui.Excluded
     private transient int parsedColor2 = 0xFFFFFF;
+    @ConfigEntry.Gui.Excluded
     private transient boolean isGradient = false;
+    @ConfigEntry.Gui.Excluded
     private transient List<Text> cachedStaticText = null;
 
-    public TooltipEntry() {}
+    public TooltipEntry() {
+        this.text.add("Default text");
+        this.colors.add("gray");
+    }
 
-    public TooltipEntry(String target, String[] text, TooltipStyle style, String[] colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int offset, long tickrate) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int offset, long tickrate) {
         this.target = target;
-        this.text = text;
+        this.text = text != null ? text : new ArrayList<>();
         this.style = style;
-        this.colors = colors;
+        this.colors = colors != null ? colors : new ArrayList<>();
         this.bold = bold;
         this.italic = italic;
         this.underlined = underlined;
@@ -92,9 +101,9 @@ public class TooltipEntry {
             }
         }
 
-        this.isGradient = this.colors != null && this.colors.length >= 2;
-        this.parsedColor1 = (this.colors != null && this.colors.length > 0) ? parseColor(this.colors[0]) : 0xFFFFFF;
-        this.parsedColor2 = this.isGradient ? parseColor(this.colors[1]) : 0xFFFFFF;
+        this.isGradient = this.colors != null && this.colors.size() >= 2;
+        this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? parseColor(this.colors.get(0)) : 0xFFFFFF;
+        this.parsedColor2 = this.isGradient ? parseColor(this.colors.get(1)) : 0xFFFFFF;
         if (this.tickrate == 0) this.tickrate = 1;
 
         this.cachesInitialized = true;
@@ -140,7 +149,7 @@ public class TooltipEntry {
                 processedText = TextAPI.Styles.getBreathingGradient(baseText, this.offset, this.parsedColor1, this.parsedColor2, this.tickrate);
 
             } else {
-                String colorStr = (this.colors != null && this.colors.length > 0) ? this.colors[0] : "gray";
+                String colorStr = (this.colors != null && !this.colors.isEmpty()) ? this.colors.get(0) : "gray";
                 processedText = applySolidStyle(Text.literal(line), colorStr);
             }
 

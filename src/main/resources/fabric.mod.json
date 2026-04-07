@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"client": [
 			"com.stalemated.customtooltips.CustomTooltipApiClient"
+		],
+		"modmenu": [
+			"com.stalemated.customtooltips.ModMenuIntegration"
 		]
 	},
 	"depends": {
