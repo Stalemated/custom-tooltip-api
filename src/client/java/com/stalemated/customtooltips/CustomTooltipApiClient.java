@@ -1,12 +1,14 @@
 package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.api.CustomTooltipApi;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomTooltipApiClient implements ClientModInitializer {
@@ -19,11 +21,23 @@ public class CustomTooltipApiClient implements ClientModInitializer {
 			if (stack.isEmpty()) return;
 
 			TooltipConfig config = ConfigManager.getConfig();
-			if (config == null || config.entries == null) return;
+
+			List<TooltipEntry> allEntries = new ArrayList<>();
+			if (config != null && config.entries != null) {
+				allEntries.addAll(config.entries);
+			}
+
+			if (CustomTooltipApi.getApiEntries() != null) {
+				allEntries.addAll(CustomTooltipApi.getApiEntries());
+			}
+
+			if (allEntries.isEmpty()) return;
 
 			boolean shiftPressed = Screen.hasShiftDown();
 
-			for (TooltipEntry entry : config.entries) {
+			for (TooltipEntry entry : allEntries) {
+				if (entry == null) continue;
+
 				if (entry.matches(stack)) {
 
 					if (entry.require_shift && !shiftPressed) {
