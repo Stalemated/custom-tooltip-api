@@ -26,7 +26,7 @@ public class TooltipEntry {
     }
 
     public enum TooltipPosition {
-        TOP, BOTTOM
+        REPLACE_NAME, REPLACE_ALL, TOP, BOTTOM
     }
 
     public String target = "";
@@ -226,7 +226,7 @@ public class TooltipEntry {
     }
 
     public int getLineOffset(int size) {
-        if (this.position == TooltipPosition.TOP) {
+        if (this.position == TooltipPosition.TOP || this.position == TooltipPosition.REPLACE_NAME) {
             return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : 0;
         } else {
             return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : 0;
