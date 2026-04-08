@@ -30,6 +30,7 @@ public class TooltipEditScreen {
 
         category.addEntry(entryBuilder.startStrList(Text.translatable("customtooltips.tooltip_edit_screen.custom_text"), entry.text)
                 .setDefaultValue(new ArrayList<>(Arrays.asList("Default text")))
+                .setExpanded(true)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.custom_text.description"))
                 .setSaveConsumer(newValue -> entry.text = newValue)
                 .build());
@@ -43,8 +44,28 @@ public class TooltipEditScreen {
 
         category.addEntry(entryBuilder.startStrList(Text.translatable("customtooltips.tooltip_edit_screen.colors"), entry.colors)
                 .setDefaultValue(new ArrayList<>(Arrays.asList("gray")))
+                .setExpanded(true)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.colors.description"))
                 .setSaveConsumer(newValue -> entry.colors = newValue)
+                .setErrorSupplier(list -> {
+                    for (String color : list) {
+                        if (color == null || color.trim().isEmpty()) continue;
+
+                        String trimmedColor = color.trim();
+                        if (trimmedColor.startsWith("#")) {
+                            try {
+                                Integer.parseInt(trimmedColor.substring(1), 16);
+                            } catch (NumberFormatException e) {
+                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_hex_color: " + trimmedColor));
+                            }
+                        } else {
+                            if (net.minecraft.util.Formatting.byName(trimmedColor.toLowerCase(java.util.Locale.ROOT)) == null) {
+                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_formatting_color" + trimmedColor));
+                            }
+                        }
+                    }
+                    return java.util.Optional.empty();
+                })
                 .build());
 
         category.addEntry(entryBuilder.startEnumSelector(Text.translatable("customtooltips.tooltip_edit_screen.position"), TooltipEntry.TooltipPosition.class, entry.position)
