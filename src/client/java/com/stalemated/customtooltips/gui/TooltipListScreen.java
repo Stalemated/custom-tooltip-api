@@ -30,14 +30,18 @@ public class TooltipListScreen extends Screen {
             if (this.client != null) {
                 this.client.setScreen(TooltipEditScreen.create(this, newEntry, true));
             }
-        }).dimensions(this.width / 2 - 100, this.height - 28, 200, 20).build());
+        }).dimensions(this.width / 2 - 155, this.height - 28, 150, 20).build());
+
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> {
+            this.close();
+        }).dimensions(this.width / 2 + 5, this.height - 28, 150, 20).build());
     }
 
     @Override
     public void render(net.minecraft.client.gui.DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
         this.listWidget.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 13, 0xFFFFFF);
+        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
