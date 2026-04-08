@@ -56,11 +56,11 @@ public class TooltipEditScreen {
                             try {
                                 Integer.parseInt(trimmedColor.substring(1), 16);
                             } catch (NumberFormatException e) {
-                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_hex_color: " + trimmedColor));
+                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_hex_color", trimmedColor));
                             }
                         } else {
                             if (net.minecraft.util.Formatting.byName(trimmedColor.toLowerCase(java.util.Locale.ROOT)) == null) {
-                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_formatting_color" + trimmedColor));
+                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_formatting_color", trimmedColor));
                             }
                         }
                     }
