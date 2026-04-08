@@ -8,11 +8,12 @@
 		"Stalemated"
 	],
 	"contact": {
-		"homepage": "",
-		"sources": "https://github.com/Stalemated/"
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api",
+		"sources": "https://github.com/Stalemated/custom-tooltip-api",
+		"issues": "https://github.com/Stalemated/custom-tooltip-api/issues"
 	},
 	"license": "MIT",
-	"icon": "assets/custom-tooltip-api/icon.png",
+	"icon": "assets/custom-tooltip-api/icon.jpg",
 	"environment": "client",
 	"entrypoints": {
 		"client": [
