@@ -110,6 +110,8 @@ public class TooltipEditScreen {
             if (isNew) {
                 TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
                 config.entries.add(entry);
+            } else {
+                entry.invalidateCaches();
             }
             AutoConfig.getConfigHolder(TooltipConfig.class).save();
             if (parent instanceof TooltipListScreen) {

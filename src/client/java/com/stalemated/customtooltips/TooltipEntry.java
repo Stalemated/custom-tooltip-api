@@ -87,6 +87,11 @@ public class TooltipEntry {
         this.tickrate = tickrate;
     }
 
+    public void invalidateCaches() {
+        this.cachesInitialized = false;
+        this.cachedStaticText = null;
+    }
+
     private void initCaches() {
         if (cachesInitialized) return;
 
@@ -96,6 +101,7 @@ public class TooltipEntry {
                     this.isTag = true;
                     this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
                 } else {
+                    this.isTag = false;
                     this.cachedItemId = new Identifier(this.target);
                 }
             } catch (InvalidIdentifierException e) {
