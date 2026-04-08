@@ -39,6 +39,8 @@ public class TooltipEntry {
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
+    public int lineOffset = 0;
+
     public boolean bold = false;
     public boolean italic = false;
     public boolean underlined = false;
@@ -70,7 +72,7 @@ public class TooltipEntry {
 
     public TooltipEntry() {}
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int offset, long tickrate) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int offset, long tickrate) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -83,6 +85,7 @@ public class TooltipEntry {
         this.require_shift = require_shift;
         this.empty_line_before = empty_line_before;
         this.position = position;
+        this.lineOffset = lineOffset;
         this.offset = offset;
         this.tickrate = tickrate;
     }
@@ -219,6 +222,14 @@ public class TooltipEntry {
                 return format.getColorValue();
             }
             return 0xFFFFFF;
+        }
+    }
+
+    public int getLineOffset(int size) {
+        if (this.position == TooltipPosition.TOP) {
+            return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : 0;
+        } else {
+            return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : 0;
         }
     }
 }

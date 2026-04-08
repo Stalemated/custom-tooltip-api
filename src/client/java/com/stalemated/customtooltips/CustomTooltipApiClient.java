@@ -29,8 +29,9 @@ public class CustomTooltipApiClient implements ClientModInitializer {
 
 					int insertIndex = lines.size();
 
-					if ((TooltipEntry.TooltipPosition.TOP == entry.position) && !lines.isEmpty()) {
-						insertIndex = 1;
+					if (!lines.isEmpty()) {
+						insertIndex = TooltipEntry.TooltipPosition.TOP == entry.position ? 1 : insertIndex;
+						insertIndex += entry.getLineOffset(lines.size());
 					}
 
 					if (entry.empty_line_before) {

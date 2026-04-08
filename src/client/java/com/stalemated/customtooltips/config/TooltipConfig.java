@@ -53,6 +53,7 @@ public class TooltipConfig implements ConfigData {
                     true,
                     TooltipEntry.TooltipPosition.TOP,
                     0,
+                    0,
                     1
             ));
         }

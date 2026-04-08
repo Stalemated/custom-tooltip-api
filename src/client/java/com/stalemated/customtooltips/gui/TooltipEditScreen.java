@@ -52,6 +52,12 @@ public class TooltipEditScreen {
                 .setSaveConsumer(newValue -> entry.position = newValue)
                 .build());
 
+        category.addEntry(entryBuilder.startIntField(Text.translatable("customtooltips.tooltip_edit_screen.line_offset"), entry.lineOffset)
+                .setDefaultValue(0)
+                .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.line_offset.description"))
+                .setSaveConsumer(newValue -> entry.lineOffset = newValue)
+                .build());
+
         category.addEntry(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.bold"), entry.bold)
                 .setDefaultValue(false)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.bold.description"))
@@ -102,6 +108,7 @@ public class TooltipEditScreen {
 
         category.addEntry(entryBuilder.startLongField(Text.translatable("customtooltips.tooltip_edit_screen.tickrate"), entry.tickrate)
                 .setDefaultValue(1L)
+                .setMin(1)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.tickrate.description"))
                 .setSaveConsumer(newValue -> entry.tickrate = newValue)
                 .build());
