@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -46,6 +47,37 @@ public class CustomTooltipApiClient implements ClientModInitializer {
 						lines.clear();
 						lines.addAll(entry.getTextComponents());
 
+					} else if (entry.position == TooltipEntry.TooltipPosition.APPEND) {
+						if (!lines.isEmpty()) {
+							int insertIndex = entry.getLineOffset(lines.size());
+
+							if (insertIndex >= 0 && insertIndex < lines.size()) {
+								Text currentLine = lines.get(insertIndex);
+								MutableText newLine = currentLine.copy();
+
+								for (Text component : entry.getTextComponents()) {
+									newLine.append(Text.literal(" ")).append(component);
+								}
+
+								lines.set(insertIndex, newLine);
+							}
+						}
+					} else if (entry.position == TooltipEntry.TooltipPosition.PREPEND) {
+						if (!lines.isEmpty()) {
+							int insertIndex = entry.getLineOffset(lines.size());
+
+							if (insertIndex >= 0 && insertIndex < lines.size()) {
+								Text currentLine = lines.get(insertIndex);
+								MutableText newLine = Text.empty();
+
+								for (Text component : entry.getTextComponents()) {
+									newLine.append(component).append(Text.literal(" "));
+								}
+
+								newLine.append(currentLine);
+								lines.set(insertIndex, newLine);
+							}
+						}
 					} else {
 						int insertIndex = lines.size();
 

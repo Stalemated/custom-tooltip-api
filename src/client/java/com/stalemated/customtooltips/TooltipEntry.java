@@ -26,17 +26,17 @@ public class TooltipEntry {
     }
 
     public enum TooltipPosition {
-        REPLACE_NAME, REPLACE_ALL, TOP, BOTTOM
+        REPLACE_NAME, REPLACE_ALL, TOP, BOTTOM, APPEND, PREPEND
     }
 
     public String target = "";
     public List<String> text = new ArrayList<>();
 
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
     public TooltipStyle style = TooltipStyle.SOLID;
     public List<String> colors = new ArrayList<>();
 
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
     public int lineOffset = 0;
@@ -226,7 +226,7 @@ public class TooltipEntry {
     }
 
     public int getLineOffset(int size) {
-        if (this.position == TooltipPosition.TOP || this.position == TooltipPosition.REPLACE_NAME) {
+        if (this.position == TooltipPosition.TOP || this.position == TooltipPosition.REPLACE_NAME || this.position == TooltipPosition.APPEND || this.position == TooltipPosition.PREPEND) {
             return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : 0;
         } else {
             return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : 0;

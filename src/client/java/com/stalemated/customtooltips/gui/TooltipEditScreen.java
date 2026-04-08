@@ -36,6 +36,7 @@ public class TooltipEditScreen {
 
         category.addEntry(entryBuilder.startEnumSelector(Text.translatable("customtooltips.tooltip_edit_screen.style"), TooltipEntry.TooltipStyle.class, entry.style)
                 .setDefaultValue(TooltipEntry.TooltipStyle.SOLID)
+                .setEnumNameProvider(e -> Text.translatable("customtooltips.tooltip_edit_screen.style." + e.name().toLowerCase()))
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.style.description"))
                 .setSaveConsumer(newValue -> entry.style = newValue)
                 .build());
@@ -48,6 +49,7 @@ public class TooltipEditScreen {
 
         category.addEntry(entryBuilder.startEnumSelector(Text.translatable("customtooltips.tooltip_edit_screen.position"), TooltipEntry.TooltipPosition.class, entry.position)
                 .setDefaultValue(TooltipEntry.TooltipPosition.BOTTOM)
+                .setEnumNameProvider(e -> Text.translatable("customtooltips.tooltip_edit_screen.position." + e.name().toLowerCase()))
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.position.description"))
                 .setSaveConsumer(newValue -> entry.position = newValue)
                 .build());
