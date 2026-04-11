@@ -227,9 +227,9 @@ public class TooltipEntry {
 
     public int getLineOffset(int size) {
         if (this.position == TooltipPosition.TOP || this.position == TooltipPosition.REPLACE_NAME || this.position == TooltipPosition.APPEND || this.position == TooltipPosition.PREPEND) {
-            return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : 0;
+            return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : Math.max(size - 1, 0);
         } else {
-            return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : 0;
+            return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : Math.min(-(size - 1), 0);
         }
     }
 }
