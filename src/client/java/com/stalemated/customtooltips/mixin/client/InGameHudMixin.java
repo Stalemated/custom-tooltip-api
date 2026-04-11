@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -24,6 +25,7 @@ public abstract class InGameHudMixin {
         return getCustomTooltipName(stack, stack.getName());
     }
 
+    @Unique
     private Text getCustomTooltipName(ItemStack stack, Text originalName) {
         if (stack == null || stack.isEmpty()) return originalName;
 

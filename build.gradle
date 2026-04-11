@@ -86,13 +86,13 @@ jar {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 
-	sourceSets {
-		client {
-			java {
-				exclude "com.stalemated.customtooltips.test.CustomTooltipApiTest"
-			}
-		}
-	}
+	// Excluir la clase compilada y cualquier clase interna generada del JAR final
+	exclude 'com/stalemated/customtooltips/test/CustomTooltipApiTest*.class'
+}
+
+// Excluir el archivo de código fuente del JAR de sources (fuentes)
+tasks.named("sourcesJar", Jar) {
+	exclude 'com/stalemated/customtooltips/test/CustomTooltipApiTest.java'
 }
 
 // configure the maven publication
