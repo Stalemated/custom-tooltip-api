@@ -9,6 +9,8 @@ import net.fabricmc.api.Environment;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
+
 @Environment(EnvType.CLIENT)
 public class CustomTooltipApiTest implements ClientModInitializer {
 
@@ -57,6 +59,6 @@ public class CustomTooltipApiTest implements ClientModInitializer {
         CustomTooltipApi.registerTooltip(godApple);
         CustomTooltipApi.registerTooltip(pickaxeWarning);
 
-        System.out.println("[CustomTooltipAPI] API test successful.");
+        LOGGER.info("API test successful.");
     }
 }

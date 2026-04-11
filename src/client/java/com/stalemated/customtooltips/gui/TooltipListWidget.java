@@ -40,6 +40,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         private final TooltipEntry tooltipEntry;
         private final ButtonWidget editButton;
         private final ButtonWidget deleteButton;
+        private final ButtonWidget duplicateEntryButton;
 
         public Entry(TooltipListWidget parent, TooltipEntry tooltipEntry) {
             this.tooltipEntry = tooltipEntry;
@@ -49,6 +50,25 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             this.deleteButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.delete_button"), button -> {
                 TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
                 config.entries.remove(this.tooltipEntry);
+                AutoConfig.getConfigHolder(TooltipConfig.class).save();
+                parent.updateEntries();
+            }).dimensions(0, 0, 50, 20).build();
+
+            /*this.deleteButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.delete_button"), button -> client.setScreen(TooltipDeleteConfirmationScreen.init(client.currentScreen, this.tooltipEntry))).dimensions(0, 0, 50, 20).build();*/
+
+            this.duplicateEntryButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button"), button -> {
+                TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+                TooltipEntry newEntry = new TooltipEntry(
+                        this.tooltipEntry.target, this.tooltipEntry.text,
+                        this.tooltipEntry.style, this.tooltipEntry.colors,
+                        this.tooltipEntry.bold, this.tooltipEntry.italic,
+                        this.tooltipEntry.underlined, this.tooltipEntry.strikethrough,
+                        this.tooltipEntry.obfuscated, this.tooltipEntry.require_shift,
+                        this.tooltipEntry.empty_line_before, this.tooltipEntry.position,
+                        this.tooltipEntry.lineOffset, this.tooltipEntry.animation_offset,
+                        this.tooltipEntry.tickrate
+                );
+                config.entries.add(newEntry);
                 AutoConfig.getConfigHolder(TooltipConfig.class).save();
                 parent.updateEntries();
             }).dimensions(0, 0, 50, 20).build();
@@ -76,12 +96,17 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             this.deleteButton.setX(x + entryWidth - 50);
             this.deleteButton.setY(y);
             this.deleteButton.render(context, mouseX, mouseY, tickDelta);
+
+            this.duplicateEntryButton.setX(x + entryWidth - 160);
+            this.duplicateEntryButton.setY(y);
+            this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
         }
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             if (this.editButton.mouseClicked(mouseX, mouseY, button)) return true;
             if (this.deleteButton.mouseClicked(mouseX, mouseY, button)) return true;
+            if (this.duplicateEntryButton.mouseClicked(mouseX, mouseY, button)) return true;
             return super.mouseClicked(mouseX, mouseY, button);
         }
 

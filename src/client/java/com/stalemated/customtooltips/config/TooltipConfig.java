@@ -28,7 +28,7 @@ public class TooltipConfig implements ConfigData {
             'empty_line_before': Adds an empty line before the tooltip. Accepts true / false.
             'position': Accepts: TOP (Under the item's name) or BOTTOM (Bottom of the tooltip).
             'tickrate': Accepts integers different from 0. Speed of the animation. Closer to 0 is higher speed.
-            'offset': Animation offset that desynchronizes different animations. Accepts integers.
+            'animation_offset': Animation animation_offset that desynchronizes different animations. Accepts integers.
             """)
     @ConfigEntry.Gui.CollapsibleObject
     public List<TooltipEntry> entries = new ArrayList<>();

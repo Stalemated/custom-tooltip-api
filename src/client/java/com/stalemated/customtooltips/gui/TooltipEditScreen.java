@@ -123,10 +123,10 @@ public class TooltipEditScreen {
                 .setSaveConsumer(newValue -> entry.empty_line_before = newValue)
                 .build());
 
-        category.addEntry(entryBuilder.startIntField(Text.translatable("customtooltips.tooltip_edit_screen.offset"), entry.offset)
+        category.addEntry(entryBuilder.startIntField(Text.translatable("customtooltips.tooltip_edit_screen.animation_offset"), entry.animation_offset)
                 .setDefaultValue(0)
-                .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.offset.description"))
-                .setSaveConsumer(newValue -> entry.offset = newValue)
+                .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.animation_offset.description"))
+                .setSaveConsumer(newValue -> entry.animation_offset = newValue)
                 .build());
 
         category.addEntry(entryBuilder.startLongField(Text.translatable("customtooltips.tooltip_edit_screen.tickrate"), entry.tickrate)

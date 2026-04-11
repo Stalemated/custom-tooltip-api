@@ -42,12 +42,13 @@
   "customtooltips.tooltip_edit_screen.require_shift.description": "If the tooltip requires pressing the Shift key to display.",
   "customtooltips.tooltip_edit_screen.empty_line_before": "Empty line before",
   "customtooltips.tooltip_edit_screen.empty_line_before.description": "Adds an empty line before the tooltip.",
-  "customtooltips.tooltip_edit_screen.offset": "Animation offset",
-  "customtooltips.tooltip_edit_screen.offset.description": "Animation offset that desynchronizes different animations.",
+  "customtooltips.tooltip_edit_screen.animation_offset": "Animation offset",
+  "customtooltips.tooltip_edit_screen.animation_offset.description": "Animation offset that desynchronizes different animations.",
   "customtooltips.tooltip_edit_screen.tickrate": "Tick rate",
   "customtooltips.tooltip_edit_screen.tickrate.description": "Speed of the animation. Closer to 0 is higher speed.",
 
   "customtooltips.tooltip_list_widget.entry.narration": "Tooltip entry for: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Delete",
-  "customtooltips.tooltip_list_widget.edit_button": "Edit"
+  "customtooltips.tooltip_list_widget.edit_button": "Edit",
+  "customtooltips.tooltip_list_widget.duplicate_button": "Duplicate"
 }

@@ -50,7 +50,7 @@ public class TooltipEntry {
     public boolean require_shift = false;
     public boolean empty_line_before = false;
 
-    public int offset = 0;
+    public int animation_offset = 0;
     public long tickrate = 1;
 
     @ConfigEntry.Gui.Excluded
@@ -72,7 +72,7 @@ public class TooltipEntry {
 
     public TooltipEntry() {}
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int offset, long tickrate) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, long tickrate) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -86,7 +86,7 @@ public class TooltipEntry {
         this.empty_line_before = empty_line_before;
         this.position = position;
         this.lineOffset = lineOffset;
-        this.offset = offset;
+        this.animation_offset = animation_offset;
         this.tickrate = tickrate;
     }
 
@@ -149,16 +149,16 @@ public class TooltipEntry {
             Text baseText = Text.literal(line);
 
             if (this.style == TooltipStyle.RAINBOW) {
-                processedText = TextAPI.Styles.getRainbowGradient(baseText, this.offset, this.tickrate);
+                processedText = TextAPI.Styles.getRainbowGradient(baseText, this.animation_offset, this.tickrate);
 
             } else if (this.style == TooltipStyle.STATIC_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getStaticGradient(baseText, this.parsedColor1, this.parsedColor2);
 
             } else if (this.style == TooltipStyle.SLIDE_GRADIENT && this.isGradient) {
-                processedText = TextAPI.Styles.getGradient(baseText, this.offset, this.parsedColor1, this.parsedColor2, this.tickrate);
+                processedText = TextAPI.Styles.getGradient(baseText, this.animation_offset, this.parsedColor1, this.parsedColor2, this.tickrate);
 
             } else if (this.style == TooltipStyle.BREATHING_GRADIENT && this.isGradient) {
-                processedText = TextAPI.Styles.getBreathingGradient(baseText, this.offset, this.parsedColor1, this.parsedColor2, this.tickrate);
+                processedText = TextAPI.Styles.getBreathingGradient(baseText, this.animation_offset, this.parsedColor1, this.parsedColor2, this.tickrate);
 
             } else {
                 String colorStr = (this.colors != null && !this.colors.isEmpty()) ? this.colors.get(0) : "gray";
