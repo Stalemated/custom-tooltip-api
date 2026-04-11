@@ -38,24 +38,18 @@ public class TooltipConfig implements ConfigData {
         if (entries == null) {
             entries = new ArrayList<>();
         }
-        if (entries.isEmpty()) {
-            entries.add(new TooltipEntry(
-                    "#c:swords",
-                    new ArrayList<>(Arrays.asList("Assassin's Sword", "", "+15% Critical Damage")),
-                    TooltipEntry.TooltipStyle.SLIDE_GRADIENT,
-                    new ArrayList<>(Arrays.asList("#59CDE9", "#0A2A88")),
-                    true,
-                    false,
-                    true,
-                    false,
-                    false,
-                    false,
-                    true,
-                    TooltipEntry.TooltipPosition.TOP,
-                    0,
-                    0,
-                    1
-            ));
-        }
+    }
+
+    public void addDefaultEntry() {
+        entries.add(new TooltipEntry(
+                "#c:swords",
+                new ArrayList<>(Arrays.asList("Assassin's Sword", "", "+15% Critical Damage")),
+                TooltipEntry.TooltipStyle.SLIDE_GRADIENT,
+                new ArrayList<>(Arrays.asList("#59CDE9", "#0A2A88")),
+                true, false, true, false, false,
+                false, true,
+                TooltipEntry.TooltipPosition.TOP, 0,
+                0, 1
+        ));
     }
 }
