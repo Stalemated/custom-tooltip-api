@@ -85,6 +85,14 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
+
+	sourceSets {
+		client {
+			java {
+				exclude "com.stalemated.customtooltips.test.CustomTooltipApiTest"
+			}
+		}
+	}
 }
 
 // configure the maven publication

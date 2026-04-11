@@ -3,6 +3,8 @@ package com.stalemated.customtooltips;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.api.CustomTooltipApi;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.MutableText;
@@ -11,6 +13,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+@Environment(EnvType.CLIENT)
 public class CustomTooltipApiClient implements ClientModInitializer {
 
 	@Override

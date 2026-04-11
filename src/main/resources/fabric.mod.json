@@ -3,7 +3,7 @@
 	"id": "customtooltips",
 	"version": "${version}",
 	"name": "Custom Tooltip API",
-	"description": "A completely customizable, tag-based tooltip manager for modpacks.",
+	"description": "A completely customizable, tag-based tooltip manager for developers and modpack makers.",
 	"authors": [
 		"Stalemated"
 	],
