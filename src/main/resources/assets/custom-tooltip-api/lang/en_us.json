@@ -50,5 +50,7 @@
   "customtooltips.tooltip_list_widget.entry.narration": "Tooltip entry for: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Delete",
   "customtooltips.tooltip_list_widget.edit_button": "Edit",
-  "customtooltips.tooltip_list_widget.duplicate_button": "Duplicate"
+  "customtooltips.tooltip_list_widget.duplicate_button": "Duplicate",
+  "customtooltips.tooltip_list_widget.delete_confirm.title": "Delete Tooltip",
+  "customtooltips.tooltip_list_widget.delete_confirm.message": "Are you sure you want to delete\nthe tooltip for %s?"
 }

@@ -5,6 +5,8 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -48,13 +50,21 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             this.editButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.edit_button"), button -> client.setScreen(TooltipEditScreen.create(client.currentScreen, this.tooltipEntry, false))).dimensions(0, 0, 50, 20).build();
 
             this.deleteButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.delete_button"), button -> {
-                TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
-                config.entries.remove(this.tooltipEntry);
-                AutoConfig.getConfigHolder(TooltipConfig.class).save();
-                parent.updateEntries();
+                Screen currentScreen = client.currentScreen;
+                client.setScreen(new ConfirmScreen(
+                        (confirmed) -> {
+                            if (confirmed) {
+                                TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+                                config.entries.remove(this.tooltipEntry);
+                                AutoConfig.getConfigHolder(TooltipConfig.class).save();
+                                parent.updateEntries();
+                            }
+                            client.setScreen(currentScreen);
+                        },
+                        Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.title"),
+                        Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target)
+                ));
             }).dimensions(0, 0, 50, 20).build();
-
-            /*this.deleteButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.delete_button"), button -> client.setScreen(TooltipDeleteConfirmationScreen.init(client.currentScreen, this.tooltipEntry))).dimensions(0, 0, 50, 20).build();*/
 
             this.duplicateEntryButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button"), button -> {
                 TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
