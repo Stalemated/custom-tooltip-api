@@ -66,5 +66,5 @@ Custom Tooltip API has the following dependencies:
 * [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)
 * [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu)
 
-📄 License
+### 📄 License
 This project is licensed under the MIT License.
