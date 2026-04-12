@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.List;
 
@@ -16,10 +17,15 @@ public class TooltipProcessor {
         if (TooltipRegistry.getEntries().isEmpty() || lines.isEmpty()) return;
 
         boolean shiftPressed = Screen.hasShiftDown();
+        boolean needsShiftPrompt = false;
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (entry == null || !entry.matches(stack)) continue;
-            if (entry.require_shift && !shiftPressed) continue;
+
+            if (entry.require_shift && !shiftPressed) {
+                needsShiftPrompt = true;
+                continue;
+            }
 
             if (entry.position == TooltipEntry.TooltipPosition.REPLACE_NAME) {
                 lines.set(0, entry.getTextComponents().get(0));
@@ -52,6 +58,10 @@ public class TooltipProcessor {
                 insertLines(lines, entry.getTextComponents(), insertIndex, 0);
             }
             lineSize = lines.size();
+        }
+
+        if (needsShiftPrompt) {
+            lines.add(Text.translatable("customtooltips.tooltip_processor.shift_prompt").formatted(Formatting.DARK_GRAY));
         }
     }
 
