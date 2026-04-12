@@ -1,0 +1,13 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "chars": [
+        "\uD833\uDD32"
+      ],
+      "file": "custom-tooltip-api:gui/shift_prompt.png",
+      "height": 8
+    }
+  ]
+}
