@@ -13,48 +13,50 @@ import java.util.List;
 public class TooltipProcessor {
 
     public static void processTooltipLines(ItemStack stack, List<Text> lines) {
-        if (TooltipRegistry.getEntries().isEmpty() || lines.isEmpty()) return;
+        if (lines.isEmpty()) return;
 
         boolean shiftPressed = Screen.hasShiftDown();
         boolean needsShiftPrompt = false;
 
-        for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (entry == null || !entry.matches(stack)) continue;
+        if (!TooltipRegistry.getEntries().isEmpty()) {
+            for (TooltipEntry entry : TooltipRegistry.getEntries()) {
+                if (entry == null || !entry.matches(stack)) continue;
 
-            if (entry.require_shift && !shiftPressed) {
-                needsShiftPrompt = true;
-                continue;
-            }
-
-            if (entry.position == TooltipEntry.TooltipPosition.REPLACE_NAME) {
-                lines.set(0, entry.getTextComponents().get(0));
-                insertLines(lines, entry.getTextComponents(), 1, 1);
-
-            } else if (entry.position == TooltipEntry.TooltipPosition.REPLACE_ALL) {
-                lines.clear();
-                lines.addAll(entry.getTextComponents());
-
-            } else if (entry.position == TooltipEntry.TooltipPosition.APPEND) {
-                int insertIndex = entry.getLineOffset(lines.size());
-                if (isValidIndex(insertIndex, lines)) {
-                    lines.set(insertIndex, appendToLine(lines.get(insertIndex), entry.getTextComponents(), " ", ""));
+                if (entry.require_shift && !shiftPressed) {
+                    needsShiftPrompt = true;
+                    continue;
                 }
 
-            } else if (entry.position == TooltipEntry.TooltipPosition.PREPEND) {
-                int insertIndex = entry.getLineOffset(lines.size());
-                if (isValidIndex(insertIndex, lines)) {
-                    lines.set(insertIndex, appendToLine(lines.get(insertIndex), entry.getTextComponents(), "", " "));
-                }
+                if (entry.position == TooltipEntry.TooltipPosition.REPLACE_NAME) {
+                    lines.set(0, entry.getTextComponents().get(0));
+                    insertLines(lines, entry.getTextComponents(), 1, 1);
 
-            } else {
-                int baseIndex = (entry.position == TooltipEntry.TooltipPosition.TOP) ? 1 : lines.size();
-                int insertIndex = baseIndex + entry.getLineOffset(lines.size());
+                } else if (entry.position == TooltipEntry.TooltipPosition.REPLACE_ALL) {
+                    lines.clear();
+                    lines.addAll(entry.getTextComponents());
 
-                if (entry.empty_line_before) {
-                    lines.add(insertIndex, Text.empty());
-                    insertIndex++;
+                } else if (entry.position == TooltipEntry.TooltipPosition.APPEND) {
+                    int insertIndex = entry.getLineOffset(lines.size());
+                    if (isValidIndex(insertIndex, lines)) {
+                        lines.set(insertIndex, appendToLine(lines.get(insertIndex), entry.getTextComponents(), " ", ""));
+                    }
+
+                } else if (entry.position == TooltipEntry.TooltipPosition.PREPEND) {
+                    int insertIndex = entry.getLineOffset(lines.size());
+                    if (isValidIndex(insertIndex, lines)) {
+                        lines.set(insertIndex, appendToLine(lines.get(insertIndex), entry.getTextComponents(), "", " "));
+                    }
+
+                } else {
+                    int baseIndex = (entry.position == TooltipEntry.TooltipPosition.TOP) ? 1 : lines.size();
+                    int insertIndex = baseIndex + entry.getLineOffset(lines.size());
+
+                    if (entry.empty_line_before) {
+                        lines.add(insertIndex, Text.empty());
+                        insertIndex++;
+                    }
+                    insertLines(lines, entry.getTextComponents(), insertIndex, 0);
                 }
-                insertLines(lines, entry.getTextComponents(), insertIndex, 0);
             }
         }
 
