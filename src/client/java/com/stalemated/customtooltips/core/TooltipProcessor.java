@@ -21,7 +21,7 @@ public class TooltipProcessor {
 
             if (entry.position == TooltipEntry.TooltipPosition.REPLACE_NAME) {
                 lines.set(0, entry.getTextComponents().get(0));
-                insertLines(lines, entry.getTextComponents(), 1, entry, 1);
+                insertLines(lines, entry.getTextComponents(), 1, 1);
 
             } else if (entry.position == TooltipEntry.TooltipPosition.REPLACE_ALL) {
                 lines.clear();
@@ -47,7 +47,7 @@ public class TooltipProcessor {
                     lines.add(insertIndex, Text.empty());
                     insertIndex++;
                 }
-                insertLines(lines, entry.getTextComponents(), insertIndex, entry, 0);
+                insertLines(lines, entry.getTextComponents(), insertIndex, 0);
             }
         }
     }
@@ -83,7 +83,7 @@ public class TooltipProcessor {
         return index >= 0 && index < lines.size();
     }
 
-    private static void insertLines(List<Text> destination, List<Text> source, int startIndex, TooltipEntry entry, int sourceOffset) {
+    private static void insertLines(List<Text> destination, List<Text> source, int startIndex, int sourceOffset) {
         int currentIndex = startIndex;
         for (int i = sourceOffset; i < source.size(); i++) {
             if (currentIndex > destination.size()) currentIndex = destination.size();
