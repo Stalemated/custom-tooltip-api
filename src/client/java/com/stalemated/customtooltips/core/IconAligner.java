@@ -6,20 +6,43 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class IconAligner {
 
+    private static final int CACHE_CAPACITY = 200;
+    private static final Map<String, Text> PROCESSED_CACHE = new LinkedHashMap<String, Text>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, Text> eldest) {
+            return size() > CACHE_CAPACITY;
+        }
+    };
+
     public static void alignIcons(List<Text> lines) {
 
         for (int i = 0; i < lines.size(); i++) {
-            Text original = lines.get(i);
+            Text originalText = lines.get(i);
+            String rawString = originalText.getString();
 
-            if (!containsIcon(original.getString())) continue;
+            if (!containsIcon(rawString)) continue;
 
-            lines.set(i, shiftIconToStart(original));
+            Text cached = PROCESSED_CACHE.get(rawString);
+            if (cached != null) {
+                lines.set(i, cached);
+                continue;
+            }
+
+            Text processed = shiftIconToStart(originalText);
+            PROCESSED_CACHE.put(rawString, processed);
+            lines.set(i, processed);
         }
+    }
+
+    public static void clearCache() {
+        PROCESSED_CACHE.clear();
     }
 
     private static boolean containsIcon(String str) {

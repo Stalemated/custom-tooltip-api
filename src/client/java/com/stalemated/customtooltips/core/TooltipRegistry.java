@@ -14,6 +14,7 @@ public class TooltipRegistry {
 
     public static void reload() {
         ACTIVE_ENTRIES.clear();
+        IconAligner.clearCache();
 
         TooltipConfig config = ConfigManager.getConfig();
         if (config != null && config.entries != null) {
