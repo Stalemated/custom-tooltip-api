@@ -54,5 +54,5 @@
   "customtooltips.tooltip_list_widget.delete_confirm.title": "Delete Tooltip",
   "customtooltips.tooltip_list_widget.delete_confirm.message": "Are you sure you want to delete\nthe tooltip for %s?",
 
-  "customtooltips.tooltip_processor.shift_prompt": "\uD833\uDD32 Hold [SHIFT] for details"
+  "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Hold [SHIFT] for details"
 }
