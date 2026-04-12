@@ -53,7 +53,7 @@ public class TooltipEntry {
     public int animation_offset = 0;
     public long tickrate = 1;
 
-    // --- Cachés Ignorados ---
+    // Ignored caches
     @ConfigEntry.Gui.Excluded private transient boolean cachesInitialized = false;
     @ConfigEntry.Gui.Excluded private transient boolean isTag = false;
     @ConfigEntry.Gui.Excluded private transient TagKey<Item> cachedTagKey = null;
@@ -62,6 +62,7 @@ public class TooltipEntry {
     @ConfigEntry.Gui.Excluded private transient int parsedColor2 = 0xFFFFFF;
     @ConfigEntry.Gui.Excluded private transient boolean isGradient = false;
     @ConfigEntry.Gui.Excluded private transient List<Text> cachedStaticText = null;
+    @ConfigEntry.Gui.Excluded private transient Style cachedStyleModifier = null;
 
     public TooltipEntry() {}
 
@@ -86,6 +87,7 @@ public class TooltipEntry {
     public void invalidateCaches() {
         this.cachesInitialized = false;
         this.cachedStaticText = null;
+        this.cachedStyleModifier = null;
     }
 
     public void initCaches() {
@@ -111,6 +113,7 @@ public class TooltipEntry {
         this.parsedColor2 = this.isGradient ? parseColor(this.colors.get(1)) : 0xFFFFFF;
         if (this.tickrate <= 0) this.tickrate = 1;
 
+        this.cachedStyleModifier = buildStyleModifier();
         this.cachesInitialized = true;
     }
 
@@ -137,8 +140,6 @@ public class TooltipEntry {
         List<Text> linesList = new ArrayList<>();
         if (this.text == null) return linesList;
 
-        Style textModifiers = buildStyleModifier();
-
         for (String line : this.text) {
             MutableText processedText;
             Text baseText = Text.literal(line);
@@ -156,13 +157,13 @@ public class TooltipEntry {
                 processedText = applySolidStyle(baseText.copy(), colorStr);
             }
 
-            if (textModifiers != Style.EMPTY) {
+            if (this.cachedStyleModifier != null && this.cachedStyleModifier != Style.EMPTY) {
                 if (!processedText.getSiblings().isEmpty()) {
                     for (Text sibling : processedText.getSiblings()) {
-                        ((MutableText) sibling).setStyle(sibling.getStyle().withParent(textModifiers));
+                        ((MutableText) sibling).setStyle(sibling.getStyle().withParent(this.cachedStyleModifier));
                     }
                 } else {
-                    processedText.setStyle(processedText.getStyle().withParent(textModifiers));
+                    processedText.setStyle(processedText.getStyle().withParent(this.cachedStyleModifier));
                 }
             }
 
