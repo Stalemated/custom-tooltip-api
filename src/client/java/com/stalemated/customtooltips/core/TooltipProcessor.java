@@ -10,6 +10,8 @@ import java.util.List;
 
 public class TooltipProcessor {
 
+    private static int lineSize;
+
     public static void processTooltipLines(ItemStack stack, List<Text> lines) {
         if (TooltipRegistry.getEntries().isEmpty() || lines.isEmpty()) return;
 
@@ -49,6 +51,7 @@ public class TooltipProcessor {
                 }
                 insertLines(lines, entry.getTextComponents(), insertIndex, 0);
             }
+            lineSize = lines.size();
         }
     }
 
@@ -68,10 +71,10 @@ public class TooltipProcessor {
                 List<Text> components = entry.getTextComponents();
                 if (!components.isEmpty()) return components.get(0);
 
-            } else if (entry.position == TooltipEntry.TooltipPosition.APPEND && entry.getLineOffset(1) == 0) {
+            } else if (entry.position == TooltipEntry.TooltipPosition.APPEND && entry.getLineOffset(lineSize) == 0) {
                 return appendToLine(originalName, entry.getTextComponents(), " ", "");
 
-            } else if (entry.position == TooltipEntry.TooltipPosition.PREPEND && entry.getLineOffset(1) == 0) {
+            } else if (entry.position == TooltipEntry.TooltipPosition.PREPEND && entry.getLineOffset(lineSize) == 0) {
                 return appendToLine(originalName, entry.getTextComponents(), "", " ");
             }
         }
