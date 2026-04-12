@@ -1,9 +1,11 @@
 package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.core.TooltipRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.util.ActionResult;
 
 import java.io.File;
 
@@ -30,9 +32,14 @@ public class ConfigManager {
 
         if (isNewFile && !deleted) {
             TooltipConfig config = getConfig();
-            config.addDefaultEntry();
+            config.addDefaultEntries();
             AutoConfig.getConfigHolder(TooltipConfig.class).save();
         }
+
+        AutoConfig.getConfigHolder(TooltipConfig.class).registerSaveListener((holder, config) -> {
+            TooltipRegistry.reload();
+            return ActionResult.PASS;
+        });
     }
 
     public static TooltipConfig getConfig() {

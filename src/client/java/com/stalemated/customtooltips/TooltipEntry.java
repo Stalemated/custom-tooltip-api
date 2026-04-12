@@ -53,22 +53,15 @@ public class TooltipEntry {
     public int animation_offset = 0;
     public long tickrate = 1;
 
-    @ConfigEntry.Gui.Excluded
-    private transient boolean cachesInitialized = false;
-    @ConfigEntry.Gui.Excluded
-    private transient boolean isTag = false;
-    @ConfigEntry.Gui.Excluded
-    private transient TagKey<Item> cachedTagKey = null;
-    @ConfigEntry.Gui.Excluded
-    private transient Identifier cachedItemId = null;
-    @ConfigEntry.Gui.Excluded
-    private transient int parsedColor1 = 0xFFFFFF;
-    @ConfigEntry.Gui.Excluded
-    private transient int parsedColor2 = 0xFFFFFF;
-    @ConfigEntry.Gui.Excluded
-    private transient boolean isGradient = false;
-    @ConfigEntry.Gui.Excluded
-    private transient List<Text> cachedStaticText = null;
+    // --- Cachés Ignorados ---
+    @ConfigEntry.Gui.Excluded private transient boolean cachesInitialized = false;
+    @ConfigEntry.Gui.Excluded private transient boolean isTag = false;
+    @ConfigEntry.Gui.Excluded private transient TagKey<Item> cachedTagKey = null;
+    @ConfigEntry.Gui.Excluded private transient Item cachedItem = null;
+    @ConfigEntry.Gui.Excluded private transient int parsedColor1 = 0xFFFFFF;
+    @ConfigEntry.Gui.Excluded private transient int parsedColor2 = 0xFFFFFF;
+    @ConfigEntry.Gui.Excluded private transient boolean isGradient = false;
+    @ConfigEntry.Gui.Excluded private transient List<Text> cachedStaticText = null;
 
     public TooltipEntry() {}
 
@@ -95,7 +88,7 @@ public class TooltipEntry {
         this.cachedStaticText = null;
     }
 
-    private void initCaches() {
+    public void initCaches() {
         if (cachesInitialized) return;
 
         if (this.target != null && !this.target.isEmpty()) {
@@ -105,10 +98,10 @@ public class TooltipEntry {
                     this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
                 } else {
                     this.isTag = false;
-                    this.cachedItemId = new Identifier(this.target);
+                    this.cachedItem = Registries.ITEM.get(new Identifier(this.target));
                 }
             } catch (InvalidIdentifierException e) {
-                this.cachedItemId = null;
+                this.cachedItem = null;
                 this.cachedTagKey = null;
             }
         }
@@ -116,25 +109,25 @@ public class TooltipEntry {
         this.isGradient = this.colors != null && this.colors.size() >= 2;
         this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? parseColor(this.colors.get(0)) : 0xFFFFFF;
         this.parsedColor2 = this.isGradient ? parseColor(this.colors.get(1)) : 0xFFFFFF;
-        if (this.tickrate == 0) this.tickrate = 1;
+        if (this.tickrate <= 0) this.tickrate = 1;
 
         this.cachesInitialized = true;
     }
 
     public boolean matches(ItemStack stack) {
-        initCaches();
+        if (!cachesInitialized) initCaches();
 
         if (this.isTag && this.cachedTagKey != null) {
             return stack.isIn(this.cachedTagKey);
-        } else if (!this.isTag && this.cachedItemId != null) {
-            return Registries.ITEM.getId(stack.getItem()).equals(this.cachedItemId);
+        } else if (!this.isTag && this.cachedItem != null) {
+            return stack.isOf(this.cachedItem);
         }
 
         return false;
     }
 
     public List<Text> getTextComponents() {
-        initCaches();
+        if (!cachesInitialized) initCaches();
 
         boolean isStatic = this.style == TooltipStyle.SOLID || this.style == TooltipStyle.STATIC_GRADIENT;
         if (isStatic && this.cachedStaticText != null) {
@@ -144,52 +137,50 @@ public class TooltipEntry {
         List<Text> linesList = new ArrayList<>();
         if (this.text == null) return linesList;
 
+        Style textModifiers = buildStyleModifier();
+
         for (String line : this.text) {
             MutableText processedText;
             Text baseText = Text.literal(line);
 
             if (this.style == TooltipStyle.RAINBOW) {
                 processedText = TextAPI.Styles.getRainbowGradient(baseText, this.animation_offset, this.tickrate);
-
             } else if (this.style == TooltipStyle.STATIC_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getStaticGradient(baseText, this.parsedColor1, this.parsedColor2);
-
             } else if (this.style == TooltipStyle.SLIDE_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getGradient(baseText, this.animation_offset, this.parsedColor1, this.parsedColor2, this.tickrate);
-
             } else if (this.style == TooltipStyle.BREATHING_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getBreathingGradient(baseText, this.animation_offset, this.parsedColor1, this.parsedColor2, this.tickrate);
-
             } else {
                 String colorStr = (this.colors != null && !this.colors.isEmpty()) ? this.colors.get(0) : "gray";
-                processedText = applySolidStyle(Text.literal(line), colorStr);
+                processedText = applySolidStyle(baseText.copy(), colorStr);
             }
 
-            if (this.bold || this.italic || this.underlined || this.strikethrough || this.obfuscated) {
-                Style modifier = Style.EMPTY;
-                if (this.bold) modifier = modifier.withBold(true);
-                if (this.italic) modifier = modifier.withItalic(true);
-                if (this.underlined) modifier = modifier.withUnderline(true);
-                if (this.strikethrough) modifier = modifier.withStrikethrough(true);
-                if (this.obfuscated) modifier = modifier.withObfuscated(true);
-
+            if (textModifiers != Style.EMPTY) {
                 if (!processedText.getSiblings().isEmpty()) {
                     for (Text sibling : processedText.getSiblings()) {
-                        ((MutableText) sibling).setStyle(sibling.getStyle().withParent(modifier));
+                        ((MutableText) sibling).setStyle(sibling.getStyle().withParent(textModifiers));
                     }
                 } else {
-                    processedText.setStyle(processedText.getStyle().withParent(modifier));
+                    processedText.setStyle(processedText.getStyle().withParent(textModifiers));
                 }
             }
 
             linesList.add(processedText);
         }
 
-        if (isStatic) {
-            this.cachedStaticText = linesList;
-        }
-
+        if (isStatic) this.cachedStaticText = linesList;
         return linesList;
+    }
+
+    private Style buildStyleModifier() {
+        Style style = Style.EMPTY;
+        if (this.bold) style = style.withBold(true);
+        if (this.italic) style = style.withItalic(true);
+        if (this.underlined) style = style.withUnderline(true);
+        if (this.strikethrough) style = style.withStrikethrough(true);
+        if (this.obfuscated) style = style.withObfuscated(true);
+        return style;
     }
 
     private MutableText applySolidStyle(MutableText textComponent, String colorStr) {

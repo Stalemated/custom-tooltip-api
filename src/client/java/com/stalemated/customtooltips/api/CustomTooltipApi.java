@@ -1,6 +1,8 @@
 package com.stalemated.customtooltips.api;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.core.TooltipRegistry;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +25,7 @@ public class CustomTooltipApi {
     public static void registerTooltip(TooltipEntry entry) {
         if (entry != null) {
             API_ENTRIES.add(entry);
+            TooltipRegistry.reload();
         }
     }
 
