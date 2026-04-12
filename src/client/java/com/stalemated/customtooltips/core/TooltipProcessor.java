@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.core;
 
+import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
@@ -60,6 +61,10 @@ public class TooltipProcessor {
             lineSize = lines.size();
         }
 
+        if (ConfigManager.getConfig() != null && ConfigManager.getConfig().align_attribute_icons) {
+            IconAligner.alignIcons(lines);
+        }
+
         if (needsShiftPrompt) {
             lines.add(Text.translatable("customtooltips.tooltip_processor.shift_prompt").formatted(Formatting.DARK_GRAY));
         }
@@ -91,6 +96,8 @@ public class TooltipProcessor {
 
         return originalName;
     }
+
+    // Helpers
 
     private static boolean isValidIndex(int index, List<Text> lines) {
         return index >= 0 && index < lines.size();

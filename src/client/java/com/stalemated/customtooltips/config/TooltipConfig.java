@@ -13,6 +13,9 @@ import java.util.List;
 @Config(name = "custom_tooltips")
 public class TooltipConfig implements ConfigData {
 
+    @Comment("Aligns icons from resource packs at the start of the line so they stay aligned.")
+    public boolean align_attribute_icons = false;
+
     @Comment("""
             Custom Tooltip API Config
             'target': Accepts tags (e.g. #c:swords) or item ids (e.g. minecraft:diamond_sword).
