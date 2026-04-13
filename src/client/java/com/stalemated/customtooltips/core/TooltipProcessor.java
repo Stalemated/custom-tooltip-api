@@ -15,6 +15,10 @@ public class TooltipProcessor {
     public static void processTooltipLines(ItemStack stack, List<Text> lines) {
         if (lines.isEmpty()) return;
 
+        if (ConfigManager.getConfig() != null && ConfigManager.getConfig().align_attribute_icons) {
+            IconAligner.alignIcons(lines);
+        }
+
         boolean shiftPressed = Screen.hasShiftDown();
         boolean needsShiftPrompt = false;
 
@@ -58,10 +62,6 @@ public class TooltipProcessor {
                     insertLines(lines, entry.getTextComponents(), insertIndex, 0);
                 }
             }
-        }
-
-        if (ConfigManager.getConfig() != null && ConfigManager.getConfig().align_attribute_icons) {
-            IconAligner.alignIcons(lines);
         }
 
         if (needsShiftPrompt) {
