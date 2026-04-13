@@ -42,7 +42,7 @@ If you want to compile the project yourself, follow these steps:
 
 #### 1. Clone the Repository:
 ```bash
-  git clone [https://github.com/Stalemated/custom-tooltip-api.git](https://github.com/Stalemated/custom-tooltip-api.git)
+  git clone https://github.com/Stalemated/custom-tooltip-api.git
   cd custom-tooltip-api
 ```
 
