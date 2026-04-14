@@ -61,7 +61,9 @@ public class IconAligner {
                 (codePoint >= 0xDC00 && codePoint <= 0xDFFF) || // Low Surrogate Area
                 (codePoint >= 0xD800 && codePoint <= 0xDBFF) || // High Surrogate Area
                 (codePoint >= 0x1CC00 && codePoint <= 0x1CEBF) || // Symbols for Legacy Computing Supplement (RPG series icons compat)
-                (codePoint >= 0x2700 && codePoint <= 0x27BF); // Dingbats
+                (codePoint >= 0x2700 && codePoint <= 0x27BF) || // Dingbats
+                (codePoint >= 0xAB00 && codePoint <= 0xAB2F) || // Ethiopic Extended-A (Eldritch End compat)
+                (codePoint >= 0xA980 && codePoint <= 0xA9DF); // Javanese (Eldritch End compat)
     }
 
     private static Text processAndAlignIcon(Text originalText) {
