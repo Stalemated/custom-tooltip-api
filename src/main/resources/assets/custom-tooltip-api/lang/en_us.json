@@ -2,6 +2,7 @@
   "customtooltips.tooltip_list_screen.title": "Manage Tooltips",
   "customtooltips.tooltip_list_screen.add_new_tooltip": "Add new Tooltip",
   "customtooltips.tooltip_list_screen.align_icons": "Align Icons",
+  "customtooltips.tooltip_list_screen.search": "Search...",
 
   "customtooltips.tooltip_edit_screen.title": "Edit Tooltip",
   "customtooltips.tooltip_edit_screen.target": "Target",

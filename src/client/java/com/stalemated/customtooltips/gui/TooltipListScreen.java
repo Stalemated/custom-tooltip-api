@@ -6,6 +6,7 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 public class TooltipListScreen extends Screen {
     private final Screen parent;
     public TooltipListWidget listWidget;
+    private TextFieldWidget searchBox;
     private static boolean hasShownKeybindToast = false;
 
     public TooltipListScreen(Screen parent) {
@@ -26,8 +28,13 @@ public class TooltipListScreen extends Screen {
 
     @Override
     protected void init() {
-        this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 55, this.height - 32, 25);
         this.addSelectableChild(this.listWidget);
+
+        this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 110, 24, 220, 20, Text.translatable("customtooltips.tooltip_list_screen.search"));
+        this.searchBox.setChangedListener(searchText -> this.listWidget.updateEntries(searchText));
+        this.addSelectableChild(this.searchBox);
+        this.setInitialFocus(this.searchBox);
 
         if (!hasShownKeybindToast) {
             checkAndShowKeybindToast();
@@ -39,7 +46,7 @@ public class TooltipListScreen extends Screen {
             config.align_attribute_icons = !config.align_attribute_icons;
             AutoConfig.getConfigHolder(TooltipConfig.class).save();
             button.setMessage(getAlignIconsText());
-        }).dimensions(this.width - 135, 6, 125, 20).build());
+        }).dimensions(this.width - 100, 6, 90, 20).build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipEntry newEntry = new TooltipEntry();
@@ -80,8 +87,16 @@ public class TooltipListScreen extends Screen {
     @Override
     public void render(net.minecraft.client.gui.DrawContext context, int mouseX, int mouseY, float delta) {
         this.listWidget.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 13, 0xFFFFFF);
+        this.searchBox.render(context, mouseX, mouseY, delta);
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
+    }
+
+    @Override
+    public void tick() {
+        if (this.searchBox != null) {
+            this.searchBox.tick();
+        }
     }
 
     @Override

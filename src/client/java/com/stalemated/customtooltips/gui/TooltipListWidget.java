@@ -15,28 +15,43 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
     public TooltipListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
         super(client, width, height, top, bottom, itemHeight);
-        this.updateEntries();
+        this.updateEntries("");
     }
 
-    public void updateEntries() {
+    public void updateEntries(String searchText) {
         this.clearEntries();
         TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+        String lowerSearch = searchText != null ? searchText.toLowerCase() : "";
+
         if (config.entries != null) {
             for (TooltipEntry entry : config.entries) {
-                this.addEntry(new Entry(this, entry));
+                if (lowerSearch.isEmpty() || entryMatchesSearch(entry, lowerSearch)) {
+                    this.addEntry(new Entry(this, entry));
+                }
             }
         }
     }
 
-    @Override
-    public int getRowWidth() {
-        return 300;
+    public void updateEntries() {
+        this.updateEntries("");
+    }
+
+    private boolean entryMatchesSearch(TooltipEntry entry, String lowerSearch) {
+        if (entry.target != null && entry.target.toLowerCase().contains(lowerSearch)) return true;
+
+        if (entry.text != null) {
+            for (String line : entry.text) {
+                if (line.toLowerCase().contains(lowerSearch)) return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    protected int getScrollbarPositionX() {
-        return this.width / 2 + 154;
-    }
+    public int getRowWidth() { return Math.toIntExact(Math.round(this.width * 0.9)); }
+
+    @Override
+    protected int getScrollbarPositionX() { return this.width - 5; }
 
     public class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
         private final TooltipEntry tooltipEntry;
@@ -87,29 +102,28 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
-            int textX = x - 50;
             int textY = y + 6;
-            context.drawTextWithShadow(client.textRenderer, targetText, textX, textY, 0xFFFFFF);
+            context.drawTextWithShadow(client.textRenderer, targetText, x, textY, 0xFFFFFF);
 
             int textW = client.textRenderer.getWidth(targetText);
             int textH = client.textRenderer.fontHeight;
-            boolean isHoveringOverTarget = mouseX >= textX - 5 && mouseX <= textX + textW + 5 && mouseY >= textY - 5 && mouseY <= textY + textH + 5;
+            boolean isHoveringOverTarget = mouseX >= x - 5 && mouseX <= x + textW + 5 && mouseY >= textY - 5 && mouseY <= textY + textH + 5;
 
             if (isHoveringOverTarget) {
                 context.drawTooltip(client.textRenderer, this.tooltipEntry.getTextComponents(), mouseX, mouseY);
             }
 
-            this.editButton.setX(x + entryWidth - 55);
+            this.duplicateEntryButton.setX(x + entryWidth - 165);
+            this.duplicateEntryButton.setY(y);
+            this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
+
+            this.editButton.setX(x + entryWidth - 110);
             this.editButton.setY(y);
             this.editButton.render(context, mouseX, mouseY, tickDelta);
 
-            this.deleteButton.setX(x + entryWidth);
+            this.deleteButton.setX(x + entryWidth - 55);
             this.deleteButton.setY(y);
             this.deleteButton.render(context, mouseX, mouseY, tickDelta);
-
-            this.duplicateEntryButton.setX(x + entryWidth - 110);
-            this.duplicateEntryButton.setY(y);
-            this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
         }
 
         @Override
