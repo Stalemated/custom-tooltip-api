@@ -87,7 +87,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
-            int textX = x + 5;
+            int textX = x - 50;
             int textY = y + 6;
             context.drawTextWithShadow(client.textRenderer, targetText, textX, textY, 0xFFFFFF);
 
@@ -99,15 +99,15 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 context.drawTooltip(client.textRenderer, this.tooltipEntry.getTextComponents(), mouseX, mouseY);
             }
 
-            this.editButton.setX(x + entryWidth - 105);
+            this.editButton.setX(x + entryWidth - 55);
             this.editButton.setY(y);
             this.editButton.render(context, mouseX, mouseY, tickDelta);
 
-            this.deleteButton.setX(x + entryWidth - 50);
+            this.deleteButton.setX(x + entryWidth);
             this.deleteButton.setY(y);
             this.deleteButton.render(context, mouseX, mouseY, tickDelta);
 
-            this.duplicateEntryButton.setX(x + entryWidth - 160);
+            this.duplicateEntryButton.setX(x + entryWidth - 110);
             this.duplicateEntryButton.setY(y);
             this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
         }

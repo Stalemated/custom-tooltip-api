@@ -6,8 +6,10 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.toast.SystemToast;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import static com.stalemated.customtooltips.CustomTooltipApiClient.openConfigKeybind;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import java.util.Arrays;
 public class TooltipListScreen extends Screen {
     private final Screen parent;
     public TooltipListWidget listWidget;
+    private static boolean hasShownKeybindToast = false;
 
     public TooltipListScreen(Screen parent) {
         super(Text.translatable("customtooltips.tooltip_list_screen.title"));
@@ -26,11 +29,16 @@ public class TooltipListScreen extends Screen {
         this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         this.addSelectableChild(this.listWidget);
 
+        if (!hasShownKeybindToast) {
+            checkAndShowKeybindToast();
+            hasShownKeybindToast = true;
+        }
+
         this.addDrawableChild(ButtonWidget.builder(getAlignIconsText(), button -> {
             TooltipConfig config = ConfigManager.getConfig();
             config.align_attribute_icons = !config.align_attribute_icons;
             AutoConfig.getConfigHolder(TooltipConfig.class).save();
-            button.setMessage(getAlignIconsText()); // Actualiza el texto (ON/OFF) dinámicamente
+            button.setMessage(getAlignIconsText());
         }).dimensions(this.width - 135, 6, 125, 20).build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
@@ -48,7 +56,20 @@ public class TooltipListScreen extends Screen {
         }).dimensions(this.width / 2 + 5, this.height - 28, 150, 20).build());
     }
 
-    // Helper para generar el texto dinámico "Align Icons: ON" / "Align Icons: OFF"
+    private void checkAndShowKeybindToast() {
+        if (this.client == null || this.client.options == null) return;
+
+        if (openConfigKeybind.getTranslationKey().equals("key.customtooltips.open_config") && openConfigKeybind.isUnbound()) {
+            SystemToast.add(
+                    this.client.getToastManager(),
+                    SystemToast.Type.TUTORIAL_HINT,
+                    Text.translatable("customtooltips.toast.keybind_missing.title"),
+                    Text.translatable("customtooltips.toast.keybind_missing.desc")
+            );
+        }
+
+    }
+
     private Text getAlignIconsText() {
         boolean isOn = ConfigManager.getConfig().align_attribute_icons;
         return Text.translatable("customtooltips.tooltip_list_screen.align_icons")
