@@ -55,5 +55,11 @@
   "customtooltips.tooltip_list_widget.delete_confirm.title": "Delete Tooltip",
   "customtooltips.tooltip_list_widget.delete_confirm.message": "Are you sure you want to delete\nthe tooltip for %s?",
 
-  "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Hold [SHIFT] for details"
+  "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Hold [SHIFT] for details",
+
+  "category.customtooltips.keys": "Custom Tooltip API",
+  "key.customtooltips.open_config": "Open Config",
+
+  "customtooltips.toast.keybind_missing.title": "Did you know?",
+  "customtooltips.toast.keybind_missing.desc": "You can set a Keybind to open this menu easily!"
 }
