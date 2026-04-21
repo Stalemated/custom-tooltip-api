@@ -31,8 +31,9 @@ public class TooltipListScreen extends Screen {
         this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 55, this.height - 32, 25);
         this.addSelectableChild(this.listWidget);
 
-        this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 110, 24, 220, 20, Text.translatable("customtooltips.tooltip_list_screen.search"));
+        this.searchBox = new TextFieldWidget(this.textRenderer,  this.width / 4, 24, this.width / 2, 20, Text.translatable("customtooltips.tooltip_list_screen.search"));
         this.searchBox.setChangedListener(searchText -> this.listWidget.updateEntries(searchText));
+        this.searchBox.setMaxLength(1024);
         this.addSelectableChild(this.searchBox);
         this.setInitialFocus(this.searchBox);
 
