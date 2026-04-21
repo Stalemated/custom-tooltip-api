@@ -61,9 +61,13 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         private final ButtonWidget editButton;
         private final ButtonWidget deleteButton;
         private final ButtonWidget duplicateEntryButton;
+        private static final double SCROLL_SPEED_PIXELS_PER_SECOND = 25.0;
+        private static final long SCROLL_PAUSE_MS = 1500L;
+        private final long startTime;
 
         public Entry(TooltipListWidget parent, TooltipEntry tooltipEntry) {
             this.tooltipEntry = tooltipEntry;
+            this.startTime = System.currentTimeMillis();
 
             this.editButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.edit_button"), button -> client.setScreen(TooltipEditScreen.create(client.currentScreen, this.tooltipEntry, false))).dimensions(0, 0, 50, 20).build();
 
@@ -106,14 +110,22 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
             int textY = y + 6;
-            context.drawTextWithShadow(client.textRenderer, targetText, x, textY, 0xFFFFFF);
 
-            int textW = client.textRenderer.getWidth(targetText);
-            int textH = client.textRenderer.fontHeight;
-            boolean isHoveringOverTarget = mouseX >= x - 5 && mouseX <= x + textW + 5 && mouseY >= textY - 5 && mouseY <= textY + textH + 5;
+            int buttonsStartX = x + entryWidth - 165;
+            int availableTextWidth = buttonsStartX - x - 5;
+            int originalTextWidth = client.textRenderer.getWidth(targetText);
 
-            if (isHoveringOverTarget) {
-                context.drawTooltip(client.textRenderer, this.tooltipEntry.getTextComponents(), mouseX, mouseY);
+            renderScrollingText(context, targetText, originalTextWidth, x, textY, availableTextWidth, y, entryHeight, buttonsStartX);
+
+            boolean isHoveringOverText = mouseX >= x && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
+            if (isHoveringOverText) {
+                java.util.List<Text> hoverTooltip = new java.util.ArrayList<>();
+                if (originalTextWidth > availableTextWidth) {
+                    hoverTooltip.add(Text.literal(targetText));
+                    hoverTooltip.add(Text.empty());
+                }
+                hoverTooltip.addAll(this.tooltipEntry.getTextComponents());
+                context.drawTooltip(client.textRenderer, hoverTooltip, mouseX, mouseY);
             }
 
             this.duplicateEntryButton.setX(x + entryWidth - 165);
@@ -127,6 +139,44 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             this.deleteButton.setX(x + entryWidth - 55);
             this.deleteButton.setY(y);
             this.deleteButton.render(context, mouseX, mouseY, tickDelta);
+        }
+
+        private void renderScrollingText(DrawContext context, String text, int textWidth, int x, int y, int availableWidth, int scissorY, int scissorHeight, int scissorEndX) {
+            if (textWidth > availableWidth) {
+                int overflowWidth = textWidth - availableWidth;
+                double speed = SCROLL_SPEED_PIXELS_PER_SECOND / 1000.0;
+                long travelTime = (long) (overflowWidth / speed);
+                if (travelTime <= 0) travelTime = 1;
+
+                long halfCycle = travelTime + SCROLL_PAUSE_MS;
+                long totalCycle = 2 * halfCycle;
+
+                long elapsed = System.currentTimeMillis() - this.startTime;
+                long cycleTime = elapsed % totalCycle;
+                double progress = getProgress(cycleTime, halfCycle, travelTime);
+
+                int scrollOffset = (int) (progress * overflowWidth);
+
+                context.enableScissor(x, scissorY, scissorEndX, scissorY + scissorHeight);
+                context.drawTextWithShadow(client.textRenderer, text, x - scrollOffset, y, 0xFFFFFF);
+                context.disableScissor();
+            } else {
+                context.drawTextWithShadow(client.textRenderer, text, x, y, 0xFFFFFF);
+            }
+        }
+
+        private double getProgress(long cycleTime, long halfCycle, long travelTime) {
+            double progress;
+            if (cycleTime < SCROLL_PAUSE_MS) {
+                progress = 0.0; // Pause at the start
+            } else if (cycleTime < halfCycle) {
+                progress = (double) (cycleTime - SCROLL_PAUSE_MS) / travelTime; // Moving right
+            } else if (cycleTime < halfCycle + SCROLL_PAUSE_MS) {
+                progress = 1.0; // Pause at the end
+            } else {
+                progress = 1.0 - ((double) (cycleTime - (halfCycle + SCROLL_PAUSE_MS)) / travelTime); // Moving left
+            }
+            return progress;
         }
 
         @Override
