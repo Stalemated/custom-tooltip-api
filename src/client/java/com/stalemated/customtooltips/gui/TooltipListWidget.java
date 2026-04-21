@@ -13,8 +13,11 @@ import net.minecraft.text.Text;
 
 public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipListWidget.Entry> {
 
-    public TooltipListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
+    private final TooltipListScreen parentScreen;
+
+    public TooltipListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen parentScreen) {
         super(client, width, height, top, bottom, itemHeight);
+        this.parentScreen = parentScreen;
         this.updateEntries("");
     }
 
@@ -72,7 +75,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                                 TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
                                 config.entries.remove(this.tooltipEntry);
                                 AutoConfig.getConfigHolder(TooltipConfig.class).save();
-                                parent.updateEntries();
+                                parent.updateEntries(parent.parentScreen.searchBox.getText());
                             }
                             client.setScreen(currentScreen);
                         },
@@ -95,7 +98,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 );
                 config.entries.add(newEntry);
                 AutoConfig.getConfigHolder(TooltipConfig.class).save();
-                parent.updateEntries();
+                parent.updateEntries(parent.parentScreen.searchBox.getText());
             }).dimensions(0, 0, 50, 20).build();
         }
 
