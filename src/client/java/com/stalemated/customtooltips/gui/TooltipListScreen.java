@@ -54,7 +54,14 @@ public class TooltipListScreen extends Screen {
             config.align_attribute_icons = !config.align_attribute_icons;
             AutoConfig.getConfigHolder(TooltipConfig.class).save();
             button.setMessage(getAlignIconsText());
-        }).dimensions(this.width - 100, 6, 90, 20).build());
+        }).dimensions(this.width - 100, 5, 90, 20).build());
+
+        this.addDrawableChild(ButtonWidget.builder(getDoubleClickText(), button -> {
+            TooltipConfig config = ConfigManager.getConfig();
+            config.enableDoubleClickSelection = !config.enableDoubleClickSelection;
+            AutoConfig.getConfigHolder(TooltipConfig.class).save();
+            button.setMessage(getDoubleClickText());
+        }).dimensions(this.width - 100, 30, 90, 20).build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipEntry newEntry = new TooltipEntry();
@@ -88,6 +95,13 @@ public class TooltipListScreen extends Screen {
     private Text getAlignIconsText() {
         boolean isOn = ConfigManager.getConfig().align_attribute_icons;
         return Text.translatable("customtooltips.tooltip_list_screen.align_icons")
+                .append(": ")
+                .append(isOn ? ScreenTexts.ON : ScreenTexts.OFF);
+    }
+
+    private Text getDoubleClickText() {
+        boolean isOn = ConfigManager.getConfig().enableDoubleClickSelection;
+        return Text.translatable("customtooltips.tooltip_list_screen.double_click_selection")
                 .append(": ")
                 .append(isOn ? ScreenTexts.ON : ScreenTexts.OFF);
     }

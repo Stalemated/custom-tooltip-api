@@ -145,7 +145,7 @@ public class TooltipEditScreen {
             }
             AutoConfig.getConfigHolder(TooltipConfig.class).save();
             if (parent instanceof TooltipListScreen) {
-                ((TooltipListScreen) parent).listWidget.updateEntries();
+                ((TooltipListScreen) parent).listWidget.updateEntries(((TooltipListScreen) parent).searchBox.getText());
             }
         });
 

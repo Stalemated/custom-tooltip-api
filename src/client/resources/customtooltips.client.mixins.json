@@ -3,7 +3,8 @@
   "package": "com.stalemated.customtooltips.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "TextFieldWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1
