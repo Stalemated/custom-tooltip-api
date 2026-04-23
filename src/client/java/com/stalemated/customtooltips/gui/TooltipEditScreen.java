@@ -8,9 +8,12 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.Locale;
 
 public class TooltipEditScreen {
 
@@ -45,26 +48,22 @@ public class TooltipEditScreen {
         category.addEntry(entryBuilder.startStrList(Text.translatable("customtooltips.tooltip_edit_screen.colors"), entry.colors)
                 .setDefaultValue(new ArrayList<>(Arrays.asList("gray")))
                 .setExpanded(true)
-                .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.colors.description"))
+                .setTooltip(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.description"),
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.example")
+                )
                 .setSaveConsumer(newValue -> entry.colors = newValue)
                 .setErrorSupplier(list -> {
-                    for (String color : list) {
-                        if (color == null || color.trim().isEmpty()) continue;
+                    if (list.size() > 2) {
+                        return Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.error.too_many"));
+                    }
 
-                        String trimmedColor = color.trim();
-                        if (trimmedColor.startsWith("#")) {
-                            try {
-                                Integer.parseInt(trimmedColor.substring(1), 16);
-                            } catch (NumberFormatException e) {
-                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_hex_color", trimmedColor));
-                            }
-                        } else {
-                            if (net.minecraft.util.Formatting.byName(trimmedColor.toLowerCase(java.util.Locale.ROOT)) == null) {
-                                return java.util.Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.description.invalid_formatting_color", trimmedColor));
-                            }
+                    for (String color : list) {
+                        if (!isValidColorCode(color)) {
+                            return Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.error.invalid", color));
                         }
                     }
-                    return java.util.Optional.empty();
+                    return Optional.empty();
                 })
                 .build());
 
@@ -150,5 +149,14 @@ public class TooltipEditScreen {
         });
 
         return builder.build();
+    }
+
+    private static boolean isValidColorCode(String color) {
+        if (color == null || color.isEmpty()) return false;
+
+        if (color.matches("^(#|0x|x|0X)?([0-9a-fA-F]{6})$")) return true;
+        if (color.matches("^(&)([0-9a-fA-F])$")) return true;
+
+        return Formatting.byName(color.toUpperCase(Locale.ROOT)) != null;
     }
 }

@@ -186,35 +186,44 @@ public class TooltipEntry {
 
     private MutableText applySolidStyle(MutableText textComponent, String colorStr) {
         Style style = Style.EMPTY;
-        if (colorStr != null && !colorStr.isEmpty()) {
-            if (colorStr.startsWith("#")) {
-                style = style.withColor(TextColor.parse(colorStr));
-            } else {
-                Formatting format = Formatting.byName(colorStr.toLowerCase(Locale.ROOT));
-                if (format != null) {
-                    style = style.withFormatting(format);
-                } else {
-                    style = style.withColor(TextColor.parse(colorStr));
-                }
-            }
-        }
+        TextColor color = resolveTextColor(colorStr);
+        
+        if (color != null) style = style.withColor(color);
+        else style = style.withColor(Formatting.GRAY);
+        
         return textComponent.setStyle(style);
     }
 
     private int parseColor(String colorStr) {
-        if (colorStr.startsWith("#")) {
-            try {
-                return Integer.parseInt(colorStr.substring(1), 16);
-            } catch (NumberFormatException e) {
-                return 0xFFFFFF;
-            }
-        } else {
-            Formatting format = Formatting.byName(colorStr.toLowerCase(Locale.ROOT));
+        TextColor color = resolveTextColor(colorStr);
+        return color != null ? color.getRgb() : 0xFFFFFF;
+    }
+
+    private TextColor resolveTextColor(String colorStr) {
+        if (colorStr == null || colorStr.isEmpty()) return null;
+
+        if (colorStr.length() == 2 && colorStr.charAt(0) == '&') {
+            Formatting format = Formatting.byCode(Character.toLowerCase(colorStr.charAt(1)));
             if (format != null && format.getColorValue() != null) {
-                return format.getColorValue();
+                return TextColor.fromFormatting(format);
             }
-            return 0xFFFFFF;
         }
+
+        Formatting format = Formatting.byName(colorStr.toLowerCase(Locale.ROOT));
+        if (format != null && format.getColorValue() != null) {
+            return TextColor.fromFormatting(format);
+        }
+
+        String hex = colorStr;
+        if (hex.startsWith("#")) hex = hex.substring(1);
+        else if (hex.startsWith("0x") || hex.startsWith("0X")) hex = hex.substring(2);
+        else if (hex.startsWith("x") || hex.startsWith("X")) hex = hex.substring(1);
+
+        if (hex.matches("^[0-9a-fA-F]{6}$")) {
+            return TextColor.parse("#" + hex);
+        }
+
+        return null;
     }
 
     public int getLineOffset(int size) {
