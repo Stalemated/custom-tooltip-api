@@ -46,7 +46,7 @@ public class CustomTooltipApiTest implements ClientModInitializer {
         // Adds a warning to all pickaxes (needs shift to show)
         TooltipEntry pickaxeWarning = new TooltipEntry(
                 "#c:pickaxes",
-                new ArrayList<>(Arrays.asList("Warning: Heavy Tool")),
+                new ArrayList<>(Arrays.asList("Warning: §eHeavy §rTool")),
                 TooltipEntry.TooltipStyle.SOLID,
                 new ArrayList<>(Arrays.asList("red")),
                 false, false, false, false, false,

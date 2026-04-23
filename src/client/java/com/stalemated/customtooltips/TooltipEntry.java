@@ -141,8 +141,11 @@ public class TooltipEntry {
         if (this.text == null) return linesList;
 
         for (String line : this.text) {
+            if (line == null || line.isEmpty()) continue;
+
+            String translatedLine = line.replaceAll("(?i)&([0-9a-fk-or])", "§$1").replace("&&", "&");
             MutableText processedText;
-            Text baseText = Text.literal(line);
+            Text baseText = Text.literal(translatedLine);
 
             if (this.style == TooltipStyle.RAINBOW) {
                 processedText = TextAPI.Styles.getRainbowGradient(baseText, this.animation_offset, this.tickrate);

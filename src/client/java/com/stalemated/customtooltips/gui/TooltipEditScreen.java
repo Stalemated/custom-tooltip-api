@@ -34,7 +34,10 @@ public class TooltipEditScreen {
         category.addEntry(entryBuilder.startStrList(Text.translatable("customtooltips.tooltip_edit_screen.custom_text"), entry.text)
                 .setDefaultValue(new ArrayList<>(Arrays.asList("Default text")))
                 .setExpanded(true)
-                .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.custom_text.description"))
+                .setTooltip(
+                        Text.translatable("customtooltips.tooltip_edit_screen.custom_text.description"),
+                        Text.translatable("customtooltips.tooltip_edit_screen.custom_text.note")
+                )
                 .setSaveConsumer(newValue -> entry.text = newValue)
                 .build());
 

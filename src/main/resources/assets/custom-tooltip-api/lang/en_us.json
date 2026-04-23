@@ -10,6 +10,7 @@
   "customtooltips.tooltip_edit_screen.target.description": "Accepts tags (e.g. #c:swords) \nor item ids (e.g. minecraft:diamond_sword).",
   "customtooltips.tooltip_edit_screen.custom_text": "Custom text",
   "customtooltips.tooltip_edit_screen.custom_text.description": "Accepts multiple lines of text.",
+  "customtooltips.tooltip_edit_screen.custom_text.note": "Inline color/formatting codes (e.g., &c, &l) only work with the Solid style.\nUse the toggles below for gradient text formatting.",
   "customtooltips.tooltip_edit_screen.style": "Style",
   "customtooltips.tooltip_edit_screen.style.description": "Animation type.",
   "customtooltips.tooltip_edit_screen.style.solid": "Solid",
