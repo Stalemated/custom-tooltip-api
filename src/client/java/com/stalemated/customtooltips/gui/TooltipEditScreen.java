@@ -8,6 +8,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
+import me.shedaniel.math.Color;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -48,27 +49,41 @@ public class TooltipEditScreen {
                 .setSaveConsumer(newValue -> entry.style = newValue)
                 .build());
 
-        category.addEntry(entryBuilder.startStrList(Text.translatable("customtooltips.tooltip_edit_screen.colors"), entry.colors)
-                .setDefaultValue(new ArrayList<>(Arrays.asList("gray")))
-                .setExpanded(true)
+        String[] tempColors = new String[] {
+                entry.colors != null && !entry.colors.isEmpty() ? entry.colors.get(0) : "gray",
+                entry.colors != null && entry.colors.size() > 1 ? entry.colors.get(1) : ""
+        };
+
+        var colorsSubCategory = entryBuilder.startSubCategory(Text.translatable("customtooltips.tooltip_edit_screen.colors"))
                 .setTooltip(
                         Text.translatable("customtooltips.tooltip_edit_screen.colors.description"),
                         Text.translatable("customtooltips.tooltip_edit_screen.colors.example")
                 )
-                .setSaveConsumer(newValue -> entry.colors = newValue)
-                .setErrorSupplier(list -> {
-                    if (list.size() > 2) {
-                        return Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.error.too_many"));
-                    }
+                .setExpanded(true);
 
-                    for (String color : list) {
-                        if (!isValidColorCode(color)) {
-                            return Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.error.invalid", color));
-                        }
+        colorsSubCategory.add(entryBuilder.startStrField(Text.translatable("customtooltips.tooltip_edit_screen.color1"), tempColors[0])
+                .setDefaultValue("gray")
+                .setSaveConsumer(newValue -> tempColors[0] = newValue)
+                .setErrorSupplier(val -> {
+                    if (!val.isEmpty() && !isValidColorCode(val)) {
+                        return Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.error.invalid", val));
                     }
                     return Optional.empty();
                 })
                 .build());
+
+        colorsSubCategory.add(entryBuilder.startStrField(Text.translatable("customtooltips.tooltip_edit_screen.color2"), tempColors[1])
+                .setDefaultValue("")
+                .setSaveConsumer(newValue -> tempColors[1] = newValue)
+                .setErrorSupplier(val -> {
+                    if (!val.isEmpty() && !isValidColorCode(val)) {
+                        return Optional.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.error.invalid", val));
+                    }
+                    return Optional.empty();
+                })
+                .build());
+
+        category.addEntry(colorsSubCategory.build());
 
         category.addEntry(entryBuilder.startEnumSelector(Text.translatable("customtooltips.tooltip_edit_screen.position"), TooltipEntry.TooltipPosition.class, entry.position)
                 .setDefaultValue(TooltipEntry.TooltipPosition.BOTTOM)
@@ -83,35 +98,41 @@ public class TooltipEditScreen {
                 .setSaveConsumer(newValue -> entry.lineOffset = newValue)
                 .build());
 
-        category.addEntry(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.bold"), entry.bold)
+        var formattingSubCategory = entryBuilder.startSubCategory(Text.translatable("customtooltips.tooltip_edit_screen.formatting"))
+                .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.formatting.description"))
+                .setExpanded(false);
+
+        formattingSubCategory.add(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.bold"), entry.bold)
                 .setDefaultValue(false)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.bold.description"))
                 .setSaveConsumer(newValue -> entry.bold = newValue)
                 .build());
 
-        category.addEntry(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.italic"), entry.italic)
+        formattingSubCategory.add(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.italic"), entry.italic)
                 .setDefaultValue(false)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.italic.description"))
                 .setSaveConsumer(newValue -> entry.italic = newValue)
                 .build());
 
-        category.addEntry(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.underlined"), entry.underlined)
+        formattingSubCategory.add(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.underlined"), entry.underlined)
                 .setDefaultValue(false)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.underlined.description"))
                 .setSaveConsumer(newValue -> entry.underlined = newValue)
                 .build());
 
-        category.addEntry(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.strikethrough"), entry.strikethrough)
+        formattingSubCategory.add(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.strikethrough"), entry.strikethrough)
                 .setDefaultValue(false)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.strikethrough.description"))
                 .setSaveConsumer(newValue -> entry.strikethrough = newValue)
                 .build());
 
-        category.addEntry(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.obfuscated"), entry.obfuscated)
+        formattingSubCategory.add(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.obfuscated"), entry.obfuscated)
                 .setDefaultValue(false)
                 .setTooltip(Text.translatable("customtooltips.tooltip_edit_screen.obfuscated.description"))
                 .setSaveConsumer(newValue -> entry.obfuscated = newValue)
                 .build());
+
+        category.addEntry(formattingSubCategory.build());
 
         category.addEntry(entryBuilder.startBooleanToggle(Text.translatable("customtooltips.tooltip_edit_screen.require_shift"), entry.require_shift)
                 .setDefaultValue(false)
@@ -139,6 +160,11 @@ public class TooltipEditScreen {
                 .build());
 
         builder.setSavingRunnable(() -> {
+            entry.colors = new ArrayList<>();
+            if (tempColors[0] != null && !tempColors[0].isBlank()) entry.colors.add(tempColors[0].trim());
+            if (tempColors[1] != null && !tempColors[1].isBlank()) entry.colors.add(tempColors[1].trim());
+            if (entry.colors.isEmpty()) entry.colors.add("gray");
+
             if (isNew) {
                 TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
                 config.entries.add(entry);
@@ -157,7 +183,7 @@ public class TooltipEditScreen {
     private static boolean isValidColorCode(String color) {
         if (color == null || color.isEmpty()) return false;
 
-        if (color.matches("^(#|0x|x|0X)?([0-9a-fA-F]{6})$")) return true;
+        if (color.matches("^(#|0x|x|0X|X)?([0-9a-fA-F]{6})$")) return true;
         if (color.matches("^(&)([0-9a-fA-F])$")) return true;
 
         return Formatting.byName(color.toUpperCase(Locale.ROOT)) != null;
