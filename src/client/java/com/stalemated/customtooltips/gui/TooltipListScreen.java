@@ -65,7 +65,7 @@ public class TooltipListScreen extends Screen {
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipEntry newEntry = new TooltipEntry();
-            newEntry.colors = new ArrayList<>(Arrays.asList("gray"));
+            newEntry.colors = new ArrayList<>(Arrays.asList("#FFFFFF"));
             newEntry.text = new ArrayList<>(Arrays.asList("Default text"));
 
             if (this.client != null) {
