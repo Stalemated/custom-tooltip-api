@@ -12,7 +12,6 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import elocindev.necronomicon.api.text.TextAPI;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import net.minecraft.util.InvalidIdentifierException;
 
 import java.util.ArrayList;
@@ -32,11 +31,9 @@ public class TooltipEntry {
     public String target = "";
     public List<String> text = new ArrayList<>();
 
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
     public TooltipStyle style = TooltipStyle.SOLID;
     public List<String> colors = new ArrayList<>();
 
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.DROPDOWN)
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
     public int lineOffset = 0;
@@ -54,15 +51,15 @@ public class TooltipEntry {
     public long tickrate = 1;
 
     // Ignored caches
-    @ConfigEntry.Gui.Excluded private transient boolean cachesInitialized = false;
-    @ConfigEntry.Gui.Excluded private transient boolean isTag = false;
-    @ConfigEntry.Gui.Excluded private transient TagKey<Item> cachedTagKey = null;
-    @ConfigEntry.Gui.Excluded private transient Item cachedItem = null;
-    @ConfigEntry.Gui.Excluded private transient int parsedColor1 = 0xFFFFFF;
-    @ConfigEntry.Gui.Excluded private transient int parsedColor2 = 0xFFFFFF;
-    @ConfigEntry.Gui.Excluded private transient boolean isGradient = false;
-    @ConfigEntry.Gui.Excluded private transient List<Text> cachedStaticText = null;
-    @ConfigEntry.Gui.Excluded private transient Style cachedStyleModifier = null;
+    private transient boolean cachesInitialized = false;
+    private transient boolean isTag = false;
+    private transient TagKey<Item> cachedTagKey = null;
+    private transient Item cachedItem = null;
+    private transient int parsedColor1 = 0xFFFFFF;
+    private transient int parsedColor2 = 0xFFFFFF;
+    private transient boolean isGradient = false;
+    private transient List<Text> cachedStaticText = null;
+    private transient Style cachedStyleModifier = null;
 
     public TooltipEntry() {}
 
