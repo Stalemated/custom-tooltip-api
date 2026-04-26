@@ -9,12 +9,15 @@ import net.minecraft.util.Identifier;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class ConfigManager {
 
     private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("custom_tooltip_api").resolve("config.json5");
+    public static boolean configLoadFailed = false;
 
     public static final ConfigClassHandler<TooltipConfig> HANDLER = ConfigClassHandler.createBuilder(TooltipConfig.class)
             .id(new Identifier("customtooltips", "config"))
@@ -36,7 +39,18 @@ public class ConfigManager {
             }
         }
 
-        HANDLER.load();
+        boolean loaded = HANDLER.load();
+
+        if (!loaded && !isNewOrEmpty) {
+            configLoadFailed = true;
+            File configBackup = CONFIG_PATH.getParent().resolve("config_backup.json5").toFile();
+            try {
+                Files.copy(configFile.toPath(), configBackup.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                LOGGER.error("A backup of your broken config was saved to: {}", configBackup.getName());
+            } catch (Exception e) {
+                LOGGER.error("Failed to create backup of the broken config!", e);
+            }
+        }
 
         if (isNewOrEmpty) save();
         else TooltipRegistry.reload();

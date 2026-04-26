@@ -48,6 +48,11 @@ public class TooltipListScreen extends Screen {
             hasShownKeybindToast = true;
         }
 
+        if (ConfigManager.configLoadFailed) {
+            checkAndShowBrokenConfigToast();
+            ConfigManager.configLoadFailed = false;
+        }
+
         this.addDrawableChild(ButtonWidget.builder(getAlignIconsText(), button -> {
             TooltipConfig config = ConfigManager.getConfig();
             config.align_attribute_icons = !config.align_attribute_icons;
@@ -77,6 +82,8 @@ public class TooltipListScreen extends Screen {
         }).dimensions(this.width / 2 + 5, this.height - 28, 150, 20).build());
     }
 
+    // Helpers
+
     private void checkAndShowKeybindToast() {
         if (this.client == null || this.client.options == null) return;
 
@@ -88,7 +95,16 @@ public class TooltipListScreen extends Screen {
                     Text.translatable("customtooltips.toast.keybind_missing.desc")
             );
         }
+    }
 
+    private void checkAndShowBrokenConfigToast() {
+        if (this.client == null) return;
+        SystemToast.add(
+                this.client.getToastManager(),
+                SystemToast.Type.PACK_LOAD_FAILURE,
+                Text.literal("Config parsing error!"),
+                Text.literal("Backup saved as config_backup.json5")
+        );
     }
 
     private Text getAlignIconsText() {
@@ -104,6 +120,8 @@ public class TooltipListScreen extends Screen {
                 .append(": ")
                 .append(isOn ? ScreenTexts.ON : ScreenTexts.OFF);
     }
+
+    // Overrides
 
     @Override
     public void render(net.minecraft.client.gui.DrawContext context, int mouseX, int mouseY, float delta) {
