@@ -3,7 +3,6 @@ package com.stalemated.customtooltips.gui;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -52,14 +51,14 @@ public class TooltipListScreen extends Screen {
         this.addDrawableChild(ButtonWidget.builder(getAlignIconsText(), button -> {
             TooltipConfig config = ConfigManager.getConfig();
             config.align_attribute_icons = !config.align_attribute_icons;
-            AutoConfig.getConfigHolder(TooltipConfig.class).save();
+            ConfigManager.save();
             button.setMessage(getAlignIconsText());
         }).dimensions(this.width - 100, 5, 90, 20).build());
 
         this.addDrawableChild(ButtonWidget.builder(getDoubleClickText(), button -> {
             TooltipConfig config = ConfigManager.getConfig();
             config.enableDoubleClickSelection = !config.enableDoubleClickSelection;
-            AutoConfig.getConfigHolder(TooltipConfig.class).save();
+            ConfigManager.save();
             button.setMessage(getDoubleClickText());
         }).dimensions(this.width - 100, 30, 90, 20).build());
 

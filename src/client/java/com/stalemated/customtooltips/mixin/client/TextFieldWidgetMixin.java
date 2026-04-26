@@ -1,7 +1,7 @@
 package com.stalemated.customtooltips.mixin.client;
 
+import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,7 +18,7 @@ public abstract class TextFieldWidgetMixin {
     private void customtooltips$onSetCursorFromClick(TextFieldWidget instance, int cursor) {
         long time = System.currentTimeMillis();
         
-        TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+        TooltipConfig config = ConfigManager.getConfig();
 
         if (config.enableDoubleClickSelection && time - this.lastClickTime < 250) {
             instance.setSelectionStart(0);

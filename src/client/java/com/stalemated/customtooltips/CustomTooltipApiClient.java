@@ -2,7 +2,6 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
-import com.stalemated.customtooltips.core.TooltipRegistry;
 import com.stalemated.customtooltips.gui.TooltipListScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -31,8 +30,6 @@ public class CustomTooltipApiClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ConfigManager.register();
-
-		TooltipRegistry.reload();
 
 		openConfigKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.customtooltips.open_config",

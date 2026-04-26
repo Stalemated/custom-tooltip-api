@@ -1,25 +1,21 @@
 package com.stalemated.customtooltips.config;
 
 import com.stalemated.customtooltips.TooltipEntry;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Config(name = "custom_tooltips")
-public class TooltipConfig implements ConfigData {
+public class TooltipConfig {
 
-    @Comment("Aligns icons from resource packs at the start of the line so they stay aligned.")
+    @SerialEntry(comment = "Aligns icons from resource packs at the start of the line so they stay aligned.")
     public boolean align_attribute_icons = false;
 
-    @Comment("Enables double click to select text in textboxes throughout the entire game.")
+    @SerialEntry(comment = "Enables double click to select text in textboxes throughout the entire game.")
     public boolean enableDoubleClickSelection = true;
 
-    @Comment("""
+    @SerialEntry(comment = """
             Custom Tooltip API Config
             'target': Accepts tags (e.g. #c:swords) or item ids (e.g. minecraft:diamond_sword).
             'text': Accepts multiple lines of text, each one limited by quotes and separated by a comma.
@@ -37,7 +33,6 @@ public class TooltipConfig implements ConfigData {
             'animation_offset': Animation animation_offset that desynchronizes different animations. Accepts integers.
             'tickrate': Accepts integers different from 0. Speed of the animation. Closer to 0 is higher speed.
             """)
-    @ConfigEntry.Gui.CollapsibleObject
     public List<TooltipEntry> entries = new ArrayList<>();
 
     public void addDefaultEntries() {

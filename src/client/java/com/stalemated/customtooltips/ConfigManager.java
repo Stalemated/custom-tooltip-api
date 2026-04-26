@@ -2,47 +2,32 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.TooltipRegistry;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
+import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.ActionResult;
-
-import java.io.File;
-
-import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
+import net.minecraft.util.Identifier;
 
 public class ConfigManager {
 
+    public static final ConfigClassHandler<TooltipConfig> HANDLER = ConfigClassHandler.createBuilder(TooltipConfig.class)
+            .id(new Identifier("customtooltips", "config"))
+            .serializer(config -> GsonConfigSerializerBuilder.create(config)
+                    .setPath(FabricLoader.getInstance().getConfigDir().resolve("custom_tooltip_api").resolve("config.json5"))
+                    .setJson5(true)
+                    .build())
+            .build();
+
     public static void register() {
-
-        //boolean deleted = false;
-
-        File configFile = FabricLoader.getInstance().getConfigDir().resolve("custom_tooltips.json5").toFile();
-        if (configFile.exists() && configFile.length() == 0) {
-            try {
-                /*deleted = */configFile.delete();
-            } catch (Exception e) {
-                LOGGER.warn("Failed to delete empty config file: ", e);
-            }
-        }
-
-        /*boolean isNewFile = !configFile.exists();*/
-
-        AutoConfig.register(TooltipConfig.class, JanksonConfigSerializer::new);
-
-        /*if (isNewFile && !deleted) {
-            TooltipConfig config = getConfig();
-            config.addDefaultEntries();
-            AutoConfig.getConfigHolder(TooltipConfig.class).save();
-        }*/
-
-        AutoConfig.getConfigHolder(TooltipConfig.class).registerSaveListener((holder, config) -> {
-            TooltipRegistry.reload();
-            return ActionResult.PASS;
-        });
+        HANDLER.load();
+        TooltipRegistry.reload();
     }
 
     public static TooltipConfig getConfig() {
-        return AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+        return HANDLER.instance();
+    }
+
+    public static void save() {
+        HANDLER.save();
+        TooltipRegistry.reload();
     }
 }

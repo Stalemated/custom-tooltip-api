@@ -2,7 +2,7 @@ package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import me.shedaniel.autoconfig.AutoConfig;
+import com.stalemated.customtooltips.ConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -18,12 +18,12 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
     public TooltipListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen parentScreen) {
         super(client, width, height, top, bottom, itemHeight);
         this.parentScreen = parentScreen;
-        this.updateEntries("");
+        this.updateEntries();
     }
 
     public void updateEntries(String searchText) {
         this.clearEntries();
-        TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+        TooltipConfig config = ConfigManager.getConfig();
         String lowerSearch = searchText != null ? searchText.toLowerCase() : "";
 
         if (config.entries != null) {
@@ -76,9 +76,9 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 client.setScreen(new ConfirmScreen(
                         (confirmed) -> {
                             if (confirmed) {
-                                TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+                                TooltipConfig config = ConfigManager.getConfig();
                                 config.entries.remove(this.tooltipEntry);
-                                AutoConfig.getConfigHolder(TooltipConfig.class).save();
+                                ConfigManager.save();
                                 parent.updateEntries(parent.parentScreen.searchBox.getText());
                             }
                             client.setScreen(currentScreen);
@@ -89,7 +89,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             }).dimensions(0, 0, 50, 20).build();
 
             this.duplicateEntryButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button"), button -> {
-                TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+                TooltipConfig config = ConfigManager.getConfig();
                 TooltipEntry newEntry = new TooltipEntry(
                         this.tooltipEntry.target, this.tooltipEntry.text,
                         this.tooltipEntry.style, this.tooltipEntry.colors,
@@ -101,7 +101,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                         this.tooltipEntry.tickrate
                 );
                 config.entries.add(newEntry);
-                AutoConfig.getConfigHolder(TooltipConfig.class).save();
+                ConfigManager.save();
                 parent.updateEntries(parent.parentScreen.searchBox.getText());
             }).dimensions(0, 0, 50, 20).build();
         }

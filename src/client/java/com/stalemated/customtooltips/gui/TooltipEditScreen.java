@@ -2,6 +2,7 @@ package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.ConfigManager;
 
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
@@ -16,7 +17,6 @@ import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.api.controller.LongFieldControllerBuilder;
 
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.client.MinecraftClient;
@@ -208,12 +208,12 @@ public class TooltipEditScreen {
                     ));}
 
                     if (isNew) {
-                        TooltipConfig config = AutoConfig.getConfigHolder(TooltipConfig.class).getConfig();
+                        TooltipConfig config = ConfigManager.getConfig();
                         config.entries.add(entry);
                     } else {
                         entry.invalidateCaches();
                     }
-                    AutoConfig.getConfigHolder(TooltipConfig.class).save();
+                    ConfigManager.save();
                     if (parent instanceof TooltipListScreen) {
                         ((TooltipListScreen) parent).listWidget.updateEntries(((TooltipListScreen) parent).searchBox.getText());
                     }
