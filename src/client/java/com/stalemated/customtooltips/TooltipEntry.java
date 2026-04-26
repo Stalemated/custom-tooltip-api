@@ -1,16 +1,15 @@
 package com.stalemated.customtooltips;
 
+import mod.crend.libbamboo.type.ItemOrTag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.item.Items;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import elocindev.necronomicon.api.text.TextAPI;
 import net.minecraft.util.InvalidIdentifierException;
 
@@ -52,7 +51,6 @@ public class TooltipEntry {
 
     // Ignored caches
     private transient boolean cachesInitialized = false;
-    private transient boolean isTag = false;
     private transient TagKey<Item> cachedTagKey = null;
     private transient Item cachedItem = null;
     private transient int parsedColor1 = 0xFFFFFF;
@@ -60,11 +58,13 @@ public class TooltipEntry {
     private transient boolean isGradient = false;
     private transient List<Text> cachedStaticText = null;
     private transient Style cachedStyleModifier = null;
+    public transient ItemOrTag targetItemOrTag = new ItemOrTag(Items.AIR);
 
     public TooltipEntry() {}
 
     public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, long tickrate) {
         this.target = target;
+        this.targetItemOrTag = ItemOrTag.fromString(target, false).orElse(new ItemOrTag(Items.AIR));
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
         this.colors = colors != null ? colors : new ArrayList<>();
@@ -92,12 +92,10 @@ public class TooltipEntry {
 
         if (this.target != null && !this.target.isEmpty()) {
             try {
-                if (this.target.startsWith("#")) {
-                    this.isTag = true;
-                    this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
+                if (this.targetItemOrTag.isItemTag()) {
+                    this.cachedTagKey = this.targetItemOrTag.getItemTag();
                 } else {
-                    this.isTag = false;
-                    this.cachedItem = Registries.ITEM.get(new Identifier(this.target));
+                    this.cachedItem = this.targetItemOrTag.getItem();
                 }
             } catch (InvalidIdentifierException e) {
                 this.cachedItem = null;
@@ -117,9 +115,9 @@ public class TooltipEntry {
     public boolean matches(ItemStack stack) {
         if (!cachesInitialized) initCaches();
 
-        if (this.isTag && this.cachedTagKey != null) {
+        if (this.targetItemOrTag.isItemTag() && this.cachedTagKey != null) {
             return stack.isIn(this.cachedTagKey);
-        } else if (!this.isTag && this.cachedItem != null) {
+        } else if (this.targetItemOrTag.isItem() && this.cachedItem != null) {
             return stack.isOf(this.cachedItem);
         }
 

@@ -17,7 +17,11 @@ import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.api.controller.LongFieldControllerBuilder;
 
+import mod.crend.libbamboo.type.ItemOrTag;
+import mod.crend.libbamboo.controller.ItemOrTagController.ItemOrTagControllerBuilder;
+
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
@@ -49,11 +53,14 @@ public class TooltipEditScreen {
         };
 
         //region Option builders
-        var target = Option.<String>createBuilder()
+        var target = Option.<ItemOrTag>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.target_id"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.target.description")))
-                .binding("", () -> entry.target, val -> entry.target = val)
-                .controller(StringControllerBuilder::create)
+                .binding(new ItemOrTag(Items.AIR), () -> entry.targetItemOrTag, val -> {
+                    entry.target = val.toString();
+                    entry.targetItemOrTag = val;
+                })
+                .controller(ItemOrTagControllerBuilder::create)
                 .build();
 
         var customText = ListOption.<String>createBuilder()
