@@ -36,15 +36,14 @@ public class TooltipListScreen extends Screen {
         this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 55, this.height - 32, 25, this);
         this.addSelectableChild(this.listWidget);
 
-        int totalActionBarWidth = this.width / 2;
+        int buttonAmount = 4;
         int actionBarHeight = 20;
         int buttonSize = 20;
         int spacing = 8;
-        int searchWidth = totalActionBarWidth - buttonSize * 4 - spacing * 4;
         int startX = this.width / 4;
         int startY = 24;
 
-        this.searchBox = new TextFieldWidget(this.textRenderer, startX, startY, searchWidth, actionBarHeight, Text.translatable("customtooltips.tooltip_list_screen.search"));
+        this.searchBox = new TextFieldWidget(this.textRenderer, startX, startY, getSearchBarWidth(buttonAmount, buttonSize, spacing), actionBarHeight, Text.translatable("customtooltips.tooltip_list_screen.search"));
         this.searchBox.setText(this.searchText);
         this.searchBox.setChangedListener(newSearchText -> {
             this.searchText = newSearchText;
@@ -72,7 +71,7 @@ public class TooltipListScreen extends Screen {
                     ConfigManager.save();
                     button.setMessage(getAlignIconsIcon());
                     button.setTooltip(Tooltip.of(getAlignIconsTooltip()));
-                }).dimensions(startX + searchWidth + spacing, startY, buttonSize, buttonSize)
+                }).dimensions(getButtonStartX(4, buttonSize, spacing), startY, buttonSize, buttonSize)
                 .tooltip(Tooltip.of(getAlignIconsTooltip()))
                 .build());
 
@@ -82,7 +81,7 @@ public class TooltipListScreen extends Screen {
                     ConfigManager.save();
                     button.setMessage(getDoubleClickIcon());
                     button.setTooltip(Tooltip.of(getDoubleClickTooltip()));
-                }).dimensions(startX + searchWidth + buttonSize + spacing * 2, startY, buttonSize, buttonSize)
+                }).dimensions(getButtonStartX(3, buttonSize, spacing), startY, buttonSize, buttonSize)
                 .tooltip(Tooltip.of(getDoubleClickTooltip()))
                 .build());
 
@@ -93,7 +92,7 @@ public class TooltipListScreen extends Screen {
                     button.setMessage(getSortIcon());
                     button.setTooltip(Tooltip.of(getSortTooltip()));
                     this.listWidget.updateEntries(this.searchText);
-                }).dimensions(startX + searchWidth + buttonSize * 2 + spacing * 3, startY, buttonSize, buttonSize)
+                }).dimensions(getButtonStartX(2, buttonSize, spacing), startY, buttonSize, buttonSize)
                 .tooltip(Tooltip.of(getSortTooltip()))
                 .build());
 
@@ -102,7 +101,7 @@ public class TooltipListScreen extends Screen {
                     button.setMessage(getApiEntriesIcon());
                     button.setTooltip(Tooltip.of(getApiEntriesTooltip()));
                     this.listWidget.updateEntries(this.searchText);
-                }).dimensions(startX + searchWidth + buttonSize * 3 + spacing * 4, startY, buttonSize, buttonSize)
+                }).dimensions(getButtonStartX(1, buttonSize, spacing), startY, buttonSize, buttonSize)
                 .tooltip(Tooltip.of(getApiEntriesTooltip()))
                 .build());
 
@@ -148,6 +147,18 @@ public class TooltipListScreen extends Screen {
                 Text.translatable("customtooltips.toast.config_backup.title"),
                 Text.translatable("customtooltips.toast.config_backup.desc")
         );
+    }
+
+    private int getButtonStartX(int buttonIndex, int buttonSize, int spacing) {
+        return this.width - spacing * buttonIndex - buttonSize * buttonIndex;
+    }
+
+    private int getButtonsWidth(int buttonAmount, int buttonSize, int spacing) {
+        return buttonAmount * buttonSize + buttonAmount * spacing;
+    }
+
+    private int getSearchBarWidth(int buttonAmount, int buttonSize, int spacing) {
+        return Math.min(3 * this.width / 4 - getButtonsWidth(buttonAmount, buttonSize, spacing) - spacing, this.width / 2);
     }
 
     // Getters
