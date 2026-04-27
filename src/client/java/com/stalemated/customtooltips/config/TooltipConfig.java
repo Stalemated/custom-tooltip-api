@@ -18,6 +18,9 @@ public class TooltipConfig {
     @SerialEntry(comment = "Enables tooltip sorting in the config menu by either sorting by name (true) or creation date (false)")
     public boolean sort_by_name = false;
 
+    @SerialEntry(comment = "List of unique entry Identifiers that have been disabled by the user.")
+    public List<String> disabled_entries = new ArrayList<>();
+
     @SerialEntry(comment = """
             Custom Tooltip API Config
             'target': Accepts tags (e.g. #c:swords) or item ids (e.g. minecraft:diamond_sword).
