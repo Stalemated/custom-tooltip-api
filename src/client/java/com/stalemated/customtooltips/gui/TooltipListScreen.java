@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.toast.SystemToast;
+import com.stalemated.customtooltips.util.ToastManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.openConfigKeybind;
@@ -127,26 +127,13 @@ public class TooltipListScreen extends Screen {
     }
 
     private void checkAndShowKeybindToast() {
-        if (this.client == null || this.client.options == null) return;
-
-        if (openConfigKeybind.getTranslationKey().equals("key.customtooltips.open_config") && openConfigKeybind.isUnbound()) {
-            SystemToast.add(
-                    this.client.getToastManager(),
-                    SystemToast.Type.TUTORIAL_HINT,
-                    Text.translatable("customtooltips.toast.keybind_missing.title"),
-                    Text.translatable("customtooltips.toast.keybind_missing.desc")
-            );
+        if (this.client != null && this.client.options != null && openConfigKeybind.getTranslationKey().equals("key.customtooltips.open_config") && openConfigKeybind.isUnbound()) {
+            ToastManager.showKeybindMissingToast();
         }
     }
 
     private void checkAndShowBrokenConfigToast() {
-        if (this.client == null) return;
-        SystemToast.add(
-                this.client.getToastManager(),
-                SystemToast.Type.PACK_LOAD_FAILURE,
-                Text.translatable("customtooltips.toast.config_backup.title"),
-                Text.translatable("customtooltips.toast.config_backup.desc")
-        );
+        ToastManager.showBrokenConfigToast();
     }
 
     private int getButtonStartX(int buttonIndex, int buttonSize, int spacing) {

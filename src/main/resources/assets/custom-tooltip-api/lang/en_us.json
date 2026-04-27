@@ -41,8 +41,6 @@
   "customtooltips.tooltip_edit_screen.colors.secondary_color.description": "Choose the secondary color (used for Gradients) using the visual picker.",
   "customtooltips.tooltip_edit_screen.colors.secondary_color_override": "Secondary Color (Advanced Override)",
   "customtooltips.tooltip_edit_screen.colors.color_override.description": "Leave empty to use the visual picker above.\n\nValid formats:\n§7Minecraft color names (e.g. '§6gold§7')\nLegacy formatting codes (e.g. '§d&d§7')\nHex color codes: §c#FF0000§7, §a00FF00§7, §b0x0000FF§7, §ex0000FF§7",
-  "customtooltips.tooltip_edit_screen.colors.error.invalid": "Invalid color",
-  "customtooltips.tooltip_edit_screen.colors.error.invalid.description": "A color is invalid. Defaulting to the visual picker.",
   "customtooltips.tooltip_edit_screen.position": "Position",
   "customtooltips.tooltip_edit_screen.position.description": "Top §7(Under the item's name)§r\nBottom §7(Bottom of the tooltip)§r\nReplace Name §7(Replaces the item's name)§r\nReplace All §7(Replaces the entire tooltip)§r\nAppend §7(End of a line)§r\nPrepend §7(Start of a line)§r",
   "customtooltips.tooltip_edit_screen.position.replace_name": "Replace Name",
@@ -88,5 +86,9 @@
   "customtooltips.toast.keybind_missing.title": "Did you know?",
   "customtooltips.toast.keybind_missing.desc": "You can set a Keybind to open this menu easily!",
   "customtooltips.toast.config_backup.title": "Config parsing error!",
-  "customtooltips.toast.config_backup.desc": "Backup saved as config_backup.json5"
+  "customtooltips.toast.config_backup.desc": "Backup saved as config_backup.json5",
+  "customtooltips.toast.duplicated.title": "Entry duplicated!",
+  "customtooltips.toast.duplicated.desc": "Successfully duplicated entry for %s",
+  "customtooltips.toast.color.invalid.title": "Invalid color",
+  "customtooltips.toast.color.invalid.desc": "A color is invalid. Defaulting to the visual picker."
 }

@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.gui;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.util.ToastManager;
 
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
@@ -19,8 +20,6 @@ import dev.isxander.yacl3.api.controller.LongFieldControllerBuilder;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 
@@ -202,12 +201,8 @@ public class TooltipEditScreen {
                     entry.colors.add(finalColor2);
 
                     if (hasError) {
-                        MinecraftClient.getInstance().getToastManager().add(
-                                new SystemToast(
-                                        SystemToast.Type.PACK_LOAD_FAILURE,
-                                        Text.translatable("customtooltips.tooltip_edit_screen.colors.error.invalid"),
-                                        Text.translatable("customtooltips.tooltip_edit_screen.colors.error.invalid.description")
-                    ));}
+                        ToastManager.showInvalidColorToast();
+                    }
 
                 if (isNewRef[0]) {
                         TooltipConfig config = ConfigManager.getConfig();

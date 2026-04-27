@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.util.ToastManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -151,6 +152,10 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 newEntry.apiEntryId = "";
                 config.entries.add(newEntry);
                 ConfigManager.save();
+                
+                String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
+                ToastManager.showDuplicatedToast(targetText);
+                
                 parent.updateEntries(parent.parentScreen.searchBox.getText());
             }).dimensions(0, 0, 50, 20).build();
         }
