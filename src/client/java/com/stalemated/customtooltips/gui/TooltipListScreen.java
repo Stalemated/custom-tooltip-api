@@ -24,6 +24,7 @@ public class TooltipListScreen extends Screen {
     private static boolean hasShownKeybindToast = false;
     private String searchText = "";
     private List<Text> activeTooltip = null;
+    public static boolean showApiEntries = false;
 
     public TooltipListScreen(Screen parent) {
         super(Text.translatable("customtooltips.tooltip_list_screen.title"));
@@ -39,7 +40,7 @@ public class TooltipListScreen extends Screen {
         int actionBarHeight = 20;
         int buttonSize = 20;
         int spacing = 8;
-        int searchWidth = totalActionBarWidth - buttonSize * 3 - spacing * 3;
+        int searchWidth = totalActionBarWidth - buttonSize * 4 - spacing * 4;
         int startX = this.width / 4;
         int startY = 24;
 
@@ -94,6 +95,15 @@ public class TooltipListScreen extends Screen {
                     this.listWidget.updateEntries(this.searchText);
                 }).dimensions(startX + searchWidth + buttonSize * 2 + spacing * 3, startY, buttonSize, buttonSize)
                 .tooltip(Tooltip.of(getSortTooltip()))
+                .build());
+
+        this.addDrawableChild(ButtonWidget.builder(getApiEntriesIcon(), button -> {
+                    showApiEntries = !showApiEntries;
+                    button.setMessage(getApiEntriesIcon());
+                    button.setTooltip(Tooltip.of(getApiEntriesTooltip()));
+                    this.listWidget.updateEntries(this.searchText);
+                }).dimensions(startX + searchWidth + buttonSize * 3 + spacing * 4, startY, buttonSize, buttonSize)
+                .tooltip(Tooltip.of(getApiEntriesTooltip()))
                 .build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
@@ -177,6 +187,16 @@ public class TooltipListScreen extends Screen {
         return Text.translatable("customtooltips.tooltip_list_screen.sort_order")
                 .append(Text.literal("\n"))
                 .append(Text.translatable(isOn ? "customtooltips.tooltip_list_screen.sort_name" : "customtooltips.tooltip_list_screen.sort_date").formatted(Formatting.GRAY));
+    }
+
+    private Text getApiEntriesIcon() {
+        return Text.literal("</>").formatted(showApiEntries ? Formatting.GREEN : Formatting.GRAY);
+    }
+
+    private Text getApiEntriesTooltip() {
+        return Text.translatable("customtooltips.tooltip_list_screen.toggle_api_entries")
+                .append(Text.literal("\n"))
+                .append(Text.translatable(showApiEntries ? "customtooltips.tooltip_list_screen.showing_api_entries" : "customtooltips.tooltip_list_screen.showing_normal").formatted(Formatting.GRAY));
     }
 
     // Overrides
