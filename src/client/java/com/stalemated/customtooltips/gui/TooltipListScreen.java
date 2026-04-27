@@ -4,11 +4,12 @@ import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.toast.SystemToast;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.openConfigKeybind;
 
 import java.util.ArrayList;
@@ -31,7 +32,15 @@ public class TooltipListScreen extends Screen {
         this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 55, this.height - 32, 25, this);
         this.addSelectableChild(this.listWidget);
 
-        this.searchBox = new TextFieldWidget(this.textRenderer,  this.width / 4, 24, this.width / 2, 20, Text.translatable("customtooltips.tooltip_list_screen.search"));
+        int totalActionBarWidth = this.width / 2;
+        int actionBarHeight = 20;
+        int buttonSize = 20;
+        int spacing = 8;
+        int searchWidth = totalActionBarWidth - buttonSize * 2 - spacing * 2;
+        int startX = this.width / 4;
+        int startY = 24;
+
+        this.searchBox = new TextFieldWidget(this.textRenderer, startX, startY, searchWidth, actionBarHeight, Text.translatable("customtooltips.tooltip_list_screen.search"));
         this.searchBox.setText(this.searchText);
         this.searchBox.setChangedListener(newSearchText -> {
             this.searchText = newSearchText;
@@ -53,19 +62,25 @@ public class TooltipListScreen extends Screen {
             ConfigManager.configLoadFailed = false;
         }
 
-        this.addDrawableChild(ButtonWidget.builder(getAlignIconsText(), button -> {
-            TooltipConfig config = ConfigManager.getConfig();
-            config.align_attribute_icons = !config.align_attribute_icons;
-            ConfigManager.save();
-            button.setMessage(getAlignIconsText());
-        }).dimensions(this.width - 100, 5, 90, 20).build());
+        this.addDrawableChild(ButtonWidget.builder(getAlignIconsIcon(), button -> {
+                    TooltipConfig config = ConfigManager.getConfig();
+                    config.align_attribute_icons = !config.align_attribute_icons;
+                    ConfigManager.save();
+                    button.setMessage(getAlignIconsIcon());
+                    button.setTooltip(Tooltip.of(getAlignIconsTooltip()));
+                }).dimensions(startX + searchWidth + spacing, startY, buttonSize, buttonSize)
+                .tooltip(Tooltip.of(getAlignIconsTooltip()))
+                .build());
 
-        this.addDrawableChild(ButtonWidget.builder(getDoubleClickText(), button -> {
-            TooltipConfig config = ConfigManager.getConfig();
-            config.enableDoubleClickSelection = !config.enableDoubleClickSelection;
-            ConfigManager.save();
-            button.setMessage(getDoubleClickText());
-        }).dimensions(this.width - 100, 30, 90, 20).build());
+        this.addDrawableChild(ButtonWidget.builder(getDoubleClickIcon(), button -> {
+                    TooltipConfig config = ConfigManager.getConfig();
+                    config.enableDoubleClickSelection = !config.enableDoubleClickSelection;
+                    ConfigManager.save();
+                    button.setMessage(getDoubleClickIcon());
+                    button.setTooltip(Tooltip.of(getDoubleClickTooltip()));
+                }).dimensions(startX + searchWidth + buttonSize + spacing * 2, startY, buttonSize, buttonSize)
+                .tooltip(Tooltip.of(getDoubleClickTooltip()))
+                .build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipEntry newEntry = new TooltipEntry();
@@ -102,23 +117,34 @@ public class TooltipListScreen extends Screen {
         SystemToast.add(
                 this.client.getToastManager(),
                 SystemToast.Type.PACK_LOAD_FAILURE,
-                Text.literal("Config parsing error!"),
-                Text.literal("Backup saved as config_backup.json5")
+                Text.translatable("customtooltips.toast.config_backup.title"),
+                Text.translatable("customtooltips.toast.config_backup.desc")
         );
     }
 
-    private Text getAlignIconsText() {
+    private Text getAlignIconsIcon() {
         boolean isOn = ConfigManager.getConfig().align_attribute_icons;
-        return Text.translatable("customtooltips.tooltip_list_screen.align_icons")
-                .append(": ")
-                .append(isOn ? ScreenTexts.ON : ScreenTexts.OFF);
+        return Text.literal("\uDAC1\uDF24").formatted(isOn ? Formatting.GREEN : Formatting.RED);
+
     }
 
-    private Text getDoubleClickText() {
+    private Text getAlignIconsTooltip() {
+        boolean isOn = ConfigManager.getConfig().align_attribute_icons;
+        return Text.translatable("customtooltips.tooltip_list_screen.align_icons")
+                .append(Text.literal("\n"))
+                .append(Text.translatable(isOn ? "options.on" : "options.off").formatted(isOn ? Formatting.GREEN : Formatting.RED));
+    }
+
+    private Text getDoubleClickIcon() {
+        boolean isOn = ConfigManager.getConfig().enableDoubleClickSelection;
+        return Text.literal("\uDAC1\uDF23").formatted(isOn ? Formatting.GREEN : Formatting.RED);
+    }
+
+    private Text getDoubleClickTooltip() {
         boolean isOn = ConfigManager.getConfig().enableDoubleClickSelection;
         return Text.translatable("customtooltips.tooltip_list_screen.double_click_selection")
-                .append(": ")
-                .append(isOn ? ScreenTexts.ON : ScreenTexts.OFF);
+                .append(Text.literal("\n"))
+                .append(Text.translatable(isOn ? "options.on" : "options.off").formatted(isOn ? Formatting.GREEN : Formatting.RED));
     }
 
     // Overrides

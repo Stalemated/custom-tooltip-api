@@ -2,7 +2,7 @@
   "customtooltips.tooltip_list_screen.title": "Manage Tooltips",
   "customtooltips.tooltip_list_screen.add_new_tooltip": "Add new Tooltip",
   "customtooltips.tooltip_list_screen.align_icons": "Align Icons",
-  "customtooltips.tooltip_list_screen.double_click_selection": "Double Click Selection",
+  "customtooltips.tooltip_list_screen.double_click_selection": "Double Click to select text",
   "customtooltips.tooltip_list_screen.search": "Search...",
 
   "customtooltips.tooltip_edit_screen.title": "Edit Tooltip",
@@ -78,5 +78,7 @@
   "key.customtooltips.open_config": "Open Config",
 
   "customtooltips.toast.keybind_missing.title": "Did you know?",
-  "customtooltips.toast.keybind_missing.desc": "You can set a Keybind to open this menu easily!"
+  "customtooltips.toast.keybind_missing.desc": "You can set a Keybind to open this menu easily!",
+  "customtooltips.toast.config_backup.title": "Config parsing error!",
+  "customtooltips.toast.config_backup.desc": "Backup saved as config_backup.json5"
 }
