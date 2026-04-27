@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.ConfigManager;
 import net.minecraft.client.MinecraftClient;
@@ -10,6 +11,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipListWidget.Entry> {
 
@@ -26,29 +30,38 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         TooltipConfig config = ConfigManager.getConfig();
         String lowerSearch = searchText != null ? searchText.toLowerCase() : "";
 
-        if (config.entries != null) {
-            java.util.List<TooltipEntry> sortedEntries = new java.util.ArrayList<>(config.entries);
-            
-            if (ConfigManager.getConfig().sort_by_name) {
-                // Tags first then alphabetically (groups by mod id)
-                sortedEntries.sort((a, b) -> {
-                    String targetA = a.target == null ? "" : a.target;
-                    String targetB = b.target == null ? "" : b.target;
+        List<TooltipEntry> sortedEntries = new ArrayList<>();
 
-                    boolean isTagA = targetA.startsWith("#");
-                    boolean isTagB = targetB.startsWith("#");
-
-                    if (isTagA && !isTagB) return -1;
-                    if (!isTagA && isTagB) return 1;
-
-                    return targetA.compareToIgnoreCase(targetB);
-                });
+        if (TooltipListScreen.showApiEntries ) {
+            List<TooltipEntry> apiEntries = CustomTooltipApi.getApiEntries();
+            if (apiEntries != null) {
+                sortedEntries.addAll(apiEntries);
             }
+        } else {
+            if (config.entries != null) {
+                sortedEntries.addAll(config.entries);
+            }
+        }
 
-            for (TooltipEntry entry : sortedEntries) {
-                if (lowerSearch.isEmpty() || entryMatchesSearch(entry, lowerSearch)) {
-                    this.addEntry(new Entry(this, entry));
-                }
+        if (ConfigManager.getConfig().sort_by_name) {
+            // Tags first then alphabetically (groups by mod id)
+            sortedEntries.sort((a, b) -> {
+                String targetA = a.target == null ? "" : a.target;
+                String targetB = b.target == null ? "" : b.target;
+
+                boolean isTagA = targetA.startsWith("#");
+                boolean isTagB = targetB.startsWith("#");
+
+                if (isTagA && !isTagB) return -1;
+                if (!isTagA && isTagB) return 1;
+
+                return targetA.compareToIgnoreCase(targetB);
+            });
+        }
+
+        for (TooltipEntry entry : sortedEntries) {
+            if (lowerSearch.isEmpty() || entryMatchesSearch(entry, lowerSearch)) {
+                this.addEntry(new Entry(this, entry));
             }
         }
     }
@@ -79,6 +92,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         private final ButtonWidget editButton;
         private final ButtonWidget deleteButton;
         private final ButtonWidget duplicateEntryButton;
+        private final ButtonWidget disableButton;
         private static final double SCROLL_SPEED_PIXELS_PER_SECOND = 25.0;
         private static final long SCROLL_PAUSE_MS = 1500L;
         private final long startTime;
@@ -88,6 +102,20 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             this.startTime = System.currentTimeMillis();
 
             this.editButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.edit_button"), button -> client.setScreen(TooltipEditScreen.create(client.currentScreen, this.tooltipEntry, false))).dimensions(0, 0, 50, 20).build();
+
+            String identifier = this.tooltipEntry.getIdentifier();
+            Text toggleText = Text.translatable(ConfigManager.getConfig().disabled_entries.contains(identifier) ? "customtooltips.tooltip_list_widget.enable_button" : "customtooltips.tooltip_list_widget.disable_button");
+
+            this.disableButton = ButtonWidget.builder(toggleText, button -> {
+                TooltipConfig config = ConfigManager.getConfig();
+                if (config.disabled_entries.contains(identifier)) {
+                    config.disabled_entries.remove(identifier);
+                } else {
+                    config.disabled_entries.add(identifier);
+                }
+                ConfigManager.save();
+                parent.updateEntries(parent.parentScreen.searchBox.getText());
+            }).dimensions(0, 0, 50, 20).build();
 
             this.deleteButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.delete_button"), button -> {
                 Screen currentScreen = client.currentScreen;
@@ -118,6 +146,9 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                         this.tooltipEntry.lineOffset, this.tooltipEntry.animation_offset,
                         this.tooltipEntry.tickrate
                 );
+
+                newEntry.apiEntry = false;
+                newEntry.apiEntryId = "";
                 config.entries.add(newEntry);
                 ConfigManager.save();
                 parent.updateEntries(parent.parentScreen.searchBox.getText());
@@ -126,40 +157,67 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
         @Override
         public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(this.tooltipEntry.getIdentifier());
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
             int textY = y + 6;
 
-            int buttonsStartX = x + entryWidth - 165;
+            int buttonCount = this.tooltipEntry.apiEntry ? 2 : 4;
+            int buttonsStartX = x + entryWidth - (buttonCount * 55);
             int availableTextWidth = buttonsStartX - x - 5;
             int originalTextWidth = client.textRenderer.getWidth(targetText);
 
-            renderScrollingText(context, targetText, originalTextWidth, x, textY, availableTextWidth, y, entryHeight, buttonsStartX);
+            renderScrollingText(context, targetText, originalTextWidth, x, textY, availableTextWidth, y, entryHeight, buttonsStartX, isDisabled);
 
             boolean isHoveringOverText = mouseX >= x && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
             if (isHoveringOverText) {
-                java.util.List<Text> hoverTooltip = new java.util.ArrayList<>();
+                List<Text> hoverTooltip = new ArrayList<>();
                 if (originalTextWidth > availableTextWidth) {
                     hoverTooltip.add(Text.literal(targetText));
                     hoverTooltip.add(Text.empty());
                 }
                 hoverTooltip.addAll(this.tooltipEntry.getTextComponents());
-            TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip);
+                TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip);
             }
 
-            this.duplicateEntryButton.setX(x + entryWidth - 165);
-            this.duplicateEntryButton.setY(y);
-            this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
+            if (this.tooltipEntry.apiEntry) {
+                this.disableButton.setX(x + entryWidth - 55 * 2);
+                this.disableButton.setY(y);
+                this.disableButton.render(context, mouseX, mouseY, tickDelta);
 
-            this.editButton.setX(x + entryWidth - 110);
-            this.editButton.setY(y);
-            this.editButton.render(context, mouseX, mouseY, tickDelta);
+                this.duplicateEntryButton.setX(x + entryWidth - 55);
+                this.duplicateEntryButton.setY(y);
+                this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
 
-            this.deleteButton.setX(x + entryWidth - 55);
-            this.deleteButton.setY(y);
-            this.deleteButton.render(context, mouseX, mouseY, tickDelta);
+                this.editButton.visible = false;
+                this.editButton.active = false;
+
+                this.deleteButton.visible = false;
+                this.deleteButton.active = false;
+
+            } else {
+                this.disableButton.setX(x + entryWidth - 55 * 4);
+                this.disableButton.setY(y);
+                this.disableButton.render(context, mouseX, mouseY, tickDelta);
+
+                this.duplicateEntryButton.setX(x + entryWidth - 55 * 3);
+                this.duplicateEntryButton.setY(y);
+                this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
+
+                this.editButton.visible = true;
+                this.editButton.active = true;
+                this.editButton.setX(x + entryWidth - 55 * 2);
+                this.editButton.setY(y);
+                this.editButton.render(context, mouseX, mouseY, tickDelta);
+
+                this.deleteButton.visible = true;
+                this.deleteButton.active = true;
+                this.deleteButton.setX(x + entryWidth - 55);
+                this.deleteButton.setY(y);
+                this.deleteButton.render(context, mouseX, mouseY, tickDelta);
+            }
         }
 
-        private void renderScrollingText(DrawContext context, String text, int textWidth, int x, int y, int availableWidth, int scissorY, int scissorHeight, int scissorEndX) {
+        private void renderScrollingText(DrawContext context, String text, int textWidth, int x, int y, int availableWidth, int scissorY, int scissorHeight, int scissorEndX, boolean isDisabled) {
             if (textWidth > availableWidth) {
                 int overflowWidth = textWidth - availableWidth;
                 double speed = SCROLL_SPEED_PIXELS_PER_SECOND / 1000.0;
@@ -173,13 +231,14 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 long cycleTime = elapsed % totalCycle;
                 double progress = getProgress(cycleTime, halfCycle, travelTime);
 
+                int color = isDisabled ? 0xAAAAAA : 0xFFFFFF;
                 int scrollOffset = (int) (progress * overflowWidth);
 
                 context.enableScissor(x, scissorY, scissorEndX, scissorY + scissorHeight);
-                context.drawTextWithShadow(client.textRenderer, text, x - scrollOffset, y, 0xFFFFFF);
+                context.drawTextWithShadow(client.textRenderer, text, x - scrollOffset, y, color);
                 context.disableScissor();
             } else {
-                context.drawTextWithShadow(client.textRenderer, text, x, y, 0xFFFFFF);
+                context.drawTextWithShadow(client.textRenderer, text, x, y, isDisabled ? 0xAAAAAA : 0xFFFFFF);
             }
         }
 
@@ -199,8 +258,9 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if (this.editButton.mouseClicked(mouseX, mouseY, button)) return true;
-            if (this.deleteButton.mouseClicked(mouseX, mouseY, button)) return true;
+            if (!this.tooltipEntry.apiEntry && this.editButton.mouseClicked(mouseX, mouseY, button)) return true;
+            if (this.disableButton.mouseClicked(mouseX, mouseY, button)) return true;
+            if (!this.tooltipEntry.apiEntry && this.deleteButton.mouseClicked(mouseX, mouseY, button)) return true;
             if (this.duplicateEntryButton.mouseClicked(mouseX, mouseY, button)) return true;
             return super.mouseClicked(mouseX, mouseY, button);
         }
