@@ -17,6 +17,7 @@ import net.minecraft.util.InvalidIdentifierException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class TooltipEntry {
 
@@ -61,7 +62,13 @@ public class TooltipEntry {
     private transient List<Text> cachedStaticText = null;
     private transient Style cachedStyleModifier = null;
 
-    public TooltipEntry() {}
+    public transient boolean apiEntry = false;
+    public transient String apiEntryId = "";
+    public String uuid;
+
+    public TooltipEntry() {
+        this.uuid = UUID.randomUUID().toString();
+    }
 
     public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, long tickrate) {
         this.target = target;
@@ -79,6 +86,16 @@ public class TooltipEntry {
         this.lineOffset = lineOffset;
         this.animation_offset = animation_offset;
         this.tickrate = tickrate;
+        this.uuid = UUID.randomUUID().toString();
+    }
+
+    public String getIdentifier() {
+        if (this.apiEntry && this.apiEntryId != null && !this.apiEntryId.isEmpty()) {
+            // Creates a deterministic hash based on the entry's content to differentiate multiple entries with the same apiEntryId
+            long hash = this.target.hashCode() + this.text.hashCode() + this.position.toString().hashCode() + this.style.toString().hashCode() + this.colors.hashCode();
+            return this.apiEntryId + ":" + hash;
+        }
+        return this.uuid;
     }
 
     public void invalidateCaches() {
