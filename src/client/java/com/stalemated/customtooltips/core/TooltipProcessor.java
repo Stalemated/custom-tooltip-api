@@ -25,6 +25,7 @@ public class TooltipProcessor {
         if (!TooltipRegistry.getEntries().isEmpty()) {
             for (TooltipEntry entry : TooltipRegistry.getEntries()) {
                 if (entry == null || !entry.matches(stack)) continue;
+                if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) continue;
 
                 if (entry.require_shift && !shiftPressed) {
                     needsShiftPrompt = true;
@@ -76,6 +77,7 @@ public class TooltipProcessor {
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (entry == null || !entry.matches(stack)) continue;
+            if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) continue;
             if (entry.require_shift && !shiftPressed) continue;
 
             boolean altersTopLine = (entry.position == TooltipEntry.TooltipPosition.REPLACE_NAME ||
