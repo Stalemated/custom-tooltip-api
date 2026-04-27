@@ -125,7 +125,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                     hoverTooltip.add(Text.empty());
                 }
                 hoverTooltip.addAll(this.tooltipEntry.getTextComponents());
-                context.drawTooltip(client.textRenderer, hoverTooltip, mouseX, mouseY);
+            TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip);
             }
 
             this.duplicateEntryButton.setX(x + entryWidth - 165);

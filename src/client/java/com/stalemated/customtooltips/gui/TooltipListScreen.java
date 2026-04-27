@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.gui;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -14,6 +15,7 @@ import static com.stalemated.customtooltips.CustomTooltipApiClient.openConfigKey
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class TooltipListScreen extends Screen {
     private final Screen parent;
@@ -21,6 +23,7 @@ public class TooltipListScreen extends Screen {
     TextFieldWidget searchBox;
     private static boolean hasShownKeybindToast = false;
     private String searchText = "";
+    private List<Text> activeTooltip = null;
 
     public TooltipListScreen(Screen parent) {
         super(Text.translatable("customtooltips.tooltip_list_screen.title"));
@@ -99,6 +102,10 @@ public class TooltipListScreen extends Screen {
 
     // Helpers
 
+    public void setHoveredTooltip(List<Text> tooltip) {
+        this.activeTooltip = tooltip;
+    }
+
     private void checkAndShowKeybindToast() {
         if (this.client == null || this.client.options == null) return;
 
@@ -150,11 +157,16 @@ public class TooltipListScreen extends Screen {
     // Overrides
 
     @Override
-    public void render(net.minecraft.client.gui.DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.activeTooltip = null;
         this.listWidget.render(context, mouseX, mouseY, delta);
         this.searchBox.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
+        
+        if (this.activeTooltip != null) {
+            context.drawTooltip(this.textRenderer, this.activeTooltip, mouseX, mouseY);
+        }
     }
 
     @Override
