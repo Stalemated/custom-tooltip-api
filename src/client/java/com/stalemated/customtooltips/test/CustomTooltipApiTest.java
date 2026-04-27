@@ -31,6 +31,17 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 0, 2L
         );
 
+        TooltipEntry rainbowSword2 = new TooltipEntry(
+                "minecraft:diamond_sword",
+                new ArrayList<>(Arrays.asList("Eternal Item")),
+                TooltipEntry.TooltipStyle.RAINBOW,
+                new ArrayList<>(),
+                true, false, false, false, false,
+                false, true,
+                TooltipEntry.TooltipPosition.BOTTOM, 0,
+                0, 1L
+        );
+
         // Renames the golden apple with a custom static gradient
         TooltipEntry godApple = new TooltipEntry(
                 "minecraft:golden_apple",
@@ -56,6 +67,7 @@ public class CustomTooltipApiTest implements ClientModInitializer {
         );
 
         CustomTooltipApi.registerTooltip(rainbowSword);
+        CustomTooltipApi.registerTooltip(rainbowSword2);
         CustomTooltipApi.registerTooltip(godApple);
         CustomTooltipApi.registerTooltip(pickaxeWarning);
 
