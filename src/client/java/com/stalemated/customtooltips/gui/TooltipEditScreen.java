@@ -32,6 +32,8 @@ import java.awt.Color;
 public class TooltipEditScreen {
 
     public static Screen create(Screen parent, TooltipEntry entry, boolean isNew) {
+        
+        final boolean[] isNewRef = { isNew };
 
         // Color handling
 
@@ -207,9 +209,10 @@ public class TooltipEditScreen {
                                         Text.translatable("customtooltips.tooltip_edit_screen.colors.error.invalid.description")
                     ));}
 
-                    if (isNew) {
+                if (isNewRef[0]) {
                         TooltipConfig config = ConfigManager.getConfig();
                         config.entries.add(entry);
+                    isNewRef[0] = false;
                     } else {
                         entry.invalidateCaches();
                     }
