@@ -24,6 +24,8 @@ public class CustomTooltipApi {
      */
     public static void registerTooltip(TooltipEntry entry) {
         if (entry != null) {
+            entry.apiEntry = true;
+            entry.apiEntryId = entry.target;
             API_ENTRIES.add(entry);
             TooltipRegistry.reload();
         }
