@@ -20,7 +20,7 @@ public abstract class TextFieldWidgetMixin {
         
         TooltipConfig config = ConfigManager.getConfig();
 
-        if (config.enableDoubleClickSelection && time - this.lastClickTime < 250) {
+        if (config.enable_double_click_selection && time - this.lastClickTime < 250) {
             instance.setSelectionStart(0);
             instance.setSelectionEnd(instance.getText().length());
         } else {
