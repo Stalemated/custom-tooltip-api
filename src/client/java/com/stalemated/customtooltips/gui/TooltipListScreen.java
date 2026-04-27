@@ -39,7 +39,7 @@ public class TooltipListScreen extends Screen {
         int actionBarHeight = 20;
         int buttonSize = 20;
         int spacing = 8;
-        int searchWidth = totalActionBarWidth - buttonSize * 2 - spacing * 2;
+        int searchWidth = totalActionBarWidth - buttonSize * 3 - spacing * 3;
         int startX = this.width / 4;
         int startY = 24;
 
@@ -77,12 +77,23 @@ public class TooltipListScreen extends Screen {
 
         this.addDrawableChild(ButtonWidget.builder(getDoubleClickIcon(), button -> {
                     TooltipConfig config = ConfigManager.getConfig();
-                    config.enableDoubleClickSelection = !config.enableDoubleClickSelection;
+                    config.enable_double_click_selection = !config.enable_double_click_selection;
                     ConfigManager.save();
                     button.setMessage(getDoubleClickIcon());
                     button.setTooltip(Tooltip.of(getDoubleClickTooltip()));
                 }).dimensions(startX + searchWidth + buttonSize + spacing * 2, startY, buttonSize, buttonSize)
                 .tooltip(Tooltip.of(getDoubleClickTooltip()))
+                .build());
+
+        this.addDrawableChild(ButtonWidget.builder(getSortIcon(), button -> {
+                    TooltipConfig config = ConfigManager.getConfig();
+                    config.sort_by_name = !config.sort_by_name;
+                    ConfigManager.save();
+                    button.setMessage(getSortIcon());
+                    button.setTooltip(Tooltip.of(getSortTooltip()));
+                    this.listWidget.updateEntries(this.searchText);
+                }).dimensions(startX + searchWidth + buttonSize * 2 + spacing * 3, startY, buttonSize, buttonSize)
+                .tooltip(Tooltip.of(getSortTooltip()))
                 .build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
@@ -129,6 +140,8 @@ public class TooltipListScreen extends Screen {
         );
     }
 
+    // Getters
+
     private Text getAlignIconsIcon() {
         boolean isOn = ConfigManager.getConfig().align_attribute_icons;
         return Text.literal("\uDAC1\uDF24").formatted(isOn ? Formatting.GREEN : Formatting.RED);
@@ -143,15 +156,27 @@ public class TooltipListScreen extends Screen {
     }
 
     private Text getDoubleClickIcon() {
-        boolean isOn = ConfigManager.getConfig().enableDoubleClickSelection;
+        boolean isOn = ConfigManager.getConfig().enable_double_click_selection;
         return Text.literal("\uDAC1\uDF23").formatted(isOn ? Formatting.GREEN : Formatting.RED);
     }
 
     private Text getDoubleClickTooltip() {
-        boolean isOn = ConfigManager.getConfig().enableDoubleClickSelection;
+        boolean isOn = ConfigManager.getConfig().enable_double_click_selection;
         return Text.translatable("customtooltips.tooltip_list_screen.double_click_selection")
                 .append(Text.literal("\n"))
                 .append(Text.translatable(isOn ? "options.on" : "options.off").formatted(isOn ? Formatting.GREEN : Formatting.RED));
+    }
+
+    private Text getSortIcon() {
+        boolean isOn = ConfigManager.getConfig().sort_by_name;
+        return isOn ? Text.literal("AZ").formatted(Formatting.GOLD) : Text.literal("\uDAC1\uDF25").formatted(Formatting.GOLD);
+    }
+
+    private Text getSortTooltip() {
+        boolean isOn = ConfigManager.getConfig().sort_by_name;
+        return Text.translatable("customtooltips.tooltip_list_screen.sort_order")
+                .append(Text.literal("\n"))
+                .append(Text.translatable(isOn ? "customtooltips.tooltip_list_screen.sort_name" : "customtooltips.tooltip_list_screen.sort_date").formatted(Formatting.GRAY));
     }
 
     // Overrides

@@ -26,6 +26,15 @@
       ],
       "file": "custom-tooltip-api:gui/align_icons.png",
       "height": 9
+    },
+    {
+      "type": "bitmap",
+      "ascent": 8,
+      "chars": [
+        "\uDAC1\uDF25"
+      ],
+      "file": "custom-tooltip-api:gui/clock.png",
+      "height": 9
     }
   ]
 }

@@ -13,7 +13,10 @@ public class TooltipConfig {
     public boolean align_attribute_icons = false;
 
     @SerialEntry(comment = "Enables double click to select text in textboxes throughout the entire game.")
-    public boolean enableDoubleClickSelection = true;
+    public boolean enable_double_click_selection = true;
+
+    @SerialEntry(comment = "Enables tooltip sorting in the config menu by either sorting by name (true) or creation date (false)")
+    public boolean sort_by_name = false;
 
     @SerialEntry(comment = """
             Custom Tooltip API Config

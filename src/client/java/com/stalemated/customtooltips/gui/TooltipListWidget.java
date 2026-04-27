@@ -27,7 +27,25 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         String lowerSearch = searchText != null ? searchText.toLowerCase() : "";
 
         if (config.entries != null) {
-            for (TooltipEntry entry : config.entries) {
+            java.util.List<TooltipEntry> sortedEntries = new java.util.ArrayList<>(config.entries);
+            
+            if (ConfigManager.getConfig().sort_by_name) {
+                // Tags first then alphabetically (groups by mod id)
+                sortedEntries.sort((a, b) -> {
+                    String targetA = a.target == null ? "" : a.target;
+                    String targetB = b.target == null ? "" : b.target;
+
+                    boolean isTagA = targetA.startsWith("#");
+                    boolean isTagB = targetB.startsWith("#");
+
+                    if (isTagA && !isTagB) return -1;
+                    if (!isTagA && isTagB) return 1;
+
+                    return targetA.compareToIgnoreCase(targetB);
+                });
+            }
+
+            for (TooltipEntry entry : sortedEntries) {
                 if (lowerSearch.isEmpty() || entryMatchesSearch(entry, lowerSearch)) {
                     this.addEntry(new Entry(this, entry));
                 }

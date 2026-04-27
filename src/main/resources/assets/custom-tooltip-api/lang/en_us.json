@@ -4,6 +4,9 @@
   "customtooltips.tooltip_list_screen.align_icons": "Align Icons",
   "customtooltips.tooltip_list_screen.double_click_selection": "Double Click to select text",
   "customtooltips.tooltip_list_screen.search": "Search...",
+  "customtooltips.tooltip_list_screen.sort_order": "Sort Order",
+  "customtooltips.tooltip_list_screen.sort_name": "By Name & Tag",
+  "customtooltips.tooltip_list_screen.sort_date": "By Creation Date",
 
   "customtooltips.tooltip_edit_screen.title": "Edit Tooltip",
   "customtooltips.tooltip_edit_screen.category.target": "Target",
