@@ -35,6 +35,15 @@
       ],
       "file": "custom-tooltip-api:gui/clock.png",
       "height": 9
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF26"
+      ],
+      "file": "custom-tooltip-api:gui/disabled.png",
+      "height": 11
     }
   ]
 }

@@ -7,6 +7,7 @@
   "customtooltips.tooltip_list_screen.sort_order": "Sort Order",
   "customtooltips.tooltip_list_screen.sort_name": "By Name & Tag",
   "customtooltips.tooltip_list_screen.sort_date": "By Creation Date",
+  "customtooltips.tooltip_list_screen.sort_disabled": "Disabled entries first",
   "customtooltips.tooltip_list_screen.toggle_api_entries": "Toggle API Entry Tooltips",
   "customtooltips.tooltip_list_screen.showing_api_entries": "Showing: API Entries",
   "customtooltips.tooltip_list_screen.showing_normal": "Showing: User Tooltips",

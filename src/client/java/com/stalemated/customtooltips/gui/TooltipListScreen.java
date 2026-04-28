@@ -87,7 +87,15 @@ public class TooltipListScreen extends Screen {
 
         this.addDrawableChild(ButtonWidget.builder(getSortIcon(), button -> {
                     TooltipConfig config = ConfigManager.getConfig();
-                    config.sort_by_name = !config.sort_by_name;
+
+                    if (config.sort_mode == TooltipConfig.SortMode.CREATION_DATE) {
+                        config.sort_mode = TooltipConfig.SortMode.NAME_AND_TAG;
+                    } else if (config.sort_mode == TooltipConfig.SortMode.NAME_AND_TAG) {
+                        config.sort_mode = TooltipConfig.SortMode.DISABLED_FIRST;
+                    } else {
+                        config.sort_mode = TooltipConfig.SortMode.CREATION_DATE;
+                    }
+
                     ConfigManager.save();
                     button.setMessage(getSortIcon());
                     button.setTooltip(Tooltip.of(getSortTooltip()));
@@ -176,15 +184,24 @@ public class TooltipListScreen extends Screen {
     }
 
     private Text getSortIcon() {
-        boolean isOn = ConfigManager.getConfig().sort_by_name;
-        return isOn ? Text.literal("AZ").formatted(Formatting.GOLD) : Text.literal("\uDAC1\uDF25").formatted(Formatting.GOLD);
+        TooltipConfig.SortMode mode = ConfigManager.getConfig().sort_mode;
+        return switch (mode) {
+            case NAME_AND_TAG -> Text.literal("AZ").formatted(Formatting.GOLD);
+            case DISABLED_FIRST -> Text.literal("\uDAC1\uDF26").formatted(Formatting.RED);
+            default -> Text.literal("\uDAC1\uDF25").formatted(Formatting.GOLD);
+        };
     }
 
     private Text getSortTooltip() {
-        boolean isOn = ConfigManager.getConfig().sort_by_name;
+        TooltipConfig.SortMode mode = ConfigManager.getConfig().sort_mode;
+        Text modeText = switch (mode) {
+            case NAME_AND_TAG -> Text.translatable("customtooltips.tooltip_list_screen.sort_name");
+            case DISABLED_FIRST -> Text.translatable("customtooltips.tooltip_list_screen.sort_disabled");
+            default -> Text.translatable("customtooltips.tooltip_list_screen.sort_date");
+        };
         return Text.translatable("customtooltips.tooltip_list_screen.sort_order")
                 .append(Text.literal("\n"))
-                .append(Text.translatable(isOn ? "customtooltips.tooltip_list_screen.sort_name" : "customtooltips.tooltip_list_screen.sort_date").formatted(Formatting.GRAY));
+                .append(modeText.copy().formatted(Formatting.GRAY));
     }
 
     private Text getApiEntriesIcon() {

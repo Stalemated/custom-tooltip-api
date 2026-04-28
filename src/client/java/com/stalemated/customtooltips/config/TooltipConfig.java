@@ -15,8 +15,14 @@ public class TooltipConfig {
     @SerialEntry(comment = "Enables double click to select text in textboxes throughout the entire game.")
     public boolean enable_double_click_selection = true;
 
-    @SerialEntry(comment = "Enables tooltip sorting in the config menu by either sorting by name (true) or creation date (false)")
-    public boolean sort_by_name = false;
+    public enum SortMode {
+        CREATION_DATE,
+        NAME_AND_TAG,
+        DISABLED_FIRST
+    }
+
+    @SerialEntry(comment = "Tooltip sorting mode in the config menu. Accepts: CREATION_DATE, NAME_AND_TAG, DISABLED_FIRST")
+    public SortMode sort_mode = SortMode.CREATION_DATE;
 
     @SerialEntry(comment = "List of unique entry Identifiers that have been disabled by the user.")
     public List<String> disabled_entries = new ArrayList<>();

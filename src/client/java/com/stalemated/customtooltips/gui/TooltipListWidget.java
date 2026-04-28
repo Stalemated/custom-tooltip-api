@@ -44,8 +44,8 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             }
         }
 
-        if (ConfigManager.getConfig().sort_by_name) {
-            // Tags first then alphabetically (groups by mod id)
+        TooltipConfig.SortMode sortMode = config.sort_mode;
+        if (sortMode == TooltipConfig.SortMode.NAME_AND_TAG) {
             sortedEntries.sort((a, b) -> {
                 String targetA = a.target == null ? "" : a.target;
                 String targetB = b.target == null ? "" : b.target;
@@ -56,6 +56,19 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 if (isTagA && !isTagB) return -1;
                 if (!isTagA && isTagB) return 1;
 
+                return targetA.compareToIgnoreCase(targetB);
+            });
+        } else if (sortMode == TooltipConfig.SortMode.DISABLED_FIRST) {
+            sortedEntries.sort((a, b) -> {
+                String targetA = a.target == null ? "" : a.target;
+                String targetB = b.target == null ? "" : b.target;
+
+                boolean disabledA = config.disabled_entries.contains(a.getIdentifier());
+                boolean disabledB = config.disabled_entries.contains(b.getIdentifier());
+                
+                if (disabledA && !disabledB) return -1;
+                if (!disabledA && disabledB) return 1;
+                
                 return targetA.compareToIgnoreCase(targetB);
             });
         }
