@@ -48,6 +48,8 @@ public class TooltipEntry {
     public boolean require_shift = false;
     public boolean empty_line_before = false;
 
+    public String font = "minecraft:default";
+
     public int animation_offset = 0;
     public long tickrate = 1;
 
@@ -70,7 +72,7 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, long tickrate) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, long tickrate, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -86,6 +88,7 @@ public class TooltipEntry {
         this.lineOffset = lineOffset;
         this.animation_offset = animation_offset;
         this.tickrate = tickrate;
+        this.font = font != null && !font.isEmpty() ? font : "minecraft:default";
         this.uuid = UUID.randomUUID().toString();
     }
 
@@ -193,6 +196,12 @@ public class TooltipEntry {
 
     private Style buildStyleModifier() {
         Style style = Style.EMPTY;
+        if (this.font != null && !this.font.isEmpty() && !this.font.equals("minecraft:default")) {
+            try {
+                style = style.withFont(new Identifier(this.font));
+            } catch (InvalidIdentifierException ignored) {}
+        }
+
         if (this.bold) style = style.withBold(true);
         if (this.italic) style = style.withItalic(true);
         if (this.underlined) style = style.withUnderline(true);
