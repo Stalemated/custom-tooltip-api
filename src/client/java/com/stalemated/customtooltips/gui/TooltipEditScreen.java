@@ -3,6 +3,8 @@ package com.stalemated.customtooltips.gui;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
+import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdownControllerBuilder;
 import com.stalemated.customtooltips.util.ToastManager;
 import com.stalemated.customtooltips.util.CustomFontManager;
 
@@ -13,12 +15,10 @@ import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
-import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.api.controller.LongFieldControllerBuilder;
-import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -74,8 +74,7 @@ public class TooltipEditScreen {
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.style"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.style.description")))
                 .binding(TooltipEntry.TooltipStyle.SOLID, () -> entry.style, val -> entry.style = val)
-                .controller(opt -> EnumControllerBuilder.create(opt)
-                        .enumClass(TooltipEntry.TooltipStyle.class)
+                .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
                         .formatValue(style -> Text.translatable("customtooltips.tooltip_edit_screen.style." + style.name().toLowerCase())))
                 .build();
 
@@ -111,8 +110,7 @@ public class TooltipEditScreen {
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.position"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.position.description")))
                 .binding(TooltipEntry.TooltipPosition.BOTTOM, () -> entry.position, val -> entry.position = val)
-                .controller(opt -> EnumControllerBuilder.create(opt)
-                        .enumClass(TooltipEntry.TooltipPosition.class)
+                .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
                         .formatValue(position -> Text.translatable("customtooltips.tooltip_edit_screen.position." + position.name().toLowerCase())))
                 .build();
 
@@ -190,7 +188,7 @@ public class TooltipEditScreen {
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.font"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.font.description")))
                 .binding("minecraft:default", () -> entry.font, val -> entry.font = val)
-                .controller(opt -> CyclingListControllerBuilder.create(opt)
+                .controller(opt -> SimpleStringDropdownControllerBuilder.create(opt)
                         .values(CustomFontManager.availableFonts)
                         .formatValue(Text::literal)
                 )
