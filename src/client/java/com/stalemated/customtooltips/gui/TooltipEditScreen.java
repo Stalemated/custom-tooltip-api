@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.util.ToastManager;
+import com.stalemated.customtooltips.util.CustomFontManager;
 
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
@@ -17,6 +18,7 @@ import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.api.controller.LongFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.CyclingListControllerBuilder;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -183,6 +185,16 @@ public class TooltipEditScreen {
                 .binding(false, () -> entry.empty_line_before, val -> entry.empty_line_before = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
+
+        var fontOption = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.font"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.font.description")))
+                .binding("minecraft:default", () -> entry.font, val -> entry.font = val)
+                .controller(opt -> CyclingListControllerBuilder.create(opt)
+                        .values(CustomFontManager.availableFonts)
+                        .formatValue(Text::literal)
+                )
+                .build();
         //endregion
 
         return YetAnotherConfigLib.createBuilder()
@@ -241,6 +253,7 @@ public class TooltipEditScreen {
                         .group(OptionGroup.createBuilder()
                                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.formatting"))
                                 .collapsed(true)
+                                .option(fontOption)
                                 .option(bold)
                                 .option(italic)
                                 .option(underlined)
