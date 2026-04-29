@@ -53,6 +53,8 @@
   "customtooltips.tooltip_edit_screen.line_offset": "Line offset",
   "customtooltips.tooltip_edit_screen.line_offset.description": "Offsets the line position in the tooltip.\nAccepts positive integers if position is set to §6Top§r, §6Replace Name§r, §6Append§r, §6Prepend§r, or negative integers if position is set to §6Bottom§r.",
   "customtooltips.tooltip_edit_screen.formatting.description": "Formatting options.",
+  "customtooltips.tooltip_edit_screen.font": "Custom Font",
+  "customtooltips.tooltip_edit_screen.font.description": "The font ID to use. Leave as 'minecraft:default' for the default font.\n\n§4Note: The custom Resource Pack needs to be enabled!",
   "customtooltips.tooltip_edit_screen.bold": "Bold",
   "customtooltips.tooltip_edit_screen.bold.description": "If the displayed text should be §lbold§r.",
   "customtooltips.tooltip_edit_screen.italic": "Italic",
