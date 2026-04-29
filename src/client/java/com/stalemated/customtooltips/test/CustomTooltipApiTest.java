@@ -28,7 +28,8 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 true, true, false, false, false,
                 false, true,
                 TooltipEntry.TooltipPosition.TOP, 0,
-                0, 2L
+                0, 2L,
+                "minecraft:default"
         );
 
         TooltipEntry rainbowSword2 = new TooltipEntry(
@@ -39,7 +40,8 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 true, false, false, false, false,
                 false, true,
                 TooltipEntry.TooltipPosition.BOTTOM, 0,
-                0, 1L
+                0, 1L,
+                "minecraft:default"
         );
 
         // Renames the golden apple with a custom static gradient
@@ -51,7 +53,8 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 true, false, false, false, false,
                 false, false,
                 TooltipEntry.TooltipPosition.REPLACE_NAME, 0,
-                0, 1L
+                0, 1L,
+                "minecraft:default"
         );
 
         // Adds a warning to all pickaxes (needs shift to show)
@@ -63,7 +66,8 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 false, false, false, false, false,
                 true, true,
                 TooltipEntry.TooltipPosition.BOTTOM, 0,
-                0, 1L
+                0, 1L,
+                ""
         );
 
         CustomTooltipApi.registerTooltip(rainbowSword);

@@ -56,7 +56,7 @@ public class TooltipConfig {
                 true, false, true, false, false,
                 false, true,
                 TooltipEntry.TooltipPosition.TOP, 0,
-                0, 1
+                0, 1, "minecraft:default"
         ));
     }
 }

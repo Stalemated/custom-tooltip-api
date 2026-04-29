@@ -158,7 +158,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                         this.tooltipEntry.obfuscated, this.tooltipEntry.require_shift,
                         this.tooltipEntry.empty_line_before, this.tooltipEntry.position,
                         this.tooltipEntry.lineOffset, this.tooltipEntry.animation_offset,
-                        this.tooltipEntry.tickrate
+                        this.tooltipEntry.tickrate, this.tooltipEntry.font
                 );
 
                 newEntry.apiEntry = false;
