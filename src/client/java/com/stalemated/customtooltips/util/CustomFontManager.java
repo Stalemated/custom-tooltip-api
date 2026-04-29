@@ -10,6 +10,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
+
 public class CustomFontManager {
 
     private static final Path FONTS_INPUT_DIR = FabricLoader.getInstance().getConfigDir().resolve("custom_tooltip_api").resolve("fonts");
@@ -58,7 +60,7 @@ public class CustomFontManager {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Could not load fonts: {}", e.getMessage());
         }
     }
 
