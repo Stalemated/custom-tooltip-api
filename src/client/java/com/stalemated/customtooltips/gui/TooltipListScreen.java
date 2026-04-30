@@ -115,7 +115,7 @@ public class TooltipListScreen extends Screen {
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipEntry newEntry = new TooltipEntry();
-            newEntry.colors = new ArrayList<>(Arrays.asList("#FFFFFF"));
+            newEntry.colors = new ArrayList<>(Arrays.asList("white"));
             newEntry.text = new ArrayList<>(Arrays.asList("Default text"));
 
             if (this.client != null) {
@@ -123,9 +123,8 @@ public class TooltipListScreen extends Screen {
             }
         }).dimensions(this.width / 2 - 155, this.height - 28, 150, 20).build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> {
-            this.close();
-        }).dimensions(this.width / 2 + 5, this.height - 28, 150, 20).build());
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> this.close())
+                .dimensions(this.width / 2 + 5, this.height - 28, 150, 20).build());
     }
 
     // Helpers

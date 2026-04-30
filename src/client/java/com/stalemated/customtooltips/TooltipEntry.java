@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips;
 
+import com.stalemated.customtooltips.util.ColorUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -16,7 +17,6 @@ import net.minecraft.util.InvalidIdentifierException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -130,8 +130,8 @@ public class TooltipEntry {
         }
 
         this.isGradient = this.colors != null && this.colors.size() >= 2;
-        this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? parseColor(this.colors.get(0)) : 0xFFFFFF;
-        this.parsedColor2 = this.isGradient ? parseColor(this.colors.get(1)) : 0xFFFFFF;
+        this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? ColorUtils.parseColor(this.colors.get(0)) : 0xFFFFFF;
+        this.parsedColor2 = this.isGradient ? ColorUtils.parseColor(this.colors.get(1)) : 0xFFFFFF;
         if (this.tickrate <= 0) this.tickrate = 1;
 
         this.cachedStyleModifier = buildStyleModifier();
@@ -190,7 +190,7 @@ public class TooltipEntry {
             } else if (this.style == TooltipStyle.BREATHING_GRADIENT && this.isGradient) {
                 processedText = TextAPI.Styles.getBreathingGradient(baseText, this.animation_offset, this.parsedColor1, this.parsedColor2, this.tickrate);
             } else {
-                String colorStr = (this.colors != null && !this.colors.isEmpty()) ? this.colors.get(0) : "gray";
+                String colorStr = (this.colors != null && !this.colors.isEmpty()) ? this.colors.get(0) : "white";
                 processedText = applySolidStyle(baseText.copy(), colorStr);
             }
 
@@ -229,44 +229,12 @@ public class TooltipEntry {
 
     private MutableText applySolidStyle(MutableText textComponent, String colorStr) {
         Style style = Style.EMPTY;
-        TextColor color = resolveTextColor(colorStr);
+        TextColor color = ColorUtils.resolveTextColor(colorStr);
         
         if (color != null) style = style.withColor(color);
-        else style = style.withColor(Formatting.GRAY);
+        else style = style.withColor(Formatting.WHITE);
         
         return textComponent.setStyle(style);
-    }
-
-    private int parseColor(String colorStr) {
-        TextColor color = resolveTextColor(colorStr);
-        return color != null ? color.getRgb() : 0xFFFFFF;
-    }
-
-    private TextColor resolveTextColor(String colorStr) {
-        if (colorStr == null || colorStr.isEmpty()) return null;
-
-        if (colorStr.length() == 2 && colorStr.charAt(0) == '&') {
-            Formatting format = Formatting.byCode(Character.toLowerCase(colorStr.charAt(1)));
-            if (format != null && format.getColorValue() != null) {
-                return TextColor.fromFormatting(format);
-            }
-        }
-
-        Formatting format = Formatting.byName(colorStr.toLowerCase(Locale.ROOT));
-        if (format != null && format.getColorValue() != null) {
-            return TextColor.fromFormatting(format);
-        }
-
-        String hex = colorStr;
-        if (hex.startsWith("#")) hex = hex.substring(1);
-        else if (hex.startsWith("0x") || hex.startsWith("0X")) hex = hex.substring(2);
-        else if (hex.startsWith("x") || hex.startsWith("X")) hex = hex.substring(1);
-
-        if (hex.matches("^[0-9a-fA-F]{6}$")) {
-            return TextColor.parse("#" + hex);
-        }
-
-        return null;
     }
 
     public int getLineOffset(int size) {

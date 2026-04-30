@@ -5,8 +5,10 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdownControllerBuilder;
+import com.stalemated.customtooltips.gui.controller.builder.AdvancedColorControllerBuilder;
 import com.stalemated.customtooltips.util.ToastManager;
 import com.stalemated.customtooltips.util.CustomFontManager;
+import com.stalemated.customtooltips.util.ColorUtils;
 
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
@@ -14,7 +16,6 @@ import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
@@ -22,13 +23,9 @@ import dev.isxander.yacl3.api.controller.LongFieldControllerBuilder;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
-import java.awt.Color;
 
 public class TooltipEditScreen {
 
@@ -38,18 +35,10 @@ public class TooltipEditScreen {
 
         // Color handling
 
-        String rawColor1 = entry.colors != null && !entry.colors.isEmpty() ? entry.colors.get(0) : "#AAAAAA";
-        String rawColor2 = entry.colors != null && entry.colors.size() > 1 ? entry.colors.get(1) : "";
+        String rawColor1 = entry.colors != null && !entry.colors.isEmpty() ? entry.colors.get(0) : "white";
+        String rawColor2 = entry.colors != null && entry.colors.size() > 1 ? entry.colors.get(1) : "white";
 
-        Color[] visualColors = new Color[] { 
-                parseToAWT(rawColor1), 
-                parseToAWT(rawColor2.isEmpty() ? "#FFFFFF" : rawColor2) 
-        };
-
-        String[] advancedColors = new String[] {
-                isPureHex(rawColor1) ? "" : rawColor1,
-                isPureHex(rawColor2) || rawColor2.isEmpty() ? "" : rawColor2
-        };
+        String[] boundColors = new String[] { rawColor1, rawColor2 };
 
         //region Option builders
         var target = Option.<String>createBuilder()
@@ -78,32 +67,24 @@ public class TooltipEditScreen {
                         .formatValue(style -> Text.translatable("customtooltips.tooltip_edit_screen.style." + style.name().toLowerCase())))
                 .build();
 
-        var textColor1 = Option.<Color>createBuilder()
+        var textColor1 = Option.<String>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.primary_color"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.primary_color.description")))
-                .binding(Color.WHITE, () -> visualColors[0], val -> visualColors[0] = val)
-                .controller(ColorControllerBuilder::create)
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.primary_color.description"),
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.color_override.description")
+                ))
+                .binding("white", () -> boundColors[0], val -> boundColors[0] = val)
+                .controller(AdvancedColorControllerBuilder::create)
                 .build();
 
-        var textAdvancedColor1 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.primary_color_override"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.color_override.description")))
-                .binding("", () -> advancedColors[0], val -> advancedColors[0] = val)
-                .controller(StringControllerBuilder::create)
-                .build();
-
-        var textColor2 = Option.<Color>createBuilder()
+        var textColor2 = Option.<String>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.secondary_color"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.secondary_color.description")))
-                .binding(Color.WHITE, () -> visualColors[1], val -> visualColors[1] = val)
-                .controller(ColorControllerBuilder::create)
-                .build();
-
-        var advancedTextColor2 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.secondary_color_override"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.colors.color_override.description")))
-                .binding("", () -> advancedColors[1], val -> advancedColors[1] = val)
-                .controller(StringControllerBuilder::create)
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.secondary_color.description"),
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.color_override.description")
+                ))
+                .binding("white", () -> boundColors[1], val -> boundColors[1] = val)
+                .controller(AdvancedColorControllerBuilder::create)
                 .build();
 
         var tooltipPosition = Option.<TooltipEntry.TooltipPosition>createBuilder()
@@ -201,11 +182,11 @@ public class TooltipEditScreen {
                     entry.colors = new ArrayList<>();
                     boolean hasError = false;
 
-                    String finalColor1 = advancedColors[0].isBlank() ? getColorStr(visualColors, 0) : advancedColors[0].trim();
-                    String finalColor2 = advancedColors[1].isBlank() ? getColorStr(visualColors, 1) : advancedColors[1].trim();
+                    String finalColor1 = boundColors[0].trim();
+                    String finalColor2 = boundColors[1].trim();
 
-                    if (!isValidColorCode(finalColor1)) { hasError = true; finalColor1 = getColorStr(visualColors, 0); }
-                    if (!isValidColorCode(finalColor2)) { hasError = true; finalColor2 = getColorStr(visualColors, 1); }
+                    if (!ColorUtils.isValidColorCode(finalColor1)) { hasError = true; finalColor1 = "white"; }
+                    if (!ColorUtils.isValidColorCode(finalColor2)) { hasError = true; finalColor2 = "white"; }
 
                     entry.colors.add(finalColor1);
                     entry.colors.add(finalColor2);
@@ -237,9 +218,7 @@ public class TooltipEditScreen {
                                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
                                 .option(animationType)
                                 .option(textColor1)
-                                .option(textAdvancedColor1)
                                 .option(textColor2)
-                                .option(advancedTextColor2)
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.position_animation"))
@@ -266,52 +245,5 @@ public class TooltipEditScreen {
                         .build())
                 .build()
                 .generateScreen(parent);
-    }
-
-    // Helpers
-
-    @NotNull
-    private static String getColorStr(Color @NotNull [] colors, int index) {
-        return String.format("#%02x%02x%02x", colors[index].getRed(), colors[index].getGreen(), colors[index].getBlue());
-    }
-
-    private static boolean isValidColorCode(String color) {
-        if (color == null || color.isEmpty()) return false;
-
-        if (isPureHex(color)) return true;
-        if (isLegacyCode(color)) return true;
-
-        return Formatting.byName(color.toUpperCase(Locale.ROOT)) != null;
-    }
-
-    private static boolean isPureHex(String color) {
-        if (color == null || color.isEmpty()) return false;
-        return color.matches("^(#|0x|x|0X|X)?([0-9a-fA-F]{6})$");
-    }
-
-    private static boolean isLegacyCode(String color) {
-        if (color == null || color.isEmpty()) return false;
-        return color.matches("^(&)([0-9a-fA-F])$");
-    }
-
-    private static Color parseToAWT(String colorStr) {
-        if (colorStr == null || colorStr.isEmpty()) return Color.GRAY;
-
-        if (isPureHex(colorStr)) {
-            String hex = colorStr.replaceAll("^(#|0x|x|0X|X)", "");
-            return new Color(Integer.parseInt(hex, 16));
-        }
-        
-        Formatting format = Formatting.byName(colorStr.toUpperCase(Locale.ROOT));
-        if (format != null && format.getColorValue() != null) {
-            return new Color(format.getColorValue());
-        }
-        
-        if (isLegacyCode(colorStr)) {
-             Formatting legacy = Formatting.byCode(colorStr.toLowerCase(Locale.ROOT).charAt(1));
-             if (legacy != null && legacy.getColorValue() != null) return new Color(legacy.getColorValue());
-        }
-        
-        return Color.GRAY;
     }
 }
