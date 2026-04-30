@@ -6,6 +6,7 @@ import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.AdvancedColorControllerBuilder;
+import com.stalemated.customtooltips.gui.controller.builder.ItemOrTagControllerBuilder;
 import com.stalemated.customtooltips.util.ToastManager;
 import com.stalemated.customtooltips.util.CustomFontManager;
 import com.stalemated.customtooltips.util.ColorUtils;
@@ -45,7 +46,7 @@ public class TooltipEditScreen {
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.target_id"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.target.description")))
                 .binding("", () -> entry.target, val -> entry.target = val)
-                .controller(StringControllerBuilder::create)
+                .controller(ItemOrTagControllerBuilder::create)
                 .build();
 
         var customText = ListOption.<String>createBuilder()
