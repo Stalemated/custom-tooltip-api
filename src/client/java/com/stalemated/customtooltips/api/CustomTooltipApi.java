@@ -8,19 +8,22 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Developer API
- * Allows custom tooltips to be registered directly by just calling the function,
- * without ever touching the JSON5 file or the in-game menu.
+ * The main Developer API for Custom Tooltip API.
+ * <p>
+ * Allows custom tooltips to be registered dynamically from other mods by calling these methods,
+ * completely bypassing the JSON5 configuration file and the in-game settings menu.
  */
 public class CustomTooltipApi {
 
     private static final List<TooltipEntry> API_ENTRIES = new ArrayList<>();
 
     /**
-     * Registers a new TooltipEntry with the Custom Tooltip API.
-     * This tooltip will be added dynamically to the active tooltip list.
+     * Registers a built {@link TooltipEntry} into the active tooltip registry.
+     * Tooltips registered this way are volatile and will be applied instantly.
+     * <p>
+     * <b>Tip:</b> You can use {@code TooltipEntry.builder(...).register()} to build and register in a single chain.
      *
-     * @param entry The TooltipEntry to register.
+     * @param entry The TooltipEntry object to register.
      */
     public static void registerTooltip(TooltipEntry entry) {
         if (entry != null) {
@@ -32,7 +35,9 @@ public class CustomTooltipApi {
     }
 
     /**
-     * @return All the entries added through the API
+     * Retrieves an unmodifiable list of all tooltips registered dynamically via the API.
+     *
+     * @return A list containing all API-registered TooltipEntries.
      */
     public static List<TooltipEntry> getApiEntries() {
         return Collections.unmodifiableList(API_ENTRIES);

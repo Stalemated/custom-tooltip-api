@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips;
 
+import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.util.ColorUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -242,6 +243,248 @@ public class TooltipEntry {
             return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : Math.max(size - 1, 0);
         } else {
             return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : Math.min(-(size - 1), 0);
+        }
+    }
+
+    /**
+     * Creates a new Builder instance for configuring a TooltipEntry.
+     *
+     * @param target The target item ID (e.g., "minecraft:stick") or tag (e.g., "#c:swords").
+     * @return A new Builder instance.
+     */
+    public static Builder builder(String target) {
+        return new Builder(target);
+    }
+
+    /**
+     * A fluent builder class for creating and configuring {@link TooltipEntry} instances.
+     * Allows for method chaining to easily set tooltip properties before building or registering.
+     */
+    public static class Builder {
+        private final TooltipEntry entry;
+
+        /**
+         * Initializes a new Builder with the specified target.
+         *
+         * @param target The target item ID or tag.
+         */
+        public Builder(String target) {
+            this.entry = new TooltipEntry();
+            this.entry.target = target;
+        }
+
+        /**
+         * Adds a single line of text to the tooltip.
+         *
+         * @param line The text line to add.
+         * @return This builder instance.
+         */
+        public Builder addLine(String line) {
+            this.entry.text.add(line);
+            return this;
+        }
+
+        /**
+         * Adds multiple lines of text to the tooltip.
+         *
+         * @param lines A list of text lines to add.
+         * @return This builder instance.
+         */
+        public Builder text(List<String> lines) {
+            this.entry.text.addAll(lines);
+            return this;
+        }
+
+        /**
+         * Sets the rendering and animation style of the tooltip.
+         *
+         * @param style The desired {@link TooltipStyle} (e.g., SOLID, RAINBOW, SLIDE_GRADIENT).
+         * @return This builder instance.
+         */
+        public Builder style(TooltipStyle style) {
+            this.entry.style = style;
+            return this;
+        }
+
+        /**
+         * Sets the colors used by the tooltip style.
+         * <p>
+         * Accepts hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
+         *
+         * @param colors The colors to apply (1 or 2 depending on the style).
+         * @return This builder instance.
+         */
+        public Builder colors(String... colors) {
+            this.entry.colors.addAll(List.of(colors));
+            return this;
+        }
+
+        /**
+         * Sets the colors used by the tooltip style from a list.
+         * <p>
+         * Accepts hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
+         *
+         * @param colors A list of color strings.
+         * @return This builder instance.
+         */
+        public Builder colors(List<String> colors) {
+            this.entry.colors.addAll(colors);
+            return this;
+        }
+
+        /**
+         * Sets the position where the tooltip will be injected.
+         *
+         * @param position The desired {@link TooltipPosition} (e.g., TOP, BOTTOM, REPLACE_NAME).
+         * @return This builder instance.
+         */
+        public Builder position(TooltipPosition position) {
+            this.entry.position = position;
+            return this;
+        }
+
+        /**
+         * Adjusts the specific line index where the tooltip is inserted.
+         * Positive values offset downwards, negative values offset upwards.
+         *
+         * @param lineOffset The amount of lines to offset.
+         * @return This builder instance.
+         */
+
+        public Builder lineOffset(int lineOffset) {
+            this.entry.lineOffset = lineOffset;
+            return this;
+        }
+
+        /**
+         * Applies bold formatting to the tooltip text.
+         *
+         * @param bold True to make the text bold.
+         * @return This builder instance.
+         */
+        public Builder bold(boolean bold) {
+            this.entry.bold = bold;
+            return this;
+        }
+
+        /**
+         * Applies italic formatting to the tooltip text.
+         *
+         * @param italic True to make the text italic.
+         * @return This builder instance.
+         */
+        public Builder italic(boolean italic) {
+            this.entry.italic = italic;
+            return this;
+        }
+
+        /**
+         * Applies an underline to the tooltip text.
+         *
+         * @param underlined True to underline the text.
+         * @return This builder instance.
+         */
+        public Builder underlined(boolean underlined) {
+            this.entry.underlined = underlined;
+            return this;
+        }
+
+        /**
+         * Applies a strikethrough to the tooltip text.
+         *
+         * @param strikethrough True to strike through the text.
+         * @return This builder instance.
+         */
+        public Builder strikethrough(boolean strikethrough) {
+            this.entry.strikethrough = strikethrough;
+            return this;
+        }
+
+        /**
+         * Obfuscates the tooltip text.
+         *
+         * @param obfuscated True to obfuscate the text.
+         * @return This builder instance.
+         */
+        public Builder obfuscated(boolean obfuscated) {
+            this.entry.obfuscated = obfuscated;
+            return this;
+        }
+
+        /**
+         * Makes the tooltip only visible when the player is holding the Shift key.
+         *
+         * @param requireShift True to require the Shift key.
+         * @return This builder instance.
+         */
+        public Builder requireShift(boolean requireShift) {
+            this.entry.require_shift = requireShift;
+            return this;
+        }
+
+        /**
+         * Inserts a blank line before this tooltip for better visual spacing.
+         *
+         * @param emptyLineBefore True to add an empty line before the text.
+         * @return This builder instance.
+         */
+        public Builder emptyLineBefore(boolean emptyLineBefore) {
+            this.entry.empty_line_before = emptyLineBefore;
+            return this;
+        }
+
+        /**
+         * Sets a custom font identifier for the tooltip text.
+         *
+         * @param fontIdentifier The Identifier of the font (e.g., "minecraft:default", "minecraft:alt").
+         * @return This builder instance.
+         */
+        public Builder font(String fontIdentifier) {
+            this.entry.font = fontIdentifier;
+            return this;
+        }
+
+        /**
+         * Sets the animation offset to desynchronize animations across different tooltips or lines.
+         *
+         * @param offset The animation offset value.
+         * @return This builder instance.
+         */
+        public Builder animationOffset(int offset) {
+            this.entry.animation_offset = offset;
+            return this;
+        }
+
+        /**
+         * Sets the animation tickrate (speed).
+         * Closer to 0 is faster. Value must be greater than 0.
+         *
+         * @param tickrate The speed of the animation.
+         * @return This builder instance.
+         */
+        public Builder tickrate(long tickrate) {
+            this.entry.tickrate = tickrate;
+            return this;
+        }
+
+        /**
+         * Builds and returns the configured {@link TooltipEntry} without registering it.
+         * The returned entry must be registered manually using {@link CustomTooltipApi#registerTooltip(TooltipEntry)}.
+         *
+         * @return The built TooltipEntry.
+         */
+        public TooltipEntry build() {
+            return this.entry;
+        }
+
+        /**
+         * Builds the TooltipEntry and automatically registers it to the Custom Tooltip API.
+         *
+         * @return The built and registered TooltipEntry.
+         */
+        public TooltipEntry register() {
+            CustomTooltipApi.registerTooltip(this.entry);
+            return this.entry;
         }
     }
 }
