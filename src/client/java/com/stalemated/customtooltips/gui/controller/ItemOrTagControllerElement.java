@@ -40,6 +40,22 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
     }
 
     @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            if (this.isMouseOver(mouseX, mouseY)) {
+                Dimension<Integer> oldDimension = this.getDimension();
+                this.setDimension(this.getDimension().withWidth(oldDimension.width() - this.getDecorationPadding()));
+
+                super.mouseClicked(mouseX, mouseY, button);
+                this.setDimension(oldDimension);
+
+                return true;
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     public void unfocus() {
         if (this.isDropdownVisible() && this.dropdownWidget() != null) {
             int index = this.dropdownWidget().selectedIndex();
