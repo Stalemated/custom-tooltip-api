@@ -21,7 +21,7 @@
   "customtooltips.tooltip_edit_screen.category.formatting": "Formatting",
   "customtooltips.tooltip_edit_screen.category.conditions": "Conditions",
 
-  "customtooltips.tooltip_edit_screen.target_id": "Target Item or Tag",
+  "customtooltips.tooltip_edit_screen.target_id": "Target",
   "customtooltips.tooltip_edit_screen.target.description": "Accepts tags §b(e.g. #c:swords)§f or item ids §b(e.g. minecraft:diamond_sword)\n\n§eNote:§r§f Tags are world-specific and will only appear in the dropdown after loading a world.",
   "customtooltips.tooltip_edit_screen.custom_text": "Custom text",
   "customtooltips.tooltip_edit_screen.custom_text.description": "Accepts multiple lines of text.",
