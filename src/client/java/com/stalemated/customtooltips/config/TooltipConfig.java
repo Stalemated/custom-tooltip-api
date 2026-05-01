@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.config;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.core.sorting.SortMode;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 import java.util.ArrayList;
@@ -14,12 +15,6 @@ public class TooltipConfig {
 
     @SerialEntry(comment = "Enables double click to select text in textboxes throughout the entire game.")
     public boolean enable_double_click_selection = true;
-
-    public enum SortMode {
-        CREATION_DATE,
-        NAME_AND_TAG,
-        DISABLED_FIRST
-    }
 
     @SerialEntry(comment = "Tooltip sorting mode in the config menu. Accepts: CREATION_DATE, NAME_AND_TAG, DISABLED_FIRST")
     public SortMode sort_mode = SortMode.CREATION_DATE;

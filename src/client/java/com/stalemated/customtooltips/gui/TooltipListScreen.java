@@ -2,25 +2,22 @@ package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.gui.factories.ActionBarFactory;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import com.stalemated.customtooltips.util.ToastManager;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+
 import static com.stalemated.customtooltips.CustomTooltipApiClient.openConfigKeybind;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TooltipListScreen extends Screen {
     private final Screen parent;
     public TooltipListWidget listWidget;
-    TextFieldWidget searchBox;
+    public TextFieldWidget searchBox;
     private static boolean hasShownKeybindToast = false;
     private String searchText = "";
     private List<Text> activeTooltip = null;
@@ -33,184 +30,61 @@ public class TooltipListScreen extends Screen {
 
     @Override
     protected void init() {
+        int btnHeight = 20;
+        int btnWidth = 150;
+        int btnY = this.height - 28;
+
         this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 55, this.height - 32, 25, this);
         this.addSelectableChild(this.listWidget);
 
-        int buttonAmount = 4;
-        int actionBarHeight = 20;
-        int buttonSize = 20;
-        int spacing = 8;
-        int startX = this.width / 4;
-        int startY = 24;
-
-        this.searchBox = new TextFieldWidget(this.textRenderer, startX, startY, getSearchBarWidth(buttonAmount, buttonSize, spacing), actionBarHeight, Text.translatable("customtooltips.tooltip_list_screen.search"));
-        this.searchBox.setText(this.searchText);
-        this.searchBox.setChangedListener(newSearchText -> {
-            this.searchText = newSearchText;
-            this.listWidget.updateEntries(newSearchText);
-        });
-        this.searchBox.setMaxLength(1024);
+        this.searchBox = ActionBarFactory.createSearchBox(this, this.textRenderer, this.searchText);
         this.addSelectableChild(this.searchBox);
         this.setInitialFocus(this.searchBox);
 
         this.listWidget.updateEntries(this.searchText);
 
-        if (!hasShownKeybindToast) {
-            checkAndShowKeybindToast();
-            hasShownKeybindToast = true;
-        }
+        showToasts();
 
-        if (ConfigManager.configLoadFailed) {
-            checkAndShowBrokenConfigToast();
-            ConfigManager.configLoadFailed = false;
-        }
-
-        this.addDrawableChild(ButtonWidget.builder(getAlignIconsIcon(), button -> {
-                    TooltipConfig config = ConfigManager.getConfig();
-                    config.align_attribute_icons = !config.align_attribute_icons;
-                    ConfigManager.save();
-                    button.setMessage(getAlignIconsIcon());
-                    button.setTooltip(Tooltip.of(getAlignIconsTooltip()));
-                }).dimensions(getButtonStartX(4, buttonSize, spacing), startY, buttonSize, buttonSize)
-                .tooltip(Tooltip.of(getAlignIconsTooltip()))
-                .build());
-
-        this.addDrawableChild(ButtonWidget.builder(getDoubleClickIcon(), button -> {
-                    TooltipConfig config = ConfigManager.getConfig();
-                    config.enable_double_click_selection = !config.enable_double_click_selection;
-                    ConfigManager.save();
-                    button.setMessage(getDoubleClickIcon());
-                    button.setTooltip(Tooltip.of(getDoubleClickTooltip()));
-                }).dimensions(getButtonStartX(3, buttonSize, spacing), startY, buttonSize, buttonSize)
-                .tooltip(Tooltip.of(getDoubleClickTooltip()))
-                .build());
-
-        this.addDrawableChild(ButtonWidget.builder(getSortIcon(), button -> {
-                    TooltipConfig config = ConfigManager.getConfig();
-
-                    if (config.sort_mode == TooltipConfig.SortMode.CREATION_DATE) {
-                        config.sort_mode = TooltipConfig.SortMode.NAME_AND_TAG;
-                    } else if (config.sort_mode == TooltipConfig.SortMode.NAME_AND_TAG) {
-                        config.sort_mode = TooltipConfig.SortMode.DISABLED_FIRST;
-                    } else {
-                        config.sort_mode = TooltipConfig.SortMode.CREATION_DATE;
-                    }
-
-                    ConfigManager.save();
-                    button.setMessage(getSortIcon());
-                    button.setTooltip(Tooltip.of(getSortTooltip()));
-                    this.listWidget.updateEntries(this.searchText);
-                }).dimensions(getButtonStartX(2, buttonSize, spacing), startY, buttonSize, buttonSize)
-                .tooltip(Tooltip.of(getSortTooltip()))
-                .build());
-
-        this.addDrawableChild(ButtonWidget.builder(getApiEntriesIcon(), button -> {
-                    showApiEntries = !showApiEntries;
-                    button.setMessage(getApiEntriesIcon());
-                    button.setTooltip(Tooltip.of(getApiEntriesTooltip()));
-                    this.listWidget.updateEntries(this.searchText);
-                }).dimensions(getButtonStartX(1, buttonSize, spacing), startY, buttonSize, buttonSize)
-                .tooltip(Tooltip.of(getApiEntriesTooltip()))
-                .build());
+        ActionBarFactory.createActionButtons(this).forEach(this::addDrawableChild);
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
-            TooltipEntry newEntry = new TooltipEntry();
-            newEntry.colors = new ArrayList<>(Arrays.asList("white"));
-            newEntry.text = new ArrayList<>(Arrays.asList("Default text"));
+            TooltipEntry newEntry = TooltipEntry.builder("")
+                    .addLine("Default Text")
+                    .colors("white")
+                    .build();
 
             if (this.client != null) {
                 this.client.setScreen(TooltipEditScreen.create(this, newEntry, true));
             }
-        }).dimensions(this.width / 2 - 155, this.height - 28, 150, 20).build());
+        })
+                .dimensions(this.width / 2 - 155, btnY, btnWidth, btnHeight)
+                .build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> this.close())
-                .dimensions(this.width / 2 + 5, this.height - 28, 150, 20).build());
+                .dimensions(this.width / 2 + 5, btnY, btnWidth, btnHeight)
+                .build());
     }
 
-    // Helpers
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+    }
 
     public void setHoveredTooltip(List<Text> tooltip) {
         this.activeTooltip = tooltip;
     }
 
-    private void checkAndShowKeybindToast() {
-        if (this.client != null && this.client.options != null && openConfigKeybind.getTranslationKey().equals("key.customtooltips.open_config") && openConfigKeybind.isUnbound()) {
-            ToastManager.showKeybindMissingToast();
+    private void showToasts() {
+        if (!hasShownKeybindToast) {
+            if (this.client != null && this.client.options != null && openConfigKeybind.isUnbound()) {
+                ToastManager.showKeybindMissingToast();
+            }
+            hasShownKeybindToast = true;
         }
-    }
 
-    private void checkAndShowBrokenConfigToast() {
-        ToastManager.showBrokenConfigToast();
-    }
-
-    private int getButtonStartX(int buttonIndex, int buttonSize, int spacing) {
-        return this.width - spacing * buttonIndex - buttonSize * buttonIndex;
-    }
-
-    private int getButtonsWidth(int buttonAmount, int buttonSize, int spacing) {
-        return buttonAmount * buttonSize + buttonAmount * spacing;
-    }
-
-    private int getSearchBarWidth(int buttonAmount, int buttonSize, int spacing) {
-        return Math.min(3 * this.width / 4 - getButtonsWidth(buttonAmount, buttonSize, spacing) - spacing, this.width / 2);
-    }
-
-    // Getters
-
-    private Text getAlignIconsIcon() {
-        boolean isOn = ConfigManager.getConfig().align_attribute_icons;
-        return Text.literal("\uDAC1\uDF24").formatted(isOn ? Formatting.GREEN : Formatting.RED);
-
-    }
-
-    private Text getAlignIconsTooltip() {
-        boolean isOn = ConfigManager.getConfig().align_attribute_icons;
-        return Text.translatable("customtooltips.tooltip_list_screen.align_icons")
-                .append(Text.literal("\n"))
-                .append(Text.translatable(isOn ? "options.on" : "options.off").formatted(isOn ? Formatting.GREEN : Formatting.RED));
-    }
-
-    private Text getDoubleClickIcon() {
-        boolean isOn = ConfigManager.getConfig().enable_double_click_selection;
-        return Text.literal("\uDAC1\uDF23").formatted(isOn ? Formatting.GREEN : Formatting.RED);
-    }
-
-    private Text getDoubleClickTooltip() {
-        boolean isOn = ConfigManager.getConfig().enable_double_click_selection;
-        return Text.translatable("customtooltips.tooltip_list_screen.double_click_selection")
-                .append(Text.literal("\n"))
-                .append(Text.translatable(isOn ? "options.on" : "options.off").formatted(isOn ? Formatting.GREEN : Formatting.RED));
-    }
-
-    private Text getSortIcon() {
-        TooltipConfig.SortMode mode = ConfigManager.getConfig().sort_mode;
-        return switch (mode) {
-            case NAME_AND_TAG -> Text.literal("AZ").formatted(Formatting.GOLD);
-            case DISABLED_FIRST -> Text.literal("\uDAC1\uDF26").formatted(Formatting.RED);
-            default -> Text.literal("\uDAC1\uDF25").formatted(Formatting.GOLD);
-        };
-    }
-
-    private Text getSortTooltip() {
-        TooltipConfig.SortMode mode = ConfigManager.getConfig().sort_mode;
-        Text modeText = switch (mode) {
-            case NAME_AND_TAG -> Text.translatable("customtooltips.tooltip_list_screen.sort_name");
-            case DISABLED_FIRST -> Text.translatable("customtooltips.tooltip_list_screen.sort_disabled");
-            default -> Text.translatable("customtooltips.tooltip_list_screen.sort_date");
-        };
-        return Text.translatable("customtooltips.tooltip_list_screen.sort_order")
-                .append(Text.literal("\n"))
-                .append(modeText.copy().formatted(Formatting.GRAY));
-    }
-
-    private Text getApiEntriesIcon() {
-        return Text.literal("</>").formatted(showApiEntries ? Formatting.GREEN : Formatting.GRAY);
-    }
-
-    private Text getApiEntriesTooltip() {
-        return Text.translatable("customtooltips.tooltip_list_screen.toggle_api_entries")
-                .append(Text.literal("\n"))
-                .append(Text.translatable(showApiEntries ? "customtooltips.tooltip_list_screen.showing_api_entries" : "customtooltips.tooltip_list_screen.showing_normal").formatted(Formatting.GRAY));
+        if (ConfigManager.configLoadFailed) {
+            ToastManager.showBrokenConfigToast();
+            ConfigManager.configLoadFailed = false;
+        }
     }
 
     // Overrides
