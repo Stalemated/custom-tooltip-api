@@ -9,11 +9,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipListWidget.Entry> {
@@ -107,6 +109,8 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         private final ButtonWidget deleteButton;
         private final ButtonWidget duplicateEntryButton;
         private final ButtonWidget disableButton;
+        private final ButtonWidget moveUpButton;
+        private final ButtonWidget moveDownButton;
         private static final double SCROLL_SPEED_PIXELS_PER_SECOND = 25.0;
         private static final long SCROLL_PAUSE_MS = 1500L;
         private final long startTime;
@@ -114,24 +118,29 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         public Entry(TooltipListWidget parent, TooltipEntry tooltipEntry) {
             this.tooltipEntry = tooltipEntry;
             this.startTime = System.currentTimeMillis();
-
-            this.editButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.edit_button"), button -> client.setScreen(TooltipEditScreen.create(client.currentScreen, this.tooltipEntry, false))).dimensions(0, 0, 50, 20).build();
-
+            int btnDim = 20;
             String identifier = this.tooltipEntry.getIdentifier();
-            Text toggleText = Text.translatable(ConfigManager.getConfig().disabled_entries.contains(identifier) ? "customtooltips.tooltip_list_widget.enable_button" : "customtooltips.tooltip_list_widget.disable_button");
+            boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(identifier);
 
-            this.disableButton = ButtonWidget.builder(toggleText, button -> {
+            this.editButton = ButtonWidget.builder(Text.literal("✎"), button -> client.setScreen(TooltipEditScreen.create(client.currentScreen, this.tooltipEntry, false)))
+                    .dimensions(0, 0, btnDim, btnDim)
+                    .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
+                    .build();
+
+            this.disableButton = ButtonWidget.builder(Text.literal(isDisabled ? "▶" : "⏸"), button -> {
                 TooltipConfig config = ConfigManager.getConfig();
-                if (config.disabled_entries.contains(identifier)) {
+                if (isDisabled) {
                     config.disabled_entries.remove(identifier);
                 } else {
                     config.disabled_entries.add(identifier);
                 }
                 ConfigManager.save();
                 parent.updateEntries(parent.parentScreen.searchBox.getText());
-            }).dimensions(0, 0, 50, 20).build();
+            }).dimensions(0, 0, btnDim, btnDim)
+                    .tooltip(Tooltip.of(Text.translatable(isDisabled ? "customtooltips.tooltip_list_widget.enable_button" : "customtooltips.tooltip_list_widget.disable_button")))
+                    .build();
 
-            this.deleteButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.delete_button"), button -> {
+            this.deleteButton = ButtonWidget.builder(Text.literal("✖"), button -> {
                 Screen currentScreen = client.currentScreen;
                 client.setScreen(new ConfirmScreen(
                         (confirmed) -> {
@@ -146,20 +155,29 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                         Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.title"),
                         Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target)
                 ));
-            }).dimensions(0, 0, 50, 20).build();
+            }).dimensions(0, 0, btnDim, btnDim)
+                    .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.delete_button")))
+                    .build();
 
-            this.duplicateEntryButton = ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button"), button -> {
+            this.duplicateEntryButton = ButtonWidget.builder(Text.literal("⧉"), button -> {
                 TooltipConfig config = ConfigManager.getConfig();
-                TooltipEntry newEntry = new TooltipEntry(
-                        this.tooltipEntry.target, this.tooltipEntry.text,
-                        this.tooltipEntry.style, this.tooltipEntry.colors,
-                        this.tooltipEntry.bold, this.tooltipEntry.italic,
-                        this.tooltipEntry.underlined, this.tooltipEntry.strikethrough,
-                        this.tooltipEntry.obfuscated, this.tooltipEntry.require_shift,
-                        this.tooltipEntry.empty_line_before, this.tooltipEntry.position,
-                        this.tooltipEntry.lineOffset, this.tooltipEntry.animation_offset,
-                        this.tooltipEntry.tickrate, this.tooltipEntry.font
-                );
+                TooltipEntry newEntry = TooltipEntry.builder(this.tooltipEntry.target)
+                        .text(this.tooltipEntry.text)
+                        .style(this.tooltipEntry.style)
+                        .colors(this.tooltipEntry.colors)
+                        .bold(this.tooltipEntry.bold)
+                        .italic(this.tooltipEntry.italic)
+                        .underlined(this.tooltipEntry.underlined)
+                        .strikethrough(this.tooltipEntry.strikethrough)
+                        .obfuscated(this.tooltipEntry.obfuscated)
+                        .requireShift(this.tooltipEntry.require_shift)
+                        .emptyLineBefore(this.tooltipEntry.empty_line_before)
+                        .position(this.tooltipEntry.position)
+                        .lineOffset(this.tooltipEntry.lineOffset)
+                        .animationOffset(this.tooltipEntry.animation_offset)
+                        .tickrate(this.tooltipEntry.tickrate)
+                        .font(this.tooltipEntry.font)
+                        .build();
 
                 newEntry.apiEntry = false;
                 newEntry.apiEntryId = "";
@@ -170,7 +188,29 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 ToastManager.showDuplicatedToast(targetText);
                 
                 parent.updateEntries(parent.parentScreen.searchBox.getText());
-            }).dimensions(0, 0, 50, 20).build();
+            }).dimensions(0, 0, btnDim, btnDim)
+                    .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button")))
+                    .build();
+
+            this.moveUpButton = ButtonWidget.builder(Text.literal("▲"), button -> {
+                TooltipConfig config = ConfigManager.getConfig();
+                int index = config.entries.indexOf(this.tooltipEntry);
+                if (index > 0) {
+                    Collections.swap(config.entries, index, index - 1);
+                    ConfigManager.save();
+                    parent.updateEntries(parent.parentScreen.searchBox.getText());
+                }
+            }).dimensions(0, 0, btnDim, btnDim).build();
+
+            this.moveDownButton = ButtonWidget.builder(Text.literal("▼"), button -> {
+                TooltipConfig config = ConfigManager.getConfig();
+                int index = config.entries.indexOf(this.tooltipEntry);
+                if (index >= 0 && index < config.entries.size() - 1) {
+                    Collections.swap(config.entries, index, index + 1);
+                    ConfigManager.save();
+                    parent.updateEntries(parent.parentScreen.searchBox.getText());
+                }
+            }).dimensions(0, 0, btnDim, btnDim).build();
         }
 
         @Override
@@ -178,15 +218,96 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
             boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(this.tooltipEntry.getIdentifier());
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
             int textY = y + 6;
+            int btnStep = 24;
 
-            int buttonCount = this.tooltipEntry.apiEntry ? 2 : 4;
-            int buttonsStartX = x + entryWidth - (buttonCount * 55);
-            int availableTextWidth = buttonsStartX - x - 5;
+            int currentX = x + entryWidth;
+
+            if (this.tooltipEntry.apiEntry) {
+                currentX -= btnStep;
+                this.duplicateEntryButton.setX(currentX);
+                this.duplicateEntryButton.setY(y);
+                this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
+
+                currentX -= btnStep;
+                this.disableButton.setX(currentX);
+                this.disableButton.setY(y);
+                this.disableButton.render(context, mouseX, mouseY, tickDelta);
+
+                this.editButton.visible = false;
+                this.editButton.active = false;
+
+                this.deleteButton.visible = false;
+                this.deleteButton.active = false;
+
+                this.moveUpButton.visible = false;
+                this.moveUpButton.active = false;
+
+                this.moveDownButton.visible = false;
+                this.moveDownButton.active = false;
+            } else {
+                currentX -= btnStep;
+                this.deleteButton.setX(currentX);
+                this.deleteButton.setY(y);
+                this.deleteButton.visible = true;
+                this.deleteButton.active = true;
+                this.deleteButton.render(context, mouseX, mouseY, tickDelta);
+
+                currentX -= btnStep;
+                this.editButton.setX(currentX);
+                this.editButton.setY(y);
+                this.editButton.visible = true;
+                this.editButton.active = true;
+                this.editButton.render(context, mouseX, mouseY, tickDelta);
+
+                currentX -= btnStep;
+                this.duplicateEntryButton.setX(currentX);
+                this.duplicateEntryButton.setY(y);
+                this.duplicateEntryButton.visible = true;
+                this.duplicateEntryButton.active = true;
+                this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
+
+                currentX -= btnStep;
+                this.disableButton.setX(currentX);
+                this.disableButton.setY(y);
+                this.disableButton.visible = true;
+                this.disableButton.active = true;
+                this.disableButton.render(context, mouseX, mouseY, tickDelta);
+            }
+
+            int textStartX = x;
+
+            if (ConfigManager.getConfig().sort_mode == TooltipConfig.SortMode.CREATION_DATE && !TooltipListScreen.showApiEntries && !this.tooltipEntry.apiEntry) {
+                TooltipConfig config = ConfigManager.getConfig();
+                int idx = config.entries.indexOf(this.tooltipEntry);
+
+                this.moveUpButton.setX(textStartX);
+                this.moveUpButton.setY(y);
+                this.moveUpButton.visible = true;
+                this.moveUpButton.active = (idx > 0);
+                this.moveUpButton.render(context, mouseX, mouseY, tickDelta);
+
+                textStartX += btnStep;
+                this.moveDownButton.setX(textStartX);
+                this.moveDownButton.setY(y);
+                this.moveDownButton.visible = true;
+                this.moveDownButton.active = (idx >= 0 && idx < config.entries.size() - 1);
+                this.moveDownButton.render(context, mouseX, mouseY, tickDelta);
+                
+                textStartX += btnStep;
+            } else {
+                this.moveUpButton.visible = false;
+                this.moveUpButton.active = false;
+                this.moveDownButton.visible = false;
+                this.moveDownButton.active = false;
+            }
+
+            int buttonsStartX = currentX - 5;
+            int availableTextWidth = buttonsStartX - textStartX - 5;
             int originalTextWidth = client.textRenderer.getWidth(targetText);
 
-            renderScrollingText(context, targetText, originalTextWidth, x, textY, availableTextWidth, y, entryHeight, buttonsStartX, isDisabled);
+            renderScrollingText(context, targetText, originalTextWidth, textStartX, textY, availableTextWidth, y, entryHeight, buttonsStartX, isDisabled);
 
-            boolean isHoveringOverText = mouseX >= x && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
+            boolean isHoveringOverText = mouseX >= textStartX && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
             if (isHoveringOverText) {
                 List<Text> hoverTooltip = new ArrayList<>();
                 if (originalTextWidth > availableTextWidth) {
@@ -195,43 +316,6 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                 }
                 hoverTooltip.addAll(this.tooltipEntry.getTextComponents());
                 TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip);
-            }
-
-            if (this.tooltipEntry.apiEntry) {
-                this.disableButton.setX(x + entryWidth - 55 * 2);
-                this.disableButton.setY(y);
-                this.disableButton.render(context, mouseX, mouseY, tickDelta);
-
-                this.duplicateEntryButton.setX(x + entryWidth - 55);
-                this.duplicateEntryButton.setY(y);
-                this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
-
-                this.editButton.visible = false;
-                this.editButton.active = false;
-
-                this.deleteButton.visible = false;
-                this.deleteButton.active = false;
-
-            } else {
-                this.disableButton.setX(x + entryWidth - 55 * 4);
-                this.disableButton.setY(y);
-                this.disableButton.render(context, mouseX, mouseY, tickDelta);
-
-                this.duplicateEntryButton.setX(x + entryWidth - 55 * 3);
-                this.duplicateEntryButton.setY(y);
-                this.duplicateEntryButton.render(context, mouseX, mouseY, tickDelta);
-
-                this.editButton.visible = true;
-                this.editButton.active = true;
-                this.editButton.setX(x + entryWidth - 55 * 2);
-                this.editButton.setY(y);
-                this.editButton.render(context, mouseX, mouseY, tickDelta);
-
-                this.deleteButton.visible = true;
-                this.deleteButton.active = true;
-                this.deleteButton.setX(x + entryWidth - 55);
-                this.deleteButton.setY(y);
-                this.deleteButton.render(context, mouseX, mouseY, tickDelta);
             }
         }
 
@@ -277,6 +361,8 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             if (!this.tooltipEntry.apiEntry && this.editButton.mouseClicked(mouseX, mouseY, button)) return true;
+            if (this.moveUpButton.visible && this.moveUpButton.mouseClicked(mouseX, mouseY, button)) return true;
+            if (this.moveDownButton.visible && this.moveDownButton.mouseClicked(mouseX, mouseY, button)) return true;
             if (this.disableButton.mouseClicked(mouseX, mouseY, button)) return true;
             if (!this.tooltipEntry.apiEntry && this.deleteButton.mouseClicked(mouseX, mouseY, button)) return true;
             if (this.duplicateEntryButton.mouseClicked(mouseX, mouseY, button)) return true;
