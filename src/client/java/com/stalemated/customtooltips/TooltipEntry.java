@@ -1,25 +1,22 @@
 package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.api.CustomTooltipApi;
+import com.stalemated.customtooltips.core.text.StyleApplier;
+import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.customtooltips.util.ColorUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import elocindev.necronomicon.api.text.TextAPI;
 import net.minecraft.util.InvalidIdentifierException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TooltipEntry {
@@ -56,6 +53,8 @@ public class TooltipEntry {
     public int animation_offset = 0;
     public long tickrate = 1;
 
+    public String uuid;
+
     // Ignored caches
     private transient boolean cachesInitialized = false;
     private transient boolean isTag = false;
@@ -69,7 +68,6 @@ public class TooltipEntry {
 
     public transient boolean apiEntry = false;
     public transient String apiEntryId = "";
-    public String uuid;
 
     private static final Pattern KEYBIND_PATTERN = Pattern.compile("<key:([^>]+)>");
 
@@ -106,6 +104,13 @@ public class TooltipEntry {
         return this.uuid;
     }
 
+    public boolean isGradient() { return this.isGradient; }
+    public int getParsedColor1() { return this.parsedColor1; }
+    public int getParsedColor2() { return this.parsedColor2; }
+    public Style getCachedStyleModifier() { return this.cachedStyleModifier; }
+    public List<Text> getCachedStaticText() { return this.cachedStaticText; }
+    public void setCachedStaticText(List<Text> text) { this.cachedStaticText = text; }
+
     public void invalidateCaches() {
         this.cachesInitialized = false;
         this.cachedStaticText = null;
@@ -135,7 +140,7 @@ public class TooltipEntry {
         this.parsedColor2 = this.isGradient ? ColorUtils.parseColor(this.colors.get(1)) : 0xFFFFFF;
         if (this.tickrate <= 0) this.tickrate = 1;
 
-        this.cachedStyleModifier = buildStyleModifier();
+        this.cachedStyleModifier = StyleApplier.buildStyleModifier(this);
         this.cachesInitialized = true;
     }
 
@@ -153,89 +158,7 @@ public class TooltipEntry {
 
     public List<Text> getTextComponents() {
         if (!cachesInitialized) initCaches();
-
-        boolean isStatic = this.style == TooltipStyle.SOLID || this.style == TooltipStyle.STATIC_GRADIENT;
-        if (isStatic && this.cachedStaticText != null) {
-            return this.cachedStaticText;
-        }
-
-        List<Text> linesList = new ArrayList<>();
-        if (this.text == null) return linesList;
-
-        for (String line : this.text) {
-            if (line == null || line.isEmpty()) continue;
-
-            String translatedLine = line.replaceAll("(?i)&([0-9a-fk-or])", "§$1").replace("&&", "&");
-            MutableText processedText;
-
-            if (translatedLine.contains("<key:")) {
-                Matcher matcher = KEYBIND_PATTERN.matcher(translatedLine);
-                StringBuilder sb = new StringBuilder();
-                while (matcher.find()) {
-                    String keyId = matcher.group(1);
-                    String keyText = "[" + Text.keybind(keyId).getString() + "]";
-                    matcher.appendReplacement(sb, Matcher.quoteReplacement(keyText));
-                }
-                matcher.appendTail(sb);
-                translatedLine = sb.toString();
-            }
-
-            Text baseText = Text.literal(translatedLine);
-
-            if (this.style == TooltipStyle.RAINBOW) {
-                processedText = TextAPI.Styles.getRainbowGradient(baseText, this.animation_offset, this.tickrate);
-            } else if (this.style == TooltipStyle.STATIC_GRADIENT && this.isGradient) {
-                processedText = TextAPI.Styles.getStaticGradient(baseText, this.parsedColor1, this.parsedColor2);
-            } else if (this.style == TooltipStyle.SLIDE_GRADIENT && this.isGradient) {
-                processedText = TextAPI.Styles.getGradient(baseText, this.animation_offset, this.parsedColor1, this.parsedColor2, this.tickrate);
-            } else if (this.style == TooltipStyle.BREATHING_GRADIENT && this.isGradient) {
-                processedText = TextAPI.Styles.getBreathingGradient(baseText, this.animation_offset, this.parsedColor1, this.parsedColor2, this.tickrate);
-            } else {
-                String colorStr = (this.colors != null && !this.colors.isEmpty()) ? this.colors.get(0) : "white";
-                processedText = applySolidStyle(baseText.copy(), colorStr);
-            }
-
-            if (this.cachedStyleModifier != null && this.cachedStyleModifier != Style.EMPTY) {
-                if (!processedText.getSiblings().isEmpty()) {
-                    for (Text sibling : processedText.getSiblings()) {
-                        ((MutableText) sibling).setStyle(sibling.getStyle().withParent(this.cachedStyleModifier));
-                    }
-                } else {
-                    processedText.setStyle(processedText.getStyle().withParent(this.cachedStyleModifier));
-                }
-            }
-
-            linesList.add(processedText);
-        }
-
-        if (isStatic) this.cachedStaticText = linesList;
-        return linesList;
-    }
-
-    private Style buildStyleModifier() {
-        Style style = Style.EMPTY;
-        if (this.font != null && !this.font.isEmpty() && !this.font.equals("minecraft:default")) {
-            try {
-                style = style.withFont(new Identifier(this.font));
-            } catch (InvalidIdentifierException ignored) {}
-        }
-
-        if (this.bold) style = style.withBold(true);
-        if (this.italic) style = style.withItalic(true);
-        if (this.underlined) style = style.withUnderline(true);
-        if (this.strikethrough) style = style.withStrikethrough(true);
-        if (this.obfuscated) style = style.withObfuscated(true);
-        return style;
-    }
-
-    private MutableText applySolidStyle(MutableText textComponent, String colorStr) {
-        Style style = Style.EMPTY;
-        TextColor color = ColorUtils.resolveTextColor(colorStr);
-        
-        if (color != null) style = style.withColor(color);
-        else style = style.withColor(Formatting.WHITE);
-        
-        return textComponent.setStyle(style);
+        return TextFormatter.getOrGenerateComponents(this);
     }
 
     public int getLineOffset(int size) {
