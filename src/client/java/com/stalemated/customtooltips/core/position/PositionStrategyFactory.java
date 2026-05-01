@@ -11,8 +11,8 @@ public class PositionStrategyFactory {
     static {
         STRATEGIES.put(TooltipPosition.REPLACE_NAME, new ReplaceNameStrategy());
         STRATEGIES.put(TooltipPosition.REPLACE_ALL, new ReplaceAllStrategy());
-        STRATEGIES.put(TooltipPosition.APPEND, new AppendStrategy());
-        STRATEGIES.put(TooltipPosition.PREPEND, new PrependStrategy());
+        STRATEGIES.put(TooltipPosition.APPEND, new AppendPrependStrategy(true));
+        STRATEGIES.put(TooltipPosition.PREPEND, new AppendPrependStrategy(false));
         STRATEGIES.put(TooltipPosition.TOP, new InsertStrategy(true));
         STRATEGIES.put(TooltipPosition.BOTTOM, new InsertStrategy(false));
     }

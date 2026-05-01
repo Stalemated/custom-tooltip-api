@@ -18,6 +18,7 @@ public class InsertStrategy implements TooltipPositionStrategy {
         if (entry.empty_line_before) lines.add(insertIndex++, Text.empty());
         TextFormatter.insertLines(lines, componentsToInsert, insertIndex, 0);
     }
+
     @Override
     public Text modifyHeldItemName(Text originalName, List<Text> componentsToInsert, TooltipEntry entry) {
         return originalName;
