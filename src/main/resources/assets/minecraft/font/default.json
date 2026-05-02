@@ -11,30 +11,30 @@
     },
     {
       "type": "bitmap",
-      "ascent": 8,
+      "ascent": 9,
       "chars": [
         "\uDAC1\uDF23"
       ],
       "file": "custom-tooltip-api:gui/double_click_text.png",
-      "height": 9
+      "height": 11
     },
     {
       "type": "bitmap",
-      "ascent": 8,
+      "ascent": 9,
       "chars": [
         "\uDAC1\uDF24"
       ],
       "file": "custom-tooltip-api:gui/align_icons.png",
-      "height": 9
+      "height": 11
     },
     {
       "type": "bitmap",
-      "ascent": 8,
+      "ascent": 9,
       "chars": [
         "\uDAC1\uDF25"
       ],
       "file": "custom-tooltip-api:gui/clock.png",
-      "height": 9
+      "height": 11
     },
     {
       "type": "bitmap",
@@ -43,6 +43,51 @@
         "\uDAC1\uDF26"
       ],
       "file": "custom-tooltip-api:gui/disabled.png",
+      "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF27"
+      ],
+      "file": "custom-tooltip-api:gui/delete.png",
+      "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF28"
+      ],
+      "file": "custom-tooltip-api:gui/edit.png",
+      "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF29"
+      ],
+      "file": "custom-tooltip-api:gui/duplicate.png",
+      "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF30"
+      ],
+      "file": "custom-tooltip-api:gui/enabled.png",
+      "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF31"
+      ],
+      "file": "custom-tooltip-api:gui/code.png",
       "height": 11
     }
   ]
