@@ -13,7 +13,7 @@ import java.util.Optional;
 public class IconAligner {
 
     private static final int CACHE_CAPACITY = 200;
-    private static final Map<String, Text> PROCESSED_CACHE = new LinkedHashMap<String, Text>(16, 0.75f, true) {
+    private static final Map<String, Text> PROCESSED_CACHE = new LinkedHashMap<>(16, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<String, Text> eldest) {
             return size() > CACHE_CAPACITY;

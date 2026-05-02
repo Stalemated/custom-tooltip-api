@@ -7,13 +7,13 @@ import java.awt.*;
 import java.util.Locale;
 
 public class ColorUtils {
-    public static boolean isValidColorCode(String color) {
-        if (color == null || color.isEmpty()) return false;
+    public static boolean isInvalidColorCode(String color) {
+        if (color == null || color.isEmpty()) return true;
 
-        if (isPureHex(color)) return true;
-        if (isLegacyCode(color)) return true;
+        if (isPureHex(color)) return false;
+        if (isLegacyCode(color)) return false;
 
-        return Formatting.byName(color.toUpperCase(Locale.ROOT)) != null;
+        return Formatting.byName(color.toUpperCase(Locale.ROOT)) == null;
     }
 
     public static boolean isPureHex(String color) {

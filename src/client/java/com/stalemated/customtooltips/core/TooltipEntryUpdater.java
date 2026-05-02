@@ -18,8 +18,8 @@ public class TooltipEntryUpdater {
         String finalColor1 = boundColors[0].trim();
         String finalColor2 = boundColors[1].trim();
 
-        if (!ColorUtils.isValidColorCode(finalColor1)) { hasError = true; finalColor1 = "white"; }
-        if (!ColorUtils.isValidColorCode(finalColor2)) { hasError = true; finalColor2 = "white"; }
+        if (ColorUtils.isInvalidColorCode(finalColor1)) { hasError = true; finalColor1 = "white"; }
+        if (ColorUtils.isInvalidColorCode(finalColor2)) { hasError = true; finalColor2 = "white"; }
 
         entry.colors.add(finalColor1);
         entry.colors.add(finalColor2);

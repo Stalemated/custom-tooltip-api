@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.gui.controller;
 
+import com.stalemated.customtooltips.gui.controller.helper.DropdownUIHelper;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.controller.ValueFormatter;
 import dev.isxander.yacl3.api.utils.Dimension;
@@ -7,7 +8,6 @@ import dev.isxander.yacl3.gui.AbstractWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController;
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownControllerElement;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -103,32 +103,7 @@ public class SimpleStringDropdownController extends AbstractDropdownController<S
 
             @Override
             public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-                if (this.isDropdownVisible()) {
-                    switch (keyCode) {
-                        case 258: // Tab
-                            if (Screen.hasShiftDown()) {
-                                this.dropdownWidget().selectPreviousEntry();
-                            } else {
-                                this.dropdownWidget().selectNextEntry();
-                            }
-                            return true;
-                        case 264: // Down
-                            this.dropdownWidget().selectNextEntry();
-                            return true;
-                        case 265: // Up
-                            this.dropdownWidget().selectPreviousEntry();
-                            return true;
-                        case 257: // Enter
-                        case 335: // Numpad Enter
-                        case 32:  // Space
-                            this.unfocus();
-                            return true;
-                        case 256: // Esc
-                            this.removeDropdownWidget();
-                            return true;
-                    }
-                }
-                return false;
+                return DropdownUIHelper.handleKeyPressed(this, keyCode);
             }
 
             @Override
@@ -141,13 +116,7 @@ public class SimpleStringDropdownController extends AbstractDropdownController<S
 
             @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                if (this.isMouseOver(mouseX, mouseY)) {
-                    this.setFocused(true);
-                    if (!this.isDropdownVisible()) this.createDropdownWidget();
-                    else this.removeDropdownWidget();
-                    return true;
-                }
-                return false;
+                return DropdownUIHelper.handleMouseClicked(this, mouseX, mouseY);
             }
 
             @Override

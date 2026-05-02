@@ -24,7 +24,7 @@ public class TooltipProcessor {
         boolean needsShiftPrompt = false;
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (!shouldProcessEntry(entry, stack)) continue;
+            if (shouldNotProcessEntry(entry, stack)) continue;
 
             if (entry.require_shift && !shiftPressed) {
                 needsShiftPrompt = true;
@@ -46,7 +46,7 @@ public class TooltipProcessor {
         boolean shiftPressed = Screen.hasShiftDown();
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (!shouldProcessEntry(entry, stack)) continue;
+            if (shouldNotProcessEntry(entry, stack)) continue;
             if (entry.require_shift && !shiftPressed) continue;
 
             TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
@@ -60,8 +60,8 @@ public class TooltipProcessor {
         return originalName;
     }
 
-    private static boolean shouldProcessEntry(TooltipEntry entry, ItemStack stack) {
-        if (entry == null || !entry.matches(stack)) return false;
-        return !ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier());
+    private static boolean shouldNotProcessEntry(TooltipEntry entry, ItemStack stack) {
+        if (entry == null || !entry.matches(stack)) return true;
+        return ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier());
     }
 }
