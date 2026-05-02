@@ -15,14 +15,15 @@ public class TooltipRegistry {
     public static void reload() {
         ACTIVE_ENTRIES.clear();
         IconAligner.clearCache();
+        List<TooltipEntry> apiEntries = CustomTooltipApi.getApiEntries();
+
+        if (apiEntries != null) {
+            ACTIVE_ENTRIES.addAll(apiEntries);
+        }
 
         TooltipConfig config = ConfigManager.getConfig();
         if (config != null && config.entries != null) {
             ACTIVE_ENTRIES.addAll(config.entries);
-        }
-
-        if (CustomTooltipApi.getApiEntries() != null) {
-            ACTIVE_ENTRIES.addAll(CustomTooltipApi.getApiEntries());
         }
 
         for (TooltipEntry entry : ACTIVE_ENTRIES) {
