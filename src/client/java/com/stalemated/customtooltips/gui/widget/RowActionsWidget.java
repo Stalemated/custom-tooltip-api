@@ -30,11 +30,7 @@ public class RowActionsWidget {
         String identifier = entry.getIdentifier();
         boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(identifier);
 
-        buttons.add(ButtonWidget.builder(Text.literal("✎"), btn -> client.setScreen(TooltipEditScreen.create(client.currentScreen, entry, false)))
-                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
-                .build());
-
-        buttons.add(ButtonWidget.builder(Text.literal("✖").formatted(Formatting.RED), button -> {
+        buttons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF27").formatted(Formatting.RED), button -> {
             Screen currentScreen = client.currentScreen;
             client.setScreen(new ConfirmScreen(
                     (confirmed) -> {
@@ -52,7 +48,11 @@ public class RowActionsWidget {
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.delete_button")))
                 .build());
 
-        apiButtons.add(ButtonWidget.builder(Text.literal("⧉"), btn -> {
+        buttons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF28"), btn -> client.setScreen(TooltipEditScreen.create(client.currentScreen, entry, false)))
+                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
+                .build());
+
+        apiButtons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF29").formatted(Formatting.AQUA), btn -> {
             TooltipEntry newEntry = TooltipEntry.builder(entry.target)
                     .text(entry.text)
                     .style(entry.style)
@@ -83,7 +83,7 @@ public class RowActionsWidget {
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button")))
                 .build());
 
-        apiButtons.add(ButtonWidget.builder(Text.literal(isDisabled ? "▶" : "⏸"), btn -> {
+        apiButtons.add(ButtonWidget.builder(getDisabledEntryIcon(isDisabled), btn -> {
             TooltipConfig config = ConfigManager.getConfig();
             if (isDisabled) config.disabled_entries.remove(identifier);
             else config.disabled_entries.add(identifier);
@@ -91,7 +91,7 @@ public class RowActionsWidget {
             ConfigManager.save();
             parent.updateEntries(parent.parentScreen.searchBox.getText());
         })
-                .tooltip(Tooltip.of(Text.translatable(isDisabled ? "customtooltips.tooltip_list_widget.enable_button" : "customtooltips.tooltip_list_widget.disable_button")))
+                .tooltip(getDisabledEntryTooltip(isDisabled))
                 .build());
 
         buttons.addAll(apiButtons);
@@ -121,5 +121,13 @@ public class RowActionsWidget {
     public int getWidth() {
         int btnAmount = 4;
         return (buttons.size() * BUTTON_STEP) - btnAmount;
+    }
+
+    private Text getDisabledEntryIcon(boolean isDisabled) {
+        return isDisabled ? Text.literal("\uDAC1\uDF26").formatted(Formatting.RED) : Text.literal("\uDAC1\uDF30").formatted(Formatting.GREEN);
+    }
+
+    private Tooltip getDisabledEntryTooltip(boolean isDisabled) {
+        return Tooltip.of(Text.translatable(isDisabled ? "customtooltips.tooltip_list_widget.disabled_button" : "customtooltips.tooltip_list_widget.enabled_button"));
     }
 }

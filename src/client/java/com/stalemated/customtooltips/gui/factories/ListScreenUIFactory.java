@@ -163,7 +163,7 @@ public class ListScreenUIFactory {
     }
 
     private static Text getApiEntriesIcon() {
-        return Text.literal("</>").formatted(TooltipListScreen.showApiEntries ? Formatting.GREEN : Formatting.GRAY);
+        return Text.literal("\uDAC1\uDF31").formatted(TooltipListScreen.showApiEntries ? Formatting.GREEN : Formatting.GRAY);
     }
 
     private static Text getApiEntriesTooltip() {

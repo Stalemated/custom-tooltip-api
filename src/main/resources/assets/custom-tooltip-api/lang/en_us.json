@@ -11,8 +11,8 @@
   "customtooltips.tooltip_list_screen.toggle_api_entries": "Toggle API Entry Tooltips",
   "customtooltips.tooltip_list_screen.showing_api_entries": "Showing: API Entries",
   "customtooltips.tooltip_list_screen.showing_normal": "Showing: User Tooltips",
-  "customtooltips.tooltip_list_widget.enable_button": "Enable",
-  "customtooltips.tooltip_list_widget.disable_button": "Disable",
+  "customtooltips.tooltip_list_widget.enabled_button": "Enabled",
+  "customtooltips.tooltip_list_widget.disabled_button": "Disabled",
 
   "customtooltips.tooltip_edit_screen.title": "Edit Tooltip",
   "customtooltips.tooltip_edit_screen.category.target": "Target",
