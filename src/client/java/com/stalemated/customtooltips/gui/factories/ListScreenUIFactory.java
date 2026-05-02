@@ -1,14 +1,16 @@
 package com.stalemated.customtooltips.gui.factories;
 
 import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.gui.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.TooltipListScreen;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,12 +21,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ActionBarFactory {
+public class ListScreenUIFactory {
 
     private static final int BUTTON_SIZE = 20;
     private static final int SPACING = 4;
     private static final int START_Y = 24;
-    private static final int BUTTON_AMOUNT = 4;
+    private static final int ACTION_BAR_BUTTON_AMOUNT = 4;
 
     public static TextFieldWidget createSearchBox(TooltipListScreen screen, TextRenderer textRenderer, String searchText) {
         int screenWidth = screen.width;
@@ -41,8 +43,8 @@ public class ActionBarFactory {
         return searchBox;
     }
 
-    public static List<ClickableWidget> createActionButtons(TooltipListScreen screen) {
-        List<ClickableWidget> buttons = new ArrayList<>();
+    public static List<ButtonWidget> createActionButtons(TooltipListScreen screen) {
+        List<ButtonWidget> buttons = new ArrayList<>();
 
         buttons.add(createToggleButton(
             screen, 4,
@@ -91,6 +93,32 @@ public class ActionBarFactory {
         return buttons;
     }
 
+    public static List<ButtonWidget> createFooterButtons(TooltipListScreen screen) {
+        List<ButtonWidget> buttons = new ArrayList<>();
+        int btnWidth = 150;
+        int btnY = screen.height - 28;
+
+        buttons.add(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
+            TooltipEntry newEntry = TooltipEntry.builder("")
+                    .addLine("Default Text")
+                    .colors("white")
+                    .build();
+
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client != null) {
+                client.setScreen(TooltipEditScreen.create(screen, newEntry, true));
+            }
+        })
+                .dimensions(screen.width / 2 - 155, btnY, btnWidth, BUTTON_SIZE)
+                .build());
+
+        buttons.add(ButtonWidget.builder(Text.translatable("gui.done"), button -> screen.close())
+                .dimensions(screen.width / 2 + 5, btnY, btnWidth, BUTTON_SIZE)
+                .build());
+
+        return buttons;
+    }
+
     private static ButtonWidget createToggleButton(Screen screen, int index, Supplier<Boolean> getter, BiConsumer<TooltipConfig, Boolean> setter, Function<Boolean, Text> icon, Function<Boolean, Text> tooltip) {
         boolean initialValue = getter.get();
         return ButtonWidget.builder(icon.apply(initialValue), button -> {
@@ -110,7 +138,7 @@ public class ActionBarFactory {
     }
 
     private static int getButtonsWidth() {
-        return BUTTON_AMOUNT * BUTTON_SIZE + BUTTON_AMOUNT * SPACING;
+        return ACTION_BAR_BUTTON_AMOUNT * BUTTON_SIZE + ACTION_BAR_BUTTON_AMOUNT * SPACING;
     }
 
     private static Text getOnOffText(boolean isOn) {

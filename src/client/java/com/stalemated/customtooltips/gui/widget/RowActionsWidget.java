@@ -21,8 +21,7 @@ import java.util.List;
 
 public class RowActionsWidget {
     private final List<ButtonWidget> buttons = new ArrayList<>();
-    private final ButtonWidget duplicateButton;
-    private final ButtonWidget disableButton;
+    private final List<ButtonWidget> apiButtons = new ArrayList<>();
 
     private final int BUTTON_STEP = 24;
 
@@ -31,11 +30,11 @@ public class RowActionsWidget {
         String identifier = entry.getIdentifier();
         boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(identifier);
 
-        ButtonWidget editButton = ButtonWidget.builder(Text.literal("✎"), btn -> client.setScreen(TooltipEditScreen.create(client.currentScreen, entry, false)))
+        buttons.add(ButtonWidget.builder(Text.literal("✎"), btn -> client.setScreen(TooltipEditScreen.create(client.currentScreen, entry, false)))
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
-                .build();
+                .build());
 
-        ButtonWidget deleteButton = ButtonWidget.builder(Text.literal("✖").formatted(Formatting.RED), button -> {
+        buttons.add(ButtonWidget.builder(Text.literal("✖").formatted(Formatting.RED), button -> {
             Screen currentScreen = client.currentScreen;
             client.setScreen(new ConfirmScreen(
                     (confirmed) -> {
@@ -49,9 +48,11 @@ public class RowActionsWidget {
                     Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.title"),
                     Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", entry.target.isEmpty() ? "New Tooltip" : entry.target)
             ));
-        }).tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.delete_button"))).build();
+        })
+                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.delete_button")))
+                .build());
 
-        this.duplicateButton = ButtonWidget.builder(Text.literal("⧉"), btn -> {
+        apiButtons.add(ButtonWidget.builder(Text.literal("⧉"), btn -> {
             TooltipEntry newEntry = TooltipEntry.builder(entry.target)
                     .text(entry.text)
                     .style(entry.style)
@@ -78,24 +79,28 @@ public class RowActionsWidget {
 
             ToastManager.showDuplicatedToast(entry.target.isEmpty() ? "New Tooltip" : entry.target);
             parent.updateEntries(parent.parentScreen.searchBox.getText());
-        }).tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button"))).build();
+        })
+                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button")))
+                .build());
 
-        this.disableButton = ButtonWidget.builder(Text.literal(isDisabled ? "▶" : "⏸"), btn -> {
+        apiButtons.add(ButtonWidget.builder(Text.literal(isDisabled ? "▶" : "⏸"), btn -> {
             TooltipConfig config = ConfigManager.getConfig();
             if (isDisabled) config.disabled_entries.remove(identifier);
             else config.disabled_entries.add(identifier);
 
             ConfigManager.save();
             parent.updateEntries(parent.parentScreen.searchBox.getText());
-        }).tooltip(Tooltip.of(Text.translatable(isDisabled ? "customtooltips.tooltip_list_widget.enable_button" : "customtooltips.tooltip_list_widget.disable_button"))).build();
+        })
+                .tooltip(Tooltip.of(Text.translatable(isDisabled ? "customtooltips.tooltip_list_widget.enable_button" : "customtooltips.tooltip_list_widget.disable_button")))
+                .build());
 
-        buttons.addAll(List.of(deleteButton, editButton, duplicateButton, disableButton));
+        buttons.addAll(apiButtons);
     }
 
     public void render(DrawContext context, int x, int y, int entryWidth, int mouseX, int mouseY, float tickDelta, boolean isApiEntry) {
         int currentX = x + entryWidth;
 
-        List<ButtonWidget> visibleButtons = isApiEntry ? List.of(duplicateButton, disableButton) : buttons;
+        List<ButtonWidget> visibleButtons = isApiEntry ? apiButtons : buttons;
 
         for (ButtonWidget button : visibleButtons) {
             currentX -= BUTTON_STEP;
