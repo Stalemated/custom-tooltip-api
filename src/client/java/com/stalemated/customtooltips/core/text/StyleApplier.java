@@ -29,7 +29,8 @@ public class StyleApplier {
         }
 
         String colorStr = (entry.colors != null && !entry.colors.isEmpty()) ? entry.colors.get(0) : "white";
-        Style style = Style.EMPTY.withColor(ColorUtils.resolveTextColor(colorStr) != null ? ColorUtils.resolveTextColor(colorStr) : TextColor.fromFormatting(Formatting.WHITE));
+        TextColor resolvedColor = ColorUtils.resolveTextColor(colorStr);
+        Style style = Style.EMPTY.withColor(resolvedColor != null ? resolvedColor : TextColor.fromFormatting(Formatting.WHITE));
 
         return baseText.copy().setStyle(style);
     }
@@ -52,12 +53,6 @@ public class StyleApplier {
 
     public static void applyModifiers(MutableText processedText, Style cachedStyleModifier) {
         if (cachedStyleModifier == null || cachedStyleModifier == Style.EMPTY) return;
-        if (!processedText.getSiblings().isEmpty()) {
-            for (Text sibling : processedText.getSiblings()) {
-                if (sibling instanceof MutableText mutableSibling) mutableSibling.setStyle(sibling.getStyle().withParent(cachedStyleModifier));
-            }
-        } else {
-            processedText.setStyle(processedText.getStyle().withParent(cachedStyleModifier));
-        }
+        processedText.setStyle(processedText.getStyle().withParent(cachedStyleModifier));
     }
 }
