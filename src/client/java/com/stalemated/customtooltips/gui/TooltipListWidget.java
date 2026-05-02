@@ -67,7 +67,10 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
     }
 
     @Override
-    public int getRowWidth() { return Math.toIntExact(Math.round(this.width * 0.9)); }
+    public int getRowWidth() {
+        int rowWidth = Math.toIntExact(Math.round(this.width * 0.9));
+        return Math.min(rowWidth, 500);
+    }
 
     @Override
     protected int getScrollbarPositionX() { return this.width - 5; }
