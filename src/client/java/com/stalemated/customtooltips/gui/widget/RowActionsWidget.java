@@ -52,7 +52,7 @@ public class RowActionsWidget {
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
                 .build());
 
-        apiButtons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF29").formatted(Formatting.AQUA), btn -> {
+        apiButtons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF29"), btn -> {
             TooltipEntry newEntry = TooltipEntry.builder(entry.target)
                     .text(entry.text)
                     .style(entry.style)
