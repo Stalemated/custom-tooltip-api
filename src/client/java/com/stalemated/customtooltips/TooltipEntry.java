@@ -3,6 +3,7 @@ package com.stalemated.customtooltips;
 import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.core.text.StyleApplier;
 import com.stalemated.customtooltips.core.text.TextFormatter;
+import com.stalemated.customtooltips.core.text.parser.PlaceholderRegistry;
 import com.stalemated.customtooltips.util.ColorUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public class TooltipEntry {
 
@@ -71,8 +71,7 @@ public class TooltipEntry {
     public transient boolean apiEntry = false;
     public transient String apiEntryId = "";
     public transient Function<ItemStack, List<String>> dynamicTextProvider = null;
-
-    private static final Pattern KEYBIND_PATTERN = Pattern.compile("<key:([^>]+)>");
+    public transient boolean hasDynamicText = false;
 
     public TooltipEntry() {
         this.uuid = UUID.randomUUID().toString();
@@ -145,6 +144,15 @@ public class TooltipEntry {
         if (this.tickrate <= 0) this.tickrate = 100;
 
         this.cachedStyleModifier = StyleApplier.buildStyleModifier(this);
+        
+        this.hasDynamicText = false;
+        for (String line : this.text) {
+            if (PlaceholderRegistry.containsDynamicPlaceholders(line)) {
+                this.hasDynamicText = true;
+                break;
+            }
+        }
+
         this.cachesInitialized = true;
     }
 

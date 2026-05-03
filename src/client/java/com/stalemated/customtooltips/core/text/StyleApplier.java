@@ -5,8 +5,6 @@ import com.stalemated.customtooltips.util.ColorUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
@@ -28,8 +26,7 @@ public class StyleApplier {
         }
 
         String colorStr = (entry.colors != null && !entry.colors.isEmpty()) ? entry.colors.get(0) : "white";
-        TextColor resolvedColor = ColorUtils.resolveTextColor(colorStr);
-        Style style = Style.EMPTY.withColor(resolvedColor != null ? resolvedColor : TextColor.fromFormatting(Formatting.WHITE));
+        Style style = Style.EMPTY.withColor(ColorUtils.parseColor(colorStr));
 
         return baseText.copy().setStyle(style);
     }

@@ -2,10 +2,14 @@ package com.stalemated.customtooltips.api;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipRegistry;
+import com.stalemated.customtooltips.core.text.parser.PlaceholderRegistry;
+import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+
 
 /**
  * The main Developer API for Custom Tooltip API.
@@ -41,5 +45,18 @@ public class CustomTooltipApi {
      */
     public static List<TooltipEntry> getApiEntries() {
         return Collections.unmodifiableList(API_ENTRIES);
+    }
+
+    /**
+     * Registers a custom placeholder variable to be used in tooltips.
+     * <p>
+     * Example: {@code CustomTooltipApi.registerPlaceholder("mana", stack -> getMana(stack));}
+     * Allows users to write {@code %mana%} in their tooltips.
+     *
+     * @param key      The string key without percentage signs (e.g., "energy", "durability").
+     * @param provider A function providing the string replacement based on the item stack.
+     */
+    public static void registerPlaceholder(String key, Function<ItemStack, String> provider) {
+        PlaceholderRegistry.register(key, provider);
     }
 }
