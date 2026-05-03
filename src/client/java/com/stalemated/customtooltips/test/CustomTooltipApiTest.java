@@ -26,8 +26,7 @@ public class CustomTooltipApiTest implements ClientModInitializer {
 
         // Rainbow effect tooltip on diamond swords
         TooltipEntry.builder("minecraft:diamond_sword")
-                .addLine("✦ Legendary Sword ✦")
-                .addLine("Forged in the Stars.")
+                .text(List.of("✦ Legendary Sword ✦", "Forged in the Stars."))
                 .style(TooltipEntry.TooltipStyle.RAINBOW)
                 .bold(true)
                 .italic(true)
@@ -50,6 +49,19 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 .colors(List.of("#FFD700", "#FF4500"))
                 .bold(true)
                 .position(TooltipEntry.TooltipPosition.REPLACE_NAME)
+                .register();
+
+        // Example of a Dynamic Text Provider reading item state in real-time
+        TooltipEntry.builder("minecraft:iron_sword")
+                .dynamicText(stack -> {
+                    if (stack.isDamageable()) {
+                        int remaining = stack.getMaxDamage() - stack.getDamage();
+                        return List.of("Durability: " + remaining + " / " + stack.getMaxDamage());
+                    }
+                    return List.of("This item is Unbreakable");
+                })
+                .style(TooltipEntry.TooltipStyle.BREATHING_GRADIENT)
+                .colors("#00FF00", "#004400")
                 .register();
 
         /*

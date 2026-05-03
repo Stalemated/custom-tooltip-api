@@ -32,7 +32,7 @@ public class TooltipProcessor {
             }
 
             TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
-            strategy.modifyTooltip(lines, entry.getTextComponents(), entry);
+            strategy.modifyTooltip(lines, entry.getTextComponents(stack), entry);
         }
 
         if (needsShiftPrompt) {
@@ -50,7 +50,7 @@ public class TooltipProcessor {
             if (entry.require_shift && !shiftPressed) continue;
 
             TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
-            Text modified = strategy.modifyHeldItemName(originalName, entry.getTextComponents(), entry);
+            Text modified = strategy.modifyHeldItemName(originalName, entry.getTextComponents(stack), entry);
             
             if (modified != originalName) {
                 return modified;

@@ -3,19 +3,21 @@ package com.stalemated.customtooltips.core.text;
 import com.stalemated.customtooltips.TooltipEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TextFormatter {
 
-    public static List<Text> getOrGenerateComponents(TooltipEntry entry) {
-        boolean isStatic = entry.style == TooltipEntry.TooltipStyle.SOLID || entry.style == TooltipEntry.TooltipStyle.STATIC_GRADIENT;
+    public static List<Text> getOrGenerateComponents(TooltipEntry entry, ItemStack stack) {
+        boolean isStatic = (entry.style == TooltipEntry.TooltipStyle.SOLID || entry.style == TooltipEntry.TooltipStyle.STATIC_GRADIENT) && entry.dynamicTextProvider == null;
         if (isStatic && entry.getCachedStaticText() != null) return entry.getCachedStaticText();
 
         List<Text> linesList = new ArrayList<>();
-        if (entry.text == null) return linesList;
+        List<String> rawText = entry.dynamicTextProvider != null ? entry.dynamicTextProvider.apply(stack) : entry.text;
+        if (rawText == null) return linesList;
 
-        for (String line : entry.text) {
+        for (String line : rawText) {
             if (line == null || line.isEmpty()) continue;
 
             String parsedLine = KeybindParser.parse(line);

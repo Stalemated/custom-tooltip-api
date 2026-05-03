@@ -12,6 +12,7 @@ import com.stalemated.customtooltips.gui.widget.ScrollingTextRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -115,7 +116,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                     hoverTooltip.add(Text.literal(targetText));
                     hoverTooltip.add(Text.empty());
                 }
-                hoverTooltip.addAll(this.tooltipEntry.getTextComponents());
+                hoverTooltip.addAll(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
                 TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip);
             }
         }

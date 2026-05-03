@@ -17,6 +17,7 @@ import net.minecraft.util.InvalidIdentifierException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class TooltipEntry {
@@ -69,6 +70,7 @@ public class TooltipEntry {
 
     public transient boolean apiEntry = false;
     public transient String apiEntryId = "";
+    public transient Function<ItemStack, List<String>> dynamicTextProvider = null;
 
     private static final Pattern KEYBIND_PATTERN = Pattern.compile("<key:([^>]+)>");
 
@@ -158,9 +160,9 @@ public class TooltipEntry {
         return false;
     }
 
-    public List<Text> getTextComponents() {
+    public List<Text> getTextComponents(ItemStack stack) {
         if (!cachesInitialized) initCaches();
-        return TextFormatter.getOrGenerateComponents(this);
+        return TextFormatter.getOrGenerateComponents(this, stack);
     }
 
     public int getLineOffset(int size) {
@@ -217,6 +219,19 @@ public class TooltipEntry {
          */
         public Builder text(List<String> lines) {
             this.entry.text.addAll(lines);
+            return this;
+        }
+
+        /**
+         * Sets a dynamic text provider for this tooltip.
+         * This allows the text to change every frame based on the ItemStack's state (e.g., NBT data, enchantments, or any other dynamic properties).
+         * Overrides the static text set by {@link #text(List)} or {@link #addLine(String)}.
+         *
+         * @param provider A function that takes an ItemStack and returns a list of strings.
+         * @return This builder instance.
+         */
+        public Builder dynamicText(Function<ItemStack, List<String>> provider) {
+            this.entry.dynamicTextProvider = provider;
             return this;
         }
 
