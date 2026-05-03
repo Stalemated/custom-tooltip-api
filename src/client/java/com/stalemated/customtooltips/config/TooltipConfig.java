@@ -5,7 +5,6 @@ import com.stalemated.customtooltips.core.sorting.SortMode;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TooltipConfig {
@@ -41,17 +40,4 @@ public class TooltipConfig {
             'tickrate': Accepts positive integers. Cycle duration of the animation. 100 is normal speed, 50 is fast, 200 is slow.
             """)
     public List<TooltipEntry> entries = new ArrayList<>();
-
-    public void addDefaultEntries() {
-        this.entries.add(new TooltipEntry(
-                "#c:swords",
-                new ArrayList<>(Arrays.asList("Assassin's Sword", "", "+15% Critical Damage")),
-                TooltipEntry.TooltipStyle.SLIDE_GRADIENT,
-                new ArrayList<>(Arrays.asList("#59CDE9", "#0A2A88")),
-                true, false, true, false, false,
-                false, true,
-                TooltipEntry.TooltipPosition.TOP, 0,
-                0, 100, "minecraft:default"
-        ));
-    }
 }
