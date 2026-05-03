@@ -2,7 +2,6 @@ package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.util.ColorUtils;
-import elocindev.necronomicon.api.text.TextAPI;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -16,15 +15,15 @@ public class StyleApplier {
     public static MutableText apply(Text baseText, TooltipEntry entry) {
         switch (entry.style) {
             case RAINBOW:
-                return TextAPI.Styles.getRainbowGradient(baseText, entry.animation_offset, entry.tickrate);
+                return GradientGenerator.getRainbowGradient(baseText, entry.animation_offset, entry.tickrate);
             case STATIC_GRADIENT:
-                if (entry.isGradient()) return TextAPI.Styles.getStaticGradient(baseText, entry.getParsedColor1(), entry.getParsedColor2());
+                if (entry.isGradient()) return GradientGenerator.getStaticGradient(baseText, entry.getParsedColor1(), entry.getParsedColor2());
                 break;
             case SLIDE_GRADIENT:
-                if (entry.isGradient()) return TextAPI.Styles.getGradient(baseText, entry.animation_offset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate);
+                if (entry.isGradient()) return GradientGenerator.getSlideGradient(baseText, entry.animation_offset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate);
                 break;
             case BREATHING_GRADIENT:
-                if (entry.isGradient()) return TextAPI.Styles.getBreathingGradient(baseText, entry.animation_offset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate);
+                if (entry.isGradient()) return GradientGenerator.getBreathingGradient(baseText, entry.animation_offset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate);
                 break;
         }
 

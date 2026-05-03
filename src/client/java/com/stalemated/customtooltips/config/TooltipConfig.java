@@ -38,7 +38,7 @@ public class TooltipConfig {
             'position': Accepts: TOP (Under the item's name) or BOTTOM (Bottom of the tooltip).
             'line_offset': Offsets which line the tooltip is gonna show up on. Accepts integers.
             'animation_offset': Animation animation_offset that desynchronizes different animations. Accepts integers.
-            'tickrate': Accepts integers different from 0. Speed of the animation. Closer to 0 is higher speed.
+            'tickrate': Accepts positive integers. Cycle duration of the animation. 100 is normal speed, 50 is fast, 200 is slow.
             """)
     public List<TooltipEntry> entries = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class TooltipConfig {
                 true, false, true, false, false,
                 false, true,
                 TooltipEntry.TooltipPosition.TOP, 0,
-                0, 1, "minecraft:default"
+                0, 100, "minecraft:default"
         ));
     }
 }

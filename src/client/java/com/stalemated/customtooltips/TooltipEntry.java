@@ -51,7 +51,7 @@ public class TooltipEntry {
     public String font = "minecraft:default";
 
     public int animation_offset = 0;
-    public long tickrate = 1;
+    public int tickrate = 100;
 
     public String uuid;
 
@@ -75,7 +75,7 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, long tickrate, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -138,7 +138,7 @@ public class TooltipEntry {
         this.isGradient = this.colors != null && this.colors.size() >= 2;
         this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? ColorUtils.parseColor(this.colors.get(0)) : 0xFFFFFF;
         this.parsedColor2 = this.isGradient ? ColorUtils.parseColor(this.colors.get(1)) : 0xFFFFFF;
-        if (this.tickrate <= 0) this.tickrate = 1;
+        if (this.tickrate <= 0) this.tickrate = 100;
 
         this.cachedStyleModifier = StyleApplier.buildStyleModifier(this);
         this.cachesInitialized = true;
@@ -385,7 +385,7 @@ public class TooltipEntry {
          * @param tickrate The speed of the animation.
          * @return This builder instance.
          */
-        public Builder tickrate(long tickrate) {
+        public Builder tickrate(int tickrate) {
             this.entry.tickrate = tickrate;
             return this;
         }

@@ -13,10 +13,7 @@ import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
-import dev.isxander.yacl3.api.controller.StringControllerBuilder;
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
-import dev.isxander.yacl3.api.controller.LongFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.*;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -145,22 +142,28 @@ public class TooltipEditScreen {
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.animation_offset"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.animation_offset.description")))
                 .binding(0, () -> entry.animation_offset, val -> entry.animation_offset = val)
-                .controller(IntegerFieldControllerBuilder::create)
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(-100, 100)
+                        .step(1)
+                )
                 .build();
 
-        var rate = Option.<Long>createBuilder()
+        var rate = Option.<Integer>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.tickrate"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.tickrate.description")))
-                .binding(1L, () -> entry.tickrate, val -> entry.tickrate = val)
-                .controller(LongFieldControllerBuilder::create)
+                .binding(100, () -> entry.tickrate, val -> entry.tickrate = val)
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(1, 500)
+                        .step(1)
+                )
                 .build();
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.position_animation"))
                 .option(position)
                 .option(offset)
-                .option(animOffset)
                 .option(rate)
+                .option(animOffset)
                 .build();
     }
 

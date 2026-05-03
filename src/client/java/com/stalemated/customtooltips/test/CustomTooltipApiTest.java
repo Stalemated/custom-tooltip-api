@@ -32,7 +32,7 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 .bold(true)
                 .italic(true)
                 .position(TooltipEntry.TooltipPosition.TOP)
-                .tickrate(2L)
+                .tickrate(35)
                 .register();
 
         TooltipEntry.builder("minecraft:diamond_sword")
