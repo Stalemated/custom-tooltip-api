@@ -2,7 +2,7 @@ package com.stalemated.customtooltips.api;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipRegistry;
-import com.stalemated.customtooltips.core.text.parser.PlaceholderRegistry;
+import com.stalemated.customtooltips.registry.PlaceholderRegistry;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;

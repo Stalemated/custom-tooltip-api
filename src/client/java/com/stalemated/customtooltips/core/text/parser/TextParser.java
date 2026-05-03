@@ -7,7 +7,7 @@ public class TextParser {
         String processed = text;
         processed = LegacyFormattingParser.parse(processed);
         processed = KeybindParser.parse(processed);
-        processed = PlaceholderRegistry.parse(processed, stack);
+        processed = PlaceholderParser.parse(processed, stack);
         return processed;
     }
 }

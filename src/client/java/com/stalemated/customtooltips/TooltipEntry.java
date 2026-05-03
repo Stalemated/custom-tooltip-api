@@ -3,7 +3,7 @@ package com.stalemated.customtooltips;
 import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.core.text.StyleApplier;
 import com.stalemated.customtooltips.core.text.TextFormatter;
-import com.stalemated.customtooltips.core.text.parser.PlaceholderRegistry;
+import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
 import com.stalemated.customtooltips.util.ColorUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -147,7 +147,7 @@ public class TooltipEntry {
         
         this.hasDynamicText = false;
         for (String line : this.text) {
-            if (PlaceholderRegistry.containsDynamicPlaceholders(line)) {
+            if (PlaceholderParser.containsDynamicPlaceholders(line)) {
                 this.hasDynamicText = true;
                 break;
             }
