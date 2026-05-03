@@ -71,6 +71,8 @@
   "customtooltips.tooltip_edit_screen.animation_offset.description": "Animation offset that desynchronizes different animations.",
   "customtooltips.tooltip_edit_screen.tickrate": "Animation Speed",
   "customtooltips.tooltip_edit_screen.tickrate.description": "Cycle duration of the animation.\n100 is normal speed, 50 is fast, 200 is slow.",
+  "customtooltips.tooltip_edit_screen.reverse_animation": "Reverse Animation",
+  "customtooltips.tooltip_edit_screen.reverse_animation.description": "Reverses the animation of the gradient.\nOnly works with §6Slide§r, §6Breathing§r, and §6Rainbow§r gradients.",
 
   "customtooltips.tooltip_list_widget.entry.narration": "Tooltip entry for: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Delete",
