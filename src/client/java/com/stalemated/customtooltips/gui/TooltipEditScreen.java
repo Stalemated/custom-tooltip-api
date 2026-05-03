@@ -158,12 +158,20 @@ public class TooltipEditScreen {
                 )
                 .build();
 
+        var reverseAnim = Option.<Boolean>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.reverse_animation"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.reverse_animation.description")))
+                .binding(false, () -> entry.reverse_animation, val -> entry.reverse_animation = val)
+                .controller(TickBoxControllerBuilder::create)
+                .build();
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.position_animation"))
                 .option(position)
                 .option(offset)
                 .option(rate)
                 .option(animOffset)
+                .option(reverseAnim)
                 .build();
     }
 

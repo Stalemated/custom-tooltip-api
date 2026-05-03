@@ -52,6 +52,7 @@ public class TooltipEntry {
 
     public int animation_offset = 0;
     public int tickrate = 100;
+    public boolean reverse_animation = false;
 
     public String uuid;
 
@@ -75,7 +76,7 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -91,6 +92,7 @@ public class TooltipEntry {
         this.lineOffset = lineOffset;
         this.animation_offset = animation_offset;
         this.tickrate = tickrate;
+        this.reverse_animation = reverse_animation;
         this.font = font != null && !font.isEmpty() ? font : "minecraft:default";
         this.uuid = UUID.randomUUID().toString();
     }
@@ -382,11 +384,22 @@ public class TooltipEntry {
          * Sets the animation tickrate (speed).
          * Closer to 0 is faster. Value must be greater than 0.
          *
-         * @param tickrate The speed of the animation.
+         * @param tickrate The cycle duration of the animation.
          * @return This builder instance.
          */
         public Builder tickrate(int tickrate) {
             this.entry.tickrate = tickrate;
+            return this;
+        }
+
+        /**
+         * Reverses the flow direction of animated gradients (e.g., Right to Left instead of Left to Right).
+         *
+         * @param reverse True to reverse the animation direction.
+         * @return This builder instance.
+         */
+        public Builder reverseAnimation(boolean reverse) {
+            this.entry.reverse_animation = reverse;
             return this;
         }
 

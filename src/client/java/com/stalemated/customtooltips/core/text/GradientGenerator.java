@@ -15,26 +15,29 @@ public class GradientGenerator {
         );
     }
 
-    public static MutableText getSlideGradient(Text text, int offset, int color1, int color2, int tickrate) {
+    public static MutableText getSlideGradient(Text text, int offset, int color1, int color2, int tickrate, boolean reversed) {
         long time = getAnimationTime(tickrate);
+        int dir = reversed ? -1 : 1;
         return applyGradient(text.getString(), (index, ratio) -> {
-            float hue = (float) (((time - index - offset) % 45.0) / 22.5f);
+            float hue = (float) (((time - (index * dir) - offset) % 45.0) / 22.5f);
             return GradientColorUtils.gradientSlide(hue, color1, color2);
         });
     }
 
-    public static MutableText getBreathingGradient(Text text, int offset, int color1, int color2, int tickrate) {
+    public static MutableText getBreathingGradient(Text text, int offset, int color1, int color2, int tickrate, boolean reversed) {
         long time = getAnimationTime(tickrate);
+        int dir = reversed ? -1 : 1;
         return applyGradient(text.getString(), (index, ratio) -> {
-            float animationFactor = (float) ((Math.sin((time - index - offset) * 0.05) + 1.0) / 2.0);
+            float animationFactor = (float) ((Math.sin((time - (index * dir) - offset) * 0.05) + 1.0) / 2.0);
             return GradientColorUtils.interpolateAnimation(color1, color2, ratio, animationFactor);
         });
     }
 
-    public static MutableText getRainbowGradient(Text text, int offset, int tickrate) {
+    public static MutableText getRainbowGradient(Text text, int offset, int tickrate, boolean reversed) {
         long time = getAnimationTime(tickrate);
+        int dir = reversed ? -1 : 1;
         return applyGradient(text.getString(), (index, ratio) -> {
-            float hue = (float) ((1.0 / 90.0 * (time - index - offset)) % 360);
+            float hue = (float) ((1.0 / 90.0 * (time - (index * dir) - offset)) % 360);
             return Color.HSBtoRGB(hue, 0.5F, 1.0F);
         });
     }

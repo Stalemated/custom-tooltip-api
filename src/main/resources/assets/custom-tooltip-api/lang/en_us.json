@@ -67,10 +67,10 @@
   "customtooltips.tooltip_edit_screen.require_shift.description": "If the tooltip requires pressing the §6Shift§r key to display.",
   "customtooltips.tooltip_edit_screen.empty_line_before": "Empty line before",
   "customtooltips.tooltip_edit_screen.empty_line_before.description": "Adds an empty line before the tooltip.",
-  "customtooltips.tooltip_edit_screen.animation_offset": "Animation offset",
+  "customtooltips.tooltip_edit_screen.animation_offset": "Animation Offset",
   "customtooltips.tooltip_edit_screen.animation_offset.description": "Animation offset that desynchronizes different animations.",
-  "customtooltips.tooltip_edit_screen.tickrate": "Tick rate",
-  "customtooltips.tooltip_edit_screen.tickrate.description": "Speed of the animation. Closer to 0 is higher speed.",
+  "customtooltips.tooltip_edit_screen.tickrate": "Animation Speed",
+  "customtooltips.tooltip_edit_screen.tickrate.description": "Cycle duration of the animation.\n100 is normal speed, 50 is fast, 200 is slow.",
 
   "customtooltips.tooltip_list_widget.entry.narration": "Tooltip entry for: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Delete",
