@@ -6,10 +6,11 @@ import dev.isxander.yacl3.gui.AbstractWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ItemOrTagController extends AbstractDropdownController<String> {
 
@@ -19,10 +20,21 @@ public class ItemOrTagController extends AbstractDropdownController<String> {
 
     private static List<String> getRegistryValues() {
         List<String> values = new ArrayList<>();
-        Registries.ITEM.getIds().stream()
-                .map(Identifier::toString)
-                .forEach(values::add);
+        Set<String> namespaces = new HashSet<>();
 
+        // 1. Wildcard absoluto (Todos los ítems)
+        values.add("*");
+
+        // 2. Extraemos los ítems y guardamos sus namespaces únicos
+        Registries.ITEM.getIds().forEach(id -> {
+            values.add(id.toString());
+            namespaces.add(id.getNamespace());
+        });
+
+        // 3. Añadimos los Wildcards de Namespace (ej. "minecraft:*")
+        namespaces.forEach(ns -> values.add(ns + ":*"));
+
+        // 4. Añadimos las Tags
         Registries.ITEM.streamTags()
                 .map(tagKey -> "#" + tagKey.id().toString())
                 .forEach(values::add);

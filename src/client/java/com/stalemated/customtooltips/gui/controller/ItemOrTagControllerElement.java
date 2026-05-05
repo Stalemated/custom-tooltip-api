@@ -27,6 +27,18 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
         this.itemOrTagController = control;
     }
 
+    private boolean isSpecialTarget(String value) {
+        return value.equals("*") || value.startsWith("regex:") || value.endsWith(":*") || value.startsWith("#");
+    }
+
+    private Text formatTargetText(String value) {
+        if (value.equals("*")) return Text.literal(value).formatted(Formatting.AQUA);
+        if (value.startsWith("regex:")) return Text.literal(value).formatted(Formatting.GREEN);
+        if (value.endsWith(":*")) return Text.literal(value).formatted(Formatting.YELLOW);
+        if (value.startsWith("#")) return Text.literal(value).formatted(Formatting.GOLD);
+        return Text.literal(value);
+    }
+
     @Override
     protected void drawValueText(DrawContext graphics, int mouseX, int mouseY, float delta) {
         Dimension<Integer> oldDimension = this.getDimension();
@@ -86,7 +98,7 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
                 .collect(Collectors.toList());
 
         this.currentItemIcon = ItemStack.EMPTY;
-        if (!this.inputField.startsWith("#")) {
+        if (!isSpecialTarget(this.inputField)) {
             try {
                 Item item = Registries.ITEM.get(new Identifier(this.inputField));
                 if (item != Items.AIR) {
@@ -97,7 +109,7 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
 
         this.itemCache.clear();
         for (String id : identifiers) {
-            if (!id.startsWith("#")) {
+            if (!isSpecialTarget(id)) {
                 try {
                     Item item = Registries.ITEM.get(new Identifier(id));
                     if (item != Items.AIR) {
@@ -114,18 +126,13 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
     protected void renderDropdownEntry(DrawContext graphics, Dimension<Integer> entryDimension, String value) {
         int leftEdge = entryDimension.x() + this.getDecorationPadding();
         
-        Text text;
-        if (value.startsWith("#")) {
-            text = Text.literal(value).formatted(Formatting.GOLD);
-        } else {
-            text = Text.literal(value);
-        }
+        Text text = formatTargetText(value);
 
         int maxTextWidth = entryDimension.width() - this.getDecorationPadding() - 24;
         
         if (this.textRenderer.getWidth(text) > maxTextWidth) {
             String shortenedString = this.textRenderer.trimToWidth(text.getString(), maxTextWidth - this.textRenderer.getWidth("...")) + "...";
-            text = value.startsWith("#") ? Text.literal(shortenedString).formatted(Formatting.GOLD) : Text.literal(shortenedString);
+            text = formatTargetText(shortenedString);
         }
 
         graphics.drawText(this.textRenderer, text, leftEdge + 4, this.getTextY(entryDimension), -1, true);
@@ -144,14 +151,17 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
     @Override
     protected Text getValueText() {
         if (!this.inputField.isEmpty() && !this.inputFieldFocused) {
-            if (!this.inputField.startsWith("#")) {
-                try {
-                    Item item = Registries.ITEM.get(new Identifier(this.inputField));
-                    if (item != Items.AIR) {
-                        return item.getName();
-                    }
-                } catch (Exception ignored) {}
+            if (isSpecialTarget(this.inputField)) {
+                return formatTargetText(this.inputField);
             }
+            
+            try {
+                Item item = Registries.ITEM.get(new Identifier(this.inputField));
+                if (item != Items.AIR) {
+                    return item.getName();
+                }
+            } catch (Exception ignored) {}
+            
             return Text.literal(this.inputField);
         }
         return super.getValueText();
