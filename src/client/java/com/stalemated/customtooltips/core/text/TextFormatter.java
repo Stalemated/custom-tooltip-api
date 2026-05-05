@@ -18,13 +18,12 @@ public class TextFormatter {
         List<String> rawText = entry.dynamicTextProvider != null ? entry.dynamicTextProvider.apply(stack) : entry.text;
         if (rawText == null) return linesList;
 
-        for (String line : rawText) {
-            if (line == null || line.isEmpty()) continue;
+        List<String> parsedLines = TextParser.parseAll(rawText, stack);
 
-            String parsedLine = TextParser.parse(line, stack);
+        for (String parsedLine : parsedLines) {
             MutableText processedText = StyleApplier.apply(Text.literal(parsedLine), entry);
             StyleApplier.applyModifiers(processedText, entry.getCachedStyleModifier());
-            
+
             linesList.add(processedText);
         }
 

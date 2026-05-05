@@ -93,5 +93,7 @@
   "customtooltips.toast.duplicated.title": "Entry duplicated!",
   "customtooltips.toast.duplicated.desc": "Successfully duplicated entry for %s",
   "customtooltips.toast.color.invalid.title": "Invalid color",
-  "customtooltips.toast.color.invalid.desc": "A color is invalid. Defaulting to the visual picker."
+  "customtooltips.toast.color.invalid.desc": "A color is invalid. Defaulting to the visual picker.",
+
+  "customtooltips.unbreakable_item": "Unbreakable"
 }
