@@ -4,16 +4,12 @@ import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.core.text.StyleApplier;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
+import com.stalemated.customtooltips.core.target.TargetMatcher;
+import com.stalemated.customtooltips.core.target.TargetMatcherFactory;
 import com.stalemated.customtooltips.util.ColorUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +55,7 @@ public class TooltipEntry {
 
     // Ignored caches
     private transient boolean cachesInitialized = false;
-    private transient boolean isTag = false;
-    private transient TagKey<Item> cachedTagKey = null;
-    private transient Item cachedItem = null;
+    private transient TargetMatcher targetMatcher = null;
     private transient int parsedColor1 = 0xFFFFFF;
     private transient int parsedColor2 = 0xFFFFFF;
     private transient boolean isGradient = false;
@@ -118,25 +112,13 @@ public class TooltipEntry {
         this.cachesInitialized = false;
         this.cachedStaticText = null;
         this.cachedStyleModifier = null;
+        this.targetMatcher = null;
     }
 
     public void initCaches() {
         if (cachesInitialized) return;
 
-        if (this.target != null && !this.target.isEmpty()) {
-            try {
-                if (this.target.startsWith("#")) {
-                    this.isTag = true;
-                    this.cachedTagKey = TagKey.of(RegistryKeys.ITEM, new Identifier(this.target.substring(1)));
-                } else {
-                    this.isTag = false;
-                    this.cachedItem = Registries.ITEM.get(new Identifier(this.target));
-                }
-            } catch (InvalidIdentifierException e) {
-                this.cachedItem = null;
-                this.cachedTagKey = null;
-            }
-        }
+        this.targetMatcher = TargetMatcherFactory.create(this.target);
 
         this.isGradient = this.colors != null && this.colors.size() >= 2;
         this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? ColorUtils.parseColor(this.colors.get(0)) : 0xFFFFFF;
@@ -159,13 +141,7 @@ public class TooltipEntry {
     public boolean matches(ItemStack stack) {
         if (!cachesInitialized) initCaches();
 
-        if (this.isTag && this.cachedTagKey != null) {
-            return stack.isIn(this.cachedTagKey);
-        } else if (!this.isTag && this.cachedItem != null) {
-            return stack.isOf(this.cachedItem);
-        }
-
-        return false;
+        return this.targetMatcher != null && this.targetMatcher.matches(stack);
     }
 
     public List<Text> getTextComponents(ItemStack stack) {
@@ -184,7 +160,7 @@ public class TooltipEntry {
     /**
      * Creates a new Builder instance for configuring a TooltipEntry.
      *
-     * @param target The target item ID (e.g., "minecraft:stick") or tag (e.g., "#c:swords").
+         * @param target The target item ID, tag ("#c:swords"), namespace ("minecraft:*"), regex ("regex:.*sword.*"), or all items ("*").
      * @return A new Builder instance.
      */
     public static Builder builder(String target) {
