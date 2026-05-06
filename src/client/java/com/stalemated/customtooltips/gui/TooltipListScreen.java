@@ -8,7 +8,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import com.stalemated.customtooltips.util.ToastManager;
 import net.minecraft.text.Text;
 
-import static com.stalemated.customtooltips.CustomTooltipApiClient.openConfigKeybind;
+import static com.stalemated.customtooltips.registry.KeybindRegistry.openConfigKeybind;
 
 import java.util.List;
 

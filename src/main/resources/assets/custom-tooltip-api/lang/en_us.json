@@ -64,8 +64,8 @@
   "customtooltips.tooltip_edit_screen.strikethrough.description": "If the displayed text should be §mstrikethrough§r.",
   "customtooltips.tooltip_edit_screen.obfuscated": "Obfuscated",
   "customtooltips.tooltip_edit_screen.obfuscated.description": "If the displayed text should be §kobfuscated§r (obfuscated).",
-  "customtooltips.tooltip_edit_screen.require_shift": "Require Shift",
-  "customtooltips.tooltip_edit_screen.require_shift.description": "If the tooltip requires pressing the §6Shift§r key to display.",
+  "customtooltips.tooltip_edit_screen.require_shift": "Requires Keybind",
+  "customtooltips.tooltip_edit_screen.require_shift.description": "If enabled, the tooltip will only appear when holding the secondary details key (Default: Shift).\n\n§eNote:§r You can rebind this key in Minecraft's Controls menu.",
   "customtooltips.tooltip_edit_screen.empty_line_before": "Empty line before",
   "customtooltips.tooltip_edit_screen.empty_line_before.description": "Adds an empty line before the tooltip.",
   "customtooltips.tooltip_edit_screen.animation_offset": "Animation Offset",
@@ -83,10 +83,11 @@
   "customtooltips.tooltip_list_widget.delete_confirm.message": "Are you sure you want to delete\nthe tooltip for %s?",
   "customtooltips.tooltip_list_widget.copy_button": "Copy Tooltip to clipboard",
 
-  "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Hold [SHIFT] for details",
+  "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Hold [%s] for details",
 
   "category.customtooltips.keys": "Custom Tooltip API",
   "key.customtooltips.open_config": "Open Config",
+  "key.customtooltips.hold_shift": "Show Extended Tooltips",
 
   "customtooltips.toast.keybind_missing.title": "Did you know?",
   "customtooltips.toast.keybind_missing.desc": "You can set a Keybind to open this menu easily!",
