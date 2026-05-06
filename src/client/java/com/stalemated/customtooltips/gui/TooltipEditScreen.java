@@ -339,9 +339,9 @@ public class TooltipEditScreen {
 
     private static OptionGroup createConditionsGroup(TooltipEntry entry) {
         var requireShift = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.require_shift"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.require_shift.description")))
-                .binding(false, () -> entry.require_shift, val -> entry.require_shift = val)
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.require_keybind"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.require_keybind.description")))
+                .binding(false, () -> entry.require_keybind, val -> entry.require_keybind = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
 
@@ -359,11 +359,35 @@ public class TooltipEditScreen {
                 .controller(TickBoxControllerBuilder::create)
                 .build();
 
+        var showOnlyIfDamaged = Option.<Boolean>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_damaged"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_damaged.description")))
+                .binding(false, () -> entry.show_only_if_damaged, val -> entry.show_only_if_damaged = val)
+                .controller(TickBoxControllerBuilder::create)
+                .build();
+
+        var showOnlyIfEnchanted = Option.<Boolean>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_enchanted"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_enchanted.description")))
+                .binding(false, () -> entry.show_only_if_enchanted, val -> entry.show_only_if_enchanted = val)
+                .controller(TickBoxControllerBuilder::create)
+                .build();
+
+        var showOnlyIfUnbreakable = Option.<Boolean>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_unbreakable"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_unbreakable.description")))
+                .binding(false, () -> entry.show_only_if_unbreakable, val -> entry.show_only_if_unbreakable = val)
+                .controller(TickBoxControllerBuilder::create)
+                .build();
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.conditions"))
                 .option(requireShift)
                 .option(emptyLineBefore)
                 .option(hideVanillaLines)
+                .option(showOnlyIfDamaged)
+                .option(showOnlyIfEnchanted)
+                .option(showOnlyIfUnbreakable)
                 .build();
     }
 }

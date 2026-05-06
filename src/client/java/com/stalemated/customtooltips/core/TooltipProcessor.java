@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TooltipProcessor {
 
@@ -42,7 +43,7 @@ public class TooltipProcessor {
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (shouldNotProcessEntry(entry, stack)) continue;
 
-            if (entry.require_shift && !holdKeyPressed) {
+            if (entry.require_keybind && !holdKeyPressed) {
                 needsShiftPrompt = true;
                 continue;
             }
@@ -64,7 +65,7 @@ public class TooltipProcessor {
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (shouldNotProcessEntry(entry, stack)) continue;
-            if (entry.require_shift && !holdKeyPressed) continue;
+            if (entry.require_keybind && !holdKeyPressed) continue;
 
             TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
             Text modified = strategy.modifyHeldItemName(originalName, entry.getTextComponents(stack), entry);
@@ -79,7 +80,11 @@ public class TooltipProcessor {
 
     private static boolean shouldNotProcessEntry(TooltipEntry entry, ItemStack stack) {
         if (entry == null || !entry.matches(stack)) return true;
-        return ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier());
+        if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) return true;
+
+        if (entry.show_only_if_damaged && !stack.isDamaged()) return true;
+        if (entry.show_only_if_enchanted && !stack.hasEnchantments()) return true;
+        return entry.show_only_if_unbreakable && !(stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable"));
     }
 
     private static boolean isHoldKeyPressed() {

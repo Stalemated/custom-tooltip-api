@@ -42,9 +42,13 @@ public class TooltipEntry {
     public boolean strikethrough = false;
     public boolean obfuscated = false;
 
-    public boolean require_shift = false;
+    public boolean require_keybind = false;
     public boolean empty_line_before = false;
     public boolean hide_vanilla_lines = false;
+    
+    public boolean show_only_if_damaged = false;
+    public boolean show_only_if_enchanted = false;
+    public boolean show_only_if_unbreakable = false;
 
     public String font = "minecraft:default";
 
@@ -72,7 +76,7 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, boolean hide_vanilla_lines, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -82,9 +86,12 @@ public class TooltipEntry {
         this.underlined = underlined;
         this.strikethrough = strikethrough;
         this.obfuscated = obfuscated;
-        this.require_shift = require_shift;
+        this.require_keybind = require_keybind;
         this.empty_line_before = empty_line_before;
         this.hide_vanilla_lines = hide_vanilla_lines;
+        this.show_only_if_damaged = show_only_if_damaged;
+        this.show_only_if_enchanted = show_only_if_enchanted;
+        this.show_only_if_unbreakable = show_only_if_unbreakable;
         this.position = position;
         this.lineOffset = lineOffset;
         this.animation_offset = animation_offset;
@@ -159,9 +166,12 @@ public class TooltipEntry {
         clone.underlined = this.underlined;
         clone.strikethrough = this.strikethrough;
         clone.obfuscated = this.obfuscated;
-        clone.require_shift = this.require_shift;
+        clone.require_keybind = this.require_keybind;
         clone.empty_line_before = this.empty_line_before;
         clone.hide_vanilla_lines = this.hide_vanilla_lines;
+        clone.show_only_if_damaged = this.show_only_if_damaged;
+        clone.show_only_if_enchanted = this.show_only_if_enchanted;
+        clone.show_only_if_unbreakable = this.show_only_if_unbreakable;
         clone.font = this.font;
         clone.animation_offset = this.animation_offset;
         clone.tickrate = this.tickrate;
@@ -363,11 +373,11 @@ public class TooltipEntry {
         /**
          * Makes the tooltip only visible when the player is holding the Shift key.
          *
-         * @param requireShift True to require the Shift key.
+         * @param requireKeybind True to require the Shift key.
          * @return This builder instance.
          */
-        public Builder requireShift(boolean requireShift) {
-            this.entry.require_shift = requireShift;
+        public Builder requireKeybind(boolean requireKeybind) {
+            this.entry.require_keybind = requireKeybind;
             return this;
         }
 
@@ -390,6 +400,39 @@ public class TooltipEntry {
          */
         public Builder hideVanillaLines(boolean hideVanillaLines) {
             this.entry.hide_vanilla_lines = hideVanillaLines;
+            return this;
+        }
+
+        /**
+         * Makes the tooltip only visible when the item has lost durability (damaged).
+         *
+         * @param showOnlyIfDamaged True to require the item to be damaged.
+         * @return This builder instance.
+         */
+        public Builder showOnlyIfDamaged(boolean showOnlyIfDamaged) {
+            this.entry.show_only_if_damaged = showOnlyIfDamaged;
+            return this;
+        }
+
+        /**
+         * Makes the tooltip only visible when the item has at least one enchantment.
+         *
+         * @param showOnlyIfEnchanted True to require the item to be enchanted.
+         * @return This builder instance.
+         */
+        public Builder showOnlyIfEnchanted(boolean showOnlyIfEnchanted) {
+            this.entry.show_only_if_enchanted = showOnlyIfEnchanted;
+            return this;
+        }
+
+        /**
+         * Makes the tooltip only visible when the item possesses the "Unbreakable" NBT tag.
+         *
+         * @param showOnlyIfUnbreakable True to require the item to be unbreakable.
+         * @return This builder instance.
+         */
+        public Builder showOnlyIfUnbreakable(boolean showOnlyIfUnbreakable) {
+            this.entry.show_only_if_unbreakable = showOnlyIfUnbreakable;
             return this;
         }
 

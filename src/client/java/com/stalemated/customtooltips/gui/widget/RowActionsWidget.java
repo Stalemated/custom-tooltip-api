@@ -76,7 +76,7 @@ public class RowActionsWidget {
                     .underlined(entry.underlined)
                     .strikethrough(entry.strikethrough)
                     .obfuscated(entry.obfuscated)
-                    .requireShift(entry.require_shift)
+                    .requireKeybind(entry.require_keybind)
                     .emptyLineBefore(entry.empty_line_before)
                     .position(entry.position)
                     .lineOffset(entry.lineOffset)

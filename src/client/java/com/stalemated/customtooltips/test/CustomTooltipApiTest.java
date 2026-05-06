@@ -74,7 +74,7 @@ public class CustomTooltipApiTest implements ClientModInitializer {
                 .addLine("Warning: §eHeavy §rTool")
                 .style(TooltipEntry.TooltipStyle.SOLID)
                 .colors("red")
-                .requireShift(true)
+                .requireKeybind(true)
                 .emptyLineBefore(true)
                 .build();
 

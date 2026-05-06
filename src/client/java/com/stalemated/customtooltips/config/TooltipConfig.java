@@ -32,7 +32,7 @@ public class TooltipConfig {
             'underlined': If the displayed text should be underlined. Accepts true / false.
             'strikethrough': If the displayed text should be strikethrough. Accepts true / false.
             'obfuscated': If the displayed text should be obfuscated. Accepts true / false.
-            'require_shift': If the tooltip requires pressing the shift key to display. Accepts true / false.
+            'require_keybind': If the tooltip requires pressing the shift key to display. Accepts true / false.
             'empty_line_before': Adds an empty line before the tooltip. Accepts true / false.
             'position': Accepts: TOP (Under the item's name) or BOTTOM (Bottom of the tooltip).
             'line_offset': Offsets which line the tooltip is gonna show up on. Accepts integers.
