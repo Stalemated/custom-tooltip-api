@@ -9,7 +9,7 @@
 * **Dynamic Detection:** Target item groups via Tags (e.g., `#c:swords`) or specific IDs (e.g., `minecraft:diamond_sword`).
 * **Advanced Targeting:** Apply tooltips to entire mods via Namespaces (`minecraft:*`), use Regex (`regex:.*_sword`), or target all items (`*`).
 * **Dynamic Placeholders:** Embed real-time item data directly into your text using variables like `%max_durability%`, `%weapon_damage%`, or `%enchantments%`.
-* **Visual Effects:** Support for Rainbow, Slide Gradients, Breathing Gradients, Solid Gradients and Solid Colors by using hex codes (e.g. #RRGGBB), legacy codes (&d) or Minecraft color names (blue).
+* **Visual Effects:** Support for Rainbow, Slide Gradients, Breathing Gradients, Solid Gradients and Solid Colors by using hex codes (e.g. `#RRGGBB`), legacy codes (e.g. `&d`) or Minecraft color names (e.g. `blue`).
 * **Advanced Positioning:** Choose between `Top`, `Bottom`, `Append`, `Prepend`, `Replace Name`, or `Replace All`.
 * **In-Game GUI:** Full integration with YACL and ModMenu for real-time editing. Hold `CTRL` in the edit screen for an instant **Live Preview** of your tooltip!
 
