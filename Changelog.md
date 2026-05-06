@@ -8,7 +8,7 @@
 
 - Added a real-time tooltip preview in the Edit Screen. Hold `CTRL` to display it.
 
-- Tooltips can now display real-time data using placeholders. Default placeholders were added like `%durability%`, `%weapon_damage%`, `%enchantments%` and more. They can also embed keybinds using the format format: `<key:translation.key>` (e.g. `<key.key.jump>` -> `[Space]`)
+- Tooltips can now display real-time data using placeholders. Default placeholders were added like `%durability%`, `%weapon_damage%`, `%enchantments%` and more. They can also embed keybinds using the format: `<key:translation.key>` (e.g. `<key.key.jump>` -> `[Space]`)
 
 - The target field now accepts Namespaces (`minecraft:*`), Regex (`regex:.*_sword`), and a global wildcard (`*`) to target all items at once. The Target field now autocompletes namespaces by default, followed by items from that namespace.
 
