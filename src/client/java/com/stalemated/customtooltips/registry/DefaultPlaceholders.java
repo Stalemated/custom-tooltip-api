@@ -27,7 +27,7 @@ public class DefaultPlaceholders {
 
         PlaceholderRegistry.register("enchantments", DefaultPlaceholders::getEnchantments);
         PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getRepairCost()));
-        PlaceholderRegistry.register("unbreakable", stack -> (stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable")) ? Text.translatable("customtooltips.unbreakable_item").toString() : "");
+        PlaceholderRegistry.register("unbreakable", stack -> (stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable")) ? Text.translatable("customtooltips.unbreakable_item").getString() : "");
 
         PlaceholderRegistry.register("weapon_damage", DefaultPlaceholders::calculateWeaponDamage);
         PlaceholderRegistry.register("weapon_speed", DefaultPlaceholders::calculateWeaponSpeed);
