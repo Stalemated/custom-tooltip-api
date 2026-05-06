@@ -40,4 +40,18 @@ public class ToastManager {
             SystemToast.add(client.getToastManager(), type, title, description);
         }
     }
+
+    public static void showCopiedToast(String targetName) {
+        addToast(SystemToast.Type.TUTORIAL_HINT,
+                Text.translatable("customtooltips.toast.copied.title"),
+                Text.translatable("customtooltips.toast.copied.desc", targetName)
+        );
+    }
+
+    public static void showPastedToast(String targetName) {
+        addToast(SystemToast.Type.TUTORIAL_HINT,
+                Text.translatable("customtooltips.toast.pasted.title"),
+                Text.translatable("customtooltips.toast.pasted.desc", targetName)
+        );
+    }
 }

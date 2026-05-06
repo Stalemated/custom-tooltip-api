@@ -1,11 +1,13 @@
 package com.stalemated.customtooltips.gui.factories;
 
+import com.google.gson.Gson;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.gui.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.TooltipListScreen;
 
+import com.stalemated.customtooltips.util.ToastManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -17,16 +19,19 @@ import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class ListScreenUIFactory {
 
     private static final int BUTTON_SIZE = 20;
     private static final int SPACING = 4;
     private static final int START_Y = 24;
-    private static final int ACTION_BAR_BUTTON_AMOUNT = 4;
+    private static final int ACTION_BAR_BUTTON_AMOUNT = 5;
 
     public static TextFieldWidget createSearchBox(TooltipListScreen screen, TextRenderer textRenderer, String searchText) {
         int screenWidth = screen.width;
@@ -89,6 +94,32 @@ public class ListScreenUIFactory {
                 .dimensions(getButtonStartX(1, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
                 .tooltip(Tooltip.of(getApiEntriesTooltip()))
                 .build());
+
+        buttons.add(ButtonWidget.builder(getPasteIcon(), button -> {
+            try {
+                String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
+                Gson gson = new com.google.gson.Gson();
+                TooltipEntry pasted = gson.fromJson(clipboard, TooltipEntry.class);
+
+                if (pasted != null && pasted.target != null) {
+                    pasted.uuid = UUID.randomUUID().toString();
+                    pasted.apiEntry = false;
+                    pasted.apiEntryId = "";
+
+                    ConfigManager.getConfig().entries.add(pasted);
+                    ConfigManager.save();
+                    screen.listWidget.updateEntries(screen.searchBox.getText());
+
+                    ToastManager.showPastedToast(pasted.target);
+                }
+            } catch (Exception e) {
+                LOGGER.error("Error pasting a new entry from clipboard", e);
+            }
+        })
+                .dimensions(getButtonStartX(5, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
+                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_screen.paste_button")))
+                .build());
+
 
         return buttons;
     }
@@ -172,5 +203,9 @@ public class ListScreenUIFactory {
                 .append(Text.translatable(TooltipListScreen.showApiEntries ? "customtooltips.tooltip_list_screen.showing_api_entries" : "customtooltips.tooltip_list_screen.showing_normal")
                         .formatted(Formatting.GRAY)
                 );
+    }
+
+    private static Text getPasteIcon() {
+        return Text.literal("📋");
     }
 }

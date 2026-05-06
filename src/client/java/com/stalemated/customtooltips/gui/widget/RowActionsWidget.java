@@ -16,6 +16,9 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +38,9 @@ public class RowActionsWidget {
             client.setScreen(new ConfirmScreen(
                     (confirmed) -> {
                         if (confirmed) {
-                            ConfigManager.getConfig().entries.remove(entry);
+                            TooltipConfig config = ConfigManager.getConfig();
+                            config.entries.remove(entry);
+                            if (isDisabled) config.disabled_entries.remove(identifier);
                             ConfigManager.save();
                             parent.updateEntries(parent.parentScreen.searchBox.getText());
                         }
@@ -50,6 +55,15 @@ public class RowActionsWidget {
 
         buttons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF28"), btn -> client.setScreen(TooltipEditScreen.create(client.currentScreen, entry, false)))
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
+                .build());
+
+        apiButtons.add(ButtonWidget.builder(Text.literal("📋"), btn -> {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            client.keyboard.setClipboard(gson.toJson(entry));
+            
+            ToastManager.showCopiedToast(entry.target);
+        })
+                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.copy_button")))
                 .build());
 
         apiButtons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF29"), btn -> {
@@ -119,7 +133,7 @@ public class RowActionsWidget {
     }
 
     public int getWidth() {
-        int btnAmount = 4;
+        int btnAmount = buttons.size();
         return (buttons.size() * BUTTON_STEP) - btnAmount;
     }
 

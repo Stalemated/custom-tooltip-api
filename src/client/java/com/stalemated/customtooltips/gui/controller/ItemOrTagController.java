@@ -22,19 +22,15 @@ public class ItemOrTagController extends AbstractDropdownController<String> {
         List<String> values = new ArrayList<>();
         Set<String> namespaces = new HashSet<>();
 
-        // 1. Wildcard absoluto (Todos los ítems)
         values.add("*");
 
-        // 2. Extraemos los ítems y guardamos sus namespaces únicos
         Registries.ITEM.getIds().forEach(id -> {
             values.add(id.toString());
             namespaces.add(id.getNamespace());
         });
 
-        // 3. Añadimos los Wildcards de Namespace (ej. "minecraft:*")
         namespaces.forEach(ns -> values.add(ns + ":*"));
 
-        // 4. Añadimos las Tags
         Registries.ITEM.streamTags()
                 .map(tagKey -> "#" + tagKey.id().toString())
                 .forEach(values::add);

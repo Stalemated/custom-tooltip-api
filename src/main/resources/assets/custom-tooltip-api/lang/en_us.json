@@ -13,6 +13,7 @@
   "customtooltips.tooltip_list_screen.showing_normal": "Showing: User Tooltips",
   "customtooltips.tooltip_list_widget.enabled_button": "Enabled",
   "customtooltips.tooltip_list_widget.disabled_button": "Disabled",
+  "customtooltips.tooltip_list_screen.paste_button": "Paste Tooltip from clipboard",
 
   "customtooltips.tooltip_edit_screen.title": "Edit Tooltip",
   "customtooltips.tooltip_edit_screen.category.target": "Target",
@@ -80,6 +81,7 @@
   "customtooltips.tooltip_list_widget.duplicate_button": "Duplicate",
   "customtooltips.tooltip_list_widget.delete_confirm.title": "Delete Tooltip",
   "customtooltips.tooltip_list_widget.delete_confirm.message": "Are you sure you want to delete\nthe tooltip for %s?",
+  "customtooltips.tooltip_list_widget.copy_button": "Copy Tooltip to clipboard",
 
   "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Hold [SHIFT] for details",
 
@@ -94,6 +96,10 @@
   "customtooltips.toast.duplicated.desc": "Successfully duplicated entry for %s",
   "customtooltips.toast.color.invalid.title": "Invalid color",
   "customtooltips.toast.color.invalid.desc": "A color is invalid. Defaulting to the visual picker.",
+  "customtooltips.toast.copied.title": "Entry copied to clipboard!",
+  "customtooltips.toast.copied.desc": "Successfully copied entry %s to clipboard",
+  "customtooltips.toast.pasted.title": "Entry pasted from clipboard!",
+  "customtooltips.toast.pasted.desc": "Successfully pasted entry %s from clipboard",
 
   "customtooltips.unbreakable_item": "Unbreakable"
 }
