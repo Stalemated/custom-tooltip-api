@@ -1,4 +1,4 @@
-# ✦ Custom Tooltip API ✦
+# Custom Tooltip API
 
 **Custom Tooltip API** is a powerful client-side tool and library designed for developers, modpack creators, and players who want absolute control over item tooltips. Add custom lore, dynamic gradients, and advanced positioning to any item without the need for complex code.
 
@@ -7,32 +7,40 @@
 ### ✨ Key Features
 
 * **Dynamic Detection:** Target item groups via Tags (e.g., `#c:swords`) or specific IDs (e.g., `minecraft:diamond_sword`).
-* **Visual Effects:** Support for Rainbow, Slide Gradients, Breathing Gradients, and Hex codes (#RRGGBB).
+* **Advanced Targeting:** Apply tooltips to entire mods via Namespaces (`create:*`), use Regex (`regex:.*_sword`), or target all items (`*`).
+* **Dynamic Placeholders:** Embed real-time item data directly into your text using variables like `%max_durability%`, `%weapon_damage%`, or `%enchantments%`.
+* **Visual Effects:** Support for Rainbow, Slide Gradients, Breathing Gradients, Solid Gradients and Solid Colors by using hex codes (e.g. #RRGGBB), legacy codes (&d) or Minecraft color names (blue).
 * **Advanced Positioning:** Choose between `Top`, `Bottom`, `Append`, `Prepend`, `Replace Name`, or `Replace All`.
-* **In-Game GUI:** Full integration with ModMenu and Cloth Config for real-time editing with live previews.
+* **In-Game GUI:** Full integration with YACL and ModMenu for real-time editing. Hold `CTRL` in the edit screen for an instant **Live Preview** of your tooltip!
 
 ---
 
 ### 🛠️ Developer API
 
-Developers can register tooltips via code by adding this mod as a dependency and using the following logic:
+Developers can easily register custom and dynamic tooltips via code using the new Builder API:
 
 ```java
-TooltipEntry myEntry = new TooltipEntry(
-    "minecrafct:apple", // Item ID or tag
-    new ArrayList<>(Arrays.asList("Magic Apple")), // Custom text
-    TooltipEntry.TooltipStyle.SOLID, // Style
-    new ArrayList<>(Arrays.asList("red")), // Colors
-    false, false, false, false, false, // Formatting
-    false, false, // Shift requirement, empty line before
-    TooltipEntry.TooltipPosition.TOP, 0, // Position, line offset
-    0, 1L // Animation offset, tickrate
-);
+// Example: A dynamic tooltip that reads NBT/State in real-time
+TooltipEntry.builder("minecraft:diamond_sword")
+    .style(TooltipEntry.TooltipStyle.BREATHING_GRADIENT)
+    .colors("0x00FF00", "red")
+    .bold(true)
+    .position(TooltipEntry.TooltipPosition.TOP)
+    .tickrate(35)
+    .requireKeybind(true)
+    .dynamicText(stack -> {
+        int remaining = stack.getMaxDamage() - stack.getDamage();
+        return List.of("Durability: " + remaining);
+    })
+    .register();
 
-CustomTooltipApi.registerTooltip(myEntry);
+// Example: Registering a custom placeholder for your mod
+CustomTooltipApi.registerPlaceholder("mana", stack -> getManaAmount(stack));
 ```
 
 These entries merge with user-defined JSON configs.
+
+More examples can be found in the `com.stalemated.customtooltips.test.CustomTooltipApiTest` class.
 
 ---
 
@@ -54,7 +62,7 @@ If you want to compile the project yourself, follow these steps:
 - Linux/macOS: `./gradlew build`
 
 Once finished, you will find the compiled file in:
-`build/libs/custom-tooltip-api-1.1.0.jar`
+`build/libs/custom-tooltip-api-<version>.jar`
 
 ---
 
@@ -62,8 +70,7 @@ Once finished, you will find the compiled file in:
 Custom Tooltip API has the following dependencies:
 
 * [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
-* [Necronomicon API](https://www.curseforge.com/minecraft/mc-mods/necronomicon)
-* [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config)
+* [YACL](https://www.curseforge.com/minecraft/mc-mods/yacl)
 * [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu)
 
 ### 📄 License
