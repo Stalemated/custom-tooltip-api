@@ -15,16 +15,37 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.*;
 
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class TooltipEditScreen {
 
+    public static TooltipEntry previewEntry = null;
+
+    static {
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (previewEntry != null && screen.getTitle().getString().contains("Edit Tooltip")) {
+                ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
+                    if (Screen.hasControlDown()) {
+                        List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
+
+                        context.drawTooltip(client.textRenderer, previewLines, mouseX, mouseY);
+                    }
+                });
+            }
+        });
+    }
+
     public static Screen create(Screen parent, TooltipEntry entry, boolean isNew) {
+        previewEntry = entry.copy();
+
         final WeakReference<Boolean> isNewRef = new WeakReference<>(isNew);
 
         String rawColor1 = entry.colors != null && !entry.colors.isEmpty() ? entry.colors.get(0) : "white";
@@ -73,7 +94,7 @@ public class TooltipEditScreen {
     }
 
     private static ListOption<String> createCustomTextGroup(TooltipEntry entry) {
-        return ListOption.<String>createBuilder()
+        var customText = ListOption.<String>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.custom_text"))
                 .description(OptionDescription.of(
                         Text.translatable("customtooltips.tooltip_edit_screen.custom_text.description"),
@@ -83,6 +104,15 @@ public class TooltipEditScreen {
                 .controller(StringControllerBuilder::create)
                 .initial("")
                 .build();
+
+        customText.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.text = new ArrayList<>(opt.pendingValue());
+                previewEntry.invalidateCaches();
+            }
+        });
+
+        return customText;
     }
 
     private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors) {
@@ -93,6 +123,12 @@ public class TooltipEditScreen {
                 .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
                         .formatValue(styleFormat -> Text.translatable("customtooltips.tooltip_edit_screen.style." + styleFormat.name().toLowerCase())))
                 .build();
+        style.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.style = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var color1 = Option.<String>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.primary_color"))
@@ -103,6 +139,13 @@ public class TooltipEditScreen {
                 .binding("white", () -> boundColors[0], val -> boundColors[0] = val.trim())
                 .controller(AdvancedColorControllerBuilder::create)
                 .build();
+        color1.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                if (previewEntry.colors.isEmpty()) previewEntry.colors.add(opt.pendingValue().trim());
+                else previewEntry.colors.set(0, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var color2 = Option.<String>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.secondary_color"))
@@ -113,6 +156,13 @@ public class TooltipEditScreen {
                 .binding("white", () -> boundColors[1], val -> boundColors[1] = val.trim())
                 .controller(AdvancedColorControllerBuilder::create)
                 .build();
+        color2.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                while (previewEntry.colors.size() < 2) previewEntry.colors.add("white");
+                previewEntry.colors.set(1, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
@@ -147,6 +197,12 @@ public class TooltipEditScreen {
                         .step(1)
                 )
                 .build();
+        animOffset.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.animation_offset = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var rate = Option.<Integer>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.tickrate"))
@@ -157,6 +213,12 @@ public class TooltipEditScreen {
                         .step(1)
                 )
                 .build();
+        rate.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.tickrate = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var reverseAnim = Option.<Boolean>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.reverse_animation"))
@@ -164,6 +226,12 @@ public class TooltipEditScreen {
                 .binding(false, () -> entry.reverse_animation, val -> entry.reverse_animation = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
+        reverseAnim.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.reverse_animation = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.position_animation"))
@@ -182,6 +250,12 @@ public class TooltipEditScreen {
                 .binding(false, () -> entry.bold, val -> entry.bold = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
+        bold.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.bold = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var italic = Option.<Boolean>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.italic"))
@@ -189,6 +263,12 @@ public class TooltipEditScreen {
                 .binding(false, () -> entry.italic, val -> entry.italic = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
+        italic.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.italic = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var underlined = Option.<Boolean>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.underlined"))
@@ -196,6 +276,12 @@ public class TooltipEditScreen {
                 .binding(false, () -> entry.underlined, val -> entry.underlined = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
+        underlined.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.underlined = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var strikethrough = Option.<Boolean>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.strikethrough"))
@@ -203,6 +289,12 @@ public class TooltipEditScreen {
                 .binding(false, () -> entry.strikethrough, val -> entry.strikethrough = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
+        strikethrough.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.strikethrough = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var obfuscated = Option.<Boolean>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.obfuscated"))
@@ -210,6 +302,12 @@ public class TooltipEditScreen {
                 .binding(false, () -> entry.obfuscated, val -> entry.obfuscated = val)
                 .controller(TickBoxControllerBuilder::create)
                 .build();
+        obfuscated.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.obfuscated = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         var fontOption = Option.<String>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.font"))
@@ -220,6 +318,12 @@ public class TooltipEditScreen {
                         .formatValue(Text::literal)
                 )
                 .build();
+        fontOption.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.font = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.formatting"))

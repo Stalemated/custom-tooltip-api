@@ -15,7 +15,7 @@
   "customtooltips.tooltip_list_widget.disabled_button": "Disabled",
   "customtooltips.tooltip_list_screen.paste_button": "Paste Tooltip from clipboard",
 
-  "customtooltips.tooltip_edit_screen.title": "Edit Tooltip",
+  "customtooltips.tooltip_edit_screen.title": "Edit Tooltip [Hold CTRL for Live Preview]",
   "customtooltips.tooltip_edit_screen.category.target": "Target",
   "customtooltips.tooltip_edit_screen.category.style_colors": "Style & Colors",
   "customtooltips.tooltip_edit_screen.category.position_animation": "Position & Animation",

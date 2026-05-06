@@ -146,6 +146,29 @@ public class TooltipEntry {
         return this.targetMatcher != null && this.targetMatcher.matches(stack);
     }
 
+    public TooltipEntry copy() {
+        TooltipEntry clone = new TooltipEntry();
+        clone.target = this.target;
+        clone.text = new ArrayList<>(this.text);
+        clone.style = this.style;
+        clone.colors = new ArrayList<>(this.colors);
+        clone.position = this.position;
+        clone.lineOffset = this.lineOffset;
+        clone.bold = this.bold;
+        clone.italic = this.italic;
+        clone.underlined = this.underlined;
+        clone.strikethrough = this.strikethrough;
+        clone.obfuscated = this.obfuscated;
+        clone.require_shift = this.require_shift;
+        clone.empty_line_before = this.empty_line_before;
+        clone.hide_vanilla_lines = this.hide_vanilla_lines;
+        clone.font = this.font;
+        clone.animation_offset = this.animation_offset;
+        clone.tickrate = this.tickrate;
+        clone.reverse_animation = this.reverse_animation;
+        return clone;
+    }
+
     public List<Text> getTextComponents(ItemStack stack) {
         if (!cachesInitialized) initCaches();
         return TextFormatter.getOrGenerateComponents(this, stack);
