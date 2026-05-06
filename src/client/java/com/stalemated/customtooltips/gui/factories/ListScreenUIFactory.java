@@ -206,6 +206,6 @@ public class ListScreenUIFactory {
     }
 
     private static Text getPasteIcon() {
-        return Text.literal("📋");
+        return Text.literal("\uDAC1\uDF33");
     }
 }

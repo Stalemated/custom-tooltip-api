@@ -89,6 +89,24 @@
       ],
       "file": "custom-tooltip-api:gui/code.png",
       "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF32"
+      ],
+      "file": "custom-tooltip-api:gui/copy.png",
+      "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF33"
+      ],
+      "file": "custom-tooltip-api:gui/paste.png",
+      "height": 11
     }
   ]
 }

@@ -57,7 +57,7 @@ public class RowActionsWidget {
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
                 .build());
 
-        apiButtons.add(ButtonWidget.builder(Text.literal("📋"), btn -> {
+        apiButtons.add(ButtonWidget.builder(getCopyIcon(), btn -> {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             client.keyboard.setClipboard(gson.toJson(entry));
             
@@ -143,5 +143,9 @@ public class RowActionsWidget {
 
     private Tooltip getDisabledEntryTooltip(boolean isDisabled) {
         return Tooltip.of(Text.translatable(isDisabled ? "customtooltips.tooltip_list_widget.disabled_button" : "customtooltips.tooltip_list_widget.enabled_button"));
+    }
+
+    private Text getCopyIcon() {
+        return Text.literal("\uDAC1\uDF32");
     }
 }
