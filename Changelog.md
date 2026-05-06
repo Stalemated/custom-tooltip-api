@@ -1,5 +1,55 @@
 # Changelog
 
+## 3.0.0
+**This release contains tons of new features and lots of changes to the Config menu, the Tooltip edit menu as well as the Developer API.**
+
+### New Features
+- Dropped Necronomicon API as a dependency, gradients are now managed without any extra dependency.
+
+- Added a real-time tooltip preview in the Edit Screen. Hold `CTRL` to display it.
+
+- Tooltips can now display real-time data using placeholders. Default placeholders were added like `%durability%`, `%weapon_damage%`, `%enchantments%` and more. They can also embed keybinds using the format format: `<key:translation.key>` (e.g. `<key.key.jump>` -> `[Space]`)
+
+- The target field now accepts Namespaces (`minecraft:*`), Regex (`regex:.*_sword`), and a global wildcard (`*`) to target all items at once. The Target field now autocompletes namespaces by default, followed by items from that namespace.
+
+- Custom fonts can now be used for specific tooltips. Place your custom font in the `config/custom-tooltip-api/fonts/` folder and enable the dynamically generated Resource Pack to enable custom fonts.
+
+- Added a "Hide Vanilla Tooltip" option to completely erase an item's default stats and lore, giving you a blank canvas.
+
+- Added toggles to show tooltips *only* if the item is Damaged, Enchanted, or Unbreakable.
+
+- "Require Shift" is now "Require Keybind". The key can be changed in Minecraft's keybinds menu.
+
+- Added a feature to reverse the animation of a gradient.
+
+### Fixes
+- Fixed an issue where after creating a new tooltip and the player saving it many times, it created new entries instead of updating the newly created one
+
+- API entries now get called before the config entries, this fixes a bug where a "needs shift" tooltip still showed api tooltips that did not need the hold key.
+
+### UX / UI
+- Completely changed the Tooltip list screen from clunky buttons to small, stylish buttons with custom icons and clear tooltips that show what the buttons do.
+  - Added a button to change tooltip ordering in the tooltip list screen (creation date, alphabetically or disabled entries first)
+  - Added a button to copy entries to and paste entries from the clipboard.
+  - Added a button to enable or disable specific entries.
+  - Added a button to show API entries, with the ability to copy, duplicate or enable/disable them.
+  - Added buttons to manually sort entries (only available in the Creation Date ordering setting)
+
+- Replaced standard text boxes in some of the options with dropdowns and sliders for targets, fonts, styles, etc.
+
+- The color input now supports hex codes, legacy formatting codes (e.g., `&c`), and Minecraft colors. This allows for the removal of 2 extra text boxes from the config screen.
+
+- The animation tickrate is now calculated using more intuitive values (100 is the default speed, closer to 1 is faster and vice versa)
+
+### Developer API
+- Completely rewrote tooltip creation. Developers can now use `TooltipEntry.builder("id").(...).register();`.
+
+- Added `.dynamicText(stack -> ...)` to the builder, allowing developers to inject real-time text that changes every frame (like energy, mana or any custom NBT).
+
+- Developers can now register their own variables using `CustomTooltipApi.registerPlaceholder("%mana%", stack -> ...);`.
+
+- Heavily added Javadoc documentation to all relevant methods a developer may call when registering tooltips.
+
 ## 2.0.0
 **Big update, especially for the config screen!
 This completely removes Cloth Config as dependency in favor of YACL (Yet Another Config Lib) and implements a lot of QOL fixes.**
