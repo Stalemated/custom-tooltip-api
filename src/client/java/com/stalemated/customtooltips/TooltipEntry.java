@@ -44,6 +44,7 @@ public class TooltipEntry {
 
     public boolean require_shift = false;
     public boolean empty_line_before = false;
+    public boolean hide_vanilla_lines = false;
 
     public String font = "minecraft:default";
 
@@ -71,7 +72,7 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_shift, boolean empty_line_before, boolean hide_vanilla_lines, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -83,6 +84,7 @@ public class TooltipEntry {
         this.obfuscated = obfuscated;
         this.require_shift = require_shift;
         this.empty_line_before = empty_line_before;
+        this.hide_vanilla_lines = hide_vanilla_lines;
         this.position = position;
         this.lineOffset = lineOffset;
         this.animation_offset = animation_offset;
@@ -354,6 +356,17 @@ public class TooltipEntry {
          */
         public Builder emptyLineBefore(boolean emptyLineBefore) {
             this.entry.empty_line_before = emptyLineBefore;
+            return this;
+        }
+
+        /**
+         * Hides the original vanilla tooltip lines (except the name) before applying this tooltip.
+         *
+         * @param hideVanillaLines True to hide vanilla lines.
+         * @return This builder instance.
+         */
+        public Builder hideVanillaLines(boolean hideVanillaLines) {
+            this.entry.hide_vanilla_lines = hideVanillaLines;
             return this;
         }
 

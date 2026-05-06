@@ -248,10 +248,18 @@ public class TooltipEditScreen {
                 .controller(TickBoxControllerBuilder::create)
                 .build();
 
+        var hideVanillaLines = Option.<Boolean>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.hide_vanilla_lines"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.hide_vanilla_lines.description")))
+                .binding(false, () -> entry.hide_vanilla_lines, val -> entry.hide_vanilla_lines = val)
+                .controller(TickBoxControllerBuilder::create)
+                .build();
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.conditions"))
                 .option(requireShift)
                 .option(emptyLineBefore)
+                .option(hideVanillaLines)
                 .build();
     }
 }

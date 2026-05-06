@@ -25,6 +25,17 @@ public class TooltipProcessor {
             IconAligner.alignIcons(lines);
         }
 
+        boolean shouldHideVanilla = false;
+        for (TooltipEntry entry : TooltipRegistry.getEntries()) {
+            if (!shouldNotProcessEntry(entry, stack) && entry.hide_vanilla_lines) {
+                shouldHideVanilla = true;
+                break;
+            }
+        }
+        if (shouldHideVanilla && lines.size() > 1) {
+            lines.subList(1, lines.size()).clear();
+        }
+
         boolean holdKeyPressed = isHoldKeyPressed();
         boolean needsShiftPrompt = false;
 
