@@ -95,7 +95,7 @@
 
   "category.customtooltips.keys": "Custom Tooltip API",
   "key.customtooltips.open_config": "Open Config",
-  "key.customtooltips.hold_shift": "Show Extended Tooltips",
+  "key.customtooltips.hold_key": "Show Extended Tooltips",
 
   "customtooltips.toast.keybind_missing.title": "Did you know?",
   "customtooltips.toast.keybind_missing.desc": "You can set a Keybind to open this menu easily!",
