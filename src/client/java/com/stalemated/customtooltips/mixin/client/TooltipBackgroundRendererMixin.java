@@ -1,8 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
-import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipOpacity;
-import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,16 +8,33 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(TooltipBackgroundRenderer.class)
 public abstract class TooltipBackgroundRendererMixin {
-    @ModifyArg(method = "render(Lnet/minecraft/client/gui/DrawContext;IIIII)V",
+    @ModifyArg(method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderRectangle(Lnet/minecraft/client/gui/DrawContext;IIIIII)V"), index = 6)
     private static int customTooltips$renderRectangle(int color) {
-        int value = TooltipOpacity.getCurrentOpacity() != -1
-                ? TooltipOpacity.getCurrentOpacity()
-                : TooltipEntry.DEFAULT_OPACITY;
+        return TooltipOpacity.scaleAlpha(color);
+    }
 
-        int originalAlpha = (color >> 24) & 0xFF;
-        int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
+    @ModifyArg(method = "render",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderHorizontalLine(Lnet/minecraft/client/gui/DrawContext;IIIII)V"), index = 5)
+    private static int customTooltips$renderHorizontalLine(int color) {
+        return TooltipOpacity.scaleAlpha(color);
+    }
 
-        return (color & 0x00FFFFFF) | (newAlpha << 24);
+    @ModifyArg(method = "render",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderVerticalLine(Lnet/minecraft/client/gui/DrawContext;IIIII)V"), index = 5)
+    private static int customTooltips$renderVerticalLineStart(int color) {
+        return TooltipOpacity.scaleAlpha(color);
+    }
+
+    @ModifyArg(method = "render",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderBorder(Lnet/minecraft/client/gui/DrawContext;IIIIIII)V"), index = 6)
+    private static int customTooltips$renderBorderStartColor(int color) {
+        return TooltipOpacity.scaleAlpha(color);
+    }
+
+    @ModifyArg(method = "render",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderBorder(Lnet/minecraft/client/gui/DrawContext;IIIIIII)V"), index = 7)
+    private static int customTooltips$renderBorderEndColor(int color) {
+        return TooltipOpacity.scaleAlpha(color);
     }
 }
