@@ -13,6 +13,7 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -31,6 +32,8 @@ public class TooltipEntry {
 
     public TooltipStyle style = TooltipStyle.SOLID;
     public List<String> colors = new ArrayList<>();
+    public static final int DEFAULT_OPACITY = 240;
+    public int opacity = DEFAULT_OPACITY;
 
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
@@ -76,11 +79,12 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, int opacity, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
         this.colors = colors != null ? colors : new ArrayList<>();
+        this.opacity = opacity;
         this.bold = bold;
         this.italic = italic;
         this.underlined = underlined;
@@ -153,29 +157,41 @@ public class TooltipEntry {
         return this.targetMatcher != null && this.targetMatcher.matches(stack);
     }
 
+    public boolean areItemConditionsMet(ItemStack stack) {
+        if (this.show_only_if_damaged && !stack.isDamaged()) return false;
+        if (this.show_only_if_enchanted && !stack.hasEnchantments()) return false;
+        return !this.show_only_if_unbreakable || stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable");
+    }
+
     public TooltipEntry copy() {
-        TooltipEntry clone = new TooltipEntry();
-        clone.target = this.target;
-        clone.text = new ArrayList<>(this.text);
-        clone.style = this.style;
-        clone.colors = new ArrayList<>(this.colors);
-        clone.position = this.position;
-        clone.lineOffset = this.lineOffset;
-        clone.bold = this.bold;
-        clone.italic = this.italic;
-        clone.underlined = this.underlined;
-        clone.strikethrough = this.strikethrough;
-        clone.obfuscated = this.obfuscated;
-        clone.require_keybind = this.require_keybind;
-        clone.empty_line_before = this.empty_line_before;
-        clone.hide_vanilla_lines = this.hide_vanilla_lines;
-        clone.show_only_if_damaged = this.show_only_if_damaged;
-        clone.show_only_if_enchanted = this.show_only_if_enchanted;
-        clone.show_only_if_unbreakable = this.show_only_if_unbreakable;
-        clone.font = this.font;
-        clone.animation_offset = this.animation_offset;
-        clone.tickrate = this.tickrate;
-        clone.reverse_animation = this.reverse_animation;
+        TooltipEntry clone = TooltipEntry.builder(this.target)
+                .text(this.text)
+                .dynamicText(this.dynamicTextProvider)
+                .style(this.style)
+                .colors(this.colors)
+                .opacity(this.opacity)
+                .position(this.position)
+                .lineOffset(this.lineOffset)
+                .bold(this.bold)
+                .italic(this.italic)
+                .underlined(this.underlined)
+                .strikethrough(this.strikethrough)
+                .obfuscated(this.obfuscated)
+                .requireKeybind(this.require_keybind)
+                .emptyLineBefore(this.empty_line_before)
+                .hideVanillaLines(this.hide_vanilla_lines)
+                .showOnlyIfDamaged(this.show_only_if_damaged)
+                .showOnlyIfEnchanted(this.show_only_if_enchanted)
+                .showOnlyIfUnbreakable(this.show_only_if_unbreakable)
+                .font(this.font)
+                .animationOffset(this.animation_offset)
+                .tickrate(this.tickrate)
+                .reverseAnimation(this.reverse_animation)
+                .build();
+                
+        clone.uuid = this.uuid;
+        clone.apiEntry = this.apiEntry;
+        clone.apiEntryId = this.apiEntryId;
         return clone;
     }
 
@@ -288,6 +304,19 @@ public class TooltipEntry {
          */
         public Builder colors(List<String> colors) {
             this.entry.colors.addAll(colors);
+            return this;
+        }
+
+        /**
+         * Sets the tooltip's opacity.
+         * <p>
+         * Accepts integers from 0 to 255 to adjust the individual tooltip's background opacity. 0 is fully transparent, while 255 is fully opaque.
+         *
+         * @param opacity The opacity of the tooltip.
+         * @return This builder instance.
+         */
+        public Builder opacity(int opacity) {
+            this.entry.opacity = opacity;
             return this;
         }
 

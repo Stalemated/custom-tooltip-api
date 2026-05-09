@@ -2,6 +2,7 @@ package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipEntryUpdater;
+import com.stalemated.customtooltips.core.TooltipOpacity;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.AdvancedColorControllerBuilder;
@@ -36,7 +37,9 @@ public class TooltipEditScreen {
                     if (Screen.hasControlDown()) {
                         List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
 
+                        TooltipOpacity.setCurrentOpacity(previewEntry.opacity);
                         context.drawTooltip(client.textRenderer, previewLines, mouseX, mouseY);
+                        TooltipOpacity.setCurrentOpacity(-1);
                     }
                 });
             }
@@ -164,11 +167,28 @@ public class TooltipEditScreen {
             }
         });
 
+        var tooltipOpacity = Option.<Integer>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.opacity"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.opacity.description")))
+                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.opacity, val -> entry.opacity = val)
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(0, 255)
+                        .step(1)
+                )
+                .build();
+        tooltipOpacity.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.opacity = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
                 .option(style)
                 .option(color1)
                 .option(color2)
+                .option(tooltipOpacity)
                 .build();
     }
 

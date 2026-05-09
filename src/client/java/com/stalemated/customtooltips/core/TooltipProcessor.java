@@ -87,7 +87,7 @@ public class TooltipProcessor {
         return entry.show_only_if_unbreakable && !(stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable"));
     }
 
-    private static boolean isHoldKeyPressed() {
+    public static boolean isHoldKeyPressed() {
         if (holdKeyKeybind.isUnbound()) {
             return false;
         }
