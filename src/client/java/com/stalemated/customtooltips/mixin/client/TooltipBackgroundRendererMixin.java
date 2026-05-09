@@ -2,6 +2,7 @@ package com.stalemated.customtooltips.mixin.client;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipOpacity;
+import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +18,7 @@ public abstract class TooltipBackgroundRendererMixin {
                 : TooltipEntry.DEFAULT_OPACITY;
 
         int originalAlpha = (color >> 24) & 0xFF;
-        int newAlpha = Math.min(255, (int) (originalAlpha * (value / 240.0f)));
+        int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
 
         return (color & 0x00FFFFFF) | (newAlpha << 24);
     }
