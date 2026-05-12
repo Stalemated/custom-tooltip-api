@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.factories.ListScreenUIFactory;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,7 +20,8 @@ public class TooltipListScreen extends Screen {
     public TextFieldWidget searchBox;
     private static boolean hasShownKeybindToast = false;
     private String searchText = "";
-    private List<Text> activeTooltip = null;
+    private TooltipEntry activeTooltip = null;
+    private List<Text> activeTooltipText = null;
     private int activeTooltipOpacity = -1;
     public static boolean showApiEntries = false;
 
@@ -49,9 +51,10 @@ public class TooltipListScreen extends Screen {
         this.searchText = searchText;
     }
 
-    public void setHoveredTooltip(List<Text> tooltip, int opacity) {
+    public void setHoveredTooltip(List<Text> tooltipText, TooltipEntry tooltip) {
         this.activeTooltip = tooltip;
-        this.activeTooltipOpacity = opacity;
+        this.activeTooltipText = tooltipText;
+        this.activeTooltipOpacity = tooltip.opacity;
     }
 
     private void showToasts() {
@@ -72,16 +75,18 @@ public class TooltipListScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.activeTooltip = null;
+        this.activeTooltipText = null;
         this.activeTooltipOpacity = -1;
         this.listWidget.render(context, mouseX, mouseY, delta);
         this.searchBox.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
         
-        if (this.activeTooltip != null) {
+        if (this.activeTooltipText != null) {
+            TooltipOpacity.setCurrentEntry(this.activeTooltip);
             TooltipOpacity.setCurrentOpacity(this.activeTooltipOpacity);
-            context.drawTooltip(this.textRenderer, this.activeTooltip, mouseX, mouseY);
+            context.drawTooltip(this.textRenderer, this.activeTooltipText, mouseX, mouseY);
+            TooltipOpacity.setCurrentEntry(null);
             TooltipOpacity.setCurrentOpacity(-1);
         }
     }

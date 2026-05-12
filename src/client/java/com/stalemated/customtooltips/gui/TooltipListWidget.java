@@ -117,7 +117,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
                     hoverTooltip.add(Text.empty());
                 }
                 hoverTooltip.addAll(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
-                TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip, this.tooltipEntry.opacity);
+                TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip, this.tooltipEntry);
             }
         }
 
