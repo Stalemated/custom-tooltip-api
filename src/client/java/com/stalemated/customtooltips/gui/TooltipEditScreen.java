@@ -38,8 +38,10 @@ public class TooltipEditScreen {
                         List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
 
                         TooltipOpacity.setCurrentOpacity(previewEntry.opacity);
+                        TooltipOpacity.setCurrentEntry(previewEntry);
                         context.drawTooltip(client.textRenderer, previewLines, mouseX, mouseY);
                         TooltipOpacity.setCurrentOpacity(-1);
+                        TooltipOpacity.setCurrentEntry(null);
                     }
                 });
             }
@@ -55,25 +57,29 @@ public class TooltipEditScreen {
         String rawColor2 = entry.colors != null && entry.colors.size() > 1 ? entry.colors.get(1) : "white";
         String[] boundColors = new String[] { rawColor1, rawColor2 };
 
+        String rawBorderColor1 = entry.borderColors != null && !entry.borderColors.isEmpty() ? entry.borderColors.get(0) : "";
+        String rawBorderColor2 = entry.borderColors != null && entry.borderColors.size() > 1 ? entry.borderColors.get(1) : "";
+        String[] boundBorderColors = new String[] { rawBorderColor1, rawBorderColor2 };
+
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                 .save(() -> {
                     Boolean isNewEntry = isNewRef.get();
                     if (isNewEntry != null) {
-                        TooltipEntryUpdater.updateAndSave(entry, boundColors, isNewEntry, parent);
+                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, isNewEntry, parent);
                         if (isNewEntry) {
                             // Prevent re-adding on subsequent saves within the same screen session
                             isNewRef.clear();
                         }
                     } else {
-                        TooltipEntryUpdater.updateAndSave(entry, boundColors, false, parent);
+                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, false, parent);
                     }
                 })
                 .category(ConfigCategory.createBuilder()
                         .name(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                         .group(createTargetGroup(entry))
                         .group(createCustomTextGroup(entry))
-                        .group(createStyleAndColorsGroup(entry, boundColors))
+                        .group(createStyleAndColorsGroup(entry, boundColors, boundBorderColors))
                         .group(createPositionAndAnimationGroup(entry))
                         .group(createFormattingGroup(entry))
                         .group(createConditionsGroup(entry))
@@ -118,7 +124,7 @@ public class TooltipEditScreen {
         return customText;
     }
 
-    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors) {
+    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors, String[] boundBorderColors) {
         var style = Option.<TooltipEntry.TooltipStyle>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.style"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.style.description")))
@@ -167,6 +173,40 @@ public class TooltipEditScreen {
             }
         });
 
+        var borderColor1 = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color"))
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color.description")
+                ))
+                .binding("#505000FF", () -> boundBorderColors[0], val -> boundBorderColors[0] = val.trim())
+                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
+                        .alpha(true))
+                .build();
+        borderColor1.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                if (previewEntry.borderColors.isEmpty()) previewEntry.borderColors.add(opt.pendingValue().trim());
+                else previewEntry.borderColors.set(0, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
+
+        var borderColor2 = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color"))
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color.description")
+                ))
+                .binding("#5028007F", () -> boundBorderColors[1], val -> boundBorderColors[1] = val.trim())
+                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
+                        .alpha(true))
+                .build();
+        borderColor2.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                while (previewEntry.borderColors.size() < 2) previewEntry.borderColors.add("#5028007F");
+                previewEntry.borderColors.set(1, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
+
         var tooltipOpacity = Option.<Integer>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.opacity"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.opacity.description")))
@@ -189,6 +229,8 @@ public class TooltipEditScreen {
                 .option(color1)
                 .option(color2)
                 .option(tooltipOpacity)
+                .option(borderColor1)
+                .option(borderColor2)
                 .build();
     }
 

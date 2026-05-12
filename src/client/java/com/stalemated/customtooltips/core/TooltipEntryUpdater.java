@@ -11,18 +11,28 @@ import java.util.ArrayList;
 
 public class TooltipEntryUpdater {
 
-    public static void updateAndSave(TooltipEntry entry, String[] boundColors, boolean isNew, Screen parent) {
+    public static void updateAndSave(TooltipEntry entry, String[] boundColors, String[] boundBorderColors, boolean isNew, Screen parent) {
         entry.colors = new ArrayList<>();
+        entry.borderColors = new ArrayList<>();
+
         boolean hasError = false;
 
         String finalColor1 = boundColors[0].trim();
         String finalColor2 = boundColors[1].trim();
 
+        String finalBorderColor1 = boundBorderColors[0].trim();
+        String finalBorderColor2 = boundBorderColors[1].trim();
+
         if (ColorUtils.isInvalidColorCode(finalColor1)) { hasError = true; finalColor1 = "white"; }
         if (ColorUtils.isInvalidColorCode(finalColor2)) { hasError = true; finalColor2 = "white"; }
+        if (ColorUtils.isInvalidARGBColor(finalBorderColor1, 0)) { hasError = true; finalBorderColor1 = "#505000FF"; }
+        if (ColorUtils.isInvalidARGBColor(finalBorderColor2, 1)) { hasError = true; finalBorderColor1 = "#5028007F"; }
 
         entry.colors.add(finalColor1);
         entry.colors.add(finalColor2);
+
+        entry.borderColors.add(finalBorderColor1);
+        entry.borderColors.add(finalBorderColor2);
 
         if (hasError) ToastManager.showInvalidColorToast();
 

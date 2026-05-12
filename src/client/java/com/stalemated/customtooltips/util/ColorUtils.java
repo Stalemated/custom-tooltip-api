@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.util;
 
+import com.stalemated.customtooltips.TooltipEntry;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
@@ -45,12 +46,47 @@ public class ColorUtils {
     }
 
     public static Color parseToAWT(String colorStr) {
-        TextColor textColor = resolveTextColor(colorStr);
-        return textColor != null ? new Color(textColor.getRgb()) : Color.GRAY;
+        Integer argb = resolveARGBColor(colorStr);
+        return argb != null ? new Color(argb, true) : Color.WHITE;
     }
 
     public static int parseColor(String colorStr) {
         TextColor color = resolveTextColor(colorStr);
-        return color != null ? color.getRgb() : 0xFFFFFF;
+        return color != null ? color.getRgb() : TooltipEntry.DEFAULT_COLOR;
+    }
+
+    public static boolean isInvalidARGBColor(String color, int index) {
+        return parseARGBColor(color, index) == null;
+    }
+
+    public static Integer parseARGBColor(String colorStr, int index) {
+        Integer color = resolveARGBColor(colorStr);
+        return color != null ? color : TooltipEntry.DEFAULT_BORDER_COLORS.get(index);
+    }
+
+    public static Integer resolveARGBColor(String colorStr) {
+        if (colorStr == null || colorStr.trim().isEmpty()) return null;
+
+        String lowerColor = colorStr.trim().toLowerCase(Locale.ROOT);
+
+        String hex = colorStr.trim();
+        if (hex.startsWith("#")) hex = hex.substring(1);
+        else if (hex.startsWith("0x") || hex.startsWith("0X")) hex = hex.substring(2);
+        else if (hex.startsWith("x") || hex.startsWith("X")) hex = hex.substring(1);
+
+        if (hex.matches("^[0-9a-fA-F]{8}$")) {
+            return (int) Long.parseLong(hex, 16);
+        }
+
+        if (hex.matches("^[0-9a-fA-F]{6}$")) {
+            return (0xFF << 24) | Integer.parseInt(hex, 16);
+        }
+
+        TextColor textColor = resolveTextColor(lowerColor);
+        if (textColor != null) {
+            return (0xFF << 24) | textColor.getRgb();
+        }
+
+        return null;
     }
 }

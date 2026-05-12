@@ -14,8 +14,9 @@ import java.awt.Color;
 
 public class AdvancedColorController extends ColorController {
     private final Option<String> stringOption;
+    private final boolean alpha;
 
-    public AdvancedColorController(Option<String> stringOption) {
+    public AdvancedColorController(Option<String> stringOption, boolean alpha) {
         super(Option.<Color>createBuilder()
                 .name(stringOption.name())
                 .binding(
@@ -24,15 +25,28 @@ public class AdvancedColorController extends ColorController {
                         val -> {}
                 )
                 .controller(ColorControllerBuilder::create)
-                .build(), false);
+                .build(), alpha);
         this.stringOption = stringOption;
+        this.alpha = alpha;
 
         this.option().addEventListener((opt, event) -> {
             Color pickerColor = opt.pendingValue();
             Color currentColor = ColorUtils.parseToAWT(this.stringOption.pendingValue());
             if (!pickerColor.equals(currentColor)) {
-                String hex = String.format("#%02X%02X%02X", pickerColor.getRed(), pickerColor.getGreen(), pickerColor.getBlue());
+                String hex;
+                if (this.alpha) {
+                    hex = String.format("#%02X%02X%02X%02X", pickerColor.getAlpha(), pickerColor.getRed(), pickerColor.getGreen(), pickerColor.getBlue());
+                } else {
+                    hex = String.format("#%02X%02X%02X", pickerColor.getRed(), pickerColor.getGreen(), pickerColor.getBlue());
+                }
                 this.stringOption.requestSet(hex);
+            }
+        });
+
+        this.stringOption.addEventListener((opt, event) -> {
+            Color parsed = ColorUtils.parseToAWT(opt.pendingValue());
+            if (!parsed.equals(this.option().pendingValue())) {
+                this.option().requestSet(parsed);
             }
         });
     }

@@ -31,7 +31,12 @@ public class TooltipEntry {
     public List<String> text = new ArrayList<>();
 
     public TooltipStyle style = TooltipStyle.SOLID;
+
+    public static final int DEFAULT_COLOR = 0xFFFFFF;
+    public static final List<Integer> DEFAULT_BORDER_COLORS = new ArrayList<>(List.of(0x505000FF, 0x5028007F));
+
     public List<String> colors = new ArrayList<>();
+    public List<String> borderColors = new ArrayList<>();
     public static final int DEFAULT_OPACITY = 240;
     public int opacity = DEFAULT_OPACITY;
 
@@ -64,11 +69,13 @@ public class TooltipEntry {
     // Ignored caches
     private transient boolean cachesInitialized = false;
     private transient TargetMatcher targetMatcher = null;
-    private transient int parsedColor1 = 0xFFFFFF;
-    private transient int parsedColor2 = 0xFFFFFF;
+    private transient int parsedColor1 = DEFAULT_COLOR;
+    private transient int parsedColor2 = DEFAULT_COLOR;
     private transient boolean isGradient = false;
     private transient List<Text> cachedStaticText = null;
     private transient Style cachedStyleModifier = null;
+    private transient int parsedBorderColorStart = DEFAULT_BORDER_COLORS.get(0);
+    private transient int parsedBorderColorEnd = DEFAULT_BORDER_COLORS.get(1);
 
     public transient boolean apiEntry = false;
     public transient String apiEntryId = "";
@@ -120,6 +127,9 @@ public class TooltipEntry {
     public Style getCachedStyleModifier() { return this.cachedStyleModifier; }
     public List<Text> getCachedStaticText() { return this.cachedStaticText; }
     public void setCachedStaticText(List<Text> text) { this.cachedStaticText = text; }
+    public boolean hasCustomBorder() { return !this.borderColors.isEmpty(); }
+    public int getParsedBorderColorStart() { return this.parsedBorderColorStart; }
+    public int getParsedBorderColorEnd() { return this.parsedBorderColorEnd; }
 
     public void invalidateCaches() {
         this.cachesInitialized = false;
@@ -148,6 +158,11 @@ public class TooltipEntry {
             }
         }
 
+        if (!this.borderColors.isEmpty()) {
+            this.parsedBorderColorStart = ColorUtils.parseARGBColor(this.borderColors.get(0), 0);
+            this.parsedBorderColorEnd = ColorUtils.parseARGBColor(this.borderColors.get(1), 1);
+        }
+
         this.cachesInitialized = true;
     }
 
@@ -169,6 +184,7 @@ public class TooltipEntry {
                 .dynamicText(this.dynamicTextProvider)
                 .style(this.style)
                 .colors(this.colors)
+                .borderColors(this.borderColors)
                 .opacity(this.opacity)
                 .position(this.position)
                 .lineOffset(this.lineOffset)
@@ -304,6 +320,28 @@ public class TooltipEntry {
          */
         public Builder colors(List<String> colors) {
             this.entry.colors.addAll(colors);
+            return this;
+        }
+
+        /**
+         * Sets the border colors used by the tooltip.
+         *
+         * @param colors The colors to apply (2 colors, start and end).
+         * @return This builder instance.
+         */
+        public Builder borderColors(String... colors) {
+            this.entry.borderColors.addAll(List.of(colors));
+            return this;
+        }
+
+        /**
+         * Sets the border colors used by the tooltip from a list.
+         *
+         * @param colors A list of color strings (2 colors, start and end).
+         * @return This builder instance.
+         */
+        public Builder borderColors(List<String> colors) {
+            this.entry.borderColors.addAll(colors);
             return this;
         }
 

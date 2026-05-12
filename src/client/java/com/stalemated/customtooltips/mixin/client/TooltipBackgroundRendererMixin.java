@@ -29,12 +29,12 @@ public abstract class TooltipBackgroundRendererMixin {
     @ModifyArg(method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderBorder(Lnet/minecraft/client/gui/DrawContext;IIIIIII)V"), index = 6)
     private static int customTooltips$renderBorderStartColor(int color) {
-        return TooltipOpacity.scaleAlpha(color);
+        return TooltipOpacity.getBorderColorStart(color);
     }
 
     @ModifyArg(method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderBorder(Lnet/minecraft/client/gui/DrawContext;IIIIIII)V"), index = 7)
     private static int customTooltips$renderBorderEndColor(int color) {
-        return TooltipOpacity.scaleAlpha(color);
+        return TooltipOpacity.getBorderColorEnd(color);
     }
 }

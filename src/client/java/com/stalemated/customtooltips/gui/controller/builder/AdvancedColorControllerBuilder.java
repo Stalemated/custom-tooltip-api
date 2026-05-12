@@ -11,6 +11,7 @@ import net.minecraft.text.Text;
 
 public class AdvancedColorControllerBuilder implements ControllerBuilder<String> {
     private final Option<String> option;
+    private boolean alpha = false;
 
     private AdvancedColorControllerBuilder(Option<String> option) {
         this.option = option;
@@ -20,9 +21,14 @@ public class AdvancedColorControllerBuilder implements ControllerBuilder<String>
         return new AdvancedColorControllerBuilder(option);
     }
 
+    public AdvancedColorControllerBuilder alpha(boolean alpha) {
+        this.alpha = alpha;
+        return this;
+    }
+
     @Override
     public Controller<String> build() {
-        final AdvancedColorController advancedColorController = new AdvancedColorController(this.option);
+        final AdvancedColorController advancedColorController = new AdvancedColorController(this.option, this.alpha);
 
         return new Controller<>() {
             @Override
