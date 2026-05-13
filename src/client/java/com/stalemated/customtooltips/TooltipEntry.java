@@ -27,6 +27,10 @@ public class TooltipEntry {
         REPLACE_NAME, REPLACE_ALL, TOP, BOTTOM, APPEND, PREPEND
     }
 
+    public enum BackgroundType {
+        SOLID, GRADIENT, TEXTURE
+    }
+
     public String target = "";
     public List<String> text = new ArrayList<>();
 
@@ -34,9 +38,12 @@ public class TooltipEntry {
 
     public static final int DEFAULT_COLOR = 0xFFFFFF;
     public static final List<Integer> DEFAULT_BORDER_COLORS = new ArrayList<>(List.of(0x505000FF, 0x5028007F));
+    public static final List<Integer> DEFAULT_BACKGROUND_COLORS = new ArrayList<>(List.of(0xF0100010, 0xF0100010));
 
     public List<String> colors = new ArrayList<>();
     public List<String> borderColors = new ArrayList<>();
+    public List<String> backgroundColors = new ArrayList<>();
+    public BackgroundType backgroundType = BackgroundType.SOLID;
     public static final int DEFAULT_OPACITY = 240;
     public int opacity = DEFAULT_OPACITY;
 
@@ -76,6 +83,8 @@ public class TooltipEntry {
     private transient Style cachedStyleModifier = null;
     private transient int parsedBorderColorStart = DEFAULT_BORDER_COLORS.get(0);
     private transient int parsedBorderColorEnd = DEFAULT_BORDER_COLORS.get(1);
+    private transient int parsedBackgroundColorStart = DEFAULT_BACKGROUND_COLORS.get(0);
+    private transient int parsedBackgroundColorEnd = DEFAULT_BACKGROUND_COLORS.get(1);
 
     public transient boolean apiEntry = false;
     public transient String apiEntryId = "";
@@ -86,11 +95,13 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, int opacity, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, List<String> borderColors, List<String> backgroundColors, int opacity, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
         this.colors = colors != null ? colors : new ArrayList<>();
+        this.borderColors = borderColors != null ? borderColors : new ArrayList<>();
+        this.backgroundColors = backgroundColors != null ? backgroundColors : new ArrayList<>();
         this.opacity = opacity;
         this.bold = bold;
         this.italic = italic;
@@ -124,12 +135,18 @@ public class TooltipEntry {
     public boolean isGradient() { return this.isGradient; }
     public int getParsedColor1() { return this.parsedColor1; }
     public int getParsedColor2() { return this.parsedColor2; }
+
     public Style getCachedStyleModifier() { return this.cachedStyleModifier; }
     public List<Text> getCachedStaticText() { return this.cachedStaticText; }
     public void setCachedStaticText(List<Text> text) { this.cachedStaticText = text; }
+
     public boolean hasCustomBorder() { return !this.borderColors.isEmpty(); }
     public int getParsedBorderColorStart() { return this.parsedBorderColorStart; }
     public int getParsedBorderColorEnd() { return this.parsedBorderColorEnd; }
+
+    public boolean hasCustomBackground() { return !this.backgroundColors.isEmpty(); }
+    public int getParsedBackgroundColorStart() { return this.parsedBackgroundColorStart; }
+    public int getParsedBackgroundColorEnd() { return this.parsedBackgroundColorEnd; }
 
     public void invalidateCaches() {
         this.cachesInitialized = false;
@@ -163,6 +180,11 @@ public class TooltipEntry {
             this.parsedBorderColorEnd = ColorUtils.parseARGBColor(this.borderColors.get(1), 1);
         }
 
+        if (!this.backgroundColors.isEmpty()) {
+            this.parsedBackgroundColorStart = ColorUtils.parseARGBColor(this.backgroundColors.get(0), 0);
+            if (this.backgroundType != BackgroundType.SOLID) this.parsedBackgroundColorEnd = ColorUtils.parseARGBColor(this.backgroundColors.get(1), 1);
+        }
+
         this.cachesInitialized = true;
     }
 
@@ -185,6 +207,8 @@ public class TooltipEntry {
                 .style(this.style)
                 .colors(this.colors)
                 .borderColors(this.borderColors)
+                .backgroundColors(this.backgroundColors)
+                .backgroundType(this.backgroundType)
                 .opacity(this.opacity)
                 .position(this.position)
                 .lineOffset(this.lineOffset)
@@ -342,6 +366,39 @@ public class TooltipEntry {
          */
         public Builder borderColors(List<String> colors) {
             this.entry.borderColors.addAll(colors);
+            return this;
+        }
+
+        /**
+         * Sets the background colors used by the tooltip.
+         *
+         * @param colors The colors to apply (2 colors, start and end).
+         * @return This builder instance.
+         */
+        public Builder backgroundColors(String... colors) {
+            this.entry.backgroundColors.addAll(List.of(colors));
+            return this;
+        }
+
+        /**
+         * Sets the background colors used by the tooltip from a list.
+         *
+         * @param colors A list of color strings (2 colors, start and end).
+         * @return This builder instance.
+         */
+        public Builder backgroundColors(List<String> colors) {
+            this.entry.backgroundColors.addAll(colors);
+            return this;
+        }
+
+        /**
+         * Sets the background type used by the tooltip.
+         *
+         * @param backgroundType The background type (SOLID, GRADIENT, TEXTURE).
+         * @return This builder instance.
+         */
+        public Builder backgroundType(BackgroundType backgroundType) {
+            this.entry.backgroundType = backgroundType;
             return this;
         }
 

@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
-import com.stalemated.customtooltips.core.TooltipOpacity;
+import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
@@ -21,12 +21,12 @@ public abstract class HandledScreenMixin {
     private void customtooltips$captureInventoryTooltipOpacity(DrawContext context, int x, int y, CallbackInfo ci) {
         if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
             ItemStack stack = this.focusedSlot.getStack();
-            TooltipOpacity.setMixinTooltipOpacity(stack);
+            TooltipBackgroundManager.setMixinTooltipOpacity(stack);
         }
     }
 
     @Inject(method = "drawMouseoverTooltip", at = @At("RETURN"))
     private void customtooltips$resetInventoryTooltipOpacity(DrawContext context, int x, int y, CallbackInfo ci) {
-        TooltipOpacity.setCurrentOpacity(-1);
+        TooltipBackgroundManager.setCurrentOpacity(-1);
     }
 }

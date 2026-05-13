@@ -5,7 +5,7 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.factories.ListScreenUIFactory;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import com.stalemated.customtooltips.core.TooltipOpacity;
+import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import com.stalemated.customtooltips.util.ToastManager;
 import net.minecraft.text.Text;
@@ -83,11 +83,11 @@ public class TooltipListScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         
         if (this.activeTooltipText != null) {
-            TooltipOpacity.setCurrentEntry(this.activeTooltip);
-            TooltipOpacity.setCurrentOpacity(this.activeTooltipOpacity);
+            TooltipBackgroundManager.setCurrentEntry(this.activeTooltip);
+            TooltipBackgroundManager.setCurrentOpacity(this.activeTooltipOpacity);
             context.drawTooltip(this.textRenderer, this.activeTooltipText, mouseX, mouseY);
-            TooltipOpacity.setCurrentEntry(null);
-            TooltipOpacity.setCurrentOpacity(-1);
+            TooltipBackgroundManager.setCurrentEntry(null);
+            TooltipBackgroundManager.setCurrentOpacity(-1);
         }
     }
 

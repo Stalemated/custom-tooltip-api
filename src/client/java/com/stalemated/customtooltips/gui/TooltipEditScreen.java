@@ -2,7 +2,7 @@ package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipEntryUpdater;
-import com.stalemated.customtooltips.core.TooltipOpacity;
+import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.AdvancedColorControllerBuilder;
@@ -37,11 +37,11 @@ public class TooltipEditScreen {
                     if (Screen.hasControlDown()) {
                         List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
 
-                        TooltipOpacity.setCurrentOpacity(previewEntry.opacity);
-                        TooltipOpacity.setCurrentEntry(previewEntry);
+                        TooltipBackgroundManager.setCurrentOpacity(previewEntry.opacity);
+                        TooltipBackgroundManager.setCurrentEntry(previewEntry);
                         context.drawTooltip(client.textRenderer, previewLines, mouseX, mouseY);
-                        TooltipOpacity.setCurrentOpacity(-1);
-                        TooltipOpacity.setCurrentEntry(null);
+                        TooltipBackgroundManager.setCurrentOpacity(-1);
+                        TooltipBackgroundManager.setCurrentEntry(null);
                     }
                 });
             }
@@ -61,25 +61,31 @@ public class TooltipEditScreen {
         String rawBorderColor2 = entry.borderColors != null && entry.borderColors.size() > 1 ? entry.borderColors.get(1) : "";
         String[] boundBorderColors = new String[] { rawBorderColor1, rawBorderColor2 };
 
+        String rawBackgroundColor1 = entry.backgroundColors != null && !entry.backgroundColors.isEmpty() ? entry.backgroundColors.get(0) : "";
+        String rawBackgroundColor2 = entry.backgroundColors != null && entry.backgroundColors.size() > 1 ? entry.backgroundColors.get(1) : "";
+        String[] boundBackgroundColors = new String[] { rawBackgroundColor1, rawBackgroundColor2 };
+
+
+
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                 .save(() -> {
                     Boolean isNewEntry = isNewRef.get();
                     if (isNewEntry != null) {
-                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, isNewEntry, parent);
+                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, boundBackgroundColors, isNewEntry, parent);
                         if (isNewEntry) {
                             // Prevent re-adding on subsequent saves within the same screen session
                             isNewRef.clear();
                         }
                     } else {
-                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, false, parent);
+                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, boundBackgroundColors, false, parent);
                     }
                 })
                 .category(ConfigCategory.createBuilder()
                         .name(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                         .group(createTargetGroup(entry))
                         .group(createCustomTextGroup(entry))
-                        .group(createStyleAndColorsGroup(entry, boundColors, boundBorderColors))
+                        .group(createStyleAndColorsGroup(entry, boundColors, boundBorderColors, boundBackgroundColors))
                         .group(createPositionAndAnimationGroup(entry))
                         .group(createFormattingGroup(entry))
                         .group(createConditionsGroup(entry))
@@ -124,7 +130,7 @@ public class TooltipEditScreen {
         return customText;
     }
 
-    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors, String[] boundBorderColors) {
+    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors, String[] boundBorderColors, String[] boundBackgroundColors) {
         var style = Option.<TooltipEntry.TooltipStyle>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.style"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.style.description")))
@@ -223,6 +229,54 @@ public class TooltipEditScreen {
             }
         });
 
+        var backgroundColor1 = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.background_top_color"))
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.background_top_color.description")
+                ))
+                .binding("#F0100010", () -> boundBackgroundColors[0], val -> boundBackgroundColors[0] = val.trim())
+                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
+                        .alpha(true))
+                .build();
+        backgroundColor1.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                if (previewEntry.backgroundColors.isEmpty()) previewEntry.backgroundColors.add(opt.pendingValue().trim());
+                else previewEntry.backgroundColors.set(0, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
+
+        var backgroundColor2 = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.background_bottom_color"))
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.background_bottom_color.description")
+                ))
+                .binding("#F0100010", () -> boundBackgroundColors[1], val -> boundBackgroundColors[1] = val.trim())
+                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
+                        .alpha(true))
+                .build();
+        backgroundColor2.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                while (previewEntry.backgroundColors.size() < 2) previewEntry.backgroundColors.add("#F0100010");
+                previewEntry.backgroundColors.set(1, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
+
+        var backgroundType = Option.<TooltipEntry.BackgroundType>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_type"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_type.description")))
+                .binding(TooltipEntry.BackgroundType.SOLID, () -> entry.backgroundType, val -> entry.backgroundType = val)
+                .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
+                        .formatValue(type -> Text.translatable("customtooltips.tooltip_edit_screen.background_type." + type.name().toLowerCase())))
+                .build();
+        backgroundType.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.backgroundType = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
                 .option(style)
@@ -231,6 +285,9 @@ public class TooltipEditScreen {
                 .option(tooltipOpacity)
                 .option(borderColor1)
                 .option(borderColor2)
+                .option(backgroundType)
+                .option(backgroundColor1)
+                .option(backgroundColor2)
                 .build();
     }
 

@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
-import com.stalemated.customtooltips.core.TooltipOpacity;
+import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
@@ -14,11 +14,11 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "drawItemTooltip", at = @At("HEAD"))
     private void customtooltips$captureTooltipOpacity(TextRenderer textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
-        TooltipOpacity.setMixinTooltipOpacity(stack);
+        TooltipBackgroundManager.setMixinTooltipOpacity(stack);
     }
 
     @Inject(method = "drawItemTooltip", at = @At("RETURN"))
     private void customtooltips$resetTooltipOpacity(TextRenderer textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
-        TooltipOpacity.setCurrentOpacity(-1);
+        TooltipBackgroundManager.setCurrentOpacity(-1);
     }
 }
