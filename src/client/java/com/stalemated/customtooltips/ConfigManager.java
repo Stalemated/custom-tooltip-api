@@ -33,7 +33,7 @@ public class ConfigManager {
 
         if (configFile.exists() && configFile.length() == 0) {
             try {
-                configFile.delete();
+                boolean ignored = configFile.delete();
             } catch (Exception e) {
                 LOGGER.warn("Failed to delete empty config file: ", e);
             }

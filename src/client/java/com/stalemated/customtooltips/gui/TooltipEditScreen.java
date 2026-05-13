@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TooltipEditScreen {
@@ -120,7 +119,7 @@ public class TooltipEditScreen {
                         Text.translatable("customtooltips.tooltip_edit_screen.custom_text.description"),
                         Text.translatable("customtooltips.tooltip_edit_screen.custom_text.note")
                 ))
-                .binding(new ArrayList<>(Arrays.asList("Default text")), () -> new ArrayList<>(entry.text), val -> entry.text = val)
+                .binding(new ArrayList<>(List.of("Default text")), () -> new ArrayList<>(entry.text), val -> entry.text = val)
                 .controller(StringControllerBuilder::create)
                 .initial("")
                 .build();
