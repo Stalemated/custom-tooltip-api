@@ -16,8 +16,6 @@ public class CustomFontManager {
 
     private static final Path FONTS_INPUT_DIR = FabricLoader.getInstance().getConfigDir().resolve("custom_tooltip_api").resolve("fonts");
 
-    private static final Path RESOURCE_PACK_DIR = FabricLoader.getInstance().getGameDir().resolve("resourcepacks").resolve("Custom Tooltip API - Fonts");
-
     public static List<String> availableFonts = new ArrayList<>();
 
     public static void loadAndGenerateFonts() {
@@ -32,14 +30,7 @@ public class CustomFontManager {
             File[] ttfFiles = FONTS_INPUT_DIR.toFile().listFiles((dir, name) -> name.toLowerCase().endsWith(".ttf"));
 
             if (ttfFiles != null && ttfFiles.length > 0) {
-                if (!Files.exists(RESOURCE_PACK_DIR)) Files.createDirectories(RESOURCE_PACK_DIR);
-
-                File mcmeta = RESOURCE_PACK_DIR.resolve("pack.mcmeta").toFile();
-                try (FileWriter writer = new FileWriter(mcmeta)) {
-                    writer.write(getPackMcmetaString());
-                }
-
-                Path fontDir = RESOURCE_PACK_DIR.resolve("assets").resolve("custom_tooltip_api").resolve("font");
+                Path fontDir = ResourcepackManager.RESOURCE_PACK_DIR.resolve("assets").resolve("custom_tooltip_api").resolve("font");
 
                 if (!Files.exists(fontDir)) {
                     Files.createDirectories(fontDir);
@@ -64,17 +55,6 @@ public class CustomFontManager {
         }
     }
 
-    private static String getPackMcmetaString() {
-        return """
-                {
-                   "pack": {
-                       "pack_format": 15,
-                       "description": "Custom Tooltip API - Auto Generated Fonts"
-                   }
-                }
-                """;
-    }
-
     private static String getFontJsonString(String fontIdentifier) {
         return """
                 {
@@ -91,4 +71,3 @@ public class CustomFontManager {
                 """.formatted(fontIdentifier);
     }
 }
-

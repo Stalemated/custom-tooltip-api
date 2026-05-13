@@ -8,6 +8,7 @@ import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdown
 import com.stalemated.customtooltips.gui.controller.builder.AdvancedColorControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.ItemOrTagControllerBuilder;
 
+import com.stalemated.customtooltips.util.CustomBackgroundManager;
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
@@ -49,7 +50,7 @@ public class TooltipEditScreen {
     }
 
     public static Screen create(Screen parent, TooltipEntry entry, boolean isNew) {
-        previewEntry = entry.copy();
+        previewEntry = entry.display();
 
         final WeakReference<Boolean> isNewRef = new WeakReference<>(isNew);
 
@@ -277,6 +278,21 @@ public class TooltipEditScreen {
             }
         });
 
+        var backgroundTextureOption = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_texture"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_texture.description")))
+                .binding("", () -> entry.backgroundTexture, val -> entry.backgroundTexture = val)
+                .controller(opt -> SimpleStringDropdownControllerBuilder.create(opt)
+                        .values(CustomBackgroundManager.availableBackgrounds)
+                        .formatValue(s -> Text.literal(s.replace("textures/gui/tooltip_backgrounds/", ""))))
+                .build();
+        backgroundTextureOption.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.backgroundTexture = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
                 .option(style)
@@ -288,6 +304,7 @@ public class TooltipEditScreen {
                 .option(backgroundType)
                 .option(backgroundColor1)
                 .option(backgroundColor2)
+                .option(backgroundTextureOption)
                 .build();
     }
 

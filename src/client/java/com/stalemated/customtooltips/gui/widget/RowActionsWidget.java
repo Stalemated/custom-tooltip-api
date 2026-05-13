@@ -67,23 +67,7 @@ public class RowActionsWidget {
                 .build());
 
         apiButtons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF29"), btn -> {
-            TooltipEntry newEntry = TooltipEntry.builder(entry.target)
-                    .text(entry.text)
-                    .style(entry.style)
-                    .colors(entry.colors)
-                    .bold(entry.bold)
-                    .italic(entry.italic)
-                    .underlined(entry.underlined)
-                    .strikethrough(entry.strikethrough)
-                    .obfuscated(entry.obfuscated)
-                    .requireKeybind(entry.require_keybind)
-                    .emptyLineBefore(entry.empty_line_before)
-                    .position(entry.position)
-                    .lineOffset(entry.lineOffset)
-                    .animationOffset(entry.animation_offset)
-                    .tickrate(entry.tickrate)
-                    .font(entry.font)
-                    .build();
+            TooltipEntry newEntry = entry.copy();
 
             newEntry.apiEntry = false;
             newEntry.apiEntryId = "";

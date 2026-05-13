@@ -28,7 +28,7 @@ public class TooltipEntry {
     }
 
     public enum BackgroundType {
-        SOLID, GRADIENT, TEXTURE
+        SOLID, GRADIENT, SIMPLE_TEXTURE, TEXTURE
     }
 
     public String target = "";
@@ -44,6 +44,7 @@ public class TooltipEntry {
     public List<String> borderColors = new ArrayList<>();
     public List<String> backgroundColors = new ArrayList<>();
     public BackgroundType backgroundType = BackgroundType.SOLID;
+    public String backgroundTexture = "";
     public static final int DEFAULT_OPACITY = 240;
     public int opacity = DEFAULT_OPACITY;
 
@@ -201,7 +202,7 @@ public class TooltipEntry {
     }
 
     public TooltipEntry copy() {
-        TooltipEntry clone = TooltipEntry.builder(this.target)
+        return TooltipEntry.builder(this.target)
                 .text(this.text)
                 .dynamicText(this.dynamicTextProvider)
                 .style(this.style)
@@ -209,6 +210,7 @@ public class TooltipEntry {
                 .borderColors(this.borderColors)
                 .backgroundColors(this.backgroundColors)
                 .backgroundType(this.backgroundType)
+                .backgroundTexture(this.backgroundTexture)
                 .opacity(this.opacity)
                 .position(this.position)
                 .lineOffset(this.lineOffset)
@@ -228,11 +230,10 @@ public class TooltipEntry {
                 .tickrate(this.tickrate)
                 .reverseAnimation(this.reverse_animation)
                 .build();
-                
-        clone.uuid = this.uuid;
-        clone.apiEntry = this.apiEntry;
-        clone.apiEntryId = this.apiEntryId;
-        return clone;
+    }
+
+    public TooltipEntry display() {
+        return this;
     }
 
     public List<Text> getTextComponents(ItemStack stack) {
@@ -251,7 +252,7 @@ public class TooltipEntry {
     /**
      * Creates a new Builder instance for configuring a TooltipEntry.
      *
-         * @param target The target item ID, tag ("#c:swords"), namespace ("minecraft:*"), regex ("regex:.*sword.*"), or all items ("*").
+     * @param target The target item ID, tag ("#c:swords"), namespace ("minecraft:*"), regex ("regex:.*sword.*"), or all items ("*").
      * @return A new Builder instance.
      */
     public static Builder builder(String target) {
@@ -399,6 +400,17 @@ public class TooltipEntry {
          */
         public Builder backgroundType(BackgroundType backgroundType) {
             this.entry.backgroundType = backgroundType;
+            return this;
+        }
+
+        /**
+         * Sets the texture identifier used for TEXTURE background type.
+         *
+         * @param backgroundTexture The identifier of the texture.
+         * @return This builder instance.
+         */
+        public Builder backgroundTexture(String backgroundTexture) {
+            this.entry.backgroundTexture = backgroundTexture;
             return this;
         }
 
