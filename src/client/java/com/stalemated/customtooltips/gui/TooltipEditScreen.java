@@ -86,7 +86,8 @@ public class TooltipEditScreen {
                         .build())
                 .category(ConfigCategory.createBuilder()
                         .name(Text.translatable("customtooltips.tooltip_edit_screen.title_background"))
-                        .group(createBackgroundOptionsGroup(entry, boundBorderColors, boundBackgroundColors))
+                        .group(createBackgroundOptionsGroup(entry, boundBackgroundColors))
+                        .group(createBorderOptionsGroup(entry, boundBorderColors))
                         .build())
                 .build()
                 .generateScreen(parent);
@@ -191,57 +192,7 @@ public class TooltipEditScreen {
                 .build();
     }
 
-    private static OptionGroup createBackgroundOptionsGroup(TooltipEntry entry, String[] boundBorderColors, String[] boundBackgroundColors) {
-
-        var borderOpacity = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity.description")))
-                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.borderOpacity, val -> entry.borderOpacity = val)
-                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                        .range(0, 255)
-                        .step(1)
-                )
-                .build();
-        borderOpacity.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.borderOpacity = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
-
-        var borderColor1 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color.description")
-                ))
-                .binding("#505000FF", () -> boundBorderColors[0], val -> boundBorderColors[0] = val.trim())
-                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
-                        .alpha(true))
-                .build();
-        borderColor1.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                if (previewEntry.borderColors.isEmpty()) previewEntry.borderColors.add(opt.pendingValue().trim());
-                else previewEntry.borderColors.set(0, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
-
-        var borderColor2 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color.description")
-                ))
-                .binding("#5028007F", () -> boundBorderColors[1], val -> boundBorderColors[1] = val.trim())
-                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
-                        .alpha(true))
-                .build();
-        borderColor2.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                while (previewEntry.borderColors.size() < 2) previewEntry.borderColors.add("#5028007F");
-                previewEntry.borderColors.set(1, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
+    private static OptionGroup createBackgroundOptionsGroup(TooltipEntry entry, String[] boundBackgroundColors) {
 
         var backgroundOpacity = Option.<Integer>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.background_opacity"))
@@ -324,14 +275,70 @@ public class TooltipEditScreen {
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.background"))
-                .option(borderOpacity)
-                .option(borderColor1)
-                .option(borderColor2)
                 .option(backgroundType)
                 .option(backgroundOpacity)
                 .option(backgroundColor1)
                 .option(backgroundColor2)
                 .option(backgroundTextureOption)
+                .build();
+    }
+
+    private static OptionGroup createBorderOptionsGroup(TooltipEntry entry, String[] boundBorderColors) {
+        var borderOpacity = Option.<Integer>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity.description")))
+                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.borderOpacity, val -> entry.borderOpacity = val)
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(0, 255)
+                        .step(1)
+                )
+                .build();
+        borderOpacity.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.borderOpacity = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
+
+        var borderColor1 = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color"))
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color.description")
+                ))
+                .binding("#505000FF", () -> boundBorderColors[0], val -> boundBorderColors[0] = val.trim())
+                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
+                        .alpha(true))
+                .build();
+        borderColor1.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                if (previewEntry.borderColors.isEmpty()) previewEntry.borderColors.add(opt.pendingValue().trim());
+                else previewEntry.borderColors.set(0, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
+
+        var borderColor2 = Option.<String>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color"))
+                .description(OptionDescription.of(
+                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color.description")
+                ))
+                .binding("#5028007F", () -> boundBorderColors[1], val -> boundBorderColors[1] = val.trim())
+                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
+                        .alpha(true))
+                .build();
+        borderColor2.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                while (previewEntry.borderColors.size() < 2) previewEntry.borderColors.add("#5028007F");
+                previewEntry.borderColors.set(1, opt.pendingValue().trim());
+                previewEntry.invalidateCaches();
+            }
+        });
+
+        return OptionGroup.createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.category.border"))
+                .option(borderOpacity)
+                .option(borderColor1)
+                .option(borderColor2)
                 .build();
     }
 

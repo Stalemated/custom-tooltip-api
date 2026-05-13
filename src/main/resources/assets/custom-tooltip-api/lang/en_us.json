@@ -23,6 +23,7 @@
   "customtooltips.tooltip_edit_screen.category.formatting": "Formatting",
   "customtooltips.tooltip_edit_screen.category.conditions": "Conditions",
   "customtooltips.tooltip_edit_screen.category.background": "Background",
+  "customtooltips.tooltip_edit_screen.category.border": "Borders",
 
   "customtooltips.tooltip_edit_screen.target_id": "Target",
   "customtooltips.tooltip_edit_screen.target.description": "Accepts exact IDs §c(minecraft:apple)§f, tags §6(#c:swords)§f, namespaces §e(minecraft:*)§f, regex §a(regex:.*_sword)§f, or all items §b(*)§f.\n\n§eNote:§r§f Tags are world-specific and will only appear in the dropdown after loading a world.",
