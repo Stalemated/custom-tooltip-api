@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.1.0
+**This release brings new tools that allow to set custom colored backgrounds and borders, as well as background texture support.**
+
+### New Features
+- Tooltip background color and opacity can now be customized
+- 4 new config modes for backgrounds were added:
+  - Solid (default): Single static color
+  - Gradient: Fixed gradient between two colors.
+  - Texture (Stretch): Stretches the entire image to fit the tooltip. Best for seamless patterns, noisy backgrounds, or large abstract images.
+  - Texture (Framed): Uses smart scaling (Nine-Slice). Corners and borders keep their original thickness while the center stretches. Best for RPG frames, custom UI boxes, or drawn borders.
+- Tooltip border color and opacity can now be customized
+- Separated the Tooltip Edit menu into 2 categories to better organize the menu:
+  - Tooltip Edit category
+  - Tooltip Background category
+
+### Fixes
+- Fixed the color picker not displaying the correct color when clicking on undo or reset value
+- Added a translation key that was previously missing for the Hold Key in the Keybinds config
+- Added better color validation in the tooltip edit menu, fixes some bugs related to invalid colors
+- General code cleanup
+
 ## 3.0.0
 **This release contains tons of new features and lots of changes to the Config menu, the Tooltip edit menu as well as the Developer API.**
 
