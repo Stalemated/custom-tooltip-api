@@ -1,8 +1,10 @@
 package com.stalemated.customtooltips.core.background.strategies;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
+import com.stalemated.customtooltips.core.background.helper.EnableBlendHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
@@ -16,11 +18,11 @@ public class TextureBackgroundStrategy implements BackgroundRenderStrategy {
 
         Identifier texture = new Identifier(entry.backgroundTexture);
 
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, z);
+        EnableBlendHelper.enableBlend(context, z, defaultColor);
 
         context.drawTexture(texture, x, y, width, height, 0.0F, 0.0F, 64, 64, 64, 64);
 
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         context.getMatrices().pop();
     }
 }

@@ -1,8 +1,10 @@
 package com.stalemated.customtooltips.core.background.strategies;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
+import com.stalemated.customtooltips.core.background.helper.EnableBlendHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
@@ -20,8 +22,7 @@ public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrat
         int texW = 64;
         int texH = 64;
 
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, z);
+        EnableBlendHelper.enableBlend(context, z, defaultColor);
 
         // Corners
         context.drawTexture(texture, x, y, corner, corner, 0, 0, corner, corner, texW, texH); // TL
@@ -38,6 +39,7 @@ public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrat
         // Center
         context.drawTexture(texture, x + corner, y + corner, width - corner * 2, height - corner * 2, corner, corner, texW - corner * 2, texH - corner * 2, texW, texH);
 
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         context.getMatrices().pop();
     }
 }
