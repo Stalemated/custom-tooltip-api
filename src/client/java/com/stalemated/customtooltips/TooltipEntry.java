@@ -341,7 +341,7 @@ public class TooltipEntry {
         /**
          * Sets the colors used by the tooltip style from a list.
          * <p>
-         * Accepts hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
+         * Accepts RGB hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
          *
          * @param colors A list of color strings.
          * @return This builder instance.
@@ -353,6 +353,8 @@ public class TooltipEntry {
 
         /**
          * Sets the border colors used by the tooltip.
+         * <p>
+         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
          *
          * @param colors The colors to apply (2 colors, start and end).
          * @return This builder instance.
@@ -364,6 +366,8 @@ public class TooltipEntry {
 
         /**
          * Sets the border colors used by the tooltip from a list.
+         * <p>
+         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
          *
          * @param colors A list of color strings (2 colors, start and end).
          * @return This builder instance.
@@ -375,6 +379,8 @@ public class TooltipEntry {
 
         /**
          * Sets the background colors used by the tooltip.
+         * <p>
+         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
          *
          * @param colors The colors to apply (2 colors, start and end).
          * @return This builder instance.
@@ -386,6 +392,8 @@ public class TooltipEntry {
 
         /**
          * Sets the background colors used by the tooltip from a list.
+         * <p>
+         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
          *
          * @param colors A list of color strings (2 colors, start and end).
          * @return This builder instance.
@@ -407,7 +415,10 @@ public class TooltipEntry {
         }
 
         /**
-         * Sets the texture identifier used for TEXTURE background type.
+         * Sets the texture identifier used for TEXTURE or SIMPLE_TEXTURE background type.
+         * <p>
+         * The default auto-generated Identifiers use the following path:
+         * {@code custom_tooltip_api:textures/gui/tooltip_backgrounds/<IMAGE_NAME>.png}
          *
          * @param backgroundTexture The identifier of the texture.
          * @return This builder instance.
