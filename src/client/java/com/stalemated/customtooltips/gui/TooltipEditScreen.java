@@ -66,8 +66,6 @@ public class TooltipEditScreen {
         String rawBackgroundColor2 = entry.backgroundColors != null && entry.backgroundColors.size() > 1 ? entry.backgroundColors.get(1) : "";
         String[] boundBackgroundColors = new String[] { rawBackgroundColor1, rawBackgroundColor2 };
 
-
-
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                 .save(() -> {
@@ -86,10 +84,14 @@ public class TooltipEditScreen {
                         .name(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                         .group(createTargetGroup(entry))
                         .group(createCustomTextGroup(entry))
-                        .group(createStyleAndColorsGroup(entry, boundColors, boundBorderColors, boundBackgroundColors))
+                        .group(createStyleAndColorsGroup(entry, boundColors))
                         .group(createPositionAndAnimationGroup(entry))
                         .group(createFormattingGroup(entry))
                         .group(createConditionsGroup(entry))
+                        .build())
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.translatable("customtooltips.tooltip_edit_screen.title_background"))
+                        .group(createBackgroundOptionsGroup(entry, boundBorderColors, boundBackgroundColors))
                         .build())
                 .build()
                 .generateScreen(parent);
@@ -131,7 +133,7 @@ public class TooltipEditScreen {
         return customText;
     }
 
-    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors, String[] boundBorderColors, String[] boundBackgroundColors) {
+    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors) {
         var style = Option.<TooltipEntry.TooltipStyle>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.style"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.style.description")))
@@ -179,6 +181,16 @@ public class TooltipEditScreen {
                 previewEntry.invalidateCaches();
             }
         });
+
+        return OptionGroup.createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
+                .option(style)
+                .option(color1)
+                .option(color2)
+                .build();
+    }
+
+    private static OptionGroup createBackgroundOptionsGroup(TooltipEntry entry, String[] boundBorderColors, String[] boundBackgroundColors) {
 
         var borderOpacity = Option.<Integer>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity"))
@@ -310,10 +322,7 @@ public class TooltipEditScreen {
         });
 
         return OptionGroup.createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
-                .option(style)
-                .option(color1)
-                .option(color2)
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.category.background"))
                 .option(borderOpacity)
                 .option(borderColor1)
                 .option(borderColor2)

@@ -16,11 +16,13 @@
   "customtooltips.tooltip_list_screen.paste_button": "Paste Tooltip from clipboard",
 
   "customtooltips.tooltip_edit_screen.title": "Edit Tooltip [Hold CTRL for Live Preview]",
+  "customtooltips.tooltip_edit_screen.title_background": "Tooltip Background Options",
   "customtooltips.tooltip_edit_screen.category.target": "Target",
   "customtooltips.tooltip_edit_screen.category.style_colors": "Style & Colors",
   "customtooltips.tooltip_edit_screen.category.position_animation": "Position & Animation",
   "customtooltips.tooltip_edit_screen.category.formatting": "Formatting",
   "customtooltips.tooltip_edit_screen.category.conditions": "Conditions",
+  "customtooltips.tooltip_edit_screen.category.background": "Background",
 
   "customtooltips.tooltip_edit_screen.target_id": "Target",
   "customtooltips.tooltip_edit_screen.target.description": "Accepts exact IDs §c(minecraft:apple)§f, tags §6(#c:swords)§f, namespaces §e(minecraft:*)§f, regex §a(regex:.*_sword)§f, or all items §b(*)§f.\n\n§eNote:§r§f Tags are world-specific and will only appear in the dropdown after loading a world.",
