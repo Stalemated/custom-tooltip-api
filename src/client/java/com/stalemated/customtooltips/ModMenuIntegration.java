@@ -10,7 +10,5 @@ import net.fabricmc.api.Environment;
 public class ModMenuIntegration implements ModMenuApi {
 
     @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> new TooltipListScreen(parent);
-    }
+    public ConfigScreenFactory<?> getModConfigScreenFactory() { return TooltipListScreen::new; }
 }
