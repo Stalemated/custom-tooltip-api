@@ -44,6 +44,11 @@ public class TooltipBackgroundManager {
         return currentOpacity;
     }
 
+    public static void clearState() {
+        currentOpacity = -1;
+        currentEntry = null;
+    }
+
     public static int scaleAlpha(int color) {
         int value = TooltipBackgroundManager.getCurrentOpacity() != -1
                 ? TooltipBackgroundManager.getCurrentOpacity()

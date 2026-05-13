@@ -19,6 +19,6 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "drawItemTooltip", at = @At("RETURN"))
     private void customtooltips$resetTooltipOpacity(TextRenderer textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
-        TooltipBackgroundManager.setCurrentOpacity(-1);
+        TooltipBackgroundManager.clearState();
     }
 }

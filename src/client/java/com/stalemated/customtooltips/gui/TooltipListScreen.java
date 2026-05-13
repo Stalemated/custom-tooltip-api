@@ -86,8 +86,7 @@ public class TooltipListScreen extends Screen {
             TooltipBackgroundManager.setCurrentEntry(this.activeTooltip);
             TooltipBackgroundManager.setCurrentOpacity(this.activeTooltipOpacity);
             context.drawTooltip(this.textRenderer, this.activeTooltipText, mouseX, mouseY);
-            TooltipBackgroundManager.setCurrentEntry(null);
-            TooltipBackgroundManager.setCurrentOpacity(-1);
+            TooltipBackgroundManager.clearState();
         }
     }
 

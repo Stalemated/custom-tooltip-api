@@ -27,6 +27,6 @@ public abstract class HandledScreenMixin {
 
     @Inject(method = "drawMouseoverTooltip", at = @At("RETURN"))
     private void customtooltips$resetInventoryTooltipOpacity(DrawContext context, int x, int y, CallbackInfo ci) {
-        TooltipBackgroundManager.setCurrentOpacity(-1);
+        TooltipBackgroundManager.clearState();
     }
 }

@@ -41,8 +41,7 @@ public class TooltipEditScreen {
                         TooltipBackgroundManager.setCurrentOpacity(previewEntry.opacity);
                         TooltipBackgroundManager.setCurrentEntry(previewEntry);
                         context.drawTooltip(client.textRenderer, previewLines, mouseX, mouseY);
-                        TooltipBackgroundManager.setCurrentOpacity(-1);
-                        TooltipBackgroundManager.setCurrentEntry(null);
+                        TooltipBackgroundManager.clearState();
                     }
                 });
             }
