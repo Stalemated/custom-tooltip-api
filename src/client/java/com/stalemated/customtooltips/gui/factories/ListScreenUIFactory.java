@@ -132,7 +132,6 @@ public class ListScreenUIFactory {
         buttons.add(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipEntry newEntry = TooltipEntry.builder("")
                     .addLine("Default Text")
-                    .colors("white")
                     .build();
 
             MinecraftClient client = MinecraftClient.getInstance();

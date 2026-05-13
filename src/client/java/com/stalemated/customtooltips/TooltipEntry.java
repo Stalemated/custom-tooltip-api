@@ -37,15 +37,19 @@ public class TooltipEntry {
     public TooltipStyle style = TooltipStyle.SOLID;
 
     public static final int DEFAULT_COLOR = 0xFFFFFF;
+    public static final int DEFAULT_OPACITY = 240;
     public static final List<Integer> DEFAULT_BORDER_COLORS = new ArrayList<>(List.of(0x505000FF, 0x5028007F));
     public static final List<Integer> DEFAULT_BACKGROUND_COLORS = new ArrayList<>(List.of(0xF0100010, 0xF0100010));
+    public static final String DEFAULT_COLOR_STRING = "#" + Integer.toHexString(DEFAULT_COLOR).toUpperCase();
+    public static final List<String> DEFAULT_BORDER_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(0)).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(1)).toUpperCase()));
+    public static final List<String> DEFAULT_BACKGROUND_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(0)).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(1)).toUpperCase()));
 
     public List<String> colors = new ArrayList<>();
     public List<String> borderColors = new ArrayList<>();
     public List<String> backgroundColors = new ArrayList<>();
     public BackgroundType backgroundType = BackgroundType.SOLID;
     public String backgroundTexture = "";
-    public static final int DEFAULT_OPACITY = 240;
+
     public int backgroundOpacity = DEFAULT_OPACITY;
     public int borderOpacity = DEFAULT_OPACITY;
 
@@ -151,6 +155,23 @@ public class TooltipEntry {
     public int getParsedBackgroundColorStart() { return this.parsedBackgroundColorStart; }
     public int getParsedBackgroundColorEnd() { return this.parsedBackgroundColorEnd; }
 
+    public void validateColors() {
+        if (this.colors != null) {
+            if (!this.colors.isEmpty() && (this.colors.get(0) == null || this.colors.get(0).trim().isEmpty())) this.colors.set(0, DEFAULT_COLOR_STRING);
+            if (this.colors.size() > 1 && (this.colors.get(1) == null || this.colors.get(1).trim().isEmpty())) this.colors.set(1, DEFAULT_COLOR_STRING);
+        }
+
+        if (this.borderColors != null) {
+            if (!this.borderColors.isEmpty() && (this.borderColors.get(0) == null || this.borderColors.get(0).trim().isEmpty())) this.borderColors.set(0, DEFAULT_BORDER_COLORS_STRING.get(0));
+            if (this.borderColors.size() > 1 && (this.borderColors.get(1) == null || this.borderColors.get(1).trim().isEmpty())) this.borderColors.set(1, DEFAULT_BORDER_COLORS_STRING.get(1));
+        }
+
+        if (this.backgroundColors != null) {
+            if (!this.backgroundColors.isEmpty() && (this.backgroundColors.get(0) == null || this.backgroundColors.get(0).trim().isEmpty())) this.backgroundColors.set(0, DEFAULT_BACKGROUND_COLORS_STRING.get(0));
+            if (this.backgroundColors.size() > 1 && (this.backgroundColors.get(1) == null || this.backgroundColors.get(1).trim().isEmpty())) this.backgroundColors.set(1, DEFAULT_BACKGROUND_COLORS_STRING.get(1));
+        }
+    }
+
     public void invalidateCaches() {
         this.cachesInitialized = false;
         this.cachedStaticText = null;
@@ -161,11 +182,13 @@ public class TooltipEntry {
     public void initCaches() {
         if (cachesInitialized) return;
 
+        validateColors();
+
         this.targetMatcher = TargetMatcherFactory.create(this.target);
 
         this.isGradient = this.colors != null && this.colors.size() >= 2;
-        this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? ColorUtils.parseColor(this.colors.get(0)) : 0xFFFFFF;
-        this.parsedColor2 = this.isGradient ? ColorUtils.parseColor(this.colors.get(1)) : 0xFFFFFF;
+        this.parsedColor1 = (this.colors != null && !this.colors.isEmpty()) ? ColorUtils.parseColor(this.colors.get(0)) : DEFAULT_COLOR;
+        this.parsedColor2 = this.isGradient ? ColorUtils.parseColor(this.colors.get(1)) : DEFAULT_COLOR;
         if (this.tickrate <= 0) this.tickrate = 100;
 
         this.cachedStyleModifier = StyleApplier.buildStyleModifier(this);
@@ -233,10 +256,6 @@ public class TooltipEntry {
                 .tickrate(this.tickrate)
                 .reverseAnimation(this.reverse_animation)
                 .build();
-    }
-
-    public TooltipEntry display() {
-        return this;
     }
 
     public List<Text> getTextComponents(ItemStack stack) {

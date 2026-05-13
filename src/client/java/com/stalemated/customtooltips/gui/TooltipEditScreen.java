@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -50,21 +51,15 @@ public class TooltipEditScreen {
     }
 
     public static Screen create(Screen parent, TooltipEntry entry, boolean isNew) {
-        previewEntry = entry.display();
+        previewEntry = entry.copy();
 
         final WeakReference<Boolean> isNewRef = new WeakReference<>(isNew);
 
-        String rawColor1 = entry.colors != null && !entry.colors.isEmpty() ? entry.colors.get(0) : "white";
-        String rawColor2 = entry.colors != null && entry.colors.size() > 1 ? entry.colors.get(1) : "white";
-        String[] boundColors = new String[] { rawColor1, rawColor2 };
+        String[] boundColors = getStrings(entry.colors, TooltipEntry.DEFAULT_COLOR_STRING, TooltipEntry.DEFAULT_COLOR_STRING);
 
-        String rawBorderColor1 = entry.borderColors != null && !entry.borderColors.isEmpty() ? entry.borderColors.get(0) : "";
-        String rawBorderColor2 = entry.borderColors != null && entry.borderColors.size() > 1 ? entry.borderColors.get(1) : "";
-        String[] boundBorderColors = new String[] { rawBorderColor1, rawBorderColor2 };
+        String[] boundBorderColors = getStrings(entry.borderColors, TooltipEntry.DEFAULT_BORDER_COLORS_STRING.get(0), TooltipEntry.DEFAULT_BORDER_COLORS_STRING.get(1));
 
-        String rawBackgroundColor1 = entry.backgroundColors != null && !entry.backgroundColors.isEmpty() ? entry.backgroundColors.get(0) : "";
-        String rawBackgroundColor2 = entry.backgroundColors != null && entry.backgroundColors.size() > 1 ? entry.backgroundColors.get(1) : "";
-        String[] boundBackgroundColors = new String[] { rawBackgroundColor1, rawBackgroundColor2 };
+        String[] boundBackgroundColors = getStrings(entry.backgroundColors, TooltipEntry.DEFAULT_BACKGROUND_COLORS_STRING.get(0), TooltipEntry.DEFAULT_BACKGROUND_COLORS_STRING.get(1));
 
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("customtooltips.tooltip_edit_screen.title"))
@@ -95,6 +90,12 @@ public class TooltipEditScreen {
                         .build())
                 .build()
                 .generateScreen(parent);
+    }
+
+    public static String @NotNull [] getStrings(List<String> entry, String hashtag, String hashtag1) {
+        String rawColor1 = entry != null && !entry.isEmpty() && entry.get(0) != null && !entry.get(0).trim().isEmpty() ? entry.get(0) : hashtag;
+        String rawColor2 = entry != null && entry.size() > 1 && entry.get(1) != null && !entry.get(1).trim().isEmpty() ? entry.get(1) : hashtag1;
+        return new String[]{rawColor1, rawColor2};
     }
 
     private static OptionGroup createTargetGroup(TooltipEntry entry) {

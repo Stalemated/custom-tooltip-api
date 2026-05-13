@@ -70,7 +70,8 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
     @Override
     public int getRowWidth() {
         int rowWidth = Math.toIntExact(Math.round(this.width * 0.9));
-        return Math.min(rowWidth, 500);
+        int maxRowWidth = 500;
+        return Math.min(rowWidth, maxRowWidth);
     }
 
     @Override
