@@ -24,20 +24,20 @@ public abstract class TooltipBackgroundRendererMixin {
             BackgroundRenderStrategy strategy = BackgroundStrategyFactory.getStrategy(entry.backgroundType);
             strategy.render(context, x, y, width, height, z, color, entry);
         } else {
-            context.fill(x, y, x + width, y + height, z, TooltipBackgroundManager.scaleAlpha(color));
+            context.fill(x, y, x + width, y + height, z, TooltipBackgroundManager.scaleBackgroundAlpha(color));
         }
     }
 
     @ModifyArg(method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderHorizontalLine(Lnet/minecraft/client/gui/DrawContext;IIIII)V"), index = 5)
     private static int customTooltips$renderHorizontalLine(int color) {
-        return TooltipBackgroundManager.scaleAlpha(color);
+        return TooltipBackgroundManager.scaleBorderAlpha(color);
     }
 
     @ModifyArg(method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderVerticalLine(Lnet/minecraft/client/gui/DrawContext;IIIII)V"), index = 5)
     private static int customTooltips$renderVerticalLineStart(int color) {
-        return TooltipBackgroundManager.scaleAlpha(color);
+        return TooltipBackgroundManager.scaleBorderAlpha(color);
     }
 
     @ModifyArg(method = "render",

@@ -22,7 +22,8 @@ public class TooltipListScreen extends Screen {
     private String searchText = "";
     private TooltipEntry activeTooltip = null;
     private List<Text> activeTooltipText = null;
-    private int activeTooltipOpacity = -1;
+    private int activeTooltipBackgroundOpacity = -1;
+    private int activeTooltipBorderOpacity = -1;
     public static boolean showApiEntries = false;
 
     public TooltipListScreen(Screen parent) {
@@ -54,7 +55,8 @@ public class TooltipListScreen extends Screen {
     public void setHoveredTooltip(List<Text> tooltipText, TooltipEntry tooltip) {
         this.activeTooltip = tooltip;
         this.activeTooltipText = tooltipText;
-        this.activeTooltipOpacity = tooltip.opacity;
+        this.activeTooltipBackgroundOpacity = tooltip.backgroundOpacity;
+        this.activeTooltipBorderOpacity = tooltip.borderOpacity;
     }
 
     private void showToasts() {
@@ -76,7 +78,9 @@ public class TooltipListScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.activeTooltipText = null;
-        this.activeTooltipOpacity = -1;
+        this.activeTooltipBackgroundOpacity = -1;
+        this.activeTooltipBorderOpacity = -1;
+
         this.listWidget.render(context, mouseX, mouseY, delta);
         this.searchBox.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
@@ -84,7 +88,8 @@ public class TooltipListScreen extends Screen {
         
         if (this.activeTooltipText != null) {
             TooltipBackgroundManager.setCurrentEntry(this.activeTooltip);
-            TooltipBackgroundManager.setCurrentOpacity(this.activeTooltipOpacity);
+            TooltipBackgroundManager.setCurrentBorderOpacity(this.activeTooltipBorderOpacity);
+            TooltipBackgroundManager.setCurrentBackgroundOpacity(this.activeTooltipBackgroundOpacity);
             context.drawTooltip(this.textRenderer, this.activeTooltipText, mouseX, mouseY);
             TooltipBackgroundManager.clearState();
         }

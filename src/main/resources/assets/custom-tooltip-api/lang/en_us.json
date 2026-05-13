@@ -98,8 +98,10 @@
   "customtooltips.tooltip_edit_screen.show_only_if_enchanted.description": "If enabled, the tooltip will only appear when the item has at least one enchantment.",
   "customtooltips.tooltip_edit_screen.show_only_if_unbreakable": "Show only if Unbreakable",
   "customtooltips.tooltip_edit_screen.show_only_if_unbreakable.description": "If enabled, the tooltip will only appear when the item possesses the Unbreakable tag.",
-  "customtooltips.tooltip_edit_screen.opacity": "Tooltip Background Opacity",
-  "customtooltips.tooltip_edit_screen.opacity.description": "Changes the opacity of the selected tooltip's background.\n\n§eNote:§r 255 is fully opaque, 0 is fully transparent. Default is 240.",
+  "customtooltips.tooltip_edit_screen.background_opacity": "Background Opacity",
+  "customtooltips.tooltip_edit_screen.background_opacity.description": "Adjusts the transparency of the tooltip's background.\n\n§eNote:§r 255 is fully opaque, 0 is fully transparent. Default is 240.",
+  "customtooltips.tooltip_edit_screen.border_opacity": "Border Opacity",
+  "customtooltips.tooltip_edit_screen.border_opacity.description": "Adjusts the transparency of the tooltip's borders.\n\n§eNote:§r 255 is fully opaque, 0 is fully transparent. Default is 240.",
 
   "customtooltips.tooltip_list_widget.entry.narration": "Tooltip entry for: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Delete",

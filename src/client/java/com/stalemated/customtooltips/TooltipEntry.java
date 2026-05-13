@@ -46,7 +46,8 @@ public class TooltipEntry {
     public BackgroundType backgroundType = BackgroundType.SOLID;
     public String backgroundTexture = "";
     public static final int DEFAULT_OPACITY = 240;
-    public int opacity = DEFAULT_OPACITY;
+    public int backgroundOpacity = DEFAULT_OPACITY;
+    public int borderOpacity = DEFAULT_OPACITY;
 
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
@@ -96,14 +97,15 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, List<String> borderColors, List<String> backgroundColors, int opacity, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, List<String> borderColors, List<String> backgroundColors, int backgroundOpacity, int borderOpacity, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
         this.colors = colors != null ? colors : new ArrayList<>();
         this.borderColors = borderColors != null ? borderColors : new ArrayList<>();
         this.backgroundColors = backgroundColors != null ? backgroundColors : new ArrayList<>();
-        this.opacity = opacity;
+        this.backgroundOpacity = backgroundOpacity;
+        this.borderOpacity = borderOpacity;
         this.bold = bold;
         this.italic = italic;
         this.underlined = underlined;
@@ -211,7 +213,8 @@ public class TooltipEntry {
                 .backgroundColors(this.backgroundColors)
                 .backgroundType(this.backgroundType)
                 .backgroundTexture(this.backgroundTexture)
-                .opacity(this.opacity)
+                .backgroundOpacity(this.backgroundOpacity)
+                .borderOpacity(this.borderOpacity)
                 .position(this.position)
                 .lineOffset(this.lineOffset)
                 .bold(this.bold)
@@ -415,15 +418,28 @@ public class TooltipEntry {
         }
 
         /**
-         * Sets the tooltip's opacity.
+         * Sets the tooltip's background opacity.
          * <p>
          * Accepts integers from 0 to 255 to adjust the individual tooltip's background opacity. 0 is fully transparent, while 255 is fully opaque.
          *
-         * @param opacity The opacity of the tooltip.
+         * @param backgroundOpacity The background opacity of the tooltip.
          * @return This builder instance.
          */
-        public Builder opacity(int opacity) {
-            this.entry.opacity = opacity;
+        public Builder backgroundOpacity(int backgroundOpacity) {
+            this.entry.backgroundOpacity = backgroundOpacity;
+            return this;
+        }
+
+        /**
+         * Sets the tooltip's border opacity.
+         * <p>
+         * Accepts integers from 0 to 255 to adjust the individual tooltip's border opacity. 0 is fully transparent, while 255 is fully opaque.
+         *
+         * @param borderOpacity The border opacity of the tooltip.
+         * @return This builder instance.
+         */
+        public Builder borderOpacity(int borderOpacity) {
+            this.entry.borderOpacity = borderOpacity;
             return this;
         }
 

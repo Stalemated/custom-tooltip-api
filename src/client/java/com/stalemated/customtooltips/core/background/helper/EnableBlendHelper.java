@@ -9,7 +9,7 @@ public class EnableBlendHelper {
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, z);
 
-        int alphaInt = (TooltipBackgroundManager.scaleAlpha(defaultColor) >> 24) & 0xFF;
+        int alphaInt = (TooltipBackgroundManager.scaleBackgroundAlpha(defaultColor) >> 24) & 0xFF;
         float alpha = alphaInt / 255.0F;
 
         RenderSystem.enableBlend();

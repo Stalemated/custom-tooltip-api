@@ -38,7 +38,8 @@ public class TooltipEditScreen {
                     if (Screen.hasControlDown()) {
                         List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
 
-                        TooltipBackgroundManager.setCurrentOpacity(previewEntry.opacity);
+                        TooltipBackgroundManager.setCurrentBackgroundOpacity(previewEntry.backgroundOpacity);
+                        TooltipBackgroundManager.setCurrentBorderOpacity(previewEntry.borderOpacity);
                         TooltipBackgroundManager.setCurrentEntry(previewEntry);
                         context.drawTooltip(client.textRenderer, previewLines, mouseX, mouseY);
                         TooltipBackgroundManager.clearState();
@@ -179,6 +180,22 @@ public class TooltipEditScreen {
             }
         });
 
+        var borderOpacity = Option.<Integer>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity.description")))
+                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.borderOpacity, val -> entry.borderOpacity = val)
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(0, 255)
+                        .step(1)
+                )
+                .build();
+        borderOpacity.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.borderOpacity = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
+
         var borderColor1 = Option.<String>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color"))
                 .description(OptionDescription.of(
@@ -213,18 +230,18 @@ public class TooltipEditScreen {
             }
         });
 
-        var tooltipOpacity = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.opacity"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.opacity.description")))
-                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.opacity, val -> entry.opacity = val)
+        var backgroundOpacity = Option.<Integer>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_opacity"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_opacity.description")))
+                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.backgroundOpacity, val -> entry.backgroundOpacity = val)
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                         .range(0, 255)
                         .step(1)
                 )
                 .build();
-        tooltipOpacity.addEventListener((opt, event) -> {
+        backgroundOpacity.addEventListener((opt, event) -> {
             if (previewEntry != null) {
-                previewEntry.opacity = opt.pendingValue();
+                previewEntry.backgroundOpacity = opt.pendingValue();
                 previewEntry.invalidateCaches();
             }
         });
@@ -297,10 +314,11 @@ public class TooltipEditScreen {
                 .option(style)
                 .option(color1)
                 .option(color2)
-                .option(tooltipOpacity)
+                .option(borderOpacity)
                 .option(borderColor1)
                 .option(borderColor2)
                 .option(backgroundType)
+                .option(backgroundOpacity)
                 .option(backgroundColor1)
                 .option(backgroundColor2)
                 .option(backgroundTextureOption)
