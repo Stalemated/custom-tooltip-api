@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "customtooltips",
+	"version": "${version}",
+	"name": "Custom Tooltip API",
+	"description": "A completely customizable, tag-based tooltip manager for developers and modpack makers.",
+	"authors": [
+		"Stalemated"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api",
+		"sources": "https://github.com/Stalemated/custom-tooltip-api",
+		"issues": "https://github.com/Stalemated/custom-tooltip-api/issues"
+	},
+	"license": "MIT",
+	"icon": "icon.jpg",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.stalemated.customtooltips.fabric.CustomTooltipApiFabric"
+		],
+		"modmenu": [
+			"com.stalemated.customtooltips.fabric.ModMenuIntegration"
+		]
+	},
+	"mixins": [
+		"customtooltips.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*",
+		"yet_another_config_lib_v3": ">=3.6.2"
+	}
+}
