@@ -5,11 +5,9 @@
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",
-    "InGameHudMixin",
     "KeyBindingAccessor",
     "StringControllerElementMixin",
-    "TextFieldWidgetMixin",
-    "TooltipBackgroundRendererMixin"
+    "TextFieldWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

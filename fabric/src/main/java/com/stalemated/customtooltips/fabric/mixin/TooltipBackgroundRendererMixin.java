@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.mixin.client;
+package com.stalemated.customtooltips.fabric.mixin;
 
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
@@ -8,10 +8,8 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TooltipBackgroundRenderer.class)
 public abstract class TooltipBackgroundRendererMixin {
@@ -50,10 +48,5 @@ public abstract class TooltipBackgroundRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/tooltip/TooltipBackgroundRenderer;renderBorder(Lnet/minecraft/client/gui/DrawContext;IIIIIII)V"), index = 7)
     private static int customTooltips$renderBorderEndColor(int color) {
         return TooltipBackgroundManager.getBorderColorEnd(color);
-    }
-
-    @Inject(method = "render", at = @At("TAIL"))
-    private static void customTooltips$clearStateAfterRender(DrawContext context, int x, int y, int width, int height, int z, CallbackInfo ci) {
-        TooltipBackgroundManager.clearState();
     }
 }

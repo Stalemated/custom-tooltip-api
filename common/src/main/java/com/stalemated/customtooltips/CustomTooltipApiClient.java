@@ -10,7 +10,6 @@ import dev.architectury.event.events.client.ClientTooltipEvent;
 import dev.architectury.registry.ReloadListenerRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.SynchronousResourceReloader;
 import org.slf4j.Logger;
@@ -35,13 +34,10 @@ public class CustomTooltipApiClient {
 			}
 		});
 
-		ReloadListenerRegistry.register(ResourceType.CLIENT_RESOURCES, new SynchronousResourceReloader() {
-			@Override
-			public void reload(ResourceManager manager) {
-				IconAligner.clearCache();
-				LOGGER.info("Icon aligner cache cleared due to resource pack reload.");
-			}
-		});
+		ReloadListenerRegistry.register(ResourceType.CLIENT_RESOURCES, (SynchronousResourceReloader) manager -> {
+            IconAligner.clearCache();
+            LOGGER.info("Icon aligner cache cleared due to resource pack reload.");
+        });
 
 		ClientTooltipEvent.ITEM.register((stack, lines, context) -> {
 			if (stack.isEmpty()) return;

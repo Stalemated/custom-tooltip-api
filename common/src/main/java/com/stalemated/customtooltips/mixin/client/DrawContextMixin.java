@@ -21,4 +21,9 @@ public abstract class DrawContextMixin {
     private void customtooltips$resetTooltipOpacity(TextRenderer textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
         TooltipBackgroundManager.clearState();
     }
+
+    @Inject(method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;IILnet/minecraft/client/gui/tooltip/TooltipPositioner;)V", at = @At("TAIL"))
+    private void customTooltips$clearStateAfterRender(CallbackInfo ci) {
+        TooltipBackgroundManager.clearState();
+    }
 }

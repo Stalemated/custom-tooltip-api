@@ -2,6 +2,7 @@ modLoader = "javafml"
 loaderVersion = "[47,)"
 issueTrackerURL = "https://github.com/Stalemated/custom-tooltip-api/issues"
 license = "MIT"
+clientSideOnly = true
 
 [[mods]]
 modId = "customtooltips"
@@ -11,7 +12,11 @@ authors = "Stalemated"
 description = '''
 A completely customizable, tag-based tooltip manager for developers and modpack makers.
 '''
-logoFile = "assets/custom-tooltip-api/icon.jpg"
+logoFile = "META-INF/icon.jpg"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api"
+
+[[mixins]]
+config = "customtooltips-forge.mixins.json"
 
 [[dependencies.customtooltips]]
 modId = "forge"

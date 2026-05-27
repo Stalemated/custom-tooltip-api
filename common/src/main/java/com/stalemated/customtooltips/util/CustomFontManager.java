@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.util;
 
-import net.fabricmc.loader.api.FabricLoader;
+import dev.architectury.platform.Platform;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,7 +14,7 @@ import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class CustomFontManager {
 
-    private static final Path FONTS_INPUT_DIR = FabricLoader.getInstance().getConfigDir().resolve("custom_tooltip_api").resolve("fonts");
+    private static final Path FONTS_INPUT_DIR = Platform.getConfigFolder().resolve("custom_tooltip_api").resolve("fonts");
 
     public static List<String> availableFonts = new ArrayList<>();
 

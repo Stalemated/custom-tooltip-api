@@ -24,7 +24,8 @@
 		]
 	},
 	"mixins": [
-		"customtooltips.mixins.json"
+		"customtooltips.mixins.json",
+		"customtooltips-fabric.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.10",

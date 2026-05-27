@@ -2,9 +2,9 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.TooltipRegistry;
+import dev.architectury.platform.Platform;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 
 import java.io.File;
@@ -16,7 +16,7 @@ import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class ConfigManager {
 
-    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("custom_tooltip_api").resolve("config.json5");
+    private static final Path CONFIG_PATH = Platform.getConfigFolder().resolve("custom_tooltip_api").resolve("config.json5");
     public static boolean configLoadFailed = false;
 
     public static final ConfigClassHandler<TooltipConfig> HANDLER = ConfigClassHandler.createBuilder(TooltipConfig.class)
