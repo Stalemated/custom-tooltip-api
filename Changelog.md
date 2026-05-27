@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.2.0
+**This release brings full compatibility with both 1.20.1 Fabric and Forge, as well as Spanish translations!**
+
+### New Features
+- Added Spanish translations
+
+### Technical Features
+- Migrated project to an Architectury project (without using the Architectury API dependency)
+- Added support for Forge 1.20.1
+
 ## 3.1.0
 **This release brings new tools that allow to set custom colored backgrounds and borders, as well as background texture support.**
 
