@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.forge;
 
 import com.stalemated.customtooltips.CustomTooltipApiClient;
+import com.stalemated.customtooltips.gui.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -9,6 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -19,6 +21,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(CustomTooltipApiClient.MOD_ID)
+@SuppressWarnings("removal")
 public class CustomTooltipApiForge {
     public CustomTooltipApiForge() {
         if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -29,6 +32,7 @@ public class CustomTooltipApiForge {
 
             MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(this::onItemTooltip);
+            MinecraftForge.EVENT_BUS.addListener(this::onScreenRenderPost);
 
             initClient();
         }
@@ -58,5 +62,9 @@ public class CustomTooltipApiForge {
 
     private void onItemTooltip(ItemTooltipEvent event) {
         CustomTooltipApiClient.onItemTooltip(event.getItemStack(), event.getToolTip());
+    }
+
+    private void onScreenRenderPost(ScreenEvent.Render.Post event) {
+        TooltipEditScreen.renderPreview(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), event.getPartialTick());
     }
 }
