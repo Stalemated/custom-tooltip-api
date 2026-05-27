@@ -32,7 +32,7 @@ public class TooltipEditScreen {
 
     public static TooltipEntry previewEntry = null;
 
-    public static void renderPreview(Screen screen, DrawContext graphics, int mouseX, int mouseY, float tickDelta) {
+    public static void renderPreview(Screen screen, DrawContext context, int mouseX, int mouseY, float tickDelta) {
         if (previewEntry != null && screen.getTitle().getString().contains("Edit Tooltip")) {
             if (Screen.hasControlDown()) {
                 List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
@@ -40,7 +40,7 @@ public class TooltipEditScreen {
                 TooltipBackgroundManager.setCurrentBackgroundOpacity(previewEntry.backgroundOpacity);
                 TooltipBackgroundManager.setCurrentBorderOpacity(previewEntry.borderOpacity);
                 TooltipBackgroundManager.setCurrentEntry(previewEntry);
-                graphics.drawTooltip(MinecraftClient.getInstance().textRenderer, previewLines, mouseX, mouseY);
+                context.drawTooltip(MinecraftClient.getInstance().textRenderer, previewLines, mouseX, mouseY);
                 TooltipBackgroundManager.clearState();
             }
         }

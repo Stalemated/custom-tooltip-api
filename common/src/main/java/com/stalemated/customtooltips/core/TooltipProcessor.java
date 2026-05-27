@@ -4,7 +4,6 @@ import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.position.PositionStrategyFactory;
 import com.stalemated.customtooltips.core.position.TooltipPositionStrategy;
-
 import com.stalemated.customtooltips.mixin.client.KeyBindingAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
