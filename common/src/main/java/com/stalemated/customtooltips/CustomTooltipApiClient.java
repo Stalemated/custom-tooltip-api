@@ -5,15 +5,15 @@ import com.stalemated.customtooltips.core.TooltipProcessor;
 import com.stalemated.customtooltips.gui.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import com.stalemated.customtooltips.util.ResourcepackManager;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.event.events.client.ClientTooltipEvent;
-import dev.architectury.registry.ReloadListenerRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.SynchronousResourceReloader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.openConfigKeybind;
 
@@ -27,22 +27,21 @@ public class CustomTooltipApiClient {
 		ResourcepackManager.generateResourcePack();
 		ConfigManager.register();
 		KeybindRegistry.register();
+	}
 
-		ClientTickEvent.CLIENT_POST.register(client -> {
-			while (openConfigKeybind.wasPressed()) {
-				client.setScreen(new TooltipListScreen(client.currentScreen));
-			}
-		});
+	public static void onClientTick(MinecraftClient client) {
+		while (openConfigKeybind.wasPressed()) {
+			client.setScreen(new TooltipListScreen(client.currentScreen));
+		}
+	}
 
-		ReloadListenerRegistry.register(ResourceType.CLIENT_RESOURCES, (SynchronousResourceReloader) manager -> {
-            IconAligner.clearCache();
-            LOGGER.info("Icon aligner cache cleared due to resource pack reload.");
-        });
+	public static void onResourceReload() {
+		IconAligner.clearCache();
+		LOGGER.info("Icon aligner cache cleared due to resource pack reload.");
+	}
 
-		ClientTooltipEvent.ITEM.register((stack, lines, context) -> {
-			if (stack.isEmpty()) return;
-
-			TooltipProcessor.processTooltipLines(stack, lines);
-		});
+	public static void onItemTooltip(ItemStack stack, List<Text> lines) {
+		if (stack.isEmpty()) return;
+		TooltipProcessor.processTooltipLines(stack, lines);
 	}
 }

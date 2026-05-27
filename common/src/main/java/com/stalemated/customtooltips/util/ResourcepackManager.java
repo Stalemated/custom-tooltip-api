@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.util;
 
-import dev.architectury.platform.Platform;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class ResourcepackManager {
-    public static final Path RESOURCE_PACK_DIR = Platform.getGameFolder().resolve("resourcepacks").resolve("Custom Tooltip API - Resources");
+    public static final Path RESOURCE_PACK_DIR = PlatformHelper.INSTANCE.getGameDir().resolve("resourcepacks").resolve("Custom Tooltip API - Resources");
 
     public static void generateResourcePack() {
         try {

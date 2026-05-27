@@ -1,7 +1,5 @@
 package com.stalemated.customtooltips.util;
 
-import dev.architectury.platform.Platform;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -14,7 +12,7 @@ import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class CustomFontManager {
 
-    private static final Path FONTS_INPUT_DIR = Platform.getConfigFolder().resolve("custom_tooltip_api").resolve("fonts");
+    private static final Path FONTS_INPUT_DIR = PlatformHelper.INSTANCE.getConfigDir().resolve("custom_tooltip_api").resolve("fonts");
 
     public static List<String> availableFonts = new ArrayList<>();
 

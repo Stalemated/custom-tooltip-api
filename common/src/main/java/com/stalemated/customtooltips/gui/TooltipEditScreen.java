@@ -17,8 +17,8 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.*;
 
-import dev.architectury.event.events.client.ClientGuiEvent;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -32,20 +32,18 @@ public class TooltipEditScreen {
 
     public static TooltipEntry previewEntry = null;
 
-    static {
-        ClientGuiEvent.RENDER_POST.register((screen, graphics, mouseX, mouseY, tickDelta) -> {
-            if (previewEntry != null && screen.getTitle().getString().contains("Edit Tooltip")) {
-                if (Screen.hasControlDown()) {
-                    List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
+    public static void renderPreview(Screen screen, DrawContext graphics, int mouseX, int mouseY, float tickDelta) {
+        if (previewEntry != null && screen.getTitle().getString().contains("Edit Tooltip")) {
+            if (Screen.hasControlDown()) {
+                List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
 
-                    TooltipBackgroundManager.setCurrentBackgroundOpacity(previewEntry.backgroundOpacity);
-                    TooltipBackgroundManager.setCurrentBorderOpacity(previewEntry.borderOpacity);
-                    TooltipBackgroundManager.setCurrentEntry(previewEntry);
-                    graphics.drawTooltip(MinecraftClient.getInstance().textRenderer, previewLines, mouseX, mouseY);
-                    TooltipBackgroundManager.clearState();
-                }
+                TooltipBackgroundManager.setCurrentBackgroundOpacity(previewEntry.backgroundOpacity);
+                TooltipBackgroundManager.setCurrentBorderOpacity(previewEntry.borderOpacity);
+                TooltipBackgroundManager.setCurrentEntry(previewEntry);
+                graphics.drawTooltip(MinecraftClient.getInstance().textRenderer, previewLines, mouseX, mouseY);
+                TooltipBackgroundManager.clearState();
             }
-        });
+        }
     }
 
     public static Screen create(Screen parent, TooltipEntry entry, boolean isNew) {

@@ -1,6 +1,5 @@
 package com.stalemated.customtooltips.util;
 
-import dev.architectury.platform.Platform;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +9,7 @@ import java.util.List;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class CustomBackgroundManager {
-    private static final Path BACKGROUNDS_INPUT_DIR = Platform.getConfigFolder().resolve("custom_tooltip_api").resolve("backgrounds");
+    private static final Path BACKGROUNDS_INPUT_DIR = PlatformHelper.INSTANCE.getConfigDir().resolve("custom_tooltip_api").resolve("backgrounds");
 
     public static List<String> availableBackgrounds = new ArrayList<>();
 
