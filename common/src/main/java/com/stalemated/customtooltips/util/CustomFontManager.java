@@ -35,7 +35,7 @@ public class CustomFontManager {
                 }
 
                 for (File file : ttfFiles) {
-                    String rawName = file.getName().replace(".ttf", "").toLowerCase().replaceAll("[^a-z0-9_.-]", "");
+                    String rawName = file.getName().toLowerCase().replace(".ttf", "").replaceAll("[^a-z0-9_.-]", "");
                     String fontIdentifier = "custom_tooltip_api:" + rawName;
 
                     Files.copy(file.toPath(), fontDir.resolve(rawName + ".ttf"), StandardCopyOption.REPLACE_EXISTING);
@@ -60,8 +60,8 @@ public class CustomFontManager {
                         {
                             "type": "ttf",
                             "file": "%s.ttf",
-                            "shift": [0, 1],
-                            "size": 11.0,
+                            "shift": [0.0, 1.0],
+                            "size": 10.0,
                             "oversample": 4.0
                         }
                     ]

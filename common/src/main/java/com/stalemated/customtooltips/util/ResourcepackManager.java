@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class ResourcepackManager {
-    public static final Path RESOURCE_PACK_DIR = PlatformHelper.INSTANCE.getGameDir().resolve("resourcepacks").resolve("Custom Tooltip API - Resources");
+    public static final Path RESOURCE_PACK_DIR = PlatformHelper.INSTANCE.getGameDir().resolve("resourcepacks").resolve("custom_tooltip_api_resources");
 
     public static void generateResourcePack() {
         try {
@@ -30,8 +30,9 @@ public class ResourcepackManager {
         return """
                 {
                    "pack": {
-                       "pack_format": 15,
-                       "description": "Custom Tooltip API - Auto Generated Assets"
+                       "pack_format": 34,
+                       "description": "Custom Tooltip API - Auto Generated Assets",
+                       "supported_formats": [32, 45]
                    }
                 }
                 """;

@@ -25,7 +25,7 @@ public class StyleApplier {
                 break;
         }
 
-        String colorStr = (entry.colors != null && !entry.colors.isEmpty()) ? entry.colors.get(0) : "white";
+        String colorStr = (entry.colors != null && !entry.colors.isEmpty()) ? entry.colors.getFirst() : "white";
         Style style = Style.EMPTY.withColor(ColorUtils.parseColor(colorStr));
 
         return baseText.copy().setStyle(style);
@@ -35,7 +35,7 @@ public class StyleApplier {
         Style style = Style.EMPTY;
         if (entry.font != null && !entry.font.isEmpty() && !entry.font.equals("minecraft:default")) {
             try {
-                style = style.withFont(new Identifier(entry.font));
+                style = style.withFont(Identifier.of(entry.font));
             }
             catch (InvalidIdentifierException ignored) {}
         }

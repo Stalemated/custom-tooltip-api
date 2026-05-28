@@ -16,7 +16,7 @@ public class TextureBackgroundStrategy implements BackgroundRenderStrategy {
             return;
         }
 
-        Identifier texture = new Identifier(entry.backgroundTexture);
+        Identifier texture = Identifier.of(entry.backgroundTexture);
 
         EnableBlendHelper.enableBlend(context, z, defaultColor);
 

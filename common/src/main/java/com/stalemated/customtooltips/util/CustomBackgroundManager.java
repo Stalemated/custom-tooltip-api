@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class CustomBackgroundManager {
@@ -27,7 +28,7 @@ public class CustomBackgroundManager {
                 if (!Files.exists(texturesDir)) Files.createDirectories(texturesDir);
 
                 for (File file : pngFiles) {
-                    String rawName = file.getName().replace(".png", "").toLowerCase().replaceAll("[^a-z0-9_.-]", "");
+                    String rawName = file.getName().toLowerCase().replace(".png", "").replaceAll("[^a-z0-9_.-]", "");
                     String textureIdentifier = "custom_tooltip_api:textures/gui/tooltip_backgrounds/" + rawName + ".png";
 
                     Files.copy(file.toPath(), texturesDir.resolve(rawName + ".png"), StandardCopyOption.REPLACE_EXISTING);

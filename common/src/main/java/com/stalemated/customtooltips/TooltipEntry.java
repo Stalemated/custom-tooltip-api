@@ -7,13 +7,13 @@ import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
 import com.stalemated.customtooltips.core.target.TargetMatcher;
 import com.stalemated.customtooltips.core.target.TargetMatcherFactory;
 import com.stalemated.customtooltips.util.ColorUtils;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -41,8 +41,8 @@ public class TooltipEntry {
     public static final List<Integer> DEFAULT_BORDER_COLORS = new ArrayList<>(List.of(0x505000FF, 0x5028007F));
     public static final List<Integer> DEFAULT_BACKGROUND_COLORS = new ArrayList<>(List.of(0xF0100010, 0xF0100010));
     public static final String DEFAULT_COLOR_STRING = "#" + Integer.toHexString(DEFAULT_COLOR).toUpperCase();
-    public static final List<String> DEFAULT_BORDER_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(0)).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(1)).toUpperCase()));
-    public static final List<String> DEFAULT_BACKGROUND_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(0)).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(1)).toUpperCase()));
+    public static final List<String> DEFAULT_BORDER_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BORDER_COLORS.getFirst()).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(1)).toUpperCase()));
+    public static final List<String> DEFAULT_BACKGROUND_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.getFirst()).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(1)).toUpperCase()));
 
     public List<String> colors = new ArrayList<>();
     public List<String> borderColors = new ArrayList<>();
@@ -87,9 +87,9 @@ public class TooltipEntry {
     private transient boolean isGradient = false;
     private transient List<Text> cachedStaticText = null;
     private transient Style cachedStyleModifier = null;
-    private transient int parsedBorderColorStart = DEFAULT_BORDER_COLORS.get(0);
+    private transient int parsedBorderColorStart = DEFAULT_BORDER_COLORS.getFirst();
     private transient int parsedBorderColorEnd = DEFAULT_BORDER_COLORS.get(1);
-    private transient int parsedBackgroundColorStart = DEFAULT_BACKGROUND_COLORS.get(0);
+    private transient int parsedBackgroundColorStart = DEFAULT_BACKGROUND_COLORS.getFirst();
     private transient int parsedBackgroundColorEnd = DEFAULT_BACKGROUND_COLORS.get(1);
 
     public transient boolean apiEntry = false;
@@ -223,7 +223,7 @@ public class TooltipEntry {
     public boolean areItemConditionsMet(ItemStack stack) {
         if (this.show_only_if_damaged && !stack.isDamaged()) return false;
         if (this.show_only_if_enchanted && !stack.hasEnchantments()) return false;
-        return !this.show_only_if_unbreakable || stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable");
+        return !this.show_only_if_unbreakable || stack.contains(DataComponentTypes.UNBREAKABLE);
     }
 
     public TooltipEntry copy() {

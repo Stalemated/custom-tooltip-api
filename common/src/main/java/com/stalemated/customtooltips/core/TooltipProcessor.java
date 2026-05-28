@@ -15,7 +15,6 @@ import org.lwjgl.glfw.GLFW;
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
 
 import java.util.List;
-import java.util.Objects;
 
 public class TooltipProcessor {
 
@@ -78,13 +77,11 @@ public class TooltipProcessor {
         return originalName;
     }
 
-    private static boolean shouldNotProcessEntry(TooltipEntry entry, ItemStack stack) {
+    public static boolean shouldNotProcessEntry(TooltipEntry entry, ItemStack stack) {
         if (entry == null || !entry.matches(stack)) return true;
         if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) return true;
 
-        if (entry.show_only_if_damaged && !stack.isDamaged()) return true;
-        if (entry.show_only_if_enchanted && !stack.hasEnchantments()) return true;
-        return entry.show_only_if_unbreakable && !(stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable"));
+        return !entry.areItemConditionsMet(stack);
     }
 
     public static boolean isHoldKeyPressed() {
@@ -92,13 +89,15 @@ public class TooltipProcessor {
             return false;
         }
 
-        InputUtil.Key boundKey = ((KeyBindingAccessor) holdKeyKeybind).getBoundKey();
-        long windowHandle = MinecraftClient.getInstance().getWindow().getHandle();
+        if (holdKeyKeybind instanceof KeyBindingAccessor accessor) {
+            InputUtil.Key boundKey = accessor.getBoundKey();
+            long windowHandle = MinecraftClient.getInstance().getWindow().getHandle();
 
-        if (boundKey.getCategory() == InputUtil.Type.KEYSYM) {
-            return InputUtil.isKeyPressed(windowHandle, boundKey.getCode());
-        } else if (boundKey.getCategory() == InputUtil.Type.MOUSE) {
-            return GLFW.glfwGetMouseButton(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
+            if (boundKey.getCategory() == InputUtil.Type.KEYSYM) {
+                return InputUtil.isKeyPressed(windowHandle, boundKey.getCode());
+            } else if (boundKey.getCategory() == InputUtil.Type.MOUSE) {
+                return GLFW.glfwGetMouseButton(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
+            }
         }
         
         return false;

@@ -22,8 +22,8 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
     public final TooltipListScreen parentScreen;
 
-    public TooltipListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen parentScreen) {
-        super(client, width, height, top, bottom, itemHeight);
+    public TooltipListWidget(MinecraftClient client, int width, int height, int y, int itemHeight, TooltipListScreen parentScreen) {
+        super(client, width, height, y, itemHeight);
         this.parentScreen = parentScreen;
         this.updateEntries();
     }
@@ -75,7 +75,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
     }
 
     @Override
-    protected int getScrollbarPositionX() { return this.width - 5; }
+    protected int getScrollbarX() { return this.width - 5; }
 
     public class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
         private final TooltipEntry tooltipEntry;

@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.forge.mixin;
+package com.stalemated.customtooltips.neoforge.mixin;
 
 import com.stalemated.customtooltips.core.TooltipProcessor;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(InGameHud.class)
-public abstract class ForgeInGameHudMixin {
+public abstract class NeoForgeInGameHudMixin {
 
     @Redirect(method = "renderSelectedItemName", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getName()Lnet/minecraft/text/Text;"))
     private Text redirectRenderHeldItemName(ItemStack stack) {

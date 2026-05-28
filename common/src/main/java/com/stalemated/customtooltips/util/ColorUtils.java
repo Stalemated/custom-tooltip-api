@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.util;
 
+import com.mojang.serialization.DataResult;
 import com.stalemated.customtooltips.TooltipEntry;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
@@ -35,7 +36,8 @@ public class ColorUtils {
         else if (hex.startsWith("x") || hex.startsWith("X")) hex = hex.substring(1);
 
         if (hex.matches("^[0-9a-fA-F]{6}$")) {
-            return TextColor.parse("#" + hex);
+             DataResult<TextColor> dataResult = TextColor.parse("#" + hex);
+             return dataResult.getOrThrow();
         }
 
         return null;

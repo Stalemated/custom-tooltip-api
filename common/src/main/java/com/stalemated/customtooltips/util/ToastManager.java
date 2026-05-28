@@ -7,7 +7,7 @@ import net.minecraft.text.Text;
 public class ToastManager {
 
     public static void showKeybindMissingToast() {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
+        addToast(SystemToast.Type.PERIODIC_NOTIFICATION,
                 Text.translatable("customtooltips.toast.keybind_missing.title"),
                 Text.translatable("customtooltips.toast.keybind_missing.desc")
         );
@@ -28,7 +28,7 @@ public class ToastManager {
     }
 
     public static void showDuplicatedToast(String targetName) {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
+        addToast(SystemToast.Type.PERIODIC_NOTIFICATION,
                 Text.translatable("customtooltips.toast.duplicated.title"),
                 Text.translatable("customtooltips.toast.duplicated.desc", targetName)
         );
@@ -42,14 +42,14 @@ public class ToastManager {
     }
 
     public static void showCopiedToast(String targetName) {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
+        addToast(SystemToast.Type.PERIODIC_NOTIFICATION,
                 Text.translatable("customtooltips.toast.copied.title"),
                 Text.translatable("customtooltips.toast.copied.desc", targetName)
         );
     }
 
     public static void showPastedToast(String targetName) {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
+        addToast(SystemToast.Type.PERIODIC_NOTIFICATION,
                 Text.translatable("customtooltips.toast.pasted.title"),
                 Text.translatable("customtooltips.toast.pasted.desc", targetName)
         );

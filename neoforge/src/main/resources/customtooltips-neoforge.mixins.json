@@ -1,10 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.stalemated.customtooltips.forge.mixin",
+  "package": "com.stalemated.customtooltips.neoforge.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ForgeInGameHudMixin"
+    "NeoForgeInGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

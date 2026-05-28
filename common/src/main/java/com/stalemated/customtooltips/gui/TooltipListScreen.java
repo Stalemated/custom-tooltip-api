@@ -33,11 +33,13 @@ public class TooltipListScreen extends Screen {
 
     @Override
     protected void init() {
-        this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 55, this.height - 32, 25, this);
-        this.addSelectableChild(this.listWidget);
+        final int headerHeight = 52;
+        final int footerHeight = 32;
+        this.listWidget = new TooltipListWidget(this.client, this.width, this.height - headerHeight - footerHeight, headerHeight, 25, this);
+        this.addDrawableChild(this.listWidget);
 
         this.searchBox = ListScreenUIFactory.createSearchBox(this, this.textRenderer, this.searchText);
-        this.addSelectableChild(this.searchBox);
+        this.addDrawableChild(this.searchBox);
         this.setInitialFocus(this.searchBox);
 
         this.listWidget.updateEntries(this.searchText);
@@ -81,24 +83,16 @@ public class TooltipListScreen extends Screen {
         this.activeTooltipBackgroundOpacity = -1;
         this.activeTooltipBorderOpacity = -1;
 
-        this.listWidget.render(context, mouseX, mouseY, delta);
-        this.searchBox.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
-        
+
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+
         if (this.activeTooltipText != null) {
             TooltipBackgroundManager.setCurrentEntry(this.activeTooltip);
             TooltipBackgroundManager.setCurrentBorderOpacity(this.activeTooltipBorderOpacity);
             TooltipBackgroundManager.setCurrentBackgroundOpacity(this.activeTooltipBackgroundOpacity);
             context.drawTooltip(this.textRenderer, this.activeTooltipText, mouseX, mouseY);
             TooltipBackgroundManager.clearState();
-        }
-    }
-
-    @Override
-    public void tick() {
-        if (this.searchBox != null) {
-            this.searchBox.tick();
         }
     }
 

@@ -16,15 +16,13 @@ public class TooltipBackgroundManager {
         TooltipEntry targetEntry = null;
 
         for (TooltipEntry entry : ConfigManager.getConfig().entries) {
-            if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) continue;
+            if (TooltipProcessor.shouldNotProcessEntry(entry, stack)) continue;
+            if (entry.require_keybind && !TooltipProcessor.isHoldKeyPressed()) continue;
 
-            if (entry.matches(stack) && entry.areItemConditionsMet(stack)) {
-                if (entry.require_keybind && !TooltipProcessor.isHoldKeyPressed()) continue;
-                targetBackgroundOpacity = entry.backgroundOpacity;
-                targetBorderOpacity = entry.borderOpacity;
-                targetEntry = entry;
-                break;
-            }
+            targetBackgroundOpacity = entry.backgroundOpacity;
+            targetBorderOpacity = entry.borderOpacity;
+            targetEntry = entry;
+            break;
         }
 
         currentBorderOpacity = targetBorderOpacity;
@@ -62,26 +60,20 @@ public class TooltipBackgroundManager {
         currentEntry = null;
     }
 
-    public static int scaleBackgroundAlpha(int color) {
-        int value = TooltipBackgroundManager.getCurrentBackgroundOpacity() != -1
-                ? TooltipBackgroundManager.getCurrentBackgroundOpacity()
-                : TooltipEntry.DEFAULT_OPACITY;
-
+    private static int scaleAlpha(int color, int currentOpacity) {
+        int value = currentOpacity != -1 ? currentOpacity : TooltipEntry.DEFAULT_OPACITY;
         int originalAlpha = (color >> 24) & 0xFF;
         int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
 
         return (color & 0x00FFFFFF) | (newAlpha << 24);
     }
 
+    public static int scaleBackgroundAlpha(int color) {
+        return scaleAlpha(color, getCurrentBackgroundOpacity());
+    }
+
     public static int scaleBorderAlpha(int color) {
-        int value = TooltipBackgroundManager.getCurrentBorderOpacity() != -1
-                ? TooltipBackgroundManager.getCurrentBorderOpacity()
-                : TooltipEntry.DEFAULT_OPACITY;
-
-        int originalAlpha = (color >> 24) & 0xFF;
-        int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
-
-        return (color & 0x00FFFFFF) | (newAlpha << 24);
+        return scaleAlpha(color, getCurrentBorderOpacity());
     }
 
     public static int getBorderColorStart(int originalColor) {

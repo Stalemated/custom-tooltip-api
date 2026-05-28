@@ -20,7 +20,7 @@ public class ConfigManager {
     public static boolean configLoadFailed = false;
 
     public static final ConfigClassHandler<TooltipConfig> HANDLER = ConfigClassHandler.createBuilder(TooltipConfig.class)
-            .id(new Identifier("customtooltips", "config"))
+            .id(Identifier.of("customtooltips", "config"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(CONFIG_PATH)
                     .setJson5(true)

@@ -1,13 +1,14 @@
 package com.stalemated.customtooltips.registry;
 
-import net.minecraft.entity.EntityGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.component.type.FoodComponent;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.text.Text;
 
 import java.util.*;
@@ -26,8 +27,8 @@ public class DefaultPlaceholders {
         PlaceholderRegistry.register("item_id", stack -> Registries.ITEM.getId(stack.getItem()).toString());
 
         PlaceholderRegistry.register("enchantments", DefaultPlaceholders::getEnchantments);
-        PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getRepairCost()));
-        PlaceholderRegistry.register("unbreakable", stack -> (stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable")) ? Text.translatable("customtooltips.unbreakable_item").getString() : "");
+        PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getOrDefault(DataComponentTypes.REPAIR_COST, 0)));
+        PlaceholderRegistry.register("unbreakable", stack -> stack.contains(DataComponentTypes.UNBREAKABLE) ? Text.translatable("customtooltips.unbreakable_item").getString() : "");
 
         PlaceholderRegistry.register("weapon_damage", DefaultPlaceholders::calculateWeaponDamage);
         PlaceholderRegistry.register("weapon_speed", DefaultPlaceholders::calculateWeaponSpeed);
@@ -35,59 +36,65 @@ public class DefaultPlaceholders {
         PlaceholderRegistry.register("food_hunger", DefaultPlaceholders::getHunger);
         PlaceholderRegistry.register("food_saturation", DefaultPlaceholders::getSaturation);
 
-        PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getNbt()));
+        PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getComponentChanges()));
     }
 
     // Helpers
 
     private static String getEnchantments(ItemStack stack) {
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.get(stack);
+        ItemEnchantmentsComponent enchantments = EnchantmentHelper.getEnchantments(stack);
         if (enchantments.isEmpty()) return "";
 
         List<String> formattedEnchants = new ArrayList<>();
-        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-            formattedEnchants.add(entry.getKey().getName(entry.getValue()).getString());
+        for (var entry : enchantments.getEnchantmentEntries()) {
+            formattedEnchants.add(Enchantment.getName(entry.getKey(), entry.getIntValue()).getString());
         }
 
         return String.join("\n", formattedEnchants);
     }
 
     private static String calculateWeaponDamage(ItemStack stack) {
-        Collection<EntityAttributeModifier> modifiers = stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-        double enchantDamage = EnchantmentHelper.getAttackDamage(stack, EntityGroup.DEFAULT);
-        if (modifiers.isEmpty() && enchantDamage == 0) return "0";
+        AttributeModifiersComponent modifiers = stack.getOrDefault(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT);
 
         double damage = 1.0;
-        for (EntityAttributeModifier modifier : modifiers) {
-            damage += modifier.getValue();
+        boolean hasModifiers = false;
+        for (AttributeModifiersComponent.Entry entry : modifiers.modifiers()) {
+            if (entry.attribute().equals(EntityAttributes.GENERIC_ATTACK_DAMAGE)) {
+                damage += entry.modifier().value();
+                hasModifiers = true;
+            }
         }
-        damage += enchantDamage;
+        if (!hasModifiers) return "0";
         return formatString((float) damage);
     }
 
     private static String calculateWeaponSpeed(ItemStack stack) {
-        Collection<EntityAttributeModifier> modifiers = stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED);
-        if (modifiers.isEmpty()) return "0";
+        AttributeModifiersComponent modifiers = stack.getOrDefault(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT);
 
         double speed = 4.0;
-        for (EntityAttributeModifier modifier : modifiers) {
-            speed += modifier.getValue();
+        boolean hasModifiers = false;
+        for (AttributeModifiersComponent.Entry entry : modifiers.modifiers()) {
+            if (entry.attribute().equals(EntityAttributes.GENERIC_ATTACK_SPEED)) {
+                speed += entry.modifier().value();
+                hasModifiers = true;
+            }
         }
+        if (!hasModifiers) return "0";
         return formatString((float) speed);
     }
 
     private static String getSaturation(ItemStack stack) {
-        if (stack.getItem().isFood()) {
-            assert stack.getItem().getFoodComponent() != null;
-            return formatString(stack.getItem().getFoodComponent().getSaturationModifier());
+        FoodComponent food = stack.get(DataComponentTypes.FOOD);
+        if (food != null) {
+            return formatString(food.saturation());
         }
         return "";
     }
 
     private static String getHunger(ItemStack stack) {
-        if (stack.getItem().isFood()) {
-            assert stack.getItem().getFoodComponent() != null;
-            return String.valueOf(stack.getItem().getFoodComponent().getHunger());
+        FoodComponent food = stack.get(DataComponentTypes.FOOD);
+        if (food != null) {
+            return String.valueOf(food.nutrition());
         }
         return "";
     }

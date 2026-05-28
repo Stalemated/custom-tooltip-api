@@ -140,7 +140,7 @@ public class IconAligner {
 
     private static boolean iconBlockEndsWithReset(List<StyledChar> block) {
         if (block.size() < 2) return false;
-        return block.get(block.size() - 2).character.equals("§") && block.get(block.size() - 1).character.equals("r");
+        return block.get(block.size() - 2).character.equals("§") && block.getLast().character.equals("r");
     }
 
     private static void cleanResidualSpaces(List<StyledChar> chars) {

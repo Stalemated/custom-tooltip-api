@@ -16,7 +16,7 @@ public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrat
             return;
         }
 
-        Identifier texture = new Identifier(entry.backgroundTexture);
+        Identifier texture = Identifier.of(entry.backgroundTexture);
 
         int corner = 8;
         int texW = 64;

@@ -31,12 +31,12 @@ public class CustomTooltipApiFabric implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(CustomTooltipApiClient::onClientTick);
 
-        ItemTooltipCallback.EVENT.register((stack, context, lines) -> CustomTooltipApiClient.onItemTooltip(stack, lines));
+        ItemTooltipCallback.EVENT.register((stack, context, tooltipType, lines) -> CustomTooltipApiClient.onItemTooltip(stack, lines));
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public Identifier getFabricId() {
-                return new Identifier(CustomTooltipApiClient.MOD_ID, "resources");
+                return Identifier.of(CustomTooltipApiClient.MOD_ID, "resources");
             }
 
             @Override

@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.forge;
+package com.stalemated.customtooltips.neoforge;
 
 import com.stalemated.customtooltips.CustomTooltipApiClient;
 import com.stalemated.customtooltips.TooltipEntry;
@@ -7,13 +7,13 @@ import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CustomTooltipApiClient.MOD_ID)
-public class ForgeTooltipEvents {
+@EventBusSubscriber(value = Dist.CLIENT, modid = CustomTooltipApiClient.MOD_ID)
+public class NeoForgeTooltipEvents {
 
     @SubscribeEvent
     public static void onRenderTooltipColor(RenderTooltipEvent.Color event) {

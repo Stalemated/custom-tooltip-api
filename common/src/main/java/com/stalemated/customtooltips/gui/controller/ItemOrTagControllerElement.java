@@ -100,7 +100,7 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
         this.currentItemIcon = ItemStack.EMPTY;
         if (!isSpecialTarget(this.inputField)) {
             try {
-                Item item = Registries.ITEM.get(new Identifier(this.inputField));
+                Item item = Registries.ITEM.get(Identifier.of(this.inputField));
                 if (item != Items.AIR) {
                     this.currentItemIcon = new ItemStack(item);
                 }
@@ -111,7 +111,7 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
         for (String id : identifiers) {
             if (!isSpecialTarget(id)) {
                 try {
-                    Item item = Registries.ITEM.get(new Identifier(id));
+                    Item item = Registries.ITEM.get(Identifier.of(id));
                     if (item != Items.AIR) {
                         this.itemCache.put(id, new ItemStack(item));
                     }
@@ -156,7 +156,7 @@ public class ItemOrTagControllerElement extends AbstractDropdownControllerElemen
             }
             
             try {
-                Item item = Registries.ITEM.get(new Identifier(this.inputField));
+                Item item = Registries.ITEM.get(Identifier.of(this.inputField));
                 if (item != Items.AIR) {
                     return item.getName();
                 }

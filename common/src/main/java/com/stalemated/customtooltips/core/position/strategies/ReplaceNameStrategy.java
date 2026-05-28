@@ -10,11 +10,11 @@ public class ReplaceNameStrategy implements TooltipPositionStrategy {
     @Override
     public void modifyTooltip(List<Text> lines, List<Text> componentsToInsert, TooltipEntry entry) {
         if (componentsToInsert.isEmpty()) return;
-        lines.set(0, componentsToInsert.get(0));
+        lines.set(0, componentsToInsert.getFirst());
         TextFormatter.insertLines(lines, componentsToInsert, 1, 1);
     }
     @Override
     public Text modifyHeldItemName(Text originalName, List<Text> componentsToInsert, TooltipEntry entry) {
-        return componentsToInsert.isEmpty() ? originalName : componentsToInsert.get(0);
+        return componentsToInsert.isEmpty() ? originalName : componentsToInsert.getFirst();
     }
 }

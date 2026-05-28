@@ -14,8 +14,8 @@ public abstract class TextFieldWidgetMixin {
     @Unique
     private long custom_tooltip_api$lastClickTime = 0L;
 
-    @Redirect(method = "onClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;setCursor(I)V"))
-    private void customtooltips$onSetCursorFromClick(TextFieldWidget instance, int cursor) {
+    @Redirect(method = "onClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;setCursor(IZ)V"))
+    private void customtooltips$onSetCursorFromClick(TextFieldWidget instance, int cursor, boolean shiftKeyPressed) {
         long time = System.currentTimeMillis();
         int timeBetweenClicksMs = 250;
         
@@ -25,7 +25,7 @@ public abstract class TextFieldWidgetMixin {
             instance.setSelectionStart(0);
             instance.setSelectionEnd(instance.getText().length());
         } else {
-            instance.setCursor(cursor);
+            instance.setCursor(cursor, shiftKeyPressed);
         }
 
         this.custom_tooltip_api$lastClickTime = time;
