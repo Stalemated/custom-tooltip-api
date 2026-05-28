@@ -2,7 +2,6 @@ package com.stalemated.customtooltips.core;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.item.ItemStack;
 
 public class TooltipBackgroundManager {
@@ -63,7 +62,7 @@ public class TooltipBackgroundManager {
     private static int scaleAlpha(int color, int currentOpacity) {
         int value = currentOpacity != -1 ? currentOpacity : TooltipEntry.DEFAULT_OPACITY;
         int originalAlpha = (color >> 24) & 0xFF;
-        int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
+        int newAlpha = Math.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
 
         return (color & 0x00FFFFFF) | (newAlpha << 24);
     }
