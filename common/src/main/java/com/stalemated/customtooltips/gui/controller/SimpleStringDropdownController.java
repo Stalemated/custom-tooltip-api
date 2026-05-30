@@ -59,7 +59,7 @@ public class SimpleStringDropdownController extends AbstractDropdownController<S
     @Override
     public AbstractWidget provideWidget(YACLScreen screen, Dimension<Integer> widgetDimension) {
         return new AbstractDropdownControllerElement<String, String>(this, screen, widgetDimension) {
-            
+
             @Override
             public List<String> computeMatchingValues() {
                 return SimpleStringDropdownController.this.getAllowedValues();
@@ -77,14 +77,17 @@ public class SimpleStringDropdownController extends AbstractDropdownController<S
 
             @Override
             public void setFocused(boolean focused) {
-                if (!focused) {
+                if (focused) {
+                    super.setFocused(true);
+                    this.inputFieldFocused = false;
+                } else {
                     this.unfocus();
                 }
             }
 
             @Override
             public void unfocus() {
-                if (this.isDropdownVisible() && this.dropdownWidget() != null) {
+                if (this.isDropdownVisible()) {
                     int index = this.dropdownWidget().selectedIndex();
                     if (index >= 0 && index < SimpleStringDropdownController.this.getAllowedValues().size()) {
                         this.inputField = SimpleStringDropdownController.this.getAllowedValues().get(index);

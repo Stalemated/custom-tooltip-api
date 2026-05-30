@@ -34,14 +34,17 @@ public class SimpleEnumDropdownController<E extends Enum<E>> extends EnumDropdow
 
             @Override
             public void setFocused(boolean focused) {
-                if (!focused) {
+                if (focused) {
+                    super.setFocused(true);
+                    this.inputFieldFocused = false;
+                } else {
                     this.unfocus();
                 }
             }
 
             @Override
             public void unfocus() {
-                if (this.isDropdownVisible() && this.dropdownWidget() != null) {
+                if (this.isDropdownVisible()) {
                     int index = this.dropdownWidget().selectedIndex();
                     if (index >= 0 && index < SimpleEnumDropdownController.this.getAllowedValues().size()) {
                         this.inputField = SimpleEnumDropdownController.this.getAllowedValues().get(index);

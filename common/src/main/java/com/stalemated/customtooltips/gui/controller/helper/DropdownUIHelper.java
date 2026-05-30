@@ -30,6 +30,14 @@ public class DropdownUIHelper {
                     element.removeDropdownWidget();
                     return true;
             }
+        } else if (element.isFocused() && !element.isDropdownVisible()) {
+            switch (keyCode) {
+                case 257: // Enter
+                case 335: // Numpad Enter
+                case 32:  // Space
+                    element.createDropdownWidget();
+                    return true;
+            }
         }
         return false;
     }
