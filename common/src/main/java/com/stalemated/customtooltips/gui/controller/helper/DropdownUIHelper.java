@@ -30,17 +30,28 @@ public class DropdownUIHelper {
                     element.removeDropdownWidget();
                     return true;
             }
+        } else if (element.isFocused() && !element.isDropdownVisible()) {
+            switch (keyCode) {
+                case 257: // Enter
+                case 335: // Numpad Enter
+                case 32:  // Space
+                    element.createDropdownWidget();
+                    return true;
+            }
         }
         return false;
     }
 
     public static boolean handleMouseClicked(AbstractDropdownControllerElement<?, ?> element, double mouseX, double mouseY) {
         if (element.isMouseOver(mouseX, mouseY)) {
-            element.setFocused(true);
-            if (!element.isDropdownVisible()) element.createDropdownWidget();
-            else element.removeDropdownWidget();
+            if (!element.isDropdownVisible()) {
+                element.createDropdownWidget();
+            }
             return true;
+        } else {
+            element.unfocus();
         }
+
         return false;
     }
 }
