@@ -9,6 +9,7 @@
 ### Technical Features
 - Migrated project to an Architectury project (without using the Architectury API dependency)
 - Added support for Forge 1.20.1
+- Added support for Fabric, NeoForge 1.21.1
 
 ## 3.1.0
 **This release brings new tools that allow to set custom colored backgrounds and borders, as well as background texture support.**
