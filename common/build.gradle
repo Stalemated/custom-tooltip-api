@@ -22,3 +22,7 @@ dependencies {
     // Required to resolve injected Fabric interfaces during compilation (like FabricItemStack)
     modCompileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 }
+
+jar {
+    exclude 'com/stalemated/customtooltips/test/**'
+}
