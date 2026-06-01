@@ -142,5 +142,10 @@
   "customtooltips.tooltip_dimensions_screen.max_height_percentage.description": "Porcentaje máximo de la ventana de Minecraft permitido como la §6altura del Tooltip§r.",
   "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions": "Habilitar scroll y dimensiones personalizadas",
   "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions.description": "Permite configurar §6dimensiones máximas personalizadas§r para los tooltips y el uso de §6scroll en tooltips§r.",
-  "customtooltips.tooltip_dimensions_screen.category.custom_dimensions": "Configuración de dimensiones personalizadas"
+  "customtooltips.tooltip_dimensions_screen.category.custom_dimensions": "Configuración de dimensiones personalizadas",
+
+  "customtooltips.tooltip_dimensions_screen.category.scrolling": "Configuración de scroll",
+  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling": "Habilitar scroll en contenedores",
+  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling.description": "Si está activado, permite hacer scroll en diferentes contenedores simultáneamente. Esto hace que, por ejemplo, al hacer scroll sobre un tooltip mientras estás en el menú del modo creativo, se desplace ambos al mismo tiempo.",
+  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling.warning": "\n§4§lAdvertencia:§r §cMuy probablemente no quieras desactivar esto.§r"
 }

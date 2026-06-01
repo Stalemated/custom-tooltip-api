@@ -20,12 +20,16 @@ public class TooltipScrollManager {
         scrollOffset = MathUtils.clamp(scrollOffset, 0, maxScroll);
     }
 
-    public static void scroll(double amount) {
+    public static boolean scroll(double amount) {
+        if (maxScroll <= 0) return false;
+
         int pixelsPerScroll = 15;
         if (System.currentTimeMillis() - lastRenderTime < maxUnhoveredRenderTimeMs) {
             scrollOffset -= (int) (amount * pixelsPerScroll);
             scrollOffset = MathUtils.clamp(scrollOffset, 0, maxScroll);
+            return true;
         }
+        return false;
     }
 
     public static int getScrollOffset() { return scrollOffset; }
