@@ -145,7 +145,7 @@
   "customtooltips.tooltip_dimensions_screen.category.custom_dimensions": "Configuración de dimensiones personalizadas",
 
   "customtooltips.tooltip_dimensions_screen.category.scrolling": "Configuración de scroll",
-  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling": "Habilitar scroll en contenedores",
-  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling.description": "Si está activado, permite hacer scroll en diferentes contenedores simultáneamente. Esto hace que, por ejemplo, al hacer scroll sobre un tooltip mientras estás en el menú del modo creativo, se desplace ambos al mismo tiempo.",
-  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling.warning": "\n§4§lAdvertencia:§r §cMuy probablemente no quieras desactivar esto.§r"
+  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling": "Habilitar scroll en contenedores",
+  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling.description": "Si está activado, desactiva hacer scroll en diferentes contenedores simultáneamente. Esto previene, por ejemplo, hacer scroll sobre un tooltip mientras estás en el menú del modo creativo. Si está desactivado, ambos hacen scroll al mismo tiempo",
+  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling.warning": "\n§4§lAdvertencia:§r §cMuy probablemente no quieras desactivar esto.§r"
 }
