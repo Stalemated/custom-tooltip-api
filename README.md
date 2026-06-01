@@ -89,11 +89,11 @@ Output: `build/libs/custom-tooltip-api-<version>.jar`
 
 ## 🌍 Platform Support
 
-| Platform | Versions |
-|---|---|
-| Fabric | 1.20.1, 1.21.1 |
-| Forge | 1.20.1 |
-| NeoForge | 1.21.1 |
+| Platform | Versions       |
+|----------|----------------|
+| Fabric   | 1.20.1, 1.21.1 |
+| Forge    | 1.20.1         |
+| NeoForge | 1.21.1         |
 
 ---
 
