@@ -72,23 +72,23 @@ public class TooltipDimensionsScreen {
     }
 
     private static OptionGroup createScrollingGroup(TooltipConfig config) {
-        var enableContainerScrolling = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_dimensions_screen.enable_container_scrolling"))
+        var lockContainerScrolling = Option.<Boolean>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_dimensions_screen.lock_container_scrolling"))
                 .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_dimensions_screen.enable_container_scrolling.description"),
-                        Text.translatable("customtooltips.tooltip_dimensions_screen.enable_container_scrolling.warning")
+                        Text.translatable("customtooltips.tooltip_dimensions_screen.lock_container_scrolling.description"),
+                        Text.translatable("customtooltips.tooltip_dimensions_screen.lock_container_scrolling.warning")
                 ))
                 .binding(
                         false,
-                        () -> config.enable_container_scrolling,
-                        val -> config.enable_container_scrolling = val
+                        () -> config.lock_container_scrolling,
+                        val -> config.lock_container_scrolling = val
                 )
                 .controller(TickBoxControllerBuilder::create)
                 .build();
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_dimensions_screen.category.scrolling"))
-                .option(enableContainerScrolling)
+                .option(lockContainerScrolling)
                 .build();
     }
 }

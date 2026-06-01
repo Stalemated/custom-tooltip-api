@@ -145,7 +145,7 @@
   "customtooltips.tooltip_dimensions_screen.category.custom_dimensions": "Custom Dimensions Config",
 
   "customtooltips.tooltip_dimensions_screen.category.scrolling": "Scrolling Config",
-  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling": "Enable container scrolling",
-  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling.description": "If scrolling in different containers simultaneously is enabled while scrolling. This makes it so scrolling a tooltip while in the creative menu for example, scrolls both at the same time.",
-  "customtooltips.tooltip_dimensions_screen.enable_container_scrolling.warning": "\n§4§lWarning:§r §cYou probably don't want to disable this.§r"
+  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling": "Lock container scrolling",
+  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling.description": "If scrolling in different containers simultaneously is locked or disabled. This prevents scrolling a tooltip while in the creative menu for example. If disabled, both scroll at the same time.",
+  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling.warning": "\n§4§lWarning:§r §cYou probably don't want to disable this.§r"
 }

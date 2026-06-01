@@ -31,7 +31,7 @@ public class TooltipConfig {
     public int max_width_percentage = 100;
 
     @SerialEntry(comment = "If scrolling in different containers is disabled while scrolling on a tooltip. You probably don't want to disable this.")
-    public boolean enable_container_scrolling = true;
+    public boolean lock_container_scrolling = true;
 
     @SerialEntry(comment = """
             Custom Tooltip API Config

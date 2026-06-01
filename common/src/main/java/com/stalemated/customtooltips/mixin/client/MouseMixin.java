@@ -13,7 +13,7 @@ public class MouseMixin {
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void customtooltips$onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
         if (ConfigManager.getConfig().custom_tooltip_dimensions) {
-            if (TooltipScrollManager.scroll(vertical) && ConfigManager.getConfig().enable_container_scrolling) {
+            if (TooltipScrollManager.scroll(vertical) && ConfigManager.getConfig().lock_container_scrolling) {
                 ci.cancel();
             }
         }
