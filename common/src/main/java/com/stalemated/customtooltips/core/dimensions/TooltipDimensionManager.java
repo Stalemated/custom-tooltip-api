@@ -24,6 +24,30 @@ public class TooltipDimensionManager {
     private static final int TOOLTIP_PADDING_X = 8;
     private static final int TOOLTIP_PADDING_Y = 4;
 
+    private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X);
+    private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y);
+
+    private static class DimensionCache {
+        private final int padding;
+        private int lastWindowSize = -1;
+        private int lastConfigPercent = -1;
+        private int cachedSize = -1;
+
+        DimensionCache(int padding) {
+            this.padding = padding;
+        }
+
+        int get(int currentWindowSize, int currentConfigPercent) {
+            if (currentWindowSize != lastWindowSize || currentConfigPercent != lastConfigPercent) {
+                this.lastWindowSize = currentWindowSize;
+                this.lastConfigPercent = currentConfigPercent;
+                int maxAllowedSize = currentWindowSize - padding;
+                this.cachedSize = MathUtils.clamp(maxAllowedSize * currentConfigPercent / 100, minTooltipSide, maxAllowedSize);
+            }
+            return this.cachedSize;
+        }
+    }
+
     public static List<TooltipComponent> wrapAndLimitWidth(TextRenderer textRenderer, List<Text> text, Optional<TooltipData> data) {
         int scaledTooltipWidth = getScaledTooltipWidth();
         int scaledTooltipHeight = getScaledTooltipHeight();
@@ -103,14 +127,10 @@ public class TooltipDimensionManager {
     }
 
     public static int getScaledTooltipHeight() {
-        int scaledWindowHeight = MinecraftClient.getInstance().getWindow().getScaledHeight();
-        int maxAllowedHeight = scaledWindowHeight - TOOLTIP_PADDING_Y;
-        return MathUtils.clamp(maxAllowedHeight * config.max_height_percentage / 100, minTooltipSide, maxAllowedHeight);
+        return heightCache.get(MinecraftClient.getInstance().getWindow().getScaledHeight(), config.max_height_percentage);
     }
 
     public static int getScaledTooltipWidth() {
-        int scaledWindowWidth = MinecraftClient.getInstance().getWindow().getScaledWidth();
-        int maxAllowedWidth = scaledWindowWidth - TOOLTIP_PADDING_X;
-        return MathUtils.clamp(maxAllowedWidth * config.max_width_percentage / 100, minTooltipSide, maxAllowedWidth);
+        return widthCache.get(MinecraftClient.getInstance().getWindow().getScaledWidth(), config.max_width_percentage);
     }
 }
