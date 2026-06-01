@@ -107,6 +107,15 @@
       ],
       "file": "custom-tooltip-api:gui/paste.png",
       "height": 11
+    },
+    {
+      "type": "bitmap",
+      "ascent": 9,
+      "chars": [
+        "\uDAC1\uDF34"
+      ],
+      "file": "custom-tooltip-api:gui/dimensions.png",
+      "height": 11
     }
   ]
 }

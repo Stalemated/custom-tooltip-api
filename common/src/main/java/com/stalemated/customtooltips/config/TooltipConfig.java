@@ -21,6 +21,18 @@ public class TooltipConfig {
     @SerialEntry(comment = "List of unique entry Identifiers that have been disabled by the user.")
     public List<String> disabled_entries = new ArrayList<>();
 
+    @SerialEntry(comment = "If custom Tooltip dimensions are enabled.")
+    public boolean custom_tooltip_dimensions = false;
+
+    @SerialEntry(comment = "Maximum percentage of the Minecraft window allowed as the tooltip height.")
+    public int max_height_percentage = 100;
+
+    @SerialEntry(comment = "Maximum percentage of the Minecraft window allowed as the tooltip width.")
+    public int max_width_percentage = 100;
+
+    @SerialEntry(comment = "If scrolling in different containers is disabled while scrolling on a tooltip. You probably don't want to disable this.")
+    public boolean lock_container_scrolling = true;
+
     @SerialEntry(comment = """
             Custom Tooltip API Config
             'target': Accepts tags (e.g. #c:swords) or item ids (e.g. minecraft:diamond_sword).

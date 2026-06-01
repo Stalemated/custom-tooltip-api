@@ -1,26 +1,50 @@
 # Custom Tooltip API
 
-**Custom Tooltip API** is a powerful client-side tool and library designed for developers, modpack creators, and players who want absolute control over item tooltips. Add custom lore, dynamic gradients, and advanced positioning to any item without the need for complex code.
+**Custom Tooltip API** is a powerful client-side Minecraft mod and developer library that gives you full control over item tooltips. Add custom lore, dynamic real-time data, animated gradients, resizable scrollable panels, and custom backgrounds, all configurable in-game or through code.
 
-***
-
-### ✨ Key Features
-
-* **Dynamic Detection:** Target item groups via Tags (e.g., `#c:swords`) or specific IDs (e.g., `minecraft:diamond_sword`).
-* **Advanced Targeting:** Apply tooltips to entire mods via Namespaces (`minecraft:*`), use Regex (`regex:.*_sword`), or target all items (`*`).
-* **Dynamic Placeholders:** Embed real-time item data directly into your text using variables like `%max_durability%`, `%weapon_damage%`, or `%enchantments%`.
-* **Visual Effects:** Support for Rainbow, Slide Gradients, Breathing Gradients, Solid Gradients and Solid Colors by using hex codes (e.g. `#RRGGBB`), legacy codes (e.g. `&d`) or Minecraft color names (e.g. `blue`).
-* **Advanced Positioning:** Choose between `Top`, `Bottom`, `Append`, `Prepend`, `Replace Name`, or `Replace All`.
-* **In-Game GUI:** Full integration with YACL and ModMenu for real-time editing. Hold `CTRL` in the edit screen for an instant **Live Preview** of your tooltip!
+> **Latest:** 3.3.0: Tooltips are now resizable and scrollable!
 
 ---
 
-### 🛠️ Developer API
+## ✨ Key Features
 
-Developers can easily register custom and dynamic tooltips via code using the new Builder API:
+### 🎨 Rich Visual Styling
+- **Resizable & scrollable tooltips:** Cap tooltips to a percentage of your screen. If they overflow, scroll through them with your mouse wheel.
+- **Animated gradients:** Rainbow, Slide, Breathing, and Solid Gradient styles
+- **Solid colors** via hex codes (`#RRGGBB`), legacy codes (`&d`), or Minecraft color names (`blue`)
+- **Custom backgrounds and borders:** Solid, Gradient, Texture (Stretch), or Texture (Framed) modes with full opacity control. Drop any background into `config/custom-tooltip-api/backgrounds/` and enable it per tooltip.
+- **Custom fonts:** Drop any font into `config/custom-tooltip-api/fonts/` and enable it per tooltip
+
+### 🎯 Advanced Targeting
+Target exactly what you want, nothing more:
+- Specific item IDs (`minecraft:diamond_sword`)
+- Tag groups (`#c:swords`)
+- Entire mod namespaces (`minecraft:*`)
+- Regex patterns (`regex:.*_sword`)
+- Every item at once (`*`)
+
+### 📊 Dynamic Placeholders
+Embed live item data directly in tooltip text using built-in variables like `%durability%`, `%max_durability%`, `%weapon_damage%`, and `%enchantments%`. You can also embed keybind hints using the format `<key:key.jump>` → `[Space]`.
+
+### 📌 Flexible Positioning
+Place your tooltip exactly where it belongs: `Top`, `Bottom`, `Append`, `Prepend`, `Replace Name`, or `Replace All` (blank canvas mode).
+
+### 🖥️ In-Game GUI
+Full **YACL + ModMenu** integration with a completely redesigned config screen:
+- **Live Preview:** Hold `CTRL` in the Edit Screen to instantly see your tooltip
+- Copy/paste entries to clipboard, reorder, duplicate, enable/disable, and sort tooltips
+- Dedicated **Scroll & Custom Tooltip Dimensions** screen (v3.3.0+)
+- Toggleable visibility conditions: show only when an item is Damaged, Enchanted, or Unbreakable
+- "Require Keybind" mode: show tooltips when the player holds a configurable key
+
+---
+
+## 🛠️ Developer API
+
+Register tooltips and custom placeholders directly from code using the fluent Builder API:
 
 ```java
-// Example: A dynamic tooltip that reads NBT/State in real-time
+// Dynamic tooltip that reads live NBT/state every frame
 TooltipEntry.builder("minecraft:diamond_sword")
     .style(TooltipEntry.TooltipStyle.BREATHING_GRADIENT)
     .colors("0x00FF00", "red")
@@ -34,44 +58,54 @@ TooltipEntry.builder("minecraft:diamond_sword")
     })
     .register();
 
-// Example: Registering a custom placeholder for your mod
+// Register a custom placeholder usable in any tooltip text
 CustomTooltipApi.registerPlaceholder("mana", stack -> getManaAmount(stack));
 ```
 
-These entries merge with user-defined JSON configs.
-
-More examples can be found in the `com.stalemated.customtooltips.test.CustomTooltipApiTest` class.
+API entries merge seamlessly with user-defined JSON configs. See `com.stalemated.customtooltips.test.CustomTooltipApiTest` for more examples.
 
 ---
 
-### 🏗️ How to Build
+## 🏗️ Building from Source
 
-If you want to compile the project yourself, follow these steps:
-
-#### 1. Clone the Repository:
+#### 1. Clone the repository
 ```bash
-  git clone https://github.com/Stalemated/custom-tooltip-api.git
-  cd custom-tooltip-api
+git clone https://github.com/Stalemated/custom-tooltip-api.git
+cd custom-tooltip-api
 ```
 
-#### 2. Build the Project:
-   Use the included Gradle wrapper to compile the mod:
+#### 2. Build with Gradle
+```bash
+# Windows
+gradlew.bat build
 
-- Windows: `gradlew.bat build`
+# Linux / macOS
+./gradlew build
+```
 
-- Linux/macOS: `./gradlew build`
-
-Once finished, you will find the compiled file in:
-`build/libs/custom-tooltip-api-<version>.jar`
+Output: `build/libs/custom-tooltip-api-<version>.jar`
 
 ---
 
-### 📦 Dependencies
-Custom Tooltip API has the following dependencies:
+## 🌍 Platform Support
 
-* [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
-* [YACL](https://www.curseforge.com/minecraft/mc-mods/yacl)
-* [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu)
+| Platform | Versions       |
+|----------|----------------|
+| Fabric   | 1.20.1, 1.21.1 |
+| Forge    | 1.20.1         |
+| NeoForge | 1.21.1         |
 
-### 📄 License
-This project is licensed under the MIT License.
+---
+
+## 📦 Dependencies
+
+- [YACL](https://www.curseforge.com/minecraft/mc-mods/yacl)
+#### Fabric only
+- [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+- [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu)
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.

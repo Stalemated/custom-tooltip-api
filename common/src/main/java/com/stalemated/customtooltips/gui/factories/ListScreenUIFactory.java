@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.gui.TooltipDimensionsScreen;
 import com.stalemated.customtooltips.gui.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.TooltipListScreen;
 
@@ -31,7 +32,7 @@ public class ListScreenUIFactory {
     private static final int BUTTON_SIZE = 20;
     private static final int SPACING = 4;
     private static final int START_Y = 24;
-    private static final int ACTION_BAR_BUTTON_AMOUNT = 5;
+    private static final int ACTION_BAR_BUTTON_AMOUNT = 6;
 
     public static TextFieldWidget createSearchBox(TooltipListScreen screen, TextRenderer textRenderer, String searchText) {
         int screenWidth = screen.width;
@@ -120,6 +121,16 @@ public class ListScreenUIFactory {
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_screen.paste_button")))
                 .build());
 
+        buttons.add(ButtonWidget.builder(getDimensionsScreenIcon(), button -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client != null) {
+                client.setScreen(TooltipDimensionsScreen.create(screen));
+            }
+        })
+                .dimensions(getButtonStartX(6, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
+                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_dimensions_screen.title")))
+                .build());
+
 
         return buttons;
     }
@@ -206,5 +217,9 @@ public class ListScreenUIFactory {
 
     private static Text getPasteIcon() {
         return Text.literal("\uDAC1\uDF33");
+    }
+
+    private static Text getDimensionsScreenIcon() {
+        return Text.literal("\uDAC1\uDF34");
     }
 }

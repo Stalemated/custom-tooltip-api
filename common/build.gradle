@@ -14,3 +14,7 @@ dependencies {
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-fabric"
 }
+
+jar {
+    exclude 'com/stalemated/customtooltips/test/**'
+}
