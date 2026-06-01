@@ -136,7 +136,7 @@
   "customtooltips.unbreakable_item": "Unbreakable",
 
   "customtooltips.tooltip_dimensions_screen.title": "Scroll & Custom Tooltip Dimensions",
-  "customtooltips.tooltip_dimensions_screen.max_width_percentage": "Maximum width percentage.",
+  "customtooltips.tooltip_dimensions_screen.max_width_percentage": "Maximum width percentage",
   "customtooltips.tooltip_dimensions_screen.max_width_percentage.description": "Maximum percentage of the Minecraft window allowed as the §6Tooltip Width§r.",
   "customtooltips.tooltip_dimensions_screen.max_height_percentage": "Maximum height percentage",
   "customtooltips.tooltip_dimensions_screen.max_height_percentage.description": "Maximum percentage of the Minecraft window allowed as the §6Tooltip Height§r.",
