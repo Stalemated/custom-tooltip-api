@@ -2,12 +2,11 @@ package com.stalemated.customtooltips.core.dimensions;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.item.TooltipData;
+import net.minecraft.item.tooltip.TooltipData;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -42,7 +41,7 @@ public class TooltipDimensionManager {
                 this.lastWindowSize = currentWindowSize;
                 this.lastConfigPercent = currentConfigPercent;
                 int maxAllowedSize = currentWindowSize - padding;
-                this.cachedSize = MathUtils.clamp(maxAllowedSize * currentConfigPercent / 100, minTooltipSide, maxAllowedSize);
+                this.cachedSize = Math.clamp((long) maxAllowedSize * currentConfigPercent / 100, minTooltipSide, maxAllowedSize);
             }
             return this.cachedSize;
         }

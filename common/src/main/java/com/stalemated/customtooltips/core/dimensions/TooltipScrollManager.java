@@ -1,7 +1,5 @@
 package com.stalemated.customtooltips.core.dimensions;
 
-import com.stalemated.customtooltips.util.MathUtils;
-
 public class TooltipScrollManager {
     private static int scrollOffset = 0;
     private static int maxScroll = 0;
@@ -17,7 +15,7 @@ public class TooltipScrollManager {
         lastRenderTime = currentTime;
 
         maxScroll = Math.max(0, newMaxScroll);
-        scrollOffset = MathUtils.clamp(scrollOffset, 0, maxScroll);
+        scrollOffset = Math.clamp(scrollOffset, 0, maxScroll);
     }
 
     public static boolean scroll(double amount) {
@@ -26,7 +24,7 @@ public class TooltipScrollManager {
         int pixelsPerScroll = 15;
         if (System.currentTimeMillis() - lastRenderTime < maxUnhoveredRenderTimeMs) {
             scrollOffset -= (int) (amount * pixelsPerScroll);
-            scrollOffset = MathUtils.clamp(scrollOffset, 0, maxScroll);
+            scrollOffset = Math.clamp(scrollOffset, 0, maxScroll);
             return true;
         }
         return false;
