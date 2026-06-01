@@ -51,7 +51,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
 
         int scroll = TooltipScrollManager.getScrollOffset();
         vertexConsumers.draw();
-        context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight + 2);
+        context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight);
         int currentY = y - scroll;
 
         for (int i = 0; i < components.size(); i++) {
@@ -68,8 +68,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
     public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
         int scroll = TooltipScrollManager.getScrollOffset();
 
-        context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight + 2);
-
+        context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight);
         int currentY = y - scroll;
 
         for (int i = 0; i < components.size(); i++) {

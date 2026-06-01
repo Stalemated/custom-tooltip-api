@@ -79,7 +79,7 @@ public class TooltipDimensionsScreen {
                         Text.translatable("customtooltips.tooltip_dimensions_screen.lock_container_scrolling.warning")
                 ))
                 .binding(
-                        false,
+                        true,
                         () -> config.lock_container_scrolling,
                         val -> config.lock_container_scrolling = val
                 )
