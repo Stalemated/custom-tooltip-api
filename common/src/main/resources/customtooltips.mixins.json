@@ -7,7 +7,8 @@
     "HandledScreenMixin",
     "KeyBindingAccessor",
     "StringControllerElementMixin",
-    "TextFieldWidgetMixin"
+    "TextFieldWidgetMixin",
+    "MouseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

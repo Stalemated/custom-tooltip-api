@@ -7,6 +7,7 @@ import dev.isxander.yacl3.gui.AbstractWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.ColorController;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
@@ -145,7 +146,7 @@ public class AdvancedColorController extends ColorController {
             if (this.selectionLength != 0) {
                 int start = Math.min(this.caretPos, this.caretPos + this.selectionLength);
                 int end = Math.max(this.caretPos, this.caretPos + this.selectionLength);
-                net.minecraft.client.MinecraftClient.getInstance().keyboard.setClipboard(this.inputField.substring(start, end));
+                MinecraftClient.getInstance().keyboard.setClipboard(this.inputField.substring(start, end));
                 return true;
             }
             return false;
@@ -165,7 +166,7 @@ public class AdvancedColorController extends ColorController {
             
             if (Screen.isSelectAll(keyCode)) { this.doSelectAll(); return true; }
             if (Screen.isCopy(keyCode)) { this.doCopy(); return true; }
-            if (Screen.isPaste(keyCode)) { this.write(net.minecraft.client.MinecraftClient.getInstance().keyboard.getClipboard()); return true; }
+            if (Screen.isPaste(keyCode)) { this.write(MinecraftClient.getInstance().keyboard.getClipboard()); return true; }
             if (Screen.isCut(keyCode)) { this.doCut(); return true; }
 
             switch (keyCode) {
