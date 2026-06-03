@@ -15,6 +15,7 @@ public class PositionStrategyFactory {
         STRATEGIES.put(TooltipPosition.PREPEND, new AppendPrependStrategy(false));
         STRATEGIES.put(TooltipPosition.TOP, new InsertStrategy(true));
         STRATEGIES.put(TooltipPosition.BOTTOM, new InsertStrategy(false));
+        STRATEGIES.put(TooltipPosition.REPLACE_LINE, new ReplaceLineStrategy());
     }
 
     public static TooltipPositionStrategy get(TooltipPosition position) {

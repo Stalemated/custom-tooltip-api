@@ -52,4 +52,9 @@ public class TextFormatter {
         if (suffix.equals(" ")) modified.append(baseLine);
         return modified;
     }
+
+    public static void replaceLine(List<Text> lines, List<Text> componentsToInsert, int index) {
+        lines.set(index, componentsToInsert.get(0));
+        TextFormatter.insertLines(lines, componentsToInsert, ++index, 1);
+    }
 }

@@ -24,7 +24,7 @@ public class TooltipEntry {
     }
 
     public enum TooltipPosition {
-        REPLACE_NAME, REPLACE_ALL, TOP, BOTTOM, APPEND, PREPEND
+         TOP, BOTTOM, REPLACE_NAME, REPLACE_LINE, REPLACE_ALL, APPEND, PREPEND
     }
 
     public enum BackgroundType {
@@ -264,11 +264,19 @@ public class TooltipEntry {
     }
 
     public int getLineOffset(int size) {
-        if (this.position == TooltipPosition.TOP || this.position == TooltipPosition.REPLACE_NAME || this.position == TooltipPosition.APPEND || this.position == TooltipPosition.PREPEND) {
+        if (acceptsPositiveOffset()) {
             return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : Math.max(size - 1, 0);
         } else {
             return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : Math.min(-(size - 1), 0);
         }
+    }
+
+    private boolean acceptsPositiveOffset() {
+        return this.position == TooltipPosition.TOP ||
+                this.position == TooltipPosition.REPLACE_NAME ||
+                this.position == TooltipPosition.APPEND ||
+                this.position == TooltipPosition.PREPEND ||
+                this.position == TooltipPosition.REPLACE_LINE;
     }
 
     /**
