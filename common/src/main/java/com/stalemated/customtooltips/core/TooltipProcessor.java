@@ -2,6 +2,7 @@ package com.stalemated.customtooltips.core;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.position.PositionStrategyFactory;
 import com.stalemated.customtooltips.core.position.TooltipPositionStrategy;
 import com.stalemated.customtooltips.mixin.client.KeyBindingAccessor;
@@ -21,6 +22,7 @@ public class TooltipProcessor {
 
     public static void processTooltipLines(ItemStack stack, List<Text> lines) {
         if (lines.isEmpty()) return;
+        TooltipDimensionManager.nextTooltipIsItem = true;
 
         if (ConfigManager.getConfig() != null && ConfigManager.getConfig().align_attribute_icons) {
             IconAligner.alignIcons(lines);

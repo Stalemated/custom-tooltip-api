@@ -16,19 +16,28 @@ public class ScrollableTooltipComponent implements TooltipComponent {
     public static final int SCROLLBAR_WIDTH = 6;
     private final int scrollbarHeight;
 
-    public ScrollableTooltipComponent(List<TooltipComponent> components, int maxHeight, TextRenderer textRenderer) {
+    public ScrollableTooltipComponent(List<TooltipComponent> components, List<TooltipComponent> pinned, int maxHeight, TextRenderer textRenderer) {
         this.components = components;
         this.maxHeight = maxHeight;
 
         int height = components.size() == 1 ? -2 : 0;
         for (int i = 0; i < components.size(); i++) {
             TooltipComponent component = components.get(i);
-
             int width = component.getWidth(textRenderer);
             if (width > this.maxWidth) this.maxWidth = width;
-
             height += component.getHeight() + (i == 0 && components.size() > 1 ? 2 : 0);
         }
+        
+        int pinnedWidth = 0;
+        if (pinned != null) {
+            for (TooltipComponent p : pinned) {
+                int w = p.getWidth(textRenderer);
+                if (w > pinnedWidth) pinnedWidth = w;
+            }
+        }
+        
+        this.maxWidth = Math.max(this.maxWidth, pinnedWidth);
+        
         this.totalHeight = height;
         this.scrollbarHeight = this.maxHeight - 4;
         TooltipScrollManager.updateMaxScroll(this.totalHeight - this.scrollbarHeight);

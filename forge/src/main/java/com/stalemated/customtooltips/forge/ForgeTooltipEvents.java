@@ -16,6 +16,13 @@ import net.minecraftforge.fml.common.Mod;
 public class ForgeTooltipEvents {
 
     @SubscribeEvent
+    public static void onGatherComponents(net.minecraftforge.client.event.RenderTooltipEvent.GatherComponents event) {
+        if (com.stalemated.customtooltips.ConfigManager.getConfig().custom_tooltip_dimensions && com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager.isCurrentTooltipItemTooltip) {
+            event.setMaxWidth(Integer.MAX_VALUE);
+        }
+    }
+
+    @SubscribeEvent
     public static void onRenderTooltipColor(RenderTooltipEvent.Color event) {
         TooltipEntry entry = TooltipBackgroundManager.getCurrentEntry();
 
@@ -42,14 +49,12 @@ public class ForgeTooltipEvents {
 
                 event.setBackgroundStart(0x00000000);
                 event.setBackgroundEnd(0x00000000);
-                event.setBorderStart(0x00000000);
-                event.setBorderEnd(0x00000000);
             } else {
                 event.setBackgroundStart(TooltipBackgroundManager.getBackgroundColorStart(event.getBackgroundStart()));
                 event.setBackgroundEnd(TooltipBackgroundManager.getBackgroundColorEnd(event.getBackgroundEnd()));
-                event.setBorderStart(TooltipBackgroundManager.getBorderColorStart(event.getBorderStart()));
-                event.setBorderEnd(TooltipBackgroundManager.getBorderColorEnd(event.getBorderEnd()));
             }
+            event.setBorderStart(TooltipBackgroundManager.getBorderColorStart(event.getBorderStart()));
+            event.setBorderEnd(TooltipBackgroundManager.getBorderColorEnd(event.getBorderEnd()));
         }
     }
 }

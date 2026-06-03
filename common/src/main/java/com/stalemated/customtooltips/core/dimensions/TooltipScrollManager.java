@@ -6,7 +6,7 @@ public class TooltipScrollManager {
     private static int scrollOffset = 0;
     private static int maxScroll = 0;
     private static long lastRenderTime = 0;
-    private static final int maxUnhoveredRenderTimeMs = 50;
+    private static final int maxUnhoveredRenderTimeMs = 250;
 
     public static void updateMaxScroll(int newMaxScroll) {
         long currentTime = System.currentTimeMillis();
