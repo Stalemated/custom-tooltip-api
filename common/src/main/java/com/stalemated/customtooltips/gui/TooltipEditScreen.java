@@ -2,12 +2,12 @@ package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipEntryUpdater;
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdownControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.AdvancedColorControllerBuilder;
 import com.stalemated.customtooltips.gui.controller.builder.ItemOrTagControllerBuilder;
 
+import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
 import com.stalemated.customtooltips.util.CustomBackgroundManager;
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
@@ -17,7 +17,6 @@ import dev.isxander.yacl3.api.ConfigCategory;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.api.controller.*;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
@@ -36,12 +35,7 @@ public class TooltipEditScreen {
         if (previewEntry != null && screen.getTitle().getString().contains("Edit Tooltip")) {
             if (Screen.hasControlDown()) {
                 List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
-
-                TooltipBackgroundManager.setCurrentBackgroundOpacity(previewEntry.backgroundOpacity);
-                TooltipBackgroundManager.setCurrentBorderOpacity(previewEntry.borderOpacity);
-                TooltipBackgroundManager.setCurrentEntry(previewEntry);
-                context.drawTooltip(MinecraftClient.getInstance().textRenderer, previewLines, mouseX, mouseY);
-                TooltipBackgroundManager.clearState();
+                RenderGuiTooltipHelper.renderGuiTooltip(previewEntry, previewLines, context, mouseX, mouseY);
             }
         }
     }

@@ -112,12 +112,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
             boolean isHoveringOverText = mouseX >= textStartX && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
             if (isHoveringOverText) {
-                List<Text> hoverTooltip = new ArrayList<>();
-                if (client.textRenderer.getWidth(targetText) > availableTextWidth) {
-                    hoverTooltip.add(Text.literal(targetText));
-                    hoverTooltip.add(Text.empty());
-                }
-                hoverTooltip.addAll(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
+                List<Text> hoverTooltip = new ArrayList<>(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
                 TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip, this.tooltipEntry);
             }
         }
