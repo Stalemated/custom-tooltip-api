@@ -1,10 +1,12 @@
 package com.stalemated.customtooltips.forge;
 
+import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.CustomTooltipApiClient;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
+import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +19,7 @@ public class ForgeTooltipEvents {
 
     @SubscribeEvent
     public static void onGatherComponents(net.minecraftforge.client.event.RenderTooltipEvent.GatherComponents event) {
-        if (com.stalemated.customtooltips.ConfigManager.getConfig().custom_tooltip_dimensions && com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager.isCurrentTooltipItemTooltip) {
+        if (ConfigManager.getConfig().custom_tooltip_dimensions && TooltipDimensionManager.isCurrentTooltipItemTooltip) {
             event.setMaxWidth(Integer.MAX_VALUE);
         }
     }

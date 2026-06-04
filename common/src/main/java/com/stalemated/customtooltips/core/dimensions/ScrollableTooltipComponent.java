@@ -20,19 +20,18 @@ public class ScrollableTooltipComponent implements TooltipComponent {
         this.components = components;
         this.maxHeight = maxHeight;
 
-        int height = components.size() == 1 ? -2 : 0;
-        for (int i = 0; i < components.size(); i++) {
-            TooltipComponent component = components.get(i);
+        int height = 0;
+        for (TooltipComponent component : components) {
             int width = component.getWidth(textRenderer);
             if (width > this.maxWidth) this.maxWidth = width;
-            height += component.getHeight() + (i == 0 && components.size() > 1 ? 2 : 0);
+            height += component.getHeight();
         }
         
         int pinnedWidth = 0;
         if (pinned != null) {
-            for (TooltipComponent p : pinned) {
-                int w = p.getWidth(textRenderer);
-                if (w > pinnedWidth) pinnedWidth = w;
+            for (TooltipComponent pin : pinned) {
+                int pinWidth = pin.getWidth(textRenderer);
+                if (pinWidth > pinnedWidth) pinnedWidth = pinWidth;
             }
         }
         
@@ -63,10 +62,9 @@ public class ScrollableTooltipComponent implements TooltipComponent {
         context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight);
         int currentY = y - scroll;
 
-        for (int i = 0; i < components.size(); i++) {
-            TooltipComponent component = components.get(i);
+        for (TooltipComponent component : components) {
             component.drawText(textRenderer, x, currentY, matrix, vertexConsumers);
-            currentY += component.getHeight() + (i == 0 && components.size() > 1 ? 2 : 0);
+            currentY += component.getHeight();
         }
 
         vertexConsumers.draw();
@@ -80,10 +78,9 @@ public class ScrollableTooltipComponent implements TooltipComponent {
         context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight);
         int currentY = y - scroll;
 
-        for (int i = 0; i < components.size(); i++) {
-            TooltipComponent component = components.get(i);
+        for (TooltipComponent component : components) {
             component.drawItems(textRenderer, x, currentY, context);
-            currentY += component.getHeight() + (i == 0 && components.size() > 1 ? 2 : 0);
+            currentY += component.getHeight();
         }
 
         context.disableScissor();

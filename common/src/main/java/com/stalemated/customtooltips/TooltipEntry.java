@@ -7,6 +7,7 @@ import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
 import com.stalemated.customtooltips.core.target.TargetMatcher;
 import com.stalemated.customtooltips.core.target.TargetMatcherFactory;
 import com.stalemated.customtooltips.util.ColorUtils;
+import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -264,12 +265,14 @@ public class TooltipEntry {
     }
 
     public int getLineOffset(int size) {
+        if (size == 0) return 0;
         if (acceptsPositiveOffset()) {
-            return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : Math.max(size - 1, 0);
+            return MathUtils.clamp(this.lineOffset, 0, size - 1);
         } else {
-            return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : Math.min(-(size - 1), 0);
+            return MathUtils.clamp(this.lineOffset, -(size - 1), 0);
         }
     }
+
 
     private boolean acceptsPositiveOffset() {
         return this.position == TooltipPosition.TOP ||

@@ -115,7 +115,7 @@ public class TooltipDimensionManager {
 
             void finish() {
                 if (!currentText.isEmpty()) {
-                    result.append(net.minecraft.text.Text.literal(currentText.toString()).setStyle(currentStyle));
+                    result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
                 }
             }
         }

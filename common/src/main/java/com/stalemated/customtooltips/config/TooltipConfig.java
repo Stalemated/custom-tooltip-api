@@ -22,7 +22,7 @@ public class TooltipConfig {
     public List<String> disabled_entries = new ArrayList<>();
 
     @SerialEntry(comment = "If custom Tooltip dimensions are enabled.")
-    public boolean custom_tooltip_dimensions = false;
+    public boolean custom_tooltip_dimensions = true;
 
     @SerialEntry(comment = "Maximum percentage of the Minecraft window allowed as the tooltip height.")
     public int max_height_percentage = 50;
