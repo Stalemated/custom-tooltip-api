@@ -25,10 +25,10 @@ public class TooltipConfig {
     public boolean custom_tooltip_dimensions = false;
 
     @SerialEntry(comment = "Maximum percentage of the Minecraft window allowed as the tooltip height.")
-    public int max_height_percentage = 100;
+    public int max_height_percentage = 50;
 
     @SerialEntry(comment = "Maximum percentage of the Minecraft window allowed as the tooltip width.")
-    public int max_width_percentage = 100;
+    public int max_width_percentage = 50;
 
     @SerialEntry(comment = "If scrolling in different containers is disabled while scrolling on a tooltip. You probably don't want to disable this.")
     public boolean lock_container_scrolling = true;
