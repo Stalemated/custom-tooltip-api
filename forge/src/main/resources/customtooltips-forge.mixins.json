@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "com.stalemated.customtooltips.forge.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "customtooltips-forge.refmap.json",
   "client": [
     "ForgeInGameHudMixin"
   ],

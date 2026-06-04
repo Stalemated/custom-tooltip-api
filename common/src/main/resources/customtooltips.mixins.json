@@ -2,6 +2,7 @@
   "required": true,
   "package": "com.stalemated.customtooltips.mixin.client",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "customtooltips-common.refmap.json",
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",
