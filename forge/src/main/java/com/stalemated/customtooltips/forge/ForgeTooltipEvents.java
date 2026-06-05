@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ForgeTooltipEvents {
 
     @SubscribeEvent
-    public static void onGatherComponents(net.minecraftforge.client.event.RenderTooltipEvent.GatherComponents event) {
+    public static void onGatherComponents(RenderTooltipEvent.GatherComponents event) {
         if (ConfigManager.getConfig().custom_tooltip_dimensions && TooltipDimensionManager.isCurrentTooltipItemTooltip) {
             event.setMaxWidth(Integer.MAX_VALUE);
         }

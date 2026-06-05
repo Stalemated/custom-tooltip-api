@@ -98,65 +98,87 @@ public class TooltipDimensionManager {
         return wrappedComponents;
     }
 
-    public static MutableText preserveStyles(StringVisitable visitable) {
-        MutableText result = Text.empty();
-        class StyleAccumulator {
-            final StringBuilder currentText = new StringBuilder();
-            Style currentStyle = Style.EMPTY;
+    private static class StyleAccumulator {
+        private final MutableText result = Text.empty();
+        private final StringBuilder currentText = new StringBuilder();
+        private Style currentStyle = Style.EMPTY;
 
-            void accept(Style style, String text) {
-                if (!style.equals(currentStyle) && !currentText.isEmpty()) {
-                    result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
-                    currentText.setLength(0);
-                }
-                currentStyle = style;
-                currentText.append(text);
-            }
-
-            void finish() {
-                if (!currentText.isEmpty()) {
-                    result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
-                }
-            }
+        void append(Style style, String text) {
+            flushIfStyleChanged(style);
+            currentText.append(text);
         }
+
+        void append(Style style, int codePoint) {
+            flushIfStyleChanged(style);
+            currentText.appendCodePoint(codePoint);
+        }
+
+        private void flushIfStyleChanged(Style newStyle) {
+            if (!newStyle.equals(currentStyle) && !currentText.isEmpty()) {
+                result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
+                currentText.setLength(0);
+            }
+            currentStyle = newStyle;
+        }
+
+        MutableText build() {
+            if (!currentText.isEmpty()) {
+                result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
+                currentText.setLength(0);
+            }
+            return result;
+        }
+    }
+
+    public static MutableText preserveStyles(StringVisitable visitable) {
         StyleAccumulator acc = new StyleAccumulator();
         visitable.visit((style, string) -> {
-            acc.accept(style, string);
+            acc.append(style, string);
             return Optional.empty();
         }, Style.EMPTY);
-
-        acc.finish();
-        return result;
+        return acc.build();
     }
 
     private static MutableText convertOrderedTextToMutable(OrderedText orderedText) {
-        MutableText result = Text.empty();
-        class StyleAccumulator {
-            final StringBuilder currentText = new StringBuilder();
-            Style currentStyle = Style.EMPTY;
-
-            void accept(Style style, int codePoint) {
-                if (!style.equals(currentStyle) && !currentText.isEmpty()) {
-                    result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
-                    currentText.setLength(0);
-                }
-                currentStyle = style;
-                currentText.appendCodePoint(codePoint);
-            }
-
-            void finish() {
-                if (!currentText.isEmpty()) {
-                    result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
-                }
-            }
-        }
         StyleAccumulator acc = new StyleAccumulator();
         orderedText.accept((index, style, codePoint) -> {
-            acc.accept(style, codePoint);
+            acc.append(style, codePoint);
             return true;
         });
-        acc.finish();
-        return result;
+        return acc.build();
+    }
+
+    public static List<Text> enforceWidthLimit(List<Text> text) {
+        isCurrentTooltipItemTooltip = nextTooltipIsItem;
+        nextTooltipIsItem = false;
+
+        if (!config.custom_tooltip_dimensions || !isCurrentTooltipItemTooltip || text.isEmpty()) {
+            return text;
+        }
+
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        int maxTitleWidth = getScaledTooltipWidth();
+        Text title = text.get(0);
+
+        // Truncate mode
+        if (textRenderer.getWidth(title) > maxTitleWidth) {
+            List<Text> mutableText = new ArrayList<>(text);
+            mutableText.set(0, truncateTitle(title, textRenderer, maxTitleWidth));
+            return mutableText;
+        }
+        return text;
+    }
+
+    private static MutableText truncateTitle(Text title, TextRenderer textRenderer, int maxWidth) {
+        String truncatedIndicator = "...";
+        int indicatorWidth = textRenderer.getWidth(truncatedIndicator);
+        int availableWidth = Math.max(10, maxWidth - indicatorWidth);
+
+        StringVisitable truncated = textRenderer.trimToWidth(title, availableWidth);
+        MutableText rebuilt = preserveStyles(truncated);
+
+        rebuilt.append(Text.literal(truncatedIndicator).setStyle(title.getStyle()));
+        return rebuilt;
     }
 
     private static int calculateTotalHeight(List<TooltipComponent> components) {
@@ -176,6 +198,8 @@ public class TooltipDimensionManager {
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
 
         if (currentTextRenderer != null) {
+            // Wrap mode
+            //pinned = wrapComponents(pinned);
             scrollableContent = wrapComponents(scrollableContent);
         }
 
