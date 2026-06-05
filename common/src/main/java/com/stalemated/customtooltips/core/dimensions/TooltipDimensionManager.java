@@ -30,6 +30,28 @@ public class TooltipDimensionManager {
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
 
+    // Legendary Tooltips compat
+    private static final Class<?> ITEM_MODEL_COMPONENT_CLASS;
+    private static final Class<?> PADDING_COMPONENT_CLASS;
+    private static final Class<?> TITLE_BREAK_COMPONENT_CLASS;
+    static {
+        Class<?> itemModelClass = null;
+        Class<?> paddingClass = null;
+        Class<?> titleBreakClass = null;
+        try {
+            itemModelClass = Class.forName("com.anthonyhilyard.legendarytooltips.tooltip.ItemModelComponent");
+        } catch (ClassNotFoundException ignored) {}
+        try {
+            paddingClass = Class.forName("com.anthonyhilyard.legendarytooltips.tooltip.PaddingComponent");
+        } catch (ClassNotFoundException ignored) {}
+        try {
+            titleBreakClass = Class.forName("com.anthonyhilyard.iceberg.util.Tooltips$TitleBreakComponent");
+        } catch (ClassNotFoundException ignored) {}
+        ITEM_MODEL_COMPONENT_CLASS = itemModelClass;
+        PADDING_COMPONENT_CLASS = paddingClass;
+        TITLE_BREAK_COMPONENT_CLASS = titleBreakClass;
+    }
+
     private static class DimensionCache {
         private final int padding;
         private int lastWindowSize = -1;
@@ -53,8 +75,19 @@ public class TooltipDimensionManager {
         }
     }
 
-    private static List<TooltipComponent> wrapComponents(List<TooltipComponent> components) {
-        int scaledTooltipWidth = getScaledTooltipWidth();
+    private static int getExtraComponentWidth(List<TooltipComponent> components) {
+        if (ITEM_MODEL_COMPONENT_CLASS == null) return 0;
+
+        for (TooltipComponent comp : components) {
+            if (ITEM_MODEL_COMPONENT_CLASS.isInstance(comp)) {
+                return 22;
+            }
+        }
+        return 0;
+    }
+
+    private static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int extraWidth) {
+        int scaledTooltipWidth = getScaledTooltipWidth() + extraWidth;
         List<TooltipComponent> wrappedComponents = new ArrayList<>();
 
         for (TooltipComponent comp : components) {
@@ -193,14 +226,15 @@ public class TooltipDimensionManager {
     public static List<TooltipComponent> enforceHeightLimit(List<TooltipComponent> components) {
         if (components.isEmpty()) return components;
 
+        int extraWidth = getExtraComponentWidth(components);
         int splitIndex = getSplitIndex(components);
         List<TooltipComponent> pinned = new ArrayList<>(components.subList(0, splitIndex));
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
 
         if (currentTextRenderer != null) {
             // Wrap mode
-            //pinned = wrapComponents(pinned);
-            scrollableContent = wrapComponents(scrollableContent);
+            //pinned = wrapComponents(pinned, extraWidth);
+            scrollableContent = wrapComponents(scrollableContent, extraWidth);
         }
 
         int scaledTooltipHeight = getScaledTooltipHeight();
@@ -232,13 +266,18 @@ public class TooltipDimensionManager {
 
     public static int getSplitIndex(List<TooltipComponent> components) {
         int splitIndex = 1;
-        for (int i = 0; i < components.size(); i++) {
-            String className = components.get(i).getClass().getSimpleName();
-            if (className.equals("PaddingComponent") || className.equals("TitleBreakComponent")) {
-                splitIndex = i + 1;
-                break;
+        if (PADDING_COMPONENT_CLASS != null || TITLE_BREAK_COMPONENT_CLASS != null) {
+            for (int i = 0; i < components.size(); i++) {
+                TooltipComponent comp = components.get(i);
+
+                if ((PADDING_COMPONENT_CLASS != null && PADDING_COMPONENT_CLASS.isInstance(comp)) ||
+                        (TITLE_BREAK_COMPONENT_CLASS != null && TITLE_BREAK_COMPONENT_CLASS.isInstance(comp))) {
+                    splitIndex = i + 1;
+                    break;
+                }
             }
         }
+
         return Math.min(splitIndex, components.size());
     }
 
