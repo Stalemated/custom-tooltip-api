@@ -3,6 +3,8 @@ package com.stalemated.customtooltips.gui;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.config.TooltipConfig;
 
+import com.stalemated.customtooltips.core.dimensions.TitleOverflowMode;
+import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
@@ -63,11 +65,24 @@ public class TooltipDimensionsScreen {
                 .controller(TickBoxControllerBuilder::create)
                 .build();
 
+        var titleOverflowMode = Option.<TitleOverflowMode>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_dimensions_screen.title_overflow_mode"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_dimensions_screen.title_overflow_mode.description")))
+                .binding(
+                        TitleOverflowMode.TRUNCATE,
+                        () -> config.title_overflow_mode,
+                        val -> config.title_overflow_mode = val
+                )
+                .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
+                        .formatValue(mode -> Text.translatable("customtooltips.tooltip_dimensions_screen.title_overflow_mode." + mode.name().toLowerCase())))
+                .build();
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_dimensions_screen.category.custom_dimensions"))
                 .option(enableCustomDimensions)
                 .option(maxHeight)
                 .option(maxWidth)
+                .option(titleOverflowMode)
                 .build();
     }
 

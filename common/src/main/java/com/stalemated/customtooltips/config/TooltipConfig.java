@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.config;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.core.dimensions.TitleOverflowMode;
 import com.stalemated.customtooltips.core.sorting.SortMode;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 
@@ -17,6 +18,9 @@ public class TooltipConfig {
 
     @SerialEntry(comment = "Tooltip sorting mode in the config menu. Accepts: CREATION_DATE, NAME_AND_TAG, DISABLED_FIRST")
     public SortMode sort_mode = SortMode.CREATION_DATE;
+
+    @SerialEntry(comment = "How to handle long tooltip titles that exceed the maximum tooltip width. Accepts: TRUNCATE, WRAP, SCROLL")
+    public TitleOverflowMode title_overflow_mode = TitleOverflowMode.TRUNCATE;
 
     @SerialEntry(comment = "List of unique entry Identifiers that have been disabled by the user.")
     public List<String> disabled_entries = new ArrayList<>();
