@@ -2,6 +2,8 @@ package com.stalemated.customtooltips.core.dimensions;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrategyFactory;
+import com.stalemated.customtooltips.util.TooltipTextUtil;
 import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -9,10 +11,8 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.*;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TooltipDimensionManager {
 
@@ -75,6 +75,7 @@ public class TooltipDimensionManager {
         }
     }
 
+    // Legendary Tooltips compat
     private static int getExtraComponentWidth(List<TooltipComponent> components) {
         if (ITEM_MODEL_COMPONENT_CLASS == null) return 0;
 
@@ -84,101 +85,6 @@ public class TooltipDimensionManager {
             }
         }
         return 0;
-    }
-
-    private static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int extraWidth) {
-        int scaledTooltipWidth = getScaledTooltipWidth() + extraWidth;
-        List<TooltipComponent> wrappedComponents = new ArrayList<>();
-
-        for (TooltipComponent comp : components) {
-            boolean wrappedFallback = false;
-
-            if (currentTextRenderer != null) {
-                try {
-                    for (Field field : comp.getClass().getDeclaredFields()) {
-                        field.setAccessible(true);
-                        Object value = field.get(comp);
-
-                        if (value instanceof OrderedText orderedText) {
-                            if (currentTextRenderer.getWidth(orderedText) > scaledTooltipWidth) {
-                                MutableText mutable = convertOrderedTextToMutable(orderedText);
-                                List<OrderedText> wrapped = currentTextRenderer.wrapLines(mutable, scaledTooltipWidth);
-
-                                for (OrderedText w : wrapped) {
-                                    wrappedComponents.add(TooltipComponent.of(w));
-                                }
-                                wrappedFallback = true;
-                                break;
-                            }
-                        } else if (value instanceof StringVisitable visitable) {
-                            if (currentTextRenderer.getWidth(visitable) > scaledTooltipWidth) {
-                                List<OrderedText> wrapped = currentTextRenderer.wrapLines(visitable, scaledTooltipWidth);
-
-                                for (OrderedText w : wrapped) {
-                                    wrappedComponents.add(TooltipComponent.of(w));
-                                }
-                                wrappedFallback = true;
-                                break;
-                            }
-                        }
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-            if (wrappedFallback) continue;
-            wrappedComponents.add(comp);
-        }
-        return wrappedComponents;
-    }
-
-    private static class StyleAccumulator {
-        private final MutableText result = Text.empty();
-        private final StringBuilder currentText = new StringBuilder();
-        private Style currentStyle = Style.EMPTY;
-
-        void append(Style style, String text) {
-            flushIfStyleChanged(style);
-            currentText.append(text);
-        }
-
-        void append(Style style, int codePoint) {
-            flushIfStyleChanged(style);
-            currentText.appendCodePoint(codePoint);
-        }
-
-        private void flushIfStyleChanged(Style newStyle) {
-            if (!newStyle.equals(currentStyle) && !currentText.isEmpty()) {
-                result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
-                currentText.setLength(0);
-            }
-            currentStyle = newStyle;
-        }
-
-        MutableText build() {
-            if (!currentText.isEmpty()) {
-                result.append(Text.literal(currentText.toString()).setStyle(currentStyle));
-                currentText.setLength(0);
-            }
-            return result;
-        }
-    }
-
-    public static MutableText preserveStyles(StringVisitable visitable) {
-        StyleAccumulator acc = new StyleAccumulator();
-        visitable.visit((style, string) -> {
-            acc.append(style, string);
-            return Optional.empty();
-        }, Style.EMPTY);
-        return acc.build();
-    }
-
-    private static MutableText convertOrderedTextToMutable(OrderedText orderedText) {
-        StyleAccumulator acc = new StyleAccumulator();
-        orderedText.accept((index, style, codePoint) -> {
-            acc.append(style, codePoint);
-            return true;
-        });
-        return acc.build();
     }
 
     public static List<Text> enforceWidthLimit(List<Text> text) {
@@ -191,27 +97,8 @@ public class TooltipDimensionManager {
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int maxTitleWidth = getScaledTooltipWidth();
-        Text title = text.get(0);
 
-        // Truncate mode
-        if (textRenderer.getWidth(title) > maxTitleWidth) {
-            List<Text> mutableText = new ArrayList<>(text);
-            mutableText.set(0, truncateTitle(title, textRenderer, maxTitleWidth));
-            return mutableText;
-        }
-        return text;
-    }
-
-    private static MutableText truncateTitle(Text title, TextRenderer textRenderer, int maxWidth) {
-        String truncatedIndicator = "...";
-        int indicatorWidth = textRenderer.getWidth(truncatedIndicator);
-        int availableWidth = Math.max(10, maxWidth - indicatorWidth);
-
-        StringVisitable truncated = textRenderer.trimToWidth(title, availableWidth);
-        MutableText rebuilt = preserveStyles(truncated);
-
-        rebuilt.append(Text.literal(truncatedIndicator).setStyle(title.getStyle()));
-        return rebuilt;
+        return TitleOverflowStrategyFactory.getStrategy().processTextPhase(text, textRenderer, maxTitleWidth);
     }
 
     private static int calculateTotalHeight(List<TooltipComponent> components) {
@@ -232,9 +119,11 @@ public class TooltipDimensionManager {
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
 
         if (currentTextRenderer != null) {
-            // Wrap mode
-            //pinned = wrapComponents(pinned, extraWidth);
-            scrollableContent = wrapComponents(scrollableContent, extraWidth);
+            int scaledTooltipWidth = getScaledTooltipWidth() + extraWidth;
+            // Wrap mode or Truncate mode delegation
+            pinned = TitleOverflowStrategyFactory.getStrategy().processComponentPhase(pinned, currentTextRenderer, scaledTooltipWidth);
+            // Scrollable content is always wrapped
+            scrollableContent = TooltipTextUtil.wrapComponents(scrollableContent, scaledTooltipWidth, currentTextRenderer);
         }
 
         int scaledTooltipHeight = getScaledTooltipHeight();
@@ -264,6 +153,7 @@ public class TooltipDimensionManager {
         return combined;
     }
 
+    // Legendary Tooltips compat
     public static int getSplitIndex(List<TooltipComponent> components) {
         int splitIndex = 1;
         if (PADDING_COMPONENT_CLASS != null || TITLE_BREAK_COMPONENT_CLASS != null) {
