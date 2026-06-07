@@ -144,6 +144,11 @@
   "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions": "Habilitar scroll y dimensiones personalizadas",
   "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions.description": "Permite configurar §6dimensiones máximas personalizadas§r para los tooltips y el uso de §6scroll en tooltips§r.",
   "customtooltips.tooltip_dimensions_screen.category.custom_dimensions": "Configuración de dimensiones personalizadas",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode": "Modo de desbordamiento del título",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.description": "Selecciona el comportamiento si el nombre del objeto sobre el que está el cursos es más largo que el ancho máximo de la Tooltip.\n\n§6Ajuste de línea:§r Ajusta el nombre (lo separa en múltiples líneas)\n§6Truncar:§r Trunca el nombre al ancho máximo de la Tooltip y añade '...' al final.\n§6Desplazar:§r Desplaza suavemente el texto de forma horizontal hacia adelante y hacia atrás para mostrar el nombre completo en una sola línea.",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.wrap": "Ajuste de línea",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.truncate": "Truncar",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.scroll": "Desplazamiento horizontal",
 
   "customtooltips.tooltip_dimensions_screen.category.scrolling": "Configuración de scroll",
   "customtooltips.tooltip_dimensions_screen.lock_container_scrolling": "Habilitar scroll en contenedores",

@@ -144,6 +144,11 @@
   "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions": "Enable custom tooltip dimensions",
   "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions.description": "Enables setting §6custom maximum dimensions§r for tooltips and §6tooltip scrolling§r.",
   "customtooltips.tooltip_dimensions_screen.category.custom_dimensions": "Custom Dimensions Config",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode": "Title Overflow Mode",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.description": "Selects the behavior if the hovered item's name is larger than the maximum width of a Tooltip.\n\n§6Wrap:§r Wraps the name (separates it in multiple lines)\n§6Truncate:§r Truncates the name to the maximum tooltip width and adds '...' at the end.\n§6Scroll:§r Smoothly scrolls the text horizontally forwards and then backwards to show the entire name in a single line.",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.wrap": "Wrap",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.truncate": "Truncate",
+  "customtooltips.tooltip_dimensions_screen.title_overflow_mode.scroll": "Horizontal Scroll",
 
   "customtooltips.tooltip_dimensions_screen.category.scrolling": "Scrolling Config",
   "customtooltips.tooltip_dimensions_screen.lock_container_scrolling": "Lock container scrolling",
