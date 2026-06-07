@@ -11,6 +11,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.*;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class TooltipDimensionManager {
 
     public static boolean nextTooltipIsItem = false;
     public static boolean isCurrentTooltipItemTooltip = false;
+    public static String expectedTitleString = "";
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
@@ -92,13 +94,16 @@ public class TooltipDimensionManager {
         nextTooltipIsItem = false;
 
         if (!config.custom_tooltip_dimensions || !isCurrentTooltipItemTooltip || text.isEmpty()) {
+            expectedTitleString = "";
             return text;
         }
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int maxTitleWidth = getScaledTooltipWidth();
 
-        return TitleOverflowStrategyFactory.getStrategy().processTextPhase(text, textRenderer, maxTitleWidth);
+        List<Text> processed = TitleOverflowStrategyFactory.getStrategy().processTextPhase(text, textRenderer, maxTitleWidth);
+        expectedTitleString = "";
+        return processed;
     }
 
     private static int calculateTotalHeight(List<TooltipComponent> components) {
@@ -166,9 +171,42 @@ public class TooltipDimensionManager {
                     break;
                 }
             }
+            return Math.min(splitIndex, components.size());
+        }
+
+        // Vanilla Forge logic
+        if (expectedTitleString != null && !expectedTitleString.isEmpty()) {
+            StringBuilder accumulated = new StringBuilder();
+            for (int i = 0; i < components.size(); i++) {
+                accumulated.append(getComponentString(components.get(i)).replace(" ", ""));
+                if (accumulated.length() >= expectedTitleString.length()) {
+                    splitIndex = i + 1;
+                    break;
+                }
+            }
         }
 
         return Math.min(splitIndex, components.size());
+    }
+
+    private static String getComponentString(TooltipComponent comp) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (Field field : comp.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                Object value = field.get(comp);
+                if (value instanceof OrderedText orderedText) {
+                    orderedText.accept((index, style, codePoint) -> {
+                        sb.appendCodePoint(codePoint);
+                        return true;
+                    });
+                } else if (value instanceof StringVisitable visitable) {
+                    sb.append(visitable.getString());
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return sb.toString();
     }
 
     public static void setState(DrawContext context, TextRenderer textRenderer) {
