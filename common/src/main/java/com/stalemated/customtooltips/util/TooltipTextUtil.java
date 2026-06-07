@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TooltipTextUtil {
+    public static boolean isHandlingCustomWrap = false;
 
     private static class StyleAccumulator {
         private final MutableText result = Text.empty();
@@ -80,22 +81,11 @@ public class TooltipTextUtil {
                         if (value instanceof OrderedText orderedText) {
                             if (textRenderer.getWidth(orderedText) > targetWidth) {
                                 MutableText mutable = convertOrderedTextToMutable(orderedText);
-                                List<OrderedText> wrapped = textRenderer.wrapLines(mutable, targetWidth);
-
-                                for (OrderedText w : wrapped) {
-                                    wrappedComponents.add(TooltipComponent.of(w));
-                                }
-                                wrappedFallback = true;
-                                break;
+                                wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, mutable);
                             }
                         } else if (value instanceof StringVisitable visitable) {
                             if (textRenderer.getWidth(visitable) > targetWidth) {
-                                List<OrderedText> wrapped = textRenderer.wrapLines(visitable, targetWidth);
-
-                                for (OrderedText w : wrapped) {
-                                    wrappedComponents.add(TooltipComponent.of(w));
-                                }
-                                wrappedFallback = true;
+                                wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, visitable);
                                 break;
                             }
                         }
@@ -107,5 +97,16 @@ public class TooltipTextUtil {
             wrappedComponents.add(comp);
         }
         return wrappedComponents;
+    }
+
+    public static boolean handleCustomWrap(int targetWidth, TextRenderer textRenderer, List<TooltipComponent> wrappedComponents, StringVisitable visitable) {
+        isHandlingCustomWrap = true;
+        List<OrderedText> wrapped = textRenderer.wrapLines(visitable, targetWidth);
+        isHandlingCustomWrap = false;
+
+        for (OrderedText w : wrapped) {
+            wrappedComponents.add(TooltipComponent.of(w));
+        }
+        return true;
     }
 }

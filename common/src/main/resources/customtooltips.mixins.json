@@ -8,7 +8,8 @@
     "KeyBindingAccessor",
     "StringControllerElementMixin",
     "TextFieldWidgetMixin",
-    "MouseMixin"
+    "MouseMixin",
+    "TextHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
