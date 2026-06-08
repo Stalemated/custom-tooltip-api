@@ -20,14 +20,8 @@ public class ScrollingTextRenderer {
 
         if (textWidth > availableWidth) {
             int overflowWidth = textWidth - availableWidth;
-            double speed = SCROLL_SPEED_PIXELS_PER_SECOND / 1000.0;
-            long travelTime = Math.max(1, (long) (overflowWidth / speed));
-            long halfCycle = travelTime + SCROLL_PAUSE_MS;
-            long totalCycle = 2 * halfCycle;
-            long cycleTime = (System.currentTimeMillis() - this.startTime) % totalCycle;
-
-            double progress = getProgress(cycleTime, halfCycle, travelTime);
-            int scrollOffset = (int) (progress * overflowWidth);
+            long elapsedTime = System.currentTimeMillis() - this.startTime;
+            int scrollOffset = ScrollMathUtil.calculateScrollOffset(overflowWidth, SCROLL_SPEED_PIXELS_PER_SECOND, SCROLL_PAUSE_MS, elapsedTime);
 
             context.drawTextWithShadow(textRenderer, text, x - scrollOffset, y, isDisabled ? 0xAAAAAA : 0xFFFFFF);
         } else {
@@ -35,10 +29,5 @@ public class ScrollingTextRenderer {
         }
     }
 
-    private double getProgress(long cycleTime, long halfCycle, long travelTime) {
-        if (cycleTime < SCROLL_PAUSE_MS) return 0.0; // Start pause
-        if (cycleTime < halfCycle) return (double) (cycleTime - SCROLL_PAUSE_MS) / travelTime; // Moving right
-        if (cycleTime < halfCycle + SCROLL_PAUSE_MS) return 1.0; // End pause
-        return 1.0 - ((double) (cycleTime - (halfCycle + SCROLL_PAUSE_MS)) / travelTime); // Moving left
-    }
+
 }

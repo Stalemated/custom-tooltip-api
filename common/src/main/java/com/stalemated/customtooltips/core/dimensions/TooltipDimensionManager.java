@@ -28,6 +28,7 @@ public class TooltipDimensionManager {
     public static boolean nextTooltipIsItem = false;
     public static boolean isCurrentTooltipItemTooltip = false;
     public static String expectedTitleString = "";
+    public static List<TooltipComponent> componentList;
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
@@ -78,7 +79,7 @@ public class TooltipDimensionManager {
     }
 
     // Legendary Tooltips compat
-    private static int getExtraComponentWidth(List<TooltipComponent> components) {
+    public static int getExtraComponentWidth(List<TooltipComponent> components) {
         if (ITEM_MODEL_COMPONENT_CLASS == null) return 0;
 
         for (TooltipComponent comp : components) {
@@ -116,6 +117,7 @@ public class TooltipDimensionManager {
     }
 
     public static List<TooltipComponent> enforceHeightLimit(List<TooltipComponent> components) {
+        componentList = components;
         if (components.isEmpty()) return components;
 
         int extraWidth = getExtraComponentWidth(components);
