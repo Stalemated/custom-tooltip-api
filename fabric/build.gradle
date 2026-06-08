@@ -44,6 +44,11 @@ dependencies {
     // Iceberg (compat)
     modCompileOnly "curse.maven:iceberg-fabric-539382:5838145"
 
+    // Tierify (compat)
+    modCompileOnly "curse.maven:tierify-974356:5803071"
+    // Necronomicon API (compat)
+    modCompileOnly "maven.modrinth:necronomicon:1.6.0+1.20.1-fabric"
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }
