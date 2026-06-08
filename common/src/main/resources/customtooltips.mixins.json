@@ -9,7 +9,8 @@
     "StringControllerElementMixin",
     "TextFieldWidgetMixin",
     "MouseMixin",
-    "TextHandlerMixin"
+    "TextHandlerMixin",
+    "compat.iceberg.IcebergTooltipsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

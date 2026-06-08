@@ -14,6 +14,9 @@ import net.minecraft.text.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TooltipDimensionManager {
 
@@ -28,10 +31,11 @@ public class TooltipDimensionManager {
     public static boolean nextTooltipIsItem = false;
     public static boolean isCurrentTooltipItemTooltip = false;
     public static String expectedTitleString = "";
-    public static List<TooltipComponent> componentList;
+    public static List<TooltipComponent> titleComponentList;
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
+    private static final Map<Class<?>, Optional<Field>> TEXT_FIELD_CACHE = new ConcurrentHashMap<>();
 
     // Legendary Tooltips compat
     private static final Class<?> ITEM_MODEL_COMPONENT_CLASS;
@@ -118,12 +122,12 @@ public class TooltipDimensionManager {
     }
 
     public static List<TooltipComponent> enforceHeightLimit(List<TooltipComponent> components) {
-        componentList = components;
         if (components.isEmpty()) return components;
 
         int splitIndex = getSplitIndex(components);
         List<TooltipComponent> pinned = new ArrayList<>(components.subList(0, splitIndex));
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
+        titleComponentList = pinned;
 
         if (currentTextRenderer != null) {
             int scaledTooltipWidth = getScaledTooltipWidth();
@@ -193,9 +197,10 @@ public class TooltipDimensionManager {
     private static String getComponentString(TooltipComponent comp) {
         StringBuilder sb = new StringBuilder();
         try {
-            for (Field field : comp.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                Object value = field.get(comp);
+            Optional<Field> optField = getCachedTextField(comp, TEXT_FIELD_CACHE);
+
+            if (optField.isPresent()) {
+                Object value = optField.get().get(comp);
                 if (value instanceof OrderedText orderedText) {
                     orderedText.accept((index, style, codePoint) -> {
                         sb.appendCodePoint(codePoint);
@@ -208,6 +213,21 @@ public class TooltipDimensionManager {
         } catch (Exception ignored) {
         }
         return sb.toString();
+    }
+
+    public static Optional<Field> getCachedTextField(TooltipComponent comp, Map<Class<?>, Optional<Field>> textFieldCache) {
+        Class<?> compClass = comp.getClass();
+
+        return textFieldCache.computeIfAbsent(compClass, clazz -> {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (OrderedText.class.isAssignableFrom(field.getType()) || StringVisitable.class.isAssignableFrom(field.getType())) {
+
+                    field.setAccessible(true);
+                    return Optional.of(field);
+                }
+            }
+            return Optional.empty();
+        });
     }
 
     public static void setState(DrawContext context, TextRenderer textRenderer) {

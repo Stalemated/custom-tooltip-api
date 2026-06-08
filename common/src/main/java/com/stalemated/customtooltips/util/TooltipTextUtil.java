@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.util;
 
+import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.MutableText;
@@ -12,9 +13,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TooltipTextUtil {
     public static boolean isHandlingCustomWrap = false;
+
+    private static final Map<Class<?>, Optional<Field>> TEXT_FIELD_CACHE = new ConcurrentHashMap<>();
 
     private static class StyleAccumulator {
         private final MutableText result = Text.empty();
@@ -74,9 +79,10 @@ public class TooltipTextUtil {
 
             if (textRenderer != null) {
                 try {
-                    for (Field field : comp.getClass().getDeclaredFields()) {
-                        field.setAccessible(true);
-                        Object value = field.get(comp);
+                    Optional<Field> optField = TooltipDimensionManager.getCachedTextField(comp, TEXT_FIELD_CACHE);
+
+                    if (optField.isPresent()) {
+                        Object value = optField.get().get(comp);
 
                         if (value instanceof OrderedText orderedText) {
                             if (textRenderer.getWidth(orderedText) > targetWidth) {
@@ -86,7 +92,6 @@ public class TooltipTextUtil {
                         } else if (value instanceof StringVisitable visitable) {
                             if (textRenderer.getWidth(visitable) > targetWidth) {
                                 wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, visitable);
-                                break;
                             }
                         }
                     }

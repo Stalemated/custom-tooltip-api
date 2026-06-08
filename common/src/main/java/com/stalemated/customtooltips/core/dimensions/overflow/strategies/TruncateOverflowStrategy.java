@@ -38,7 +38,7 @@ public class TruncateOverflowStrategy implements TitleOverflowStrategy {
     private MutableText truncateTitle(Text title, TextRenderer textRenderer, int maxWidth) {
         String truncatedIndicator = "...";
         int indicatorWidth = textRenderer.getWidth(truncatedIndicator);
-        int availableWidth = Math.max(10, maxWidth - indicatorWidth - TooltipDimensionManager.getExtraComponentWidth(TooltipDimensionManager.componentList));
+        int availableWidth = Math.max(10, maxWidth - indicatorWidth - TooltipDimensionManager.getExtraComponentWidth(TooltipDimensionManager.titleComponentList));
 
         StringVisitable truncated = textRenderer.trimToWidth(title, availableWidth);
         MutableText rebuilt = TooltipTextUtil.preserveStyles(truncated);

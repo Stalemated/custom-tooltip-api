@@ -22,7 +22,7 @@ public class ScrollingTitleTooltipComponent implements TooltipComponent {
 
     @Override
     public int getHeight() {
-        return 9;
+        return 10;
     }
 
     @Override
@@ -46,12 +46,15 @@ public class ScrollingTitleTooltipComponent implements TooltipComponent {
 
         vertexConsumers.draw();
 
+        Matrix4f translatedMatrix = new Matrix4f(matrix);
+        translatedMatrix.translate(0, 0, 400);
+
         DrawContext context = TooltipDimensionManager.currentContext;
         if (context != null) {
-            context.enableScissor(x + TooltipDimensionManager.getExtraComponentWidth(TooltipDimensionManager.componentList), y, x + this.maxTitleWidth, y + 9);
+            context.enableScissor(x + TooltipDimensionManager.getExtraComponentWidth(TooltipDimensionManager.titleComponentList), y, x + this.maxTitleWidth, y + 10);
         }
 
-        textRenderer.draw(this.text, (float) (x - scrollOffset), (float) y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+        textRenderer.draw(this.text, (float) (x - scrollOffset), (float) y, -1, true, translatedMatrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
         vertexConsumers.draw();
 
         if (context != null) {
