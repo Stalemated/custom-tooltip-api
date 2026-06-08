@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(TextHandler.class)
-public class TextHandlerMixin {
+public abstract class TextHandlerMixin {
 
     @ModifyVariable(method = "wrapLines(Lnet/minecraft/text/StringVisitable;ILnet/minecraft/text/Style;)Ljava/util/List;", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private int customtooltips$disableAutoWrapVisitable(int maxWidth) {

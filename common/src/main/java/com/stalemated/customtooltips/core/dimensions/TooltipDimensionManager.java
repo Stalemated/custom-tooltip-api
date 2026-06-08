@@ -22,7 +22,7 @@ public class TooltipDimensionManager {
     private static final TooltipConfig config = ConfigManager.getConfig();
     private static final int MIN_TOOLTIP_HEIGHT = 24;
     private static final int MIN_TOOLTIP_WIDTH = 48;
-    private static final int TOOLTIP_PADDING_X = 8;
+    private static final int TOOLTIP_PADDING_X = 16;
     private static final int TOOLTIP_PADDING_Y = 4;
 
     public static boolean nextTooltipIsItem = false;
@@ -72,7 +72,8 @@ public class TooltipDimensionManager {
                 this.lastWindowSize = currentWindowSize;
                 this.lastConfigPercent = currentConfigPercent;
                 int maxAllowedSize = currentWindowSize - padding;
-                this.cachedSize = MathUtils.clamp(maxAllowedSize * currentConfigPercent / 100, minSideLength, maxAllowedSize);
+                int safePercent = MathUtils.clamp(currentConfigPercent, 1, 100);
+                this.cachedSize = MathUtils.clamp(maxAllowedSize * safePercent / 100, minSideLength, maxAllowedSize);
             }
             return this.cachedSize;
         }
@@ -120,14 +121,12 @@ public class TooltipDimensionManager {
         componentList = components;
         if (components.isEmpty()) return components;
 
-        int extraWidth = getExtraComponentWidth(components);
         int splitIndex = getSplitIndex(components);
         List<TooltipComponent> pinned = new ArrayList<>(components.subList(0, splitIndex));
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
 
         if (currentTextRenderer != null) {
-            int scaledTooltipWidth = getScaledTooltipWidth() + extraWidth;
-            // Wrap mode or Truncate mode delegation
+            int scaledTooltipWidth = getScaledTooltipWidth();
             pinned = TitleOverflowStrategyFactory.getStrategy().processComponentPhase(pinned, currentTextRenderer, scaledTooltipWidth);
             // Scrollable content is always wrapped
             scrollableContent = TooltipTextUtil.wrapComponents(scrollableContent, scaledTooltipWidth, currentTextRenderer);
