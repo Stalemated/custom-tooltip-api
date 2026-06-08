@@ -12,4 +12,6 @@ public interface PlatformHelper {
     Path getConfigDir();
 
     Path getGameDir();
+
+    boolean isModLoaded(String modId);
 }

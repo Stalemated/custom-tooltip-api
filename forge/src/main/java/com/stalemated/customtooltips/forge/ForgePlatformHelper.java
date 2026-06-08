@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.forge;
 
 import com.stalemated.customtooltips.util.PlatformHelper;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
@@ -14,5 +15,10 @@ public class ForgePlatformHelper implements PlatformHelper {
     @Override
     public Path getGameDir() {
         return FMLPaths.GAMEDIR.get();
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return ModList.get().isLoaded(modId);
     }
 }
