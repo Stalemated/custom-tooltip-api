@@ -23,7 +23,7 @@ public class ForgeTooltipEvents {
         if (ConfigManager.getConfig().custom_tooltip_dimensions && TooltipDimensionManager.isCurrentTooltipItemTooltip) {
             event.setMaxWidth(-1);
             
-            if (!ModList.get().isLoaded("legendarytooltips")) {
+            if (!ModList.get().isLoaded("iceberg")) {
                 if (!event.getTooltipElements().isEmpty()) {
                     event.getTooltipElements().get(0).ifLeft(visitable -> 
                         TooltipDimensionManager.expectedTitleString = visitable.getString().replace(" ", "")

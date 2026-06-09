@@ -148,11 +148,20 @@ public class TooltipEntry {
     public List<Text> getCachedStaticText() { return this.cachedStaticText; }
     public void setCachedStaticText(List<Text> text) { this.cachedStaticText = text; }
 
-    public boolean hasCustomBorder() { return !this.borderColors.isEmpty(); }
+    public boolean hasCustomBorder() {
+        return !this.borderColors.isEmpty() && !List.of(this.parsedBorderColorStart, this.parsedBorderColorEnd).equals(DEFAULT_BORDER_COLORS) ||
+                this.borderOpacity != DEFAULT_OPACITY;
+    }
     public int getParsedBorderColorStart() { return this.parsedBorderColorStart; }
     public int getParsedBorderColorEnd() { return this.parsedBorderColorEnd; }
 
-    public boolean hasCustomBackground() { return !this.backgroundColors.isEmpty(); }
+    public boolean hasCustomBackground() {
+        return this.backgroundOpacity != DEFAULT_OPACITY ||
+                !this.backgroundColors.isEmpty() && this.parsedBackgroundColorStart != DEFAULT_BACKGROUND_COLORS.get(0) && this.backgroundType == BackgroundType.SOLID ||
+                !this.backgroundColors.isEmpty() && !List.of(this.parsedBackgroundColorStart, this.parsedBackgroundColorEnd).equals(DEFAULT_BACKGROUND_COLORS) && this.backgroundType == BackgroundType.GRADIENT ||
+                this.backgroundType == BackgroundType.TEXTURE && !this.backgroundTexture.isEmpty() ||
+                this.backgroundType == BackgroundType.SIMPLE_TEXTURE && !this.backgroundTexture.isEmpty();
+    }
     public int getParsedBackgroundColorStart() { return this.parsedBackgroundColorStart; }
     public int getParsedBackgroundColorEnd() { return this.parsedBackgroundColorEnd; }
 
