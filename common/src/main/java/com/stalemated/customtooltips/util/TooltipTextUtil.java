@@ -71,6 +71,17 @@ public class TooltipTextUtil {
         return acc.build();
     }
 
+    public static Optional<Object> getExtractedTextValue(TooltipComponent comp) {
+        try {
+            Optional<Field> optField = TooltipDimensionManager.getCachedTextField(comp, TEXT_FIELD_CACHE);
+            if (optField.isPresent()) {
+                return Optional.ofNullable(optField.get().get(comp));
+            }
+        } catch (Exception ignored) {
+        }
+        return Optional.empty();
+    }
+
     public static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int targetWidth, TextRenderer textRenderer) {
         List<TooltipComponent> wrappedComponents = new ArrayList<>();
 
@@ -78,24 +89,21 @@ public class TooltipTextUtil {
             boolean wrappedFallback = false;
 
             if (textRenderer != null) {
-                try {
-                    Optional<Field> optField = TooltipDimensionManager.getCachedTextField(comp, TEXT_FIELD_CACHE);
+                Optional<Object> extracted = getExtractedTextValue(comp);
 
-                    if (optField.isPresent()) {
-                        Object value = optField.get().get(comp);
+                if (extracted.isPresent()) {
+                    Object value = extracted.get();
 
-                        if (value instanceof OrderedText orderedText) {
-                            if (textRenderer.getWidth(orderedText) > targetWidth) {
-                                MutableText mutable = convertOrderedTextToMutable(orderedText);
-                                wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, mutable);
-                            }
-                        } else if (value instanceof StringVisitable visitable) {
-                            if (textRenderer.getWidth(visitable) > targetWidth) {
-                                wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, visitable);
-                            }
+                    if (value instanceof OrderedText orderedText) {
+                        if (textRenderer.getWidth(orderedText) > targetWidth) {
+                            MutableText mutable = convertOrderedTextToMutable(orderedText);
+                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, mutable);
+                        }
+                    } else if (value instanceof StringVisitable visitable) {
+                        if (textRenderer.getWidth(visitable) > targetWidth) {
+                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, visitable);
                         }
                     }
-                } catch (Exception ignored) {
                 }
             }
             if (wrappedFallback) continue;

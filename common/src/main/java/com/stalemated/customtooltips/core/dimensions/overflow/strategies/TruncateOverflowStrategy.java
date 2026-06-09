@@ -6,11 +6,13 @@ import com.stalemated.customtooltips.util.TooltipTextUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TruncateOverflowStrategy implements TitleOverflowStrategy {
 
@@ -32,6 +34,32 @@ public class TruncateOverflowStrategy implements TitleOverflowStrategy {
 
     @Override
     public List<TooltipComponent> processComponentPhase(List<TooltipComponent> components, TextRenderer textRenderer, int maxTitleWidth) {
+        if (components.isEmpty() || textRenderer == null) {
+            return components;
+        }
+
+        TooltipComponent titleComponent = components.get(0);
+        Optional<Object> extracted = TooltipTextUtil.getExtractedTextValue(titleComponent);
+
+        if (extracted.isPresent()) {
+            Object value = extracted.get();
+            if (value instanceof OrderedText orderedText) {
+                if (textRenderer.getWidth(orderedText) > maxTitleWidth) {
+                    MutableText mutable = TooltipTextUtil.convertOrderedTextToMutable(orderedText);
+                    List<TooltipComponent> mutableComponents = new ArrayList<>(components);
+                    mutableComponents.set(0, TooltipComponent.of(truncateTitle(mutable, textRenderer, maxTitleWidth).asOrderedText()));
+                    return mutableComponents;
+                }
+            } else if (value instanceof StringVisitable visitable) {
+                if (textRenderer.getWidth(visitable) > maxTitleWidth) {
+                    MutableText mutable = TooltipTextUtil.preserveStyles(visitable);
+                    List<TooltipComponent> mutableComponents = new ArrayList<>(components);
+                    mutableComponents.set(0, TooltipComponent.of(truncateTitle(mutable, textRenderer, maxTitleWidth).asOrderedText()));
+                    return mutableComponents;
+                }
+            }
+        }
+
         return components;
     }
 
