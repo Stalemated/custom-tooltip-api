@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.core.dimensions.overflow.strategies;
+package com.stalemated.customtooltips.core.dimensions.overflow.components;
 
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.gui.widget.ScrollMathUtil;

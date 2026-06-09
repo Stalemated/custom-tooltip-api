@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.core.dimensions.overflow.strategies;
 
 import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrategy;
+import com.stalemated.customtooltips.core.dimensions.overflow.components.ScrollingTitleTooltipComponent;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.OrderedText;

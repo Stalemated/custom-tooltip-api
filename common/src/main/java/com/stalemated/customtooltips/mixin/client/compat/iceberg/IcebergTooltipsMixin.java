@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.mixin.client.compat.iceberg;
 
-import com.stalemated.customtooltips.core.dimensions.overflow.strategies.ScrollingTitleTooltipComponent;
+import com.stalemated.customtooltips.core.dimensions.overflow.components.ScrollingTitleTooltipComponent;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import org.spongepowered.asm.mixin.Mixin;

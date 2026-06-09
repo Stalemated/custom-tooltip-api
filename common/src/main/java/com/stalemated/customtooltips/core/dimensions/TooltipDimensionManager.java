@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.core.dimensions;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrategyFactory;
+import com.stalemated.customtooltips.core.dimensions.overflow.components.ScrollableTooltipComponent;
 import com.stalemated.customtooltips.util.PlatformHelper;
 import com.stalemated.customtooltips.util.TooltipTextUtil;
 import com.stalemated.customtooltips.util.MathUtils;

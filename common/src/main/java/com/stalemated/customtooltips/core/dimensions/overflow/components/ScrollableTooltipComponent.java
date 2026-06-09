@@ -1,5 +1,7 @@
-package com.stalemated.customtooltips.core.dimensions;
+package com.stalemated.customtooltips.core.dimensions.overflow.components;
 
+import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
+import com.stalemated.customtooltips.core.dimensions.TooltipScrollManager;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
