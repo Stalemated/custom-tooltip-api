@@ -33,7 +33,7 @@ public class TooltipDimensionManager {
     public static boolean nextTooltipIsItem = false;
     public static boolean isCurrentTooltipItemTooltip = false;
     public static String expectedTitleString = "";
-    public static List<TooltipComponent> titleComponentList;
+    public static List<TooltipComponent> titleComponentList = new ArrayList<>();
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
