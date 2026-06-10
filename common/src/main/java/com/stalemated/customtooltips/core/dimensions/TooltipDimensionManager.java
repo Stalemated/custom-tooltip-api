@@ -13,7 +13,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.*;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +36,6 @@ public class TooltipDimensionManager {
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
-    private static final Map<Class<?>, Optional<Field>> TEXT_FIELD_CACHE = new ConcurrentHashMap<>();
-
     // Compat
     private static final boolean HAS_LEGENDARY_TOOLTIPS = PlatformHelper.INSTANCE.isModLoaded("legendarytooltips");
     private static final boolean HAS_ICEBERG = PlatformHelper.INSTANCE.isModLoaded("iceberg");
@@ -78,7 +75,7 @@ public class TooltipDimensionManager {
 
         for (TooltipComponent comp : components) {
             if ("ItemModelComponent".equals(getCachedClassName(comp.getClass()))) {
-                return 22;
+                return 24;
             }
         }
         return 0;
@@ -186,38 +183,19 @@ public class TooltipDimensionManager {
 
     private static String getComponentString(TooltipComponent comp) {
         StringBuilder sb = new StringBuilder();
-        try {
-            Optional<Field> optField = getCachedTextField(comp, TEXT_FIELD_CACHE);
-
-            if (optField.isPresent()) {
-                Object value = optField.get().get(comp);
-                if (value instanceof OrderedText orderedText) {
-                    orderedText.accept((index, style, codePoint) -> {
-                        sb.appendCodePoint(codePoint);
-                        return true;
-                    });
-                } else if (value instanceof StringVisitable visitable) {
-                    sb.append(visitable.getString());
-                }
+        Optional<Object> extracted = TooltipTextUtil.getExtractedTextValue(comp);
+        if (extracted.isPresent()) {
+            Object value = extracted.get();
+            if (value instanceof OrderedText orderedText) {
+                orderedText.accept((index, style, codePoint) -> {
+                    sb.appendCodePoint(codePoint);
+                    return true;
+                });
+            } else if (value instanceof StringVisitable visitable) {
+                sb.append(visitable.getString());
             }
-        } catch (Exception ignored) {
         }
         return sb.toString();
-    }
-
-    public static Optional<Field> getCachedTextField(TooltipComponent comp, Map<Class<?>, Optional<Field>> textFieldCache) {
-        Class<?> compClass = comp.getClass();
-
-        return textFieldCache.computeIfAbsent(compClass, clazz -> {
-            for (Field field : clazz.getDeclaredFields()) {
-                if (OrderedText.class.isAssignableFrom(field.getType()) || StringVisitable.class.isAssignableFrom(field.getType())) {
-
-                    field.setAccessible(true);
-                    return Optional.of(field);
-                }
-            }
-            return Optional.empty();
-        });
     }
 
     public static void setState(DrawContext context, TextRenderer textRenderer) {

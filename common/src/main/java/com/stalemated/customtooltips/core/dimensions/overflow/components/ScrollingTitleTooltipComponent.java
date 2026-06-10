@@ -4,18 +4,20 @@ import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.gui.widget.ScrollMathUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.tooltip.OrderedTextTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.text.OrderedText;
 import org.joml.Matrix4f;
 
-public class ScrollingTitleTooltipComponent implements TooltipComponent {
+public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent implements TooltipComponent {
     private final OrderedText text;
     private final int maxTitleWidth;
     private static final double SCROLL_SPEED = 25.0;
     private static final long PAUSE_MS = 2000L;
 
     public ScrollingTitleTooltipComponent(OrderedText text, int maxTitleWidth) {
+        super(text);
         this.text = text;
         this.maxTitleWidth = maxTitleWidth;
     }

@@ -6,6 +6,7 @@ import com.anthonyhilyard.legendarytooltips.tooltip.PaddingComponent;
 import com.anthonyhilyard.legendarytooltips.tooltip.TooltipDecor;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrategyFactory;
+import com.stalemated.customtooltips.core.dimensions.overflow.components.IndentedTextTooltipComponent;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -81,7 +82,7 @@ public class LegendaryTooltipsCompatHelper {
 
                 components.set(0, wrapper);
 
-                PaddingComponent padding = new PaddingComponent(3);
+                PaddingComponent padding = new PaddingComponent(6);
                 components.add(1, padding);
             }
         }
@@ -95,6 +96,10 @@ public class LegendaryTooltipsCompatHelper {
 
     private record LegendaryWrapperComponent(TooltipComponent modelComponent, List<TooltipComponent> titleComponents) implements TooltipComponent {
 
+        private int getExtraWidth() {
+            return 22;
+        }
+
         private int getTitleHeight() {
             int totalTitleHeight = 0;
             if (titleComponents != null) {
@@ -105,9 +110,17 @@ public class LegendaryTooltipsCompatHelper {
             return totalTitleHeight;
         }
 
+        private int getFirstLineHeight() {
+            if (titleComponents != null && !titleComponents.isEmpty()) {
+                return titleComponents.get(0).getHeight();
+            }
+            return 10;
+        }
+
         @Override
         public int getHeight() {
-            return Math.max(22, getTitleHeight());
+            int yOffset = Math.max(0, (getExtraWidth() - getFirstLineHeight()) / 2);
+            return Math.max(22, yOffset + getTitleHeight());
         }
 
         @Override
@@ -115,20 +128,28 @@ public class LegendaryTooltipsCompatHelper {
             int maxTitleWidth = 0;
             if (titleComponents != null) {
                 for (TooltipComponent component : titleComponents) {
-                    maxTitleWidth = Math.max(maxTitleWidth, component.getWidth(textRenderer));
+                    int compWidth = component.getWidth(textRenderer);
+                    if (!(component instanceof IndentedTextTooltipComponent)) {
+                        compWidth += getExtraWidth() + 2;
+                    }
+                    maxTitleWidth = Math.max(maxTitleWidth, compWidth);
                 }
             }
-            return 22 + maxTitleWidth + 2;
+            return maxTitleWidth;
         }
 
         @Override
         public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
-            int totalTitleHeight = getTitleHeight();
-            int currentY = y + Math.max(0, (22 - totalTitleHeight) / 2);
+            int yOffset = Math.max(0, (getExtraWidth() - getFirstLineHeight()) / 2);
+            int currentY = y + yOffset;
 
             if (titleComponents != null) {
                 for (TooltipComponent component : titleComponents) {
-                    component.drawText(textRenderer, x + 24, currentY, matrix, vertexConsumers);
+                    int drawX = x;
+                    if (!(component instanceof IndentedTextTooltipComponent)) {
+                        drawX += getExtraWidth() + 2;
+                    }
+                    component.drawText(textRenderer, drawX, currentY, matrix, vertexConsumers);
                     currentY += component.getHeight();
                 }
             }
@@ -138,12 +159,16 @@ public class LegendaryTooltipsCompatHelper {
         public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
             modelComponent.drawItems(textRenderer, x, y, context);
 
-            int totalTitleHeight = getTitleHeight();
-            int currentY = y + Math.max(0, (22 - totalTitleHeight) / 2);
+            int yOffset = Math.max(0, (getExtraWidth() - getFirstLineHeight()) / 2);
+            int currentY = y + yOffset;
 
             if (titleComponents != null) {
                 for (TooltipComponent component : titleComponents) {
-                    component.drawItems(textRenderer, x + 24, currentY, context);
+                    int drawX = x;
+                    if (!(component instanceof IndentedTextTooltipComponent)) {
+                        drawX += getExtraWidth() + 2;
+                    }
+                    component.drawItems(textRenderer, drawX, currentY, context);
                     currentY += component.getHeight();
                 }
             }

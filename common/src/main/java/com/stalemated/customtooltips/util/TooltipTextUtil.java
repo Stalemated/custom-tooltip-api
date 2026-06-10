@@ -1,6 +1,8 @@
 package com.stalemated.customtooltips.util;
 
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
+import com.stalemated.customtooltips.core.dimensions.overflow.components.IndentedTextTooltipComponent;
+import com.stalemated.customtooltips.mixin.client.OrderedTextTooltipComponentAccessor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.MutableText;
@@ -9,17 +11,12 @@ import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class TooltipTextUtil {
     public static boolean isHandlingCustomWrap = false;
-
-    private static final Map<Class<?>, Optional<Field>> TEXT_FIELD_CACHE = new ConcurrentHashMap<>();
 
     private static class StyleAccumulator {
         private final MutableText result = Text.empty();
@@ -72,18 +69,15 @@ public class TooltipTextUtil {
     }
 
     public static Optional<Object> getExtractedTextValue(TooltipComponent comp) {
-        try {
-            Optional<Field> optField = TooltipDimensionManager.getCachedTextField(comp, TEXT_FIELD_CACHE);
-            if (optField.isPresent()) {
-                return Optional.ofNullable(optField.get().get(comp));
-            }
-        } catch (Exception ignored) {
+        if (comp instanceof OrderedTextTooltipComponentAccessor accessor) {
+            return Optional.ofNullable(accessor.getText());
         }
         return Optional.empty();
     }
 
     public static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int targetWidth, TextRenderer textRenderer) {
         List<TooltipComponent> wrappedComponents = new ArrayList<>();
+        int extraWidth = TooltipDimensionManager.getExtraComponentWidth(components);
 
         for (TooltipComponent comp : components) {
             boolean wrappedFallback = false;
@@ -97,11 +91,11 @@ public class TooltipTextUtil {
                     if (value instanceof OrderedText orderedText) {
                         if (textRenderer.getWidth(orderedText) > targetWidth) {
                             MutableText mutable = convertOrderedTextToMutable(orderedText);
-                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, mutable);
+                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, mutable, extraWidth);
                         }
                     } else if (value instanceof StringVisitable visitable) {
                         if (textRenderer.getWidth(visitable) > targetWidth) {
-                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, visitable);
+                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, visitable, extraWidth);
                         }
                     }
                 }
@@ -112,13 +106,19 @@ public class TooltipTextUtil {
         return wrappedComponents;
     }
 
-    public static boolean handleCustomWrap(int targetWidth, TextRenderer textRenderer, List<TooltipComponent> wrappedComponents, StringVisitable visitable) {
+    public static boolean handleCustomWrap(int targetWidth, TextRenderer textRenderer, List<TooltipComponent> wrappedComponents, StringVisitable visitable, int extraWidth) {
         isHandlingCustomWrap = true;
-        List<OrderedText> wrapped = textRenderer.wrapLines(visitable, targetWidth);
+        List<OrderedText> wrapped = new ArrayList<>(textRenderer.wrapLines(visitable, targetWidth));
         isHandlingCustomWrap = false;
 
-        for (OrderedText w : wrapped) {
-            wrappedComponents.add(TooltipComponent.of(w));
+        for (int i = 0; i < wrapped.size(); i++) {
+            OrderedText w = wrapped.get(i);
+
+            if (i == 0 || extraWidth == 0) {
+                wrappedComponents.add(TooltipComponent.of(w));
+            } else {
+                wrappedComponents.add(new IndentedTextTooltipComponent(w, extraWidth));
+            }
         }
         return true;
     }
