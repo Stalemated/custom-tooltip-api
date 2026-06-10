@@ -6,7 +6,8 @@
   "client": [
     "TooltipBackgroundRendererMixin",
     "InGameHudMixin",
-    "compat.tierify.TieredTooltipMixin"
+    "compat.tierify.TieredTooltipMixin",
+    "compat.tierify.CaptureItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1
