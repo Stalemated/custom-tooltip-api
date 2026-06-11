@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Pseudo
-@Mixin(targets = "elocindev.tierify.util.TieredTooltip", remap = false)
+@Mixin(targets = "elocindev.tierify.util.TieredTooltip")
 public abstract class TieredTooltipMixin {
 
     @Shadow
