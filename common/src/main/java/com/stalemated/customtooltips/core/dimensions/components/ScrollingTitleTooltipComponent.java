@@ -55,7 +55,7 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
         DrawContext context = TooltipDimensionManager.currentContext;
 
         if (context != null) {
-            context.enableScissor(x + offset, y, x + this.maxTitleWidth + offset, y + 10);
+            context.enableScissor(x + offset, y, x + this.maxTitleWidth + offset - 2, y + 10);
         }
 
         textRenderer.draw(this.text, (float) (x - scrollOffset), (float) y, -1, true, translatedMatrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
