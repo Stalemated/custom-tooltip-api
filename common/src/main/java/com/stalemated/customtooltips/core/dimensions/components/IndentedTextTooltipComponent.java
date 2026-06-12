@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.core.dimensions.overflow.components;
+package com.stalemated.customtooltips.core.dimensions.components;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.OrderedTextTooltipComponent;
@@ -15,21 +15,21 @@ import org.joml.Matrix4f;
 public class IndentedTextTooltipComponent extends OrderedTextTooltipComponent {
 
     private final int xOffset;
+    private final int targetWidth;
 
-    public IndentedTextTooltipComponent(OrderedText text, int xOffset) {
+    public IndentedTextTooltipComponent(OrderedText text, int xOffset, int targetWidth) {
         super(text);
         this.xOffset = xOffset;
+        this.targetWidth = targetWidth;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        // Return normal width + offset so the tooltip box expands to fit the indented text
-        return super.getWidth(textRenderer) + this.xOffset;
+        return Math.min(super.getWidth(textRenderer) + this.xOffset, this.targetWidth);
     }
 
     @Override
     public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix, VertexConsumerProvider.Immediate vertexConsumers) {
-        // Render with the offset applied to the X coordinate
         super.drawText(textRenderer, x + this.xOffset, y, matrix, vertexConsumers);
     }
 }

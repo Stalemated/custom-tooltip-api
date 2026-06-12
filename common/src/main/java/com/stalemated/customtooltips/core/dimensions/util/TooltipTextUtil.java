@@ -1,7 +1,8 @@
-package com.stalemated.customtooltips.util;
+package com.stalemated.customtooltips.core.dimensions.util;
 
+import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
-import com.stalemated.customtooltips.core.dimensions.overflow.components.IndentedTextTooltipComponent;
+import com.stalemated.customtooltips.core.dimensions.components.IndentedTextTooltipComponent;
 import com.stalemated.customtooltips.mixin.client.OrderedTextTooltipComponentAccessor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -14,6 +15,8 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.stalemated.customtooltips.core.dimensions.components.ScrollableTooltipComponent.SCROLLBAR_WIDTH;
 
 public class TooltipTextUtil {
     public static boolean isHandlingCustomWrap = false;
@@ -68,35 +71,40 @@ public class TooltipTextUtil {
         return acc.build();
     }
 
-    public static Optional<Object> getExtractedTextValue(TooltipComponent comp) {
+    public static Optional<OrderedText> getExtractedTextValue(TooltipComponent comp) {
         if (comp instanceof OrderedTextTooltipComponentAccessor accessor) {
             return Optional.ofNullable(accessor.getText());
         }
         return Optional.empty();
     }
 
-    public static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int targetWidth, TextRenderer textRenderer) {
+    public static String getComponentString(TooltipComponent comp) {
+        StringBuilder sb = new StringBuilder();
+        Optional<OrderedText> extracted = TooltipTextUtil.getExtractedTextValue(comp);
+
+        extracted.ifPresent(value -> value.accept((index, style, codePoint) -> {
+            sb.appendCodePoint(codePoint);
+            return true;
+        }));
+        return sb.toString();
+    }
+
+    public static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int targetWidth, TextRenderer textRenderer, boolean isTitle) {
         List<TooltipComponent> wrappedComponents = new ArrayList<>();
-        int extraWidth = TooltipDimensionManager.getExtraComponentWidth(components);
+        int wrapWidth = isTitle ? targetWidth : targetWidth - SCROLLBAR_WIDTH;
 
         for (TooltipComponent comp : components) {
             boolean wrappedFallback = false;
 
             if (textRenderer != null) {
-                Optional<Object> extracted = getExtractedTextValue(comp);
+                Optional<OrderedText> extracted = getExtractedTextValue(comp);
 
                 if (extracted.isPresent()) {
-                    Object value = extracted.get();
+                    OrderedText value = extracted.get();
 
-                    if (value instanceof OrderedText orderedText) {
-                        if (textRenderer.getWidth(orderedText) > targetWidth) {
-                            MutableText mutable = convertOrderedTextToMutable(orderedText);
-                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, mutable, extraWidth);
-                        }
-                    } else if (value instanceof StringVisitable visitable) {
-                        if (textRenderer.getWidth(visitable) > targetWidth) {
-                            wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, visitable, extraWidth);
-                        }
+                    if (textRenderer.getWidth(value) > targetWidth) {
+                        MutableText mutable = convertOrderedTextToMutable(value);
+                        wrappedFallback = handleCustomWrap(wrapWidth, textRenderer, wrappedComponents, mutable, isTitle);
                     }
                 }
             }
@@ -106,7 +114,7 @@ public class TooltipTextUtil {
         return wrappedComponents;
     }
 
-    public static boolean handleCustomWrap(int targetWidth, TextRenderer textRenderer, List<TooltipComponent> wrappedComponents, StringVisitable visitable, int extraWidth) {
+    public static boolean handleCustomWrap(int targetWidth, TextRenderer textRenderer, List<TooltipComponent> wrappedComponents, StringVisitable visitable, boolean isTitle) {
         isHandlingCustomWrap = true;
         List<OrderedText> wrapped = new ArrayList<>(textRenderer.wrapLines(visitable, targetWidth));
         isHandlingCustomWrap = false;
@@ -114,11 +122,17 @@ public class TooltipTextUtil {
         for (int i = 0; i < wrapped.size(); i++) {
             OrderedText w = wrapped.get(i);
 
-            if (i == 0 || extraWidth == 0) {
-                wrappedComponents.add(TooltipComponent.of(w));
-            } else {
-                wrappedComponents.add(new IndentedTextTooltipComponent(w, extraWidth));
+            int currentOffset = 0;
+            if (isTitle) {
+                if (i == 0) {
+                    if (convertOrderedTextToMutable(w).getString().isBlank()) {
+                        continue;
+                    }
+                } else {
+                    currentOffset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
+                }
             }
+            wrappedComponents.add(new IndentedTextTooltipComponent(w, currentOffset, targetWidth));
         }
         return true;
     }

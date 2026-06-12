@@ -1,32 +1,31 @@
 package com.stalemated.customtooltips.core.dimensions;
 
 import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrategyFactory;
-import com.stalemated.customtooltips.core.dimensions.overflow.components.ScrollableTooltipComponent;
-import com.stalemated.customtooltips.util.PlatformHelper;
-import com.stalemated.customtooltips.util.TooltipTextUtil;
+import com.stalemated.customtooltips.core.dimensions.components.ScrollableTooltipComponent;
+import com.stalemated.customtooltips.core.dimensions.util.TooltipTextUtil;
 import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class TooltipDimensionManager {
 
     public static DrawContext currentContext = null;
     public static TextRenderer currentTextRenderer = null;
+    public static ItemStack currentStack = null;
     private static final TooltipConfig config = ConfigManager.getConfig();
-    private static final int MIN_TOOLTIP_HEIGHT = 24;
-    private static final int MIN_TOOLTIP_WIDTH = 48;
-    private static final int TOOLTIP_PADDING_X = 16;
+    private static final int MIN_TOOLTIP_HEIGHT = 32;
+    private static final int MIN_TOOLTIP_WIDTH = 64;
+    private static final int TOOLTIP_PADDING_X = 8;
     private static final int TOOLTIP_PADDING_Y = 4;
 
     public static boolean nextTooltipIsItem = false;
@@ -36,14 +35,6 @@ public class TooltipDimensionManager {
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
-    // Compat
-    private static final boolean HAS_LEGENDARY_TOOLTIPS = PlatformHelper.INSTANCE.isModLoaded("legendarytooltips");
-    private static final boolean HAS_ICEBERG = PlatformHelper.INSTANCE.isModLoaded("iceberg");
-    private static final Map<Class<?>, String> COMPONENT_NAME_CACHE = new ConcurrentHashMap<>();
-
-    private static String getCachedClassName(Class<?> clazz) {
-        return COMPONENT_NAME_CACHE.computeIfAbsent(clazz, Class::getSimpleName);
-    }
 
     private static class DimensionCache {
         private final int padding;
@@ -61,24 +52,13 @@ public class TooltipDimensionManager {
             if (currentWindowSize != lastWindowSize || currentConfigPercent != lastConfigPercent) {
                 this.lastWindowSize = currentWindowSize;
                 this.lastConfigPercent = currentConfigPercent;
+
                 int maxAllowedSize = currentWindowSize - padding;
                 int safePercent = MathUtils.clamp(currentConfigPercent, 1, 100);
                 this.cachedSize = MathUtils.clamp(maxAllowedSize * safePercent / 100, minSideLength, maxAllowedSize);
             }
             return this.cachedSize;
         }
-    }
-
-    // Legendary Tooltips compat
-    public static int getExtraComponentWidth(List<TooltipComponent> components) {
-        if (!HAS_LEGENDARY_TOOLTIPS) return 0;
-
-        for (TooltipComponent comp : components) {
-            if ("ItemModelComponent".equals(getCachedClassName(comp.getClass()))) {
-                return 24;
-            }
-        }
-        return 0;
     }
 
     public static List<Text> enforceWidthLimit(List<Text> text) {
@@ -91,7 +71,7 @@ public class TooltipDimensionManager {
         }
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        int maxTitleWidth = getScaledTooltipWidth();
+        int maxTitleWidth = getScaledTooltipWidth() - LegendaryTooltipsCompat.getItemModelComponentWidth(currentStack);
 
         List<Text> processed = TitleOverflowStrategyFactory.getStrategy().processTextPhase(text, textRenderer, maxTitleWidth);
         expectedTitleString = "";
@@ -101,6 +81,7 @@ public class TooltipDimensionManager {
     private static int calculateTotalHeight(List<TooltipComponent> components) {
         if (components.isEmpty()) return 0;
         int totalHeight = components.size() == 1 ? -2 : 0;
+
         for (int i = 0; i < components.size(); i++) {
             totalHeight += components.get(i).getHeight() + (i == 0 && components.size() > 1 ? 2 : 0);
         }
@@ -111,19 +92,22 @@ public class TooltipDimensionManager {
         if (components.isEmpty()) return components;
 
         int splitIndex = getSplitIndex(components);
+        int scaledTooltipWidth = getScaledTooltipWidth();
+        int scaledTooltipHeight = getScaledTooltipHeight();
+        int componentWidth = LegendaryTooltipsCompat.getItemModelComponentWidth(currentStack);
+        int titleMaxWidth = scaledTooltipWidth - componentWidth;
+
         List<TooltipComponent> pinned = new ArrayList<>(components.subList(0, splitIndex));
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
         titleComponentList = pinned;
 
         if (currentTextRenderer != null) {
-            int scaledTooltipWidth = getScaledTooltipWidth();
-            pinned = TitleOverflowStrategyFactory.getStrategy().processComponentPhase(pinned, currentTextRenderer, scaledTooltipWidth);
-            // Scrollable content is always wrapped
-            scrollableContent = TooltipTextUtil.wrapComponents(scrollableContent, scaledTooltipWidth, currentTextRenderer);
+            pinned = TitleOverflowStrategyFactory.getStrategy().processComponentPhase(pinned, currentTextRenderer, titleMaxWidth);
+
+            // Scrollable content is always wrapped, but never indented
+            scrollableContent = TooltipTextUtil.wrapComponents(scrollableContent, scaledTooltipWidth, currentTextRenderer, false);
         }
 
-        int scaledTooltipHeight = getScaledTooltipHeight();
-        
         List<TooltipComponent> combined = new ArrayList<>();
         combined.addAll(pinned);
         combined.addAll(scrollableContent);
@@ -141,7 +125,7 @@ public class TooltipDimensionManager {
             }
             int availableHeight = Math.max(scaledTooltipHeight - pinnedHeight, MIN_TOOLTIP_HEIGHT);
 
-            pinned.add(new ScrollableTooltipComponent(scrollableContent, pinned, availableHeight, currentTextRenderer));
+            pinned.add(new ScrollableTooltipComponent(scrollableContent, pinned, availableHeight, scaledTooltipWidth, currentTextRenderer));
             return pinned;
         }
         TooltipScrollManager.updateMaxScroll(0);
@@ -149,28 +133,16 @@ public class TooltipDimensionManager {
         return combined;
     }
 
-    // Legendary Tooltips compat
+    // Compat
     public static int getSplitIndex(List<TooltipComponent> components) {
-        int splitIndex = 1;
-        if (HAS_LEGENDARY_TOOLTIPS || HAS_ICEBERG) {
-            for (int i = 0; i < components.size(); i++) {
-                TooltipComponent comp = components.get(i);
-                String simpleName = getCachedClassName(comp.getClass());
-
-                if ((HAS_LEGENDARY_TOOLTIPS && "PaddingComponent".equals(simpleName)) ||
-                        (HAS_ICEBERG && "TitleBreakComponent".equals(simpleName))) {
-                    splitIndex = i + 1;
-                    break;
-                }
-            }
-            return Math.min(splitIndex, components.size());
-        }
+        int splitIndex = LegendaryTooltipsCompat.getSplitIndex(components);
+        if (splitIndex != 1) return splitIndex;
 
         // Vanilla Forge logic
         if (expectedTitleString != null && !expectedTitleString.isEmpty()) {
             StringBuilder accumulated = new StringBuilder();
             for (int i = 0; i < components.size(); i++) {
-                accumulated.append(getComponentString(components.get(i)).replace(" ", ""));
+                accumulated.append(TooltipTextUtil.getComponentString(components.get(i)).replace(" ", ""));
                 if (accumulated.length() >= expectedTitleString.length()) {
                     splitIndex = i + 1;
                     break;
@@ -181,21 +153,12 @@ public class TooltipDimensionManager {
         return Math.min(splitIndex, components.size());
     }
 
-    private static String getComponentString(TooltipComponent comp) {
-        StringBuilder sb = new StringBuilder();
-        Optional<Object> extracted = TooltipTextUtil.getExtractedTextValue(comp);
-        if (extracted.isPresent()) {
-            Object value = extracted.get();
-            if (value instanceof OrderedText orderedText) {
-                orderedText.accept((index, style, codePoint) -> {
-                    sb.appendCodePoint(codePoint);
-                    return true;
-                });
-            } else if (value instanceof StringVisitable visitable) {
-                sb.append(visitable.getString());
-            }
-        }
-        return sb.toString();
+    public static void setCurrentStack(ItemStack itemStack) {
+        currentStack = itemStack;
+    }
+
+    public static ItemStack getCurrentStack() {
+        return currentStack;
     }
 
     public static void setState(DrawContext context, TextRenderer textRenderer) {
@@ -204,6 +167,7 @@ public class TooltipDimensionManager {
     }
 
     public static void clearState() {
+        currentStack = null;
         currentContext = null;
         currentTextRenderer = null;
     }

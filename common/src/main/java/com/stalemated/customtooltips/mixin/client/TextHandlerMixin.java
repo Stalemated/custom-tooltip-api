@@ -2,7 +2,7 @@ package com.stalemated.customtooltips.mixin.client;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
-import com.stalemated.customtooltips.util.TooltipTextUtil;
+import com.stalemated.customtooltips.core.dimensions.util.TooltipTextUtil;
 import net.minecraft.client.font.TextHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

@@ -1,7 +1,8 @@
-package com.stalemated.customtooltips.core.dimensions.overflow.components;
+package com.stalemated.customtooltips.core.dimensions.components;
 
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.TooltipScrollManager;
+import com.stalemated.customtooltips.util.MathUtils;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -14,31 +15,32 @@ public class ScrollableTooltipComponent implements TooltipComponent {
     private final List<TooltipComponent> components;
     private final int maxHeight;
     private final int totalHeight;
-    private int maxWidth = 0;
+    private final int maxWidth;
     public static final int SCROLLBAR_WIDTH = 6;
     private final int scrollbarHeight;
 
-    public ScrollableTooltipComponent(List<TooltipComponent> components, List<TooltipComponent> pinned, int maxHeight, TextRenderer textRenderer) {
+    public ScrollableTooltipComponent(List<TooltipComponent> components, List<TooltipComponent> pinned, int maxHeight, int maxWidth, TextRenderer textRenderer) {
         this.components = components;
         this.maxHeight = maxHeight;
 
         int height = 0;
+        int maxComponentWidth = 0;
         for (TooltipComponent component : components) {
             int width = component.getWidth(textRenderer);
-            if (width > this.maxWidth) this.maxWidth = width;
+            if (width > maxComponentWidth) maxComponentWidth = width;
             height += component.getHeight();
         }
         
-        int pinnedWidth = 0;
+        int maxPinnedWidth = 0;
         if (pinned != null) {
             for (TooltipComponent pin : pinned) {
                 int pinWidth = pin.getWidth(textRenderer);
-                if (pinWidth > pinnedWidth) pinnedWidth = pinWidth;
+                if (pinWidth > maxPinnedWidth) maxPinnedWidth = pinWidth;
             }
         }
-        
-        this.maxWidth = Math.max(this.maxWidth, pinnedWidth);
-        
+
+        this.maxWidth = MathUtils.clamp(maxComponentWidth, maxPinnedWidth, maxWidth);
+
         this.totalHeight = height;
         this.scrollbarHeight = this.maxHeight - 4;
         TooltipScrollManager.updateMaxScroll(this.totalHeight - this.scrollbarHeight);
@@ -46,7 +48,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        return this.maxWidth + SCROLLBAR_WIDTH;
+        return this.maxWidth;
     }
 
     @Override
@@ -95,7 +97,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
         if (maxScroll <= 0) return;
 
         int scroll = TooltipScrollManager.getScrollOffset();
-        int scrollbarX = x + this.maxWidth + SCROLLBAR_WIDTH / 2;
+        int scrollbarX = x + this.maxWidth - SCROLLBAR_WIDTH / 2;
 
         int minThumbHeight = 2;
         float visibleRatio = (float) this.scrollbarHeight / this.totalHeight;

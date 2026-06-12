@@ -2,6 +2,7 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
+import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.gui.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import com.stalemated.customtooltips.util.ResourcepackManager;
@@ -37,11 +38,11 @@ public class CustomTooltipApiClient {
 
 	public static void onResourceReload() {
 		IconAligner.clearCache();
-		LOGGER.info("Icon aligner cache cleared due to resource pack reload.");
 	}
 
 	public static void onItemTooltip(ItemStack stack, List<Text> lines) {
 		if (stack.isEmpty()) return;
+		TooltipDimensionManager.setCurrentStack(stack);
 		TooltipProcessor.processTooltipLines(stack, lines);
 	}
 }

@@ -1,5 +1,6 @@
-package com.stalemated.customtooltips.core.dimensions.overflow.components;
+package com.stalemated.customtooltips.core.dimensions.components;
 
+import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.gui.widget.ScrollMathUtil;
 import net.minecraft.client.font.TextRenderer;
@@ -30,7 +31,7 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
     @Override
     public int getWidth(TextRenderer textRenderer) {
         int textWidth = textRenderer.getWidth(this.text);
-        return Math.min(textWidth, this.maxTitleWidth);
+        return Math.min(textWidth, this.maxTitleWidth + LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack()));
     }
 
     @Override
@@ -40,8 +41,8 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
             textRenderer.draw(this.text, (float) x, (float) y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
             return;
         }
-
-        int overflowWidth = textWidth - this.maxTitleWidth;
+        int offset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
+        int overflowWidth = textWidth - this.maxTitleWidth - offset;
         int identity = getStringFromOrderedText(this.text).hashCode();
         long elapsedTime = ScrollMathUtil.getTooltipElapsedTime(identity);
         int scrollOffset = ScrollMathUtil.calculateScrollOffset(overflowWidth, SCROLL_SPEED, PAUSE_MS, elapsedTime);
@@ -52,8 +53,9 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
         translatedMatrix.translate(0, 0, 400);
 
         DrawContext context = TooltipDimensionManager.currentContext;
+
         if (context != null) {
-            context.enableScissor(x + TooltipDimensionManager.getExtraComponentWidth(TooltipDimensionManager.titleComponentList), y, x + this.maxTitleWidth, y + 10);
+            context.enableScissor(x + offset, y, x + this.maxTitleWidth + offset, y + 10);
         }
 
         textRenderer.draw(this.text, (float) (x - scrollOffset), (float) y, -1, true, translatedMatrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
@@ -68,6 +70,7 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
     public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
     }
 
+    //TODO remove this method maybe
     private String getStringFromOrderedText(OrderedText text) {
         StringBuilder builder = new StringBuilder();
         text.accept((index, style, codePoint) -> {

@@ -1,8 +1,7 @@
 package com.stalemated.customtooltips.core.dimensions.overflow.strategies;
 
-import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrategy;
-import com.stalemated.customtooltips.util.TooltipTextUtil;
+import com.stalemated.customtooltips.core.dimensions.util.TooltipTextUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.MutableText;
@@ -25,6 +24,7 @@ public class TruncateOverflowStrategy implements TitleOverflowStrategy {
         Text title = textList.get(0);
         if (textRenderer.getWidth(title) > maxTitleWidth) {
             List<Text> mutableText = new ArrayList<>(textList);
+
             mutableText.set(0, truncateTitle(title, textRenderer, maxTitleWidth));
             return mutableText;
         }
@@ -39,24 +39,17 @@ public class TruncateOverflowStrategy implements TitleOverflowStrategy {
         }
 
         TooltipComponent titleComponent = components.get(0);
-        Optional<Object> extracted = TooltipTextUtil.getExtractedTextValue(titleComponent);
+        Optional<OrderedText> extracted = TooltipTextUtil.getExtractedTextValue(titleComponent);
 
         if (extracted.isPresent()) {
-            Object value = extracted.get();
-            if (value instanceof OrderedText orderedText) {
-                if (textRenderer.getWidth(orderedText) > maxTitleWidth) {
-                    MutableText mutable = TooltipTextUtil.convertOrderedTextToMutable(orderedText);
-                    List<TooltipComponent> mutableComponents = new ArrayList<>(components);
-                    mutableComponents.set(0, TooltipComponent.of(truncateTitle(mutable, textRenderer, maxTitleWidth).asOrderedText()));
-                    return mutableComponents;
-                }
-            } else if (value instanceof StringVisitable visitable) {
-                if (textRenderer.getWidth(visitable) > maxTitleWidth) {
-                    MutableText mutable = TooltipTextUtil.preserveStyles(visitable);
-                    List<TooltipComponent> mutableComponents = new ArrayList<>(components);
-                    mutableComponents.set(0, TooltipComponent.of(truncateTitle(mutable, textRenderer, maxTitleWidth).asOrderedText()));
-                    return mutableComponents;
-                }
+            OrderedText value = extracted.get();
+
+            if (textRenderer.getWidth(value) > maxTitleWidth) {
+                MutableText mutable = TooltipTextUtil.convertOrderedTextToMutable(value);
+                List<TooltipComponent> mutableComponents = new ArrayList<>(components);
+
+                mutableComponents.set(0, TooltipComponent.of(truncateTitle(mutable, textRenderer, maxTitleWidth).asOrderedText()));
+                return mutableComponents;
             }
         }
 
@@ -66,7 +59,7 @@ public class TruncateOverflowStrategy implements TitleOverflowStrategy {
     private MutableText truncateTitle(Text title, TextRenderer textRenderer, int maxWidth) {
         String truncatedIndicator = "...";
         int indicatorWidth = textRenderer.getWidth(truncatedIndicator);
-        int availableWidth = Math.max(10, maxWidth - indicatorWidth - TooltipDimensionManager.getExtraComponentWidth(TooltipDimensionManager.titleComponentList));
+        int availableWidth = Math.max(indicatorWidth, maxWidth - indicatorWidth);
 
         StringVisitable truncated = textRenderer.trimToWidth(title, availableWidth);
         MutableText rebuilt = TooltipTextUtil.preserveStyles(truncated);
