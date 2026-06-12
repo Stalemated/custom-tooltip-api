@@ -5,7 +5,7 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.position.PositionStrategyFactory;
 import com.stalemated.customtooltips.core.position.TooltipPositionStrategy;
-import com.stalemated.customtooltips.mixin.client.KeyBindingAccessor;
+import com.stalemated.customtooltips.mixin.client.accessor.KeyBindingAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.mixin.client;
+package com.stalemated.customtooltips.mixin.client.accessor;
 
 import net.minecraft.client.gui.tooltip.OrderedTextTooltipComponent;
 import net.minecraft.text.OrderedText;

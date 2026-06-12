@@ -5,12 +5,12 @@
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",
-    "KeyBindingAccessor",
+    "accessor.KeyBindingAccessor",
     "StringControllerElementMixin",
     "TextFieldWidgetMixin",
     "MouseMixin",
     "TextHandlerMixin",
-    "OrderedTextTooltipComponentAccessor",
+    "accessor.OrderedTextTooltipComponentAccessor",
     "compat.iceberg.IcebergTooltipsMixin"
   ],
   "injectors": {
