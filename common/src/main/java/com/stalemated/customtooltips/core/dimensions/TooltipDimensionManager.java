@@ -32,6 +32,7 @@ public class TooltipDimensionManager {
     public static boolean isCurrentTooltipItemTooltip = false;
     public static String expectedTitleString = "";
     public static List<TooltipComponent> titleComponentList = new ArrayList<>();
+    public static List<TooltipComponent> bodyComponentList = new ArrayList<>();
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
@@ -100,6 +101,7 @@ public class TooltipDimensionManager {
         List<TooltipComponent> pinned = new ArrayList<>(components.subList(0, splitIndex));
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
         titleComponentList = pinned;
+        bodyComponentList = scrollableContent;
 
         if (currentTextRenderer != null) {
             pinned = TitleOverflowStrategyFactory.getStrategy().processComponentPhase(pinned, currentTextRenderer, titleMaxWidth);

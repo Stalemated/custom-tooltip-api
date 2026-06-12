@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.core.dimensions.util;
 import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.components.IndentedTextTooltipComponent;
+import com.stalemated.customtooltips.core.dimensions.components.WrappedTitleTooltipComponent;
 import com.stalemated.customtooltips.mixin.client.accessor.OrderedTextTooltipComponentAccessor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -119,6 +120,8 @@ public class TooltipTextUtil {
         List<OrderedText> wrapped = new ArrayList<>(textRenderer.wrapLines(visitable, targetWidth));
         isHandlingCustomWrap = false;
 
+        List<TooltipComponent> titleLines = new ArrayList<>();
+
         for (int i = 0; i < wrapped.size(); i++) {
             OrderedText w = wrapped.get(i);
 
@@ -131,8 +134,22 @@ public class TooltipTextUtil {
                 } else {
                     currentOffset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
                 }
+                titleLines.add(new IndentedTextTooltipComponent(w, currentOffset));
+            } else {
+                wrappedComponents.add(new IndentedTextTooltipComponent(w, currentOffset));
             }
-            wrappedComponents.add(new IndentedTextTooltipComponent(w, currentOffset));
+        }
+
+        if (isTitle && !titleLines.isEmpty()) {
+            if (titleLines.size() == 1) {
+                wrappedComponents.add(titleLines.get(0));
+            } else {
+                if (!TooltipDimensionManager.bodyComponentList.isEmpty()) {
+                    wrappedComponents.addAll(titleLines);
+                } else {
+                    wrappedComponents.add(new WrappedTitleTooltipComponent(titleLines));
+                }
+            }
         }
         return true;
     }
