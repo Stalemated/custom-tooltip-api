@@ -132,7 +132,7 @@ public class TooltipTextUtil {
                     currentOffset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
                 }
             }
-            wrappedComponents.add(new IndentedTextTooltipComponent(w, currentOffset, targetWidth));
+            wrappedComponents.add(new IndentedTextTooltipComponent(w, currentOffset));
         }
         return true;
     }

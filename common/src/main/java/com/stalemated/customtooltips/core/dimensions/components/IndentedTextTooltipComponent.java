@@ -15,17 +15,14 @@ import org.joml.Matrix4f;
 public class IndentedTextTooltipComponent extends OrderedTextTooltipComponent {
 
     private final int xOffset;
-    private final int targetWidth;
-
-    public IndentedTextTooltipComponent(OrderedText text, int xOffset, int targetWidth) {
+    public IndentedTextTooltipComponent(OrderedText text, int xOffset) {
         super(text);
         this.xOffset = xOffset;
-        this.targetWidth = targetWidth;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        return Math.min(super.getWidth(textRenderer) + this.xOffset, this.targetWidth);
+        return super.getWidth(textRenderer) + this.xOffset;
     }
 
     @Override
