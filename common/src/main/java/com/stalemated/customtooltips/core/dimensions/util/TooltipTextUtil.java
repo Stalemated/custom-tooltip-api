@@ -3,7 +3,7 @@ package com.stalemated.customtooltips.core.dimensions.util;
 import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.components.IndentedTextTooltipComponent;
-import com.stalemated.customtooltips.mixin.client.OrderedTextTooltipComponentAccessor;
+import com.stalemated.customtooltips.mixin.client.accessor.OrderedTextTooltipComponentAccessor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.MutableText;
@@ -91,7 +91,7 @@ public class TooltipTextUtil {
 
     public static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int targetWidth, TextRenderer textRenderer, boolean isTitle) {
         List<TooltipComponent> wrappedComponents = new ArrayList<>();
-        int wrapWidth = isTitle ? targetWidth : targetWidth - SCROLLBAR_WIDTH;
+        int wrapWidth = targetWidth - SCROLLBAR_WIDTH;
 
         for (TooltipComponent comp : components) {
             boolean wrappedFallback = false;

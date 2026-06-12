@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.core.dimensions.components;
 
+import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.TooltipScrollManager;
 import com.stalemated.customtooltips.util.MathUtils;
@@ -39,7 +40,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
             }
         }
 
-        this.maxWidth = MathUtils.clamp(maxComponentWidth, maxPinnedWidth, maxWidth);
+        this.maxWidth = MathUtils.clamp(Math.max(maxComponentWidth, maxPinnedWidth) + SCROLLBAR_WIDTH + LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack()), TooltipDimensionManager.MIN_TOOLTIP_WIDTH + SCROLLBAR_WIDTH, maxWidth);
 
         this.totalHeight = height;
         this.scrollbarHeight = this.maxHeight - 4;

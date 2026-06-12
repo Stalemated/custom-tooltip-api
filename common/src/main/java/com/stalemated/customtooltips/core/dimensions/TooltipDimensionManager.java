@@ -24,8 +24,8 @@ public class TooltipDimensionManager {
     public static ItemStack currentStack = null;
     private static final TooltipConfig config = ConfigManager.getConfig();
     private static final int MIN_TOOLTIP_HEIGHT = 32;
-    private static final int MIN_TOOLTIP_WIDTH = 64;
-    private static final int TOOLTIP_PADDING_X = 8;
+    public static final int MIN_TOOLTIP_WIDTH = 64;
+    public static final int TOOLTIP_PADDING_X = 8;
     private static final int TOOLTIP_PADDING_Y = 4;
 
     public static boolean nextTooltipIsItem = false;
