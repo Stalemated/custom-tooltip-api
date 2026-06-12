@@ -20,6 +20,7 @@ public class LegendaryTooltipsCompat {
 
     public static int getItemModelComponentWidth(ItemStack stack) {
         if (!HAS_LEGENDARY_TOOLTIPS) return 0;
+        if (stack == null || stack.isEmpty()) return 0;
         return LegendaryTooltipsConfig.showModelForItem(stack) ? 24 : 0;
     }
 
