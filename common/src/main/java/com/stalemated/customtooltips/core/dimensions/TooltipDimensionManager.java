@@ -172,6 +172,10 @@ public class TooltipDimensionManager {
         currentStack = null;
         currentContext = null;
         currentTextRenderer = null;
+        expectedTitleString = "";
+        processedTitleComponentList.clear();
+        bodyComponentList.clear();
+        isCurrentTooltipItemTooltip = false;
     }
 
     public static int getScaledTooltipHeight() {

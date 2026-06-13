@@ -134,6 +134,5 @@ public abstract class TieredTooltipMixin {
         
         TooltipBackgroundManager.clearState();
         TooltipDimensionManager.clearState();
-        TooltipDimensionManager.isCurrentTooltipItemTooltip = false;
     }
 }

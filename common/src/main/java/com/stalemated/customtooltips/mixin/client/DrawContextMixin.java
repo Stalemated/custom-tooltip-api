@@ -56,6 +56,5 @@ public abstract class DrawContextMixin {
     private void customTooltips$clearStateAfterRender(CallbackInfo ci) {
         TooltipBackgroundManager.clearState();
         TooltipDimensionManager.clearState();
-        TooltipDimensionManager.isCurrentTooltipItemTooltip = false;
     }
 }

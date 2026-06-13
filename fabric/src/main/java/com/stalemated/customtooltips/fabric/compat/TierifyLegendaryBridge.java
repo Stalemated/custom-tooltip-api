@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.fabric.compat;
 import com.anthonyhilyard.legendarytooltips.config.LegendaryTooltipsConfig;
 import com.anthonyhilyard.legendarytooltips.tooltip.PaddingComponent;
 import com.anthonyhilyard.legendarytooltips.tooltip.TooltipDecor;
+import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -44,7 +45,7 @@ public class TierifyLegendaryBridge {
     public static @NotNull LegendaryTieredWrapper getLegendaryTieredWrapper(List<TooltipComponent> components) {
         List<TooltipComponent> titleComponents;
 
-        if (!TooltipDimensionManager.processedTitleComponentList.isEmpty()) {
+        if (ConfigManager.getConfig().custom_tooltip_dimensions && !TooltipDimensionManager.processedTitleComponentList.isEmpty()) {
             titleComponents = new ArrayList<>(TooltipDimensionManager.processedTitleComponentList);
         } else {
             titleComponents = Collections.singletonList(components.get(0));
