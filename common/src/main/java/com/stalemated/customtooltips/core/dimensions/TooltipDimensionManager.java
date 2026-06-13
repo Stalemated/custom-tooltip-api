@@ -31,7 +31,7 @@ public class TooltipDimensionManager {
     public static boolean nextTooltipIsItem = false;
     public static boolean isCurrentTooltipItemTooltip = false;
     public static String expectedTitleString = "";
-    public static List<TooltipComponent> titleComponentList = new ArrayList<>();
+    public static List<TooltipComponent> processedTitleComponentList = new ArrayList<>();
     public static List<TooltipComponent> bodyComponentList = new ArrayList<>();
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
@@ -100,12 +100,11 @@ public class TooltipDimensionManager {
 
         List<TooltipComponent> pinned = new ArrayList<>(components.subList(0, splitIndex));
         List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
-        titleComponentList = pinned;
         bodyComponentList = scrollableContent;
 
         if (currentTextRenderer != null) {
             pinned = TitleOverflowStrategyFactory.getStrategy().processComponentPhase(pinned, currentTextRenderer, titleMaxWidth);
-
+            processedTitleComponentList = new ArrayList<>(pinned);
             // Scrollable content is always wrapped, but never indented
             scrollableContent = TooltipTextUtil.wrapComponents(scrollableContent, scaledTooltipWidth, currentTextRenderer, false);
         }
@@ -127,8 +126,9 @@ public class TooltipDimensionManager {
             }
             int availableHeight = Math.max(scaledTooltipHeight - pinnedHeight, MIN_TOOLTIP_HEIGHT);
 
-            pinned.add(new ScrollableTooltipComponent(scrollableContent, pinned, availableHeight, scaledTooltipWidth, currentTextRenderer));
-            return pinned;
+            List<TooltipComponent> finalList = new ArrayList<>(pinned);
+            finalList.add(new ScrollableTooltipComponent(scrollableContent, pinned, availableHeight, scaledTooltipWidth, currentTextRenderer));
+            return finalList;
         }
         TooltipScrollManager.updateMaxScroll(0);
 

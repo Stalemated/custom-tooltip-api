@@ -6,7 +6,8 @@ import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
-import com.stalemated.customtooltips.fabric.compat.LegendaryTooltipsCompatHelper;
+import com.stalemated.customtooltips.fabric.compat.TierifyLegendaryBridge;
+import net.fabricmc.loader.api.FabricLoader;
 import draylar.tiered.api.BorderTemplate;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -50,17 +51,24 @@ public abstract class TieredTooltipMixin {
 
     @ModifyVariable(method = "renderTieredTooltipFromComponents", at = @At("HEAD"), index = 2, argsOnly = true)
     private static List<TooltipComponent> customtooltips$applyDimensions(List<TooltipComponent> components) {
-        LegendaryTooltipsCompatHelper.injectLegendaryComponents(components, TooltipDimensionManager.currentTextRenderer, TooltipDimensionManager.getScaledTooltipWidth());
+        List<TooltipComponent> processedList = components;
 
         if (ConfigManager.getConfig().custom_tooltip_dimensions) {
-            return TooltipDimensionManager.enforceHeightLimit(components);
+            processedList = TooltipDimensionManager.enforceHeightLimit(components);
         }
-        return components;
+
+        if (FabricLoader.getInstance().isModLoaded("legendarytooltips")) {
+            processedList = TierifyLegendaryBridge.wrapComponents(processedList);
+        }
+
+        return processedList;
     }
 
     @Inject(method = "renderTooltipBackground", at = @At("HEAD"), cancellable = true)
     private static void customtooltips$overrideTierifyBackground(DrawContext context, int x, int y, int width, int height, int z, int backgroundColor, int colorStart, int colorEnd, CallbackInfo ci) {
-        LegendaryTooltipsCompatHelper.setTooltipPosition(x, y, width);
+        if (FabricLoader.getInstance().isModLoaded("legendarytooltips")) {
+            TierifyLegendaryBridge.setTooltipPosition(x, y, width);
+        }
         
         TooltipEntry entry = TooltipBackgroundManager.getCurrentEntry();
         if (entry != null && entry.hasCustomBackground()) {
@@ -113,7 +121,9 @@ public abstract class TieredTooltipMixin {
 
     @Inject(method = "renderTieredTooltipFromComponents", at = @At("TAIL"))
     private static void customtooltips$clearContext(DrawContext context, TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner, BorderTemplate borderTemplate, CallbackInfo ci) {
-        LegendaryTooltipsCompatHelper.drawLegendarySeparator(context, components);
+        if (FabricLoader.getInstance().isModLoaded("legendarytooltips")) {
+            TierifyLegendaryBridge.drawSeparator(context, components);
+        }
         
         TooltipBackgroundManager.clearState();
         TooltipDimensionManager.clearState();
