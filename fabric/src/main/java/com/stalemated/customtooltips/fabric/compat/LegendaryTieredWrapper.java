@@ -4,7 +4,6 @@ import com.anthonyhilyard.legendarytooltips.tooltip.ItemModelComponent;
 import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.components.IndentedTextTooltipComponent;
-import com.stalemated.customtooltips.core.dimensions.components.ScrollingTitleTooltipComponent;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -53,11 +52,7 @@ public class LegendaryTieredWrapper implements TooltipComponent {
     private int getCalculatedX(TooltipComponent component, int x, int i) {
         int drawX = x;
 
-        if (component instanceof ScrollingTitleTooltipComponent) {
-            return drawX;
-        }
-
-        if (i == 0 || i > 0 && !(component instanceof IndentedTextTooltipComponent)) {
+        if (i == 0 || !(component instanceof IndentedTextTooltipComponent)) {
             drawX += this.extraWidth;
         }
         return drawX;
@@ -67,9 +62,11 @@ public class LegendaryTieredWrapper implements TooltipComponent {
     public int getWidth(TextRenderer textRenderer) {
         int maxTitleWidth = 0;
         if (titleComponents != null) {
-            for (TooltipComponent component : titleComponents) {
+            for (int i = 0; i < titleComponents.size(); i++) {
+                TooltipComponent component = titleComponents.get(i);
                 int compWidth = component.getWidth(textRenderer);
-                if (!(component instanceof IndentedTextTooltipComponent || component instanceof ScrollingTitleTooltipComponent)) {
+                
+                if (i == 0 || !(component instanceof IndentedTextTooltipComponent)) {
                     compWidth += this.extraWidth;
                 }
                 maxTitleWidth = Math.max(maxTitleWidth, compWidth);
@@ -101,7 +98,7 @@ public class LegendaryTieredWrapper implements TooltipComponent {
         }
 
         int yOffset = Math.max(0, (this.extraWidth - getFirstLineHeight()) / 2);
-        int currentY = y + yOffset - 1;
+        int currentY = y + yOffset;
 
         if (titleComponents != null) {
             for (int i = 0; i < titleComponents.size(); i++) {

@@ -16,6 +16,8 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
     private final int maxTitleWidth;
     private static final double SCROLL_SPEED = 25.0;
     private static final long PAUSE_MS = 2000L;
+    private static final int offset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
+    public static boolean isTierifyTooltip = false;
 
     public ScrollingTitleTooltipComponent(OrderedText text, int maxTitleWidth) {
         super(text);
@@ -31,7 +33,7 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
     @Override
     public int getWidth(TextRenderer textRenderer) {
         int textWidth = textRenderer.getWidth(this.text);
-        return Math.min(textWidth, this.maxTitleWidth + LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack()));
+        return Math.min(textWidth, this.maxTitleWidth + (isTierifyTooltip ? 0 : offset));
     }
 
     @Override
@@ -41,11 +43,13 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
             textRenderer.draw(this.text, (float) x, (float) y, -1, true, matrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
             return;
         }
-        int offset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
-        int overflowWidth = textWidth - this.maxTitleWidth - offset;
+        int overflowWidth = isTierifyTooltip ? textWidth - this.maxTitleWidth : textWidth - this.maxTitleWidth - offset;
         int identity = getStringFromOrderedText(this.text).hashCode();
         long elapsedTime = ScrollMathUtil.getTooltipElapsedTime(identity);
         int scrollOffset = ScrollMathUtil.calculateScrollOffset(overflowWidth, SCROLL_SPEED, PAUSE_MS, elapsedTime);
+        int padding = 2;
+        int startX = x + (isTierifyTooltip ? 0 : offset);
+        int endX = x + this.maxTitleWidth + (isTierifyTooltip ? 0 : offset);
 
         vertexConsumers.draw();
 
@@ -55,7 +59,7 @@ public class ScrollingTitleTooltipComponent extends OrderedTextTooltipComponent 
         DrawContext context = TooltipDimensionManager.currentContext;
 
         if (context != null) {
-            context.enableScissor(x + offset, y, x + this.maxTitleWidth + offset - 2, y + 10);
+            context.enableScissor(startX, y, endX, y + getHeight());
         }
 
         textRenderer.draw(this.text, (float) (x - scrollOffset), (float) y, -1, true, translatedMatrix, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 15728880);

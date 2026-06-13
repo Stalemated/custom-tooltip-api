@@ -2,10 +2,13 @@ package com.stalemated.customtooltips.fabric.mixin.compat.tierify;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
+import com.stalemated.customtooltips.core.dimensions.TitleOverflowMode;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
+import com.stalemated.customtooltips.core.dimensions.components.ScrollingTitleTooltipComponent;
 import com.stalemated.customtooltips.fabric.compat.TierifyLegendaryBridge;
 import net.fabricmc.loader.api.FabricLoader;
 import draylar.tiered.api.BorderTemplate;
@@ -52,8 +55,10 @@ public abstract class TieredTooltipMixin {
     @ModifyVariable(method = "renderTieredTooltipFromComponents", at = @At("HEAD"), index = 2, argsOnly = true)
     private static List<TooltipComponent> customtooltips$applyDimensions(List<TooltipComponent> components) {
         List<TooltipComponent> processedList = components;
+        TooltipConfig config = ConfigManager.getConfig();
 
-        if (ConfigManager.getConfig().custom_tooltip_dimensions) {
+        if (config.custom_tooltip_dimensions) {
+            if (config.title_overflow_mode == TitleOverflowMode.SCROLL) ScrollingTitleTooltipComponent.isTierifyTooltip = true;
             processedList = TooltipDimensionManager.enforceHeightLimit(components);
         }
 
@@ -124,6 +129,8 @@ public abstract class TieredTooltipMixin {
         if (FabricLoader.getInstance().isModLoaded("legendarytooltips")) {
             TierifyLegendaryBridge.drawSeparator(context, components);
         }
+        if (ConfigManager.getConfig().title_overflow_mode == TitleOverflowMode.SCROLL) ScrollingTitleTooltipComponent.isTierifyTooltip = false;
+
         
         TooltipBackgroundManager.clearState();
         TooltipDimensionManager.clearState();

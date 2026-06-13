@@ -34,7 +34,7 @@ public class TierifyLegendaryBridge {
                 }
             }
             newList.add(0, wrapper);
-            newList.add(1, new PaddingComponent(2));
+            if (TooltipDimensionManager.processedTitleComponentList.size() > 1) newList.add(1, new PaddingComponent(2));
 
             return newList;
         }
@@ -71,7 +71,8 @@ public class TierifyLegendaryBridge {
 
         if (LegendaryTooltipsConfig.INSTANCE.nameSeparator.get()) {
             int color = 0xFF996922;
-            TooltipDecor.drawSeparator(context.getMatrices(), lastTooltipX - 2, lastTooltipY + components.get(0).getHeight(), lastTooltipWidth, color);
+            int offsetY = TooltipDimensionManager.processedTitleComponentList.size() > 1 ? 0 : 2;
+            TooltipDecor.drawSeparator(context.getMatrices(), lastTooltipX, lastTooltipY + components.get(0).getHeight() - offsetY, lastTooltipWidth, color);
         }
     }
 }
