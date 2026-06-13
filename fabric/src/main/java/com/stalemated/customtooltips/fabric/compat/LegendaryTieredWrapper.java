@@ -4,6 +4,7 @@ import com.anthonyhilyard.legendarytooltips.tooltip.ItemModelComponent;
 import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.components.IndentedTextTooltipComponent;
+import com.stalemated.customtooltips.core.dimensions.components.ScrollingTitleTooltipComponent;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -45,9 +46,21 @@ public class LegendaryTieredWrapper implements TooltipComponent {
 
     @Override
     public int getHeight() {
-        int flh = getFirstLineHeight();
         int yOffset = Math.max(0, (this.extraWidth - getFirstLineHeight()) / 2);
         return Math.max(this.extraWidth, yOffset * 2 + getTitleHeight() - 2);
+    }
+
+    private int getCalculatedX(TooltipComponent component, int x, int i) {
+        int drawX = x;
+
+        if (component instanceof ScrollingTitleTooltipComponent) {
+            return drawX;
+        }
+
+        if (i == 0 || i > 0 && !(component instanceof IndentedTextTooltipComponent)) {
+            drawX += this.extraWidth;
+        }
+        return drawX;
     }
 
     @Override
@@ -56,7 +69,7 @@ public class LegendaryTieredWrapper implements TooltipComponent {
         if (titleComponents != null) {
             for (TooltipComponent component : titleComponents) {
                 int compWidth = component.getWidth(textRenderer);
-                if (!(component instanceof IndentedTextTooltipComponent)) {
+                if (!(component instanceof IndentedTextTooltipComponent || component instanceof ScrollingTitleTooltipComponent)) {
                     compWidth += this.extraWidth;
                 }
                 maxTitleWidth = Math.max(maxTitleWidth, compWidth);
@@ -99,16 +112,5 @@ public class LegendaryTieredWrapper implements TooltipComponent {
                 currentY += component.getHeight();
             }
         }
-    }
-
-    private int getCalculatedX(TooltipComponent component, int x, int i) {
-        int drawX = x;
-
-        if (i == 0 && this.extraWidth > 0) {
-            drawX += this.extraWidth;
-        } else if (i > 0 && !(component instanceof IndentedTextTooltipComponent) && this.extraWidth > 0) {
-            drawX += this.extraWidth;
-        }
-        return drawX;
     }
 }
