@@ -2,7 +2,6 @@ package com.stalemated.customtooltips.fabric.mixin.compat.tierify;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
@@ -55,14 +54,19 @@ public abstract class TieredTooltipMixin {
     @ModifyVariable(method = "renderTieredTooltipFromComponents", at = @At("HEAD"), index = 2, argsOnly = true)
     private static List<TooltipComponent> customtooltips$applyDimensions(List<TooltipComponent> components) {
         List<TooltipComponent> processedList = components;
-        TooltipConfig config = ConfigManager.getConfig();
+        boolean hasLT = FabricLoader.getInstance().isModLoaded("legendarytooltips");
 
-        if (config.custom_tooltip_dimensions) {
-            if (config.title_overflow_mode == TitleOverflowMode.SCROLL) ScrollingTitleTooltipComponent.isTierifyTooltip = true;
+        if (hasLT) {
+            TooltipDimensionManager.pinnedHeightPredictor = TierifyLegendaryBridge::getPredictedPinnedHeight;
+        }
+
+        if (ConfigManager.getConfig().custom_tooltip_dimensions) {
+            if (ConfigManager.getConfig().title_overflow_mode == TitleOverflowMode.SCROLL) ScrollingTitleTooltipComponent.isTierifyTooltip = true;
             processedList = TooltipDimensionManager.enforceHeightLimit(components);
         }
 
-        if (FabricLoader.getInstance().isModLoaded("legendarytooltips")) {
+        if (hasLT) {
+            TooltipDimensionManager.pinnedHeightPredictor = null;
             processedList = TierifyLegendaryBridge.wrapComponents(processedList);
         }
 
@@ -130,7 +134,6 @@ public abstract class TieredTooltipMixin {
             TierifyLegendaryBridge.drawSeparator(context, components);
         }
         if (ConfigManager.getConfig().title_overflow_mode == TitleOverflowMode.SCROLL) ScrollingTitleTooltipComponent.isTierifyTooltip = false;
-
         
         TooltipBackgroundManager.clearState();
         TooltipDimensionManager.clearState();

@@ -16,6 +16,7 @@ import net.minecraft.text.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class TooltipDimensionManager {
 
@@ -27,12 +28,14 @@ public class TooltipDimensionManager {
     public static final int MIN_TOOLTIP_WIDTH = 64;
     public static final int TOOLTIP_PADDING_X = 8;
     private static final int TOOLTIP_PADDING_Y = 4;
+    public static final int TITLE_BODY_VERTICAL_GAP = 2;
 
     public static boolean nextTooltipIsItem = false;
     public static boolean isCurrentTooltipItemTooltip = false;
     public static String expectedTitleString = "";
     public static List<TooltipComponent> processedTitleComponentList = new ArrayList<>();
     public static List<TooltipComponent> bodyComponentList = new ArrayList<>();
+    public static Function<List<TooltipComponent>, Integer> pinnedHeightPredictor = null;
 
     private static final DimensionCache widthCache = new DimensionCache(TOOLTIP_PADDING_X, MIN_TOOLTIP_WIDTH);
     private static final DimensionCache heightCache = new DimensionCache(TOOLTIP_PADDING_Y, MIN_TOOLTIP_HEIGHT);
@@ -81,10 +84,10 @@ public class TooltipDimensionManager {
 
     private static int calculateTotalHeight(List<TooltipComponent> components) {
         if (components.isEmpty()) return 0;
-        int totalHeight = components.size() == 1 ? -2 : 0;
+        int totalHeight = components.size() == 1 ? -TITLE_BODY_VERTICAL_GAP : 0;
 
         for (int i = 0; i < components.size(); i++) {
-            totalHeight += components.get(i).getHeight() + (i == 0 && components.size() > 1 ? 2 : 0);
+            totalHeight += components.get(i).getHeight() + (i == 0 && components.size() > 1 ? TITLE_BODY_VERTICAL_GAP : 0);
         }
         return totalHeight;
     }
@@ -126,13 +129,22 @@ public class TooltipDimensionManager {
             scrollableContent = TooltipTextUtil.wrapComponents(scrollableContentRaw, scaledTooltipWidth - ScrollableTooltipComponent.SCROLLBAR_WIDTH, currentTextRenderer, false);
 
             int pinnedHeight = 0;
-            for (int i = 0; i < pinned.size(); i++) {
-                pinnedHeight += pinned.get(i).getHeight() + (i == 0 && pinned.size() > 1 ? 2 : 0);
+            if (pinnedHeightPredictor != null) {
+                pinnedHeight = pinnedHeightPredictor.apply(pinned);
+                pinnedHeight += TITLE_BODY_VERTICAL_GAP;
+            } else {
+                for (int i = 0; i < pinned.size(); i++) {
+                    pinnedHeight += pinned.get(i).getHeight() + (i == 0 && pinned.size() > 1 ? TITLE_BODY_VERTICAL_GAP : 0);
+                }
             }
             int availableHeight = Math.max(scaledTooltipHeight - pinnedHeight, MIN_TOOLTIP_HEIGHT);
 
             List<TooltipComponent> finalList = new ArrayList<>(pinned);
             finalList.add(new ScrollableTooltipComponent(scrollableContent, pinned, availableHeight, scaledTooltipWidth, currentTextRenderer));
+            int totalH = 0;
+            for (TooltipComponent tooltipComponent : finalList) {
+                totalH += tooltipComponent.getHeight();
+            }
             return finalList;
         }
         TooltipScrollManager.updateMaxScroll(0);

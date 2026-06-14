@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.fabric.compat;
+package com.stalemated.customtooltips.fabric.compat.component;
 
 import com.anthonyhilyard.legendarytooltips.tooltip.ItemModelComponent;
 import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import org.joml.Matrix4f;
 
 import java.util.List;
+
+import static com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager.TITLE_BODY_VERTICAL_GAP;
 
 public class LegendaryTieredWrapper implements TooltipComponent {
 
@@ -46,7 +48,7 @@ public class LegendaryTieredWrapper implements TooltipComponent {
     @Override
     public int getHeight() {
         int yOffset = Math.max(0, (this.extraWidth - getFirstLineHeight()) / 2);
-        return Math.max(this.extraWidth, yOffset * 2 + getTitleHeight() - 2);
+        return Math.max(this.extraWidth, yOffset * 2 + getTitleHeight() - TITLE_BODY_VERTICAL_GAP);
     }
 
     private int getCalculatedX(TooltipComponent component, int x, int i) {
