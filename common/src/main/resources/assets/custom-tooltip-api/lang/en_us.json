@@ -59,7 +59,7 @@
   "customtooltips.tooltip_edit_screen.background_type.texture": "Texture (Framed)",
   "customtooltips.tooltip_edit_screen.background_type.simple_texture": "Texture (Stretch)",
   "customtooltips.tooltip_edit_screen.background_texture": "Background Texture",
-  "customtooltips.tooltip_edit_screen.background_texture.description": "The texture to use for the background. Place .png files in config/custom_tooltip_api/backgrounds/.\n\n§eNote:§r For 'Framed' mode, textures are mapped to a 64x64 grid with 8px corners. You can use larger HD images (e.g., 128x128 with 16px corners) as long as the proportions match!\n\n§bTip:§r Transparencies are fully supported.",
+  "customtooltips.tooltip_edit_screen.background_texture.description": "The texture to use for the background. Place .png files in config/custom_tooltip_api/backgrounds/.\n\n§eNote:§r For 'Framed' mode, textures are mapped to a 64x64 grid with 8px corners. You can use larger HD images (e.g., 128x128 with 16px corners) as long as the proportions match!\n\n§4Note: The custom Resource Pack needs to be enabled!\n\n§bTip:§r Transparencies are fully supported.",
   "customtooltips.tooltip_edit_screen.position": "Position",
   "customtooltips.tooltip_edit_screen.position.description": "Insert (Top) §7(Under the item's name)§r\nInsert (Bottom) §7(Bottom of the tooltip)§r\nReplace Name §7(Replaces the item's name)§r\nReplace Line §7(Replaces an individual tooltip line)§r\nReplace All §7(Replaces the entire tooltip)§r\nAppend §7(End of a line)§r\nPrepend §7(Start of a line)§r",
   "customtooltips.tooltip_edit_screen.position.replace_name": "Replace Name",
