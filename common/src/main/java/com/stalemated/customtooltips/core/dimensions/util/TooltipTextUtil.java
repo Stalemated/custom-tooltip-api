@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.stalemated.customtooltips.core.dimensions.components.ScrollableTooltipComponent.SCROLLBAR_WIDTH;
 
 public class TooltipTextUtil {
     public static boolean isHandlingCustomWrap = false;
@@ -92,7 +91,6 @@ public class TooltipTextUtil {
 
     public static List<TooltipComponent> wrapComponents(List<TooltipComponent> components, int targetWidth, TextRenderer textRenderer, boolean isTitle) {
         List<TooltipComponent> wrappedComponents = new ArrayList<>();
-        int wrapWidth = targetWidth - SCROLLBAR_WIDTH;
 
         for (TooltipComponent comp : components) {
             boolean wrappedFallback = false;
@@ -105,7 +103,7 @@ public class TooltipTextUtil {
 
                     if (textRenderer.getWidth(value) > targetWidth) {
                         MutableText mutable = convertOrderedTextToMutable(value);
-                        wrappedFallback = handleCustomWrap(wrapWidth, textRenderer, wrappedComponents, mutable, isTitle);
+                        wrappedFallback = handleCustomWrap(targetWidth, textRenderer, wrappedComponents, mutable, isTitle);
                     }
                 }
             }

@@ -99,14 +99,16 @@ public class TooltipDimensionManager {
         int titleMaxWidth = scaledTooltipWidth - componentWidth;
 
         List<TooltipComponent> pinned = new ArrayList<>(components.subList(0, splitIndex));
-        List<TooltipComponent> scrollableContent = new ArrayList<>(components.subList(splitIndex, components.size()));
+        List<TooltipComponent> scrollableContentRaw = new ArrayList<>(components.subList(splitIndex, components.size()));
+        List<TooltipComponent> scrollableContent = new ArrayList<>(scrollableContentRaw);
+        processedTitleComponentList = new ArrayList<>(pinned);
         bodyComponentList = scrollableContent;
 
         if (currentTextRenderer != null) {
             pinned = TitleOverflowStrategyFactory.getStrategy().processComponentPhase(pinned, currentTextRenderer, titleMaxWidth);
             processedTitleComponentList = new ArrayList<>(pinned);
-            // Scrollable content is always wrapped, but never indented
-            scrollableContent = TooltipTextUtil.wrapComponents(scrollableContent, scaledTooltipWidth, currentTextRenderer, false);
+            // Two-pass approach: not discounting the scrollbar's width
+            scrollableContent = TooltipTextUtil.wrapComponents(scrollableContentRaw, scaledTooltipWidth, currentTextRenderer, false);
         }
 
         List<TooltipComponent> combined = new ArrayList<>();
@@ -116,9 +118,12 @@ public class TooltipDimensionManager {
         int totalHeight = calculateTotalHeight(combined);
 
         if (totalHeight > scaledTooltipHeight && currentTextRenderer != null) {
-            if (scrollableContent.isEmpty()) {
+            if (scrollableContentRaw.isEmpty()) {
                 return combined;
             }
+
+            // 2nd pass: discounts the scrollbar width
+            scrollableContent = TooltipTextUtil.wrapComponents(scrollableContentRaw, scaledTooltipWidth - ScrollableTooltipComponent.SCROLLBAR_WIDTH, currentTextRenderer, false);
 
             int pinnedHeight = 0;
             for (int i = 0; i < pinned.size(); i++) {

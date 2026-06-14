@@ -17,12 +17,14 @@ public class ScrollableTooltipComponent implements TooltipComponent {
     private final int maxHeight;
     private final int totalHeight;
     private final int maxWidth;
+    private final int maxTextWidth;
     public static final int SCROLLBAR_WIDTH = 6;
     private final int scrollbarHeight;
 
     public ScrollableTooltipComponent(List<TooltipComponent> components, List<TooltipComponent> pinned, int maxHeight, int maxWidth, TextRenderer textRenderer) {
         this.components = components;
         this.maxHeight = maxHeight;
+        this.maxWidth = maxWidth;
 
         int height = 0;
         int maxComponentWidth = 0;
@@ -39,8 +41,9 @@ public class ScrollableTooltipComponent implements TooltipComponent {
                 if (pinWidth > maxPinnedWidth) maxPinnedWidth = pinWidth;
             }
         }
+        int offset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
 
-        this.maxWidth = MathUtils.clamp(Math.max(maxComponentWidth, maxPinnedWidth) + SCROLLBAR_WIDTH + LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack()), TooltipDimensionManager.MIN_TOOLTIP_WIDTH + SCROLLBAR_WIDTH, maxWidth);
+        this.maxTextWidth = MathUtils.clamp(Math.max(maxComponentWidth, maxPinnedWidth + offset), TooltipDimensionManager.MIN_TOOLTIP_WIDTH, maxWidth - SCROLLBAR_WIDTH);
 
         this.totalHeight = height;
         this.scrollbarHeight = this.maxHeight - 4;
@@ -64,7 +67,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
 
         int scroll = TooltipScrollManager.getScrollOffset();
         vertexConsumers.draw();
-        context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight);
+        context.enableScissor(x, y - 2, x + this.maxTextWidth, y + this.maxHeight);
         int currentY = y - scroll;
 
         for (TooltipComponent component : components) {
@@ -80,7 +83,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
     public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
         int scroll = TooltipScrollManager.getScrollOffset();
 
-        context.enableScissor(x, y - 2, x + getWidth(textRenderer), y + this.maxHeight);
+        context.enableScissor(x, y - 2, x + this.maxTextWidth, y + this.maxHeight);
         int currentY = y - scroll;
 
         for (TooltipComponent component : components) {

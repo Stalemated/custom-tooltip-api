@@ -1,6 +1,5 @@
 package com.stalemated.customtooltips.core.dimensions.overflow.strategies;
 
-import com.stalemated.customtooltips.core.dimensions.components.ScrollableTooltipComponent;
 import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrategy;
 import com.stalemated.customtooltips.core.dimensions.util.TooltipTextUtil;
 import net.minecraft.client.font.TextRenderer;
@@ -13,6 +12,8 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.stalemated.customtooltips.core.dimensions.components.ScrollableTooltipComponent.SCROLLBAR_WIDTH;
 
 public class TruncateOverflowStrategy implements TitleOverflowStrategy {
 
@@ -60,7 +61,7 @@ public class TruncateOverflowStrategy implements TitleOverflowStrategy {
     private MutableText truncateTitle(Text title, TextRenderer textRenderer, int maxWidth) {
         String truncatedIndicator = "...";
         int indicatorWidth = textRenderer.getWidth(truncatedIndicator);
-        int availableWidth = Math.max(indicatorWidth, maxWidth - indicatorWidth - ScrollableTooltipComponent.SCROLLBAR_WIDTH);
+        int availableWidth = Math.max(indicatorWidth, maxWidth - indicatorWidth - SCROLLBAR_WIDTH);
 
         StringVisitable truncated = textRenderer.trimToWidth(title, availableWidth);
         MutableText rebuilt = TooltipTextUtil.preserveStyles(truncated);
