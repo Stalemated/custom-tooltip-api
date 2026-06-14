@@ -26,7 +26,6 @@ public class ScrollableTooltipComponent implements TooltipComponent {
     public ScrollableTooltipComponent(List<TooltipComponent> components, List<TooltipComponent> pinned, int maxHeight, int maxWidth, TextRenderer textRenderer) {
         this.components = components;
         this.maxHeight = maxHeight;
-        this.maxWidth = maxWidth;
 
         int height = 0;
         int maxComponentWidth = 0;
@@ -45,6 +44,7 @@ public class ScrollableTooltipComponent implements TooltipComponent {
         }
         int offset = LegendaryTooltipsCompat.getItemModelComponentWidth(TooltipDimensionManager.getCurrentStack());
 
+        this.maxWidth = MathUtils.clamp(Math.max(maxComponentWidth + SCROLLBAR_WIDTH, maxPinnedWidth + offset), TooltipDimensionManager.MIN_TOOLTIP_WIDTH, maxWidth);
         this.maxTextWidth = MathUtils.clamp(Math.max(maxComponentWidth, maxPinnedWidth + offset), TooltipDimensionManager.MIN_TOOLTIP_WIDTH, maxWidth - SCROLLBAR_WIDTH);
 
         this.totalHeight = height;
