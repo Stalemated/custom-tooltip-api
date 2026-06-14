@@ -6,6 +6,7 @@ import com.anthonyhilyard.legendarytooltips.tooltip.TooltipDecor;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
+import com.stalemated.customtooltips.core.dimensions.components.WrappedTitleTooltipComponent;
 import com.stalemated.customtooltips.fabric.compat.component.LegendaryTieredWrapper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -25,25 +26,32 @@ public class TierifyLegendaryBridge {
         ItemStack currentStack = TooltipDimensionManager.getCurrentStack();
         if (currentStack == null || currentStack.isEmpty()) return components;
 
+        int titleSize = !TooltipDimensionManager.processedTitleComponentList.isEmpty()
+                ? TooltipDimensionManager.processedTitleComponentList.size()
+                : 1;
+
+        List<TooltipComponent> newList = new ArrayList<>(components);
+
+        for (int i = 0; i < titleSize; i++) {
+            if (!newList.isEmpty()) {
+                newList.remove(0);
+            }
+        }
+
         if (LegendaryTooltipsConfig.showModelForItem(currentStack)) {
-            List<TooltipComponent> newList = new ArrayList<>(components);
+
             LegendaryTieredWrapper wrapper = getLegendaryTieredWrapper(components);
 
-            int titleSize = !TooltipDimensionManager.processedTitleComponentList.isEmpty() 
-                            ? TooltipDimensionManager.processedTitleComponentList.size() 
-                            : 1;
-
-            for (int i = 0; i < titleSize; i++) {
-                if (!newList.isEmpty()) {
-                    newList.remove(0);
-                }
-            }
             newList.add(0, wrapper);
             if (TooltipDimensionManager.processedTitleComponentList.size() > 1) newList.add(1, new PaddingComponent(2));
 
             return newList;
         }
-        return components;
+        List<TooltipComponent> titleComponentList = new ArrayList<>(components.subList(0, titleSize));
+        newList.add(0, new WrappedTitleTooltipComponent(titleComponentList));
+
+        if (TooltipDimensionManager.processedTitleComponentList.size() > 1) newList.add(1, new PaddingComponent(2));
+        return newList;
     }
 
     public static @NotNull LegendaryTieredWrapper getLegendaryTieredWrapper(List<TooltipComponent> components) {
@@ -77,6 +85,9 @@ public class TierifyLegendaryBridge {
         if (LegendaryTooltipsConfig.INSTANCE.nameSeparator.get()) {
             int color = 0xFF996922;
             int offsetY = TooltipDimensionManager.processedTitleComponentList.size() > 1 ? 0 : TITLE_BODY_VERTICAL_GAP;
+            if (!LegendaryTooltipsConfig.showModelForItem(currentStack)) {
+                offsetY = TooltipDimensionManager.processedTitleComponentList.size() > 1 ? 0 : TITLE_BODY_VERTICAL_GAP / 2;
+            }
             TooltipDecor.drawSeparator(context.getMatrices(), lastTooltipX, lastTooltipY + components.get(0).getHeight() - offsetY, lastTooltipWidth, color);
         }
     }
@@ -93,14 +104,14 @@ public class TierifyLegendaryBridge {
             int firstLineHeight = pinned.get(0).getHeight();
             int yOffset = Math.max(0, (extraWidth - firstLineHeight) / 2);
             int wrapperHeight = Math.max(extraWidth, yOffset * 2 + titleHeight - TITLE_BODY_VERTICAL_GAP);
-            int paddingHeight = pinned.size() > 1 ? TITLE_BODY_VERTICAL_GAP : 0;
+            int paddingHeight = LegendaryTooltipsCompat.getLTOffset(0, pinned.size());
             
             return wrapperHeight + paddingHeight;
         }
 
         int rawPinnedHeight = 0;
         for (int i = 0; i < pinned.size(); i++) {
-            rawPinnedHeight += pinned.get(i).getHeight() + (i == 0 && pinned.size() > 1 ? TITLE_BODY_VERTICAL_GAP : 0);
+            rawPinnedHeight += pinned.get(i).getHeight() + LegendaryTooltipsCompat.getLTOffset(i, pinned.size());
         }
         return rawPinnedHeight;
     }
