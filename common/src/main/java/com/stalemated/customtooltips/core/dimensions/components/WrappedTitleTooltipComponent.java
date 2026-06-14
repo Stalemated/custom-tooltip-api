@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.core.dimensions.components;
 
-import com.stalemated.customtooltips.util.PlatformHelper;
+import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -8,21 +8,12 @@ import org.joml.Matrix4f;
 
 import java.util.List;
 
-import static com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager.TITLE_BODY_VERTICAL_GAP;
-
 public class WrappedTitleTooltipComponent implements TooltipComponent {
 
     private final List<TooltipComponent> wrappedLines;
 
     public WrappedTitleTooltipComponent(List<TooltipComponent> wrappedLines) {
         this.wrappedLines = wrappedLines;
-    }
-
-    private int getLTOffset(int i) {
-        if (PlatformHelper.INSTANCE.isModLoaded("legendarytooltips")) {
-            return i == 0 && this.wrappedLines.size() > 1 ? TITLE_BODY_VERTICAL_GAP : 0;
-        }
-        return 0;
     }
 
     @Override
@@ -38,7 +29,7 @@ public class WrappedTitleTooltipComponent implements TooltipComponent {
     public int getHeight() {
         int totalHeight = 0;
         for (int i = 0; i < this.wrappedLines.size(); i++) {
-            totalHeight += this.wrappedLines.get(i).getHeight() + getLTOffset(i);
+            totalHeight += this.wrappedLines.get(i).getHeight() + LegendaryTooltipsCompat.getLTOffset(i, this.wrappedLines.size());
         }
         return totalHeight;
     }
@@ -50,7 +41,7 @@ public class WrappedTitleTooltipComponent implements TooltipComponent {
             TooltipComponent line = this.wrappedLines.get(i);
 
             line.drawText(textRenderer, x, currentY, matrix, vertexConsumers);
-            currentY += line.getHeight() + getLTOffset(i);
+            currentY += line.getHeight() + LegendaryTooltipsCompat.getLTOffset(i, this.wrappedLines.size());
         }
     }
 
@@ -61,7 +52,7 @@ public class WrappedTitleTooltipComponent implements TooltipComponent {
             TooltipComponent line = this.wrappedLines.get(i);
 
             line.drawItems(textRenderer, x, currentY, context);
-            currentY += line.getHeight() + getLTOffset(i);
+            currentY += line.getHeight() + LegendaryTooltipsCompat.getLTOffset(i, this.wrappedLines.size());
         }
     }
 }

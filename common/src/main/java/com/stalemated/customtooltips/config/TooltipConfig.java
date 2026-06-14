@@ -20,7 +20,7 @@ public class TooltipConfig {
     public SortMode sort_mode = SortMode.CREATION_DATE;
 
     @SerialEntry(comment = "How to handle long tooltip titles that exceed the maximum tooltip width. Accepts: TRUNCATE, WRAP, SCROLL")
-    public TitleOverflowMode title_overflow_mode = TitleOverflowMode.TRUNCATE;
+    public TitleOverflowMode title_overflow_mode = TitleOverflowMode.SCROLL;
 
     @SerialEntry(comment = "List of unique entry Identifiers that have been disabled by the user.")
     public List<String> disabled_entries = new ArrayList<>();

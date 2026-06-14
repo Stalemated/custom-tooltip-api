@@ -69,7 +69,7 @@ public class TooltipDimensionsScreen {
                 .name(Text.translatable("customtooltips.tooltip_dimensions_screen.title_overflow_mode"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_dimensions_screen.title_overflow_mode.description")))
                 .binding(
-                        TitleOverflowMode.TRUNCATE,
+                        TitleOverflowMode.SCROLL,
                         () -> config.title_overflow_mode,
                         val -> config.title_overflow_mode = val
                 )

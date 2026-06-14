@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager.TITLE_BODY_VERTICAL_GAP;
+
 public class LegendaryTooltipsCompat {
     private static final boolean HAS_LEGENDARY_TOOLTIPS = PlatformHelper.INSTANCE.isModLoaded("legendarytooltips");
     private static final boolean HAS_ICEBERG = PlatformHelper.INSTANCE.isModLoaded("iceberg");
@@ -41,5 +43,10 @@ public class LegendaryTooltipsCompat {
             return Math.min(splitIndex, components.size());
         }
         return splitIndex;
+    }
+
+    public static int getLTOffset(int i, int componentSize) {
+        if (!HAS_LEGENDARY_TOOLTIPS) return 0;
+        return i == 0 && componentSize > 1 ? TITLE_BODY_VERTICAL_GAP : 0;
     }
 }

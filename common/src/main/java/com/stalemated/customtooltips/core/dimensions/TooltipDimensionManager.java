@@ -7,6 +7,7 @@ import com.stalemated.customtooltips.core.dimensions.overflow.TitleOverflowStrat
 import com.stalemated.customtooltips.core.dimensions.components.ScrollableTooltipComponent;
 import com.stalemated.customtooltips.core.dimensions.util.TooltipTextUtil;
 import com.stalemated.customtooltips.util.MathUtils;
+import com.stalemated.customtooltips.util.PlatformHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -84,10 +85,10 @@ public class TooltipDimensionManager {
 
     private static int calculateTotalHeight(List<TooltipComponent> components) {
         if (components.isEmpty()) return 0;
-        int totalHeight = components.size() == 1 ? -TITLE_BODY_VERTICAL_GAP : 0;
+        int totalHeight = 0;
 
         for (int i = 0; i < components.size(); i++) {
-            totalHeight += components.get(i).getHeight() + (i == 0 && components.size() > 1 ? TITLE_BODY_VERTICAL_GAP : 0);
+            totalHeight += components.get(i).getHeight() + LegendaryTooltipsCompat.getLTOffset(i, components.size());
         }
         return totalHeight;
     }
@@ -134,10 +135,11 @@ public class TooltipDimensionManager {
                 pinnedHeight += TITLE_BODY_VERTICAL_GAP;
             } else {
                 for (int i = 0; i < pinned.size(); i++) {
-                    pinnedHeight += pinned.get(i).getHeight() + (i == 0 && pinned.size() > 1 ? TITLE_BODY_VERTICAL_GAP : 0);
+                    pinnedHeight += pinned.get(i).getHeight() + LegendaryTooltipsCompat.getLTOffset(i, pinned.size());
                 }
             }
-            int availableHeight = Math.max(scaledTooltipHeight - pinnedHeight, MIN_TOOLTIP_HEIGHT);
+            int scrollableHeight = scaledTooltipHeight - pinnedHeight - (PlatformHelper.INSTANCE.isModLoaded("legendarytooltips") ? 0 : TITLE_BODY_VERTICAL_GAP);
+            int availableHeight = Math.max(scrollableHeight, MIN_TOOLTIP_HEIGHT);
 
             List<TooltipComponent> finalList = new ArrayList<>(pinned);
             finalList.add(new ScrollableTooltipComponent(scrollableContent, pinned, availableHeight, scaledTooltipWidth, currentTextRenderer));

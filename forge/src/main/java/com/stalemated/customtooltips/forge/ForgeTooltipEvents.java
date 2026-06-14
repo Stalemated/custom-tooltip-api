@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.forge;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.CustomTooltipApiClient;
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
@@ -22,11 +23,11 @@ public class ForgeTooltipEvents {
     public static void onGatherComponents(RenderTooltipEvent.GatherComponents event) {
         if (ConfigManager.getConfig().custom_tooltip_dimensions && TooltipDimensionManager.isCurrentTooltipItemTooltip) {
             event.setMaxWidth(-1);
-            
+
             if (!ModList.get().isLoaded("iceberg")) {
                 if (!event.getTooltipElements().isEmpty()) {
-                    event.getTooltipElements().get(0).ifLeft(visitable -> 
-                        TooltipDimensionManager.expectedTitleString = visitable.getString().replace(" ", "")
+                    event.getTooltipElements().get(0).ifLeft(visitable ->
+                            TooltipDimensionManager.expectedTitleString = visitable.getString().replace(" ", "")
                     );
                 }
             }
@@ -40,11 +41,12 @@ public class ForgeTooltipEvents {
         if (entry != null) {
             if (entry.hasCustomBackground()) {
                 int width = 0;
-                int height = event.getComponents().size() == 1 ? -2 : 0;
-                
-                for (TooltipComponent component : event.getComponents()) {
+                int height = 0;
+
+                for (int i = 0; i < event.getComponents().size(); i++) {
+                    TooltipComponent component = event.getComponents().get(i);
                     width = Math.max(width, component.getWidth(event.getFont()));
-                    height += component.getHeight();
+                    height += component.getHeight() + LegendaryTooltipsCompat.getLTOffset(i, event.getComponents().size());
                 }
 
                 int bgX = event.getX() - 3;
@@ -54,7 +56,7 @@ public class ForgeTooltipEvents {
 
                 DrawContext context = event.getGraphics();
                 BackgroundRenderStrategy strategy = BackgroundStrategyFactory.getStrategy(entry.backgroundType);
-                
+
                 int originalColor = event.getBackgroundStart();
                 strategy.render(context, bgX, bgY, bgWidth, bgHeight, 400, originalColor, entry);
 
