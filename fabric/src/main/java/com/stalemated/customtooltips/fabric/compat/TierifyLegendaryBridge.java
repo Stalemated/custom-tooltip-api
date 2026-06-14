@@ -75,7 +75,7 @@ public class TierifyLegendaryBridge {
 
     public static void drawSeparator(DrawContext context, List<TooltipComponent> components) {
         if (components.isEmpty()) return;
-        if (TooltipDimensionManager.bodyComponentList.isEmpty()) return;
+        if (ConfigManager.getConfig().custom_tooltip_dimensions && TooltipDimensionManager.bodyComponentList.isEmpty()) return;
         ItemStack currentStack = TooltipDimensionManager.getCurrentStack();
         if (currentStack == null || currentStack.isEmpty()) return;
 
