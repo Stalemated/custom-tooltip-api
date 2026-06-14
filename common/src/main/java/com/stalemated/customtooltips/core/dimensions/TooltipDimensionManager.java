@@ -141,10 +141,7 @@ public class TooltipDimensionManager {
 
             List<TooltipComponent> finalList = new ArrayList<>(pinned);
             finalList.add(new ScrollableTooltipComponent(scrollableContent, pinned, availableHeight, scaledTooltipWidth, currentTextRenderer));
-            int totalH = 0;
-            for (TooltipComponent tooltipComponent : finalList) {
-                totalH += tooltipComponent.getHeight();
-            }
+
             return finalList;
         }
         TooltipScrollManager.updateMaxScroll(0);

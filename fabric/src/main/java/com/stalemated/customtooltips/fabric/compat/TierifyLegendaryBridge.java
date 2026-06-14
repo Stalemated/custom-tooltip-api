@@ -41,11 +41,6 @@ public class TierifyLegendaryBridge {
             newList.add(0, wrapper);
             if (TooltipDimensionManager.processedTitleComponentList.size() > 1) newList.add(1, new PaddingComponent(2));
 
-            int totalH = 0;
-            for (TooltipComponent tooltipComponent : newList) {
-                totalH += tooltipComponent.getHeight();
-            }
-
             return newList;
         }
         return components;

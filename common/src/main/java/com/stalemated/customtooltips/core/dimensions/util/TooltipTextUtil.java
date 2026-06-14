@@ -5,6 +5,7 @@ import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import com.stalemated.customtooltips.core.dimensions.components.IndentedTextTooltipComponent;
 import com.stalemated.customtooltips.core.dimensions.components.WrappedTitleTooltipComponent;
 import com.stalemated.customtooltips.mixin.client.accessor.OrderedTextTooltipComponentAccessor;
+import com.stalemated.customtooltips.util.PlatformHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.MutableText;
@@ -142,8 +143,12 @@ public class TooltipTextUtil {
             if (titleLines.size() == 1) {
                 wrappedComponents.add(titleLines.get(0));
             } else {
-                if (!TooltipDimensionManager.bodyComponentList.isEmpty()) {
-                    wrappedComponents.addAll(titleLines);
+                if (PlatformHelper.INSTANCE.isModLoaded("legendarytooltips")) {
+                    if (!TooltipDimensionManager.bodyComponentList.isEmpty()) {
+                        wrappedComponents.addAll(titleLines);
+                    } else {
+                        wrappedComponents.add(new WrappedTitleTooltipComponent(titleLines));
+                    }
                 } else {
                     wrappedComponents.add(new WrappedTitleTooltipComponent(titleLines));
                 }
