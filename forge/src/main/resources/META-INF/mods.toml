@@ -33,7 +33,7 @@ ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.customtooltips]]
-modId = "s-lib"
+modId = "s_lib"
 mandatory = true
 versionRange = "[0.0.1,)"
 ordering = "AFTER"

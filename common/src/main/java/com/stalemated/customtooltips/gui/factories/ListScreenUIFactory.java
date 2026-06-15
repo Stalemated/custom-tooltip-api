@@ -31,7 +31,7 @@ public class ListScreenUIFactory {
     private static final int BUTTON_SIZE = 20;
     private static final int SPACING = 4;
     private static final int START_Y = 24;
-    private static final int ACTION_BAR_BUTTON_AMOUNT = 6;
+    private static final int ACTION_BAR_BUTTON_AMOUNT = 5;
 
     public static TextFieldWidget createSearchBox(TooltipListScreen screen, TextRenderer textRenderer, String searchText) {
         int screenWidth = screen.width;

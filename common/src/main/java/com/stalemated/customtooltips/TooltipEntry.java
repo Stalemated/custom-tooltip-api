@@ -4,8 +4,9 @@ import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.core.text.StyleApplier;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
-import com.stalemated.customtooltips.core.target.TargetMatcher;
-import com.stalemated.customtooltips.core.target.TargetMatcherFactory;
+import com.stalemated.lib.predicate.target.TargetMatcher;
+import com.stalemated.lib.predicate.target.TargetMatcherFactory;
+import com.stalemated.lib.util.color.ColorUtils;
 import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
-
-import com.stalemated.lib.util.color.ColorUtils;
 
 import static com.stalemated.lib.util.color.ColorUtils.*;
 
@@ -276,7 +275,6 @@ public class TooltipEntry {
             return MathUtils.clamp(this.lineOffset, -(size - 1), 0);
         }
     }
-
 
     private boolean acceptsPositiveOffset() {
         return this.position == TooltipPosition.TOP ||

@@ -7,7 +7,7 @@ import com.stalemated.customtooltips.core.sorting.SortMode;
 import com.stalemated.customtooltips.core.sorting.TooltipSorter;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
-import com.stalemated.customtooltips.gui.helper.ScrollingTextRenderer;
+import com.stalemated.lib.helper.text.ScrollingTextRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
