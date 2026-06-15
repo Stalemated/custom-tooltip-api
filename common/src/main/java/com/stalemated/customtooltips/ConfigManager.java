@@ -2,7 +2,7 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.TooltipRegistry;
-import com.stalemated.customtooltips.util.PlatformHelper;
+import com.stalemated.lib.helper.PlatformHelper;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.minecraft.util.Identifier;

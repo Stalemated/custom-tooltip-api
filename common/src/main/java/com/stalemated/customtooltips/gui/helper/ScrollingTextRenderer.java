@@ -1,8 +1,9 @@
-package com.stalemated.customtooltips.gui.widget;
+package com.stalemated.customtooltips.gui.helper;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import com.stalemated.lib.util.math.ScrollMathUtil;
 
 public class ScrollingTextRenderer {
 

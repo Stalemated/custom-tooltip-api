@@ -3,8 +3,7 @@ package com.stalemated.customtooltips.gui.widget;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import com.stalemated.customtooltips.gui.TooltipEditScreen;
-import com.stalemated.customtooltips.gui.TooltipListWidget;
+import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.util.ToastManager;
 
 import net.minecraft.client.MinecraftClient;

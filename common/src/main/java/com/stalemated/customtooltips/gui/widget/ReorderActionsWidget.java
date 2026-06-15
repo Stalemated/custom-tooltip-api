@@ -3,7 +3,6 @@ package com.stalemated.customtooltips.gui.widget;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import com.stalemated.customtooltips.gui.TooltipListWidget;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;

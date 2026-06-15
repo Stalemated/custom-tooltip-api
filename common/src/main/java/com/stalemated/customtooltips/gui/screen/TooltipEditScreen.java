@@ -1,14 +1,11 @@
-package com.stalemated.customtooltips.gui;
+package com.stalemated.customtooltips.gui.screen;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipEntryUpdater;
-import com.stalemated.customtooltips.gui.controller.builder.SimpleEnumDropdownControllerBuilder;
-import com.stalemated.customtooltips.gui.controller.builder.SimpleStringDropdownControllerBuilder;
-import com.stalemated.customtooltips.gui.controller.builder.AdvancedColorControllerBuilder;
-import com.stalemated.customtooltips.gui.controller.builder.ItemOrTagControllerBuilder;
 
 import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
 import com.stalemated.customtooltips.util.CustomBackgroundManager;
+import com.stalemated.lib.compat.yacl.controller.builder.*;
 import dev.isxander.yacl3.api.ListOption;
 import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionDescription;
@@ -26,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.stalemated.lib.util.color.ColorUtils.*;
 
 public class TooltipEditScreen {
 
@@ -45,11 +44,11 @@ public class TooltipEditScreen {
 
         final WeakReference<Boolean> isNewRef = new WeakReference<>(isNew);
 
-        String[] boundColors = getStrings(entry.colors, TooltipEntry.DEFAULT_COLOR_STRING, TooltipEntry.DEFAULT_COLOR_STRING);
+        String[] boundColors = getStrings(entry.colors, DEFAULT_COLOR_STRING, DEFAULT_COLOR_STRING);
 
-        String[] boundBorderColors = getStrings(entry.borderColors, TooltipEntry.DEFAULT_BORDER_COLORS_STRING.get(0), TooltipEntry.DEFAULT_BORDER_COLORS_STRING.get(1));
+        String[] boundBorderColors = getStrings(entry.borderColors, DEFAULT_BORDER_COLORS_STRING.get(0), DEFAULT_BORDER_COLORS_STRING.get(1));
 
-        String[] boundBackgroundColors = getStrings(entry.backgroundColors, TooltipEntry.DEFAULT_BACKGROUND_COLORS_STRING.get(0), TooltipEntry.DEFAULT_BACKGROUND_COLORS_STRING.get(1));
+        String[] boundBackgroundColors = getStrings(entry.backgroundColors, DEFAULT_BACKGROUND_COLORS_STRING.get(0), DEFAULT_BACKGROUND_COLORS_STRING.get(1));
 
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("customtooltips.tooltip_edit_screen.title"))
@@ -187,7 +186,7 @@ public class TooltipEditScreen {
         var backgroundOpacity = Option.<Integer>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.background_opacity"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_opacity.description")))
-                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.backgroundOpacity, val -> entry.backgroundOpacity = val)
+                .binding(DEFAULT_OPACITY, () -> entry.backgroundOpacity, val -> entry.backgroundOpacity = val)
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                         .range(0, 255)
                         .step(1)
@@ -277,7 +276,7 @@ public class TooltipEditScreen {
         var borderOpacity = Option.<Integer>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity.description")))
-                .binding(TooltipEntry.DEFAULT_OPACITY, () -> entry.borderOpacity, val -> entry.borderOpacity = val)
+                .binding(DEFAULT_OPACITY, () -> entry.borderOpacity, val -> entry.borderOpacity = val)
                 .controller(opt -> IntegerSliderControllerBuilder.create(opt)
                         .range(0, 255)
                         .step(1)

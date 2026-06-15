@@ -1,38 +1,19 @@
 package com.stalemated.customtooltips.forge;
 
-import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.CustomTooltipApiClient;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.compat.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
-import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CustomTooltipApiClient.MOD_ID)
 public class ForgeTooltipEvents {
-
-    @SubscribeEvent
-    public static void onGatherComponents(RenderTooltipEvent.GatherComponents event) {
-        if (ConfigManager.getConfig().custom_tooltip_dimensions && TooltipDimensionManager.isCurrentTooltipItemTooltip) {
-            event.setMaxWidth(-1);
-
-            if (!ModList.get().isLoaded("iceberg")) {
-                if (!event.getTooltipElements().isEmpty()) {
-                    event.getTooltipElements().get(0).ifLeft(visitable ->
-                            TooltipDimensionManager.expectedTitleString = visitable.getString().replace(" ", "")
-                    );
-                }
-            }
-        }
-    }
 
     @SubscribeEvent
     public static void onRenderTooltipColor(RenderTooltipEvent.Color event) {
@@ -46,7 +27,7 @@ public class ForgeTooltipEvents {
                 for (int i = 0; i < event.getComponents().size(); i++) {
                     TooltipComponent component = event.getComponents().get(i);
                     width = Math.max(width, component.getWidth(event.getFont()));
-                    height += component.getHeight() + LegendaryTooltipsCompat.getLTOffset(i, event.getComponents().size());
+                    height += component.getHeight();
                 }
 
                 int bgX = event.getX() - 3;

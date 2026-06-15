@@ -1,10 +1,10 @@
 package com.stalemated.customtooltips.util;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import com.stalemated.lib.helper.PlatformHelper;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class ResourcepackManager {

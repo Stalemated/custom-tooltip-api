@@ -2,8 +2,7 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
-import com.stalemated.customtooltips.core.dimensions.TooltipDimensionManager;
-import com.stalemated.customtooltips.gui.TooltipListScreen;
+import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import com.stalemated.customtooltips.util.ResourcepackManager;
 import net.fabricmc.api.EnvType;
@@ -42,7 +41,6 @@ public class CustomTooltipApiClient {
 
 	public static void onItemTooltip(ItemStack stack, List<Text> lines) {
 		if (stack.isEmpty()) return;
-		TooltipDimensionManager.setCurrentStack(stack);
 		TooltipProcessor.processTooltipLines(stack, lines);
 	}
 }

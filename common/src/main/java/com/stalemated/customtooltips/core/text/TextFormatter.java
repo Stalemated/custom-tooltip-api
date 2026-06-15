@@ -2,10 +2,11 @@ package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.text.parser.TextParser;
+import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.item.ItemStack;
-import com.stalemated.customtooltips.util.MathUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 

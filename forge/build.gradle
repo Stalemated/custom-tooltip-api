@@ -37,6 +37,9 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:$rootProject.forge_version"
 
+    // StaleLib common code
+    modImplementation("com.stalemated.lib:stalelib-forge:${rootProject.stalelib_version}")
+
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-forge"
 

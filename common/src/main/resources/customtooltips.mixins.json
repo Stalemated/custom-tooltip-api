@@ -7,11 +7,7 @@
     "HandledScreenMixin",
     "accessor.KeyBindingAccessor",
     "StringControllerElementMixin",
-    "TextFieldWidgetMixin",
-    "MouseMixin",
-    "TextHandlerMixin",
-    "accessor.OrderedTextTooltipComponentAccessor",
-    "compat.iceberg.IcebergTooltipsMixin"
+    "TextFieldWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

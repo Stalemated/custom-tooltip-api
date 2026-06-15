@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import com.stalemated.customtooltips.gui.TooltipDimensionsScreen;
-import com.stalemated.customtooltips.gui.TooltipEditScreen;
-import com.stalemated.customtooltips.gui.TooltipListScreen;
+import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
+import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 
 import com.stalemated.customtooltips.util.ToastManager;
+import com.stalemated.lib.helper.PlatformHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -121,16 +121,17 @@ public class ListScreenUIFactory {
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_screen.paste_button")))
                 .build());
 
-        buttons.add(ButtonWidget.builder(getDimensionsScreenIcon(), button -> {
-            MinecraftClient client = MinecraftClient.getInstance();
-            if (client != null) {
-                client.setScreen(TooltipDimensionsScreen.create(screen));
-            }
-        })
-                .dimensions(getButtonStartX(6, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
-                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_dimensions_screen.title")))
-                .build());
-
+        if (PlatformHelper.INSTANCE.isModLoaded("resized_scrollable_tooltips")) {
+            buttons.add(ButtonWidget.builder(getDimensionsScreenIcon(), button -> {
+                        MinecraftClient client = MinecraftClient.getInstance();
+                        if (client != null) {
+                            //client.setScreen(TooltipDimensionsScreen.create(screen));
+                        }
+                    })
+                    .dimensions(getButtonStartX(6, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
+                    .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_dimensions_screen.title")))
+                    .build());
+        }
 
         return buttons;
     }

@@ -1,9 +1,10 @@
-package com.stalemated.customtooltips.gui;
+package com.stalemated.customtooltips.gui.screen;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.factories.ListScreenUIFactory;
 import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
+import com.stalemated.customtooltips.gui.widget.TooltipListWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;

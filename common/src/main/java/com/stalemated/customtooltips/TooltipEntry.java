@@ -6,8 +6,7 @@ import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
 import com.stalemated.customtooltips.core.target.TargetMatcher;
 import com.stalemated.customtooltips.core.target.TargetMatcherFactory;
-import com.stalemated.customtooltips.util.ColorUtils;
-import com.stalemated.customtooltips.util.MathUtils;
+import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -17,6 +16,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+
+import com.stalemated.lib.util.color.ColorUtils;
+
+import static com.stalemated.lib.util.color.ColorUtils.*;
 
 public class TooltipEntry {
 
@@ -36,14 +39,6 @@ public class TooltipEntry {
     public List<String> text = new ArrayList<>();
 
     public TooltipStyle style = TooltipStyle.SOLID;
-
-    public static final int DEFAULT_COLOR = 0xFFFFFF;
-    public static final int DEFAULT_OPACITY = 240;
-    public static final List<Integer> DEFAULT_BORDER_COLORS = new ArrayList<>(List.of(0x505000FF, 0x5028007F));
-    public static final List<Integer> DEFAULT_BACKGROUND_COLORS = new ArrayList<>(List.of(0xF0100010, 0xF0100010));
-    public static final String DEFAULT_COLOR_STRING = "#" + Integer.toHexString(DEFAULT_COLOR).toUpperCase();
-    public static final List<String> DEFAULT_BORDER_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(0)).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(1)).toUpperCase()));
-    public static final List<String> DEFAULT_BACKGROUND_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(0)).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(1)).toUpperCase()));
 
     public List<String> colors = new ArrayList<>();
     public List<String> borderColors = new ArrayList<>();
