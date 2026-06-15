@@ -134,19 +134,5 @@
   "customtooltips.toast.pasted.title": "Eintrag aus der Zwischenablage eingefügt!",
   "customtooltips.toast.pasted.desc": "Der Eintrag %s wurde erfolgreich aus der Zwischenablage eingefügt",
 
-  "customtooltips.unbreakable_item": "Unzerbrechlich",
-
-  "customtooltips.tooltip_dimensions_screen.title": "Scroll- und benutzerdefinierte Tooltip-Abmessungen",
-  "customtooltips.tooltip_dimensions_screen.max_width_percentage": "Prozentuale maximale Breite",
-  "customtooltips.tooltip_dimensions_screen.max_width_percentage.description": "Maximaler Prozentsatz des Minecraft-Fensters, der als §6Tooltip weite§r zulässig ist.",
-  "customtooltips.tooltip_dimensions_screen.max_height_percentage": "Prozentualer Anteil der maximalen Höhe",
-  "customtooltips.tooltip_dimensions_screen.max_height_percentage.description": "Maximaler Prozentsatz des Minecraft-Fensters, der als §6Tooltip Höhe§r zulässig ist.",
-  "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions": "Benutzerdefinierte Abmessungen für Tooltips aktivieren",
-  "customtooltips.tooltip_dimensions_screen.enable_custom_dimensions.description": "Ermöglicht die Einstellung von §6benutzerdefinierten maximalen Abmessungen§r für Tooltips und §6Tooltip-Scrolling§r.",
-  "customtooltips.tooltip_dimensions_screen.category.custom_dimensions": "Konfiguration benutzerdefinierter Dimensionen",
-
-  "customtooltips.tooltip_dimensions_screen.category.scrolling": "Scrollen Konfiguration",
-  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling": "Scrollen im Container sperren",
-  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling.description": "Wenn das gleichzeitige Scrollen in verschiedenen Containern gesperrt oder deaktiviert ist. Dies verhindert beispielsweise, dass ein Tooltip gescrollt wird, während man sich im Kreativmenü befindet. Ist diese Option deaktiviert, scrollen beide gleichzeitig.",
-  "customtooltips.tooltip_dimensions_screen.lock_container_scrolling.warning": "\n§4§lWarnung:§r §cDas solltest du wahrscheinlich nicht deaktivieren.§r"
+  "customtooltips.unbreakable_item": "Unzerbrechlich"
 }
