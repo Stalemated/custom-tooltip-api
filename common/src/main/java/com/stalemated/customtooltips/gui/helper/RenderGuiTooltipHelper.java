@@ -2,6 +2,7 @@ package com.stalemated.customtooltips.gui.helper;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
+import com.stalemated.lib.util.state.SharedTooltipState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
@@ -19,9 +20,9 @@ public class RenderGuiTooltipHelper {
         TooltipBackgroundManager.setCurrentBorderOpacity(entry.borderOpacity);
         TooltipBackgroundManager.setCurrentEntry(entry);
 
-        //TooltipDimensionManager.isCurrentTooltipItemTooltip = true;
+        SharedTooltipState.forceCustomDimensions = true;
         context.drawTooltip(MinecraftClient.getInstance().textRenderer, lines, mouseX, mouseY);
-        //TooltipDimensionManager.isCurrentTooltipItemTooltip = false;
+        SharedTooltipState.forceCustomDimensions = false;
         TooltipBackgroundManager.clearState();
     }
 }

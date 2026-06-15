@@ -23,6 +23,7 @@ public class TextureBackgroundStrategy implements BackgroundRenderStrategy {
         context.drawTexture(texture, x, y, width, height, 0.0F, 0.0F, 64, 64, 64, 64);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableBlend();
         context.getMatrices().pop();
     }
 }

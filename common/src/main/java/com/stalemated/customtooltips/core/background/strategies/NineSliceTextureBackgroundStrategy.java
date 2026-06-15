@@ -40,6 +40,7 @@ public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrat
         context.drawTexture(texture, x + corner, y + corner, width - corner * 2, height - corner * 2, corner, corner, texW - corner * 2, texH - corner * 2, texW, texH);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableBlend();
         context.getMatrices().pop();
     }
 }
