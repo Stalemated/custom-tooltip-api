@@ -8,7 +8,6 @@ import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 
 import com.stalemated.customtooltips.util.ToastManager;
-import com.stalemated.lib.helper.PlatformHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -120,18 +119,6 @@ public class ListScreenUIFactory {
                 .dimensions(getButtonStartX(5, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
                 .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_screen.paste_button")))
                 .build());
-
-        if (PlatformHelper.INSTANCE.isModLoaded("resized_scrollable_tooltips")) {
-            buttons.add(ButtonWidget.builder(getDimensionsScreenIcon(), button -> {
-                        MinecraftClient client = MinecraftClient.getInstance();
-                        if (client != null) {
-                            //client.setScreen(TooltipDimensionsScreen.create(screen));
-                        }
-                    })
-                    .dimensions(getButtonStartX(6, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
-                    .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_dimensions_screen.title")))
-                    .build());
-        }
 
         return buttons;
     }

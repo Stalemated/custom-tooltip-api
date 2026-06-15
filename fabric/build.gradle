@@ -30,8 +30,8 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
-    // StaleLib common code
-    modImplementation("com.stalemated.lib:stalelib-fabric:${rootProject.stalelib_version}")
+    // S-Lib common code
+    modImplementation("com.stalemated.lib:s-lib-fabric:${rootProject.s_lib_version}")
 
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-fabric"

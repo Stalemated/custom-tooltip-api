@@ -14,8 +14,8 @@ dependencies {
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
-    // StaleLib common code
-    modImplementation("com.stalemated.lib:stalelib-common:${rootProject.stalelib_version}")
+    // S-Lib common code
+    modImplementation("com.stalemated.lib:s-lib-common:${rootProject.s_lib_version}")
 
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-fabric"
