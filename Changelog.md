@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.0
+
+**This release marks a massive structural refactoring, splitting features into multiple mods and introducing S-Lib as a dependency!**
+
+### Changes
+- Decoupled and removed all tooltip scrolling and resizing logic, moving it to a brand-new standalone mod: **Smart Tooltip Scroll**.
+- **Custom Tooltip API** now requires the **S-Lib** shared library dependency.
+
+### Fixes
+- Resolved crashes that occurred when using `InsertStrategy` and `ReplaceAllStrategy`.
+- Fixed Tierify compatibility issues, resolving a bug where custom backgrounds and borders would fail to render.
+
 ## 3.3.0
 
 **This release includes resizable and scrollable tooltips!**
