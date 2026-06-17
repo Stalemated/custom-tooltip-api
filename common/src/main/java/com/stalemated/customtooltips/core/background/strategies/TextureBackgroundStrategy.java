@@ -1,29 +1,25 @@
 package com.stalemated.customtooltips.core.background.strategies;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
-import com.stalemated.customtooltips.core.background.helper.EnableBlendHelper;
+import com.stalemated.customtooltips.core.background.helper.DefaultBackgroundHelper;
+import com.stalemated.customtooltips.core.background.helper.BlendHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 public class TextureBackgroundStrategy implements BackgroundRenderStrategy {
     @Override
     public void render(DrawContext context, int x, int y, int width, int height, int z, int defaultColor, TooltipEntry entry) {
-        if (entry.backgroundTexture == null || entry.backgroundTexture.isEmpty()) {
-            context.fill(x, y, x + width, y + height, z, TooltipBackgroundManager.getBackgroundColorStart(defaultColor));
+        if (DefaultBackgroundHelper.renderDefaultBackground(context, x, y, width, height, z, defaultColor, entry) == 1) {
             return;
         }
 
         Identifier texture = new Identifier(entry.backgroundTexture);
 
-        EnableBlendHelper.enableBlend(context, z, defaultColor);
+        BlendHelper.enableBlend(context, z, defaultColor);
 
         context.drawTexture(texture, x, y, width, height, 0.0F, 0.0F, 64, 64, 64, 64);
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
-        context.getMatrices().pop();
+        BlendHelper.disableBlend(context);
     }
 }

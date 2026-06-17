@@ -1,18 +1,16 @@
 package com.stalemated.customtooltips.core.background.strategies;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
-import com.stalemated.customtooltips.core.background.helper.EnableBlendHelper;
+import com.stalemated.customtooltips.core.background.helper.DefaultBackgroundHelper;
+import com.stalemated.customtooltips.core.background.helper.BlendHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrategy {
     @Override
     public void render(DrawContext context, int x, int y, int width, int height, int z, int defaultColor, TooltipEntry entry) {
-        if (entry.backgroundTexture == null || entry.backgroundTexture.isEmpty()) {
-            context.fill(x, y, x + width, y + height, z, TooltipBackgroundManager.getBackgroundColorStart(defaultColor));
+        if (DefaultBackgroundHelper.renderDefaultBackground(context, x, y, width, height, z, defaultColor, entry) == 1) {
             return;
         }
 
@@ -22,7 +20,7 @@ public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrat
         int texW = 64;
         int texH = 64;
 
-        EnableBlendHelper.enableBlend(context, z, defaultColor);
+        BlendHelper.enableBlend(context, z, defaultColor);
 
         // Corners
         context.drawTexture(texture, x, y, corner, corner, 0, 0, corner, corner, texW, texH); // TL
@@ -39,8 +37,6 @@ public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrat
         // Center
         context.drawTexture(texture, x + corner, y + corner, width - corner * 2, height - corner * 2, corner, corner, texW - corner * 2, texH - corner * 2, texW, texH);
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
-        context.getMatrices().pop();
+        BlendHelper.disableBlend(context);
     }
 }

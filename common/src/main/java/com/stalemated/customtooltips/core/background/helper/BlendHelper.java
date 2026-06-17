@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import net.minecraft.client.gui.DrawContext;
 
-public class EnableBlendHelper {
+public class BlendHelper {
     public static void enableBlend(DrawContext context, int z, int defaultColor) {
         context.getMatrices().push();
         context.getMatrices().translate(0, 0, z);
@@ -15,5 +15,11 @@ public class EnableBlendHelper {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+    }
+
+    public static void disableBlend(DrawContext context) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableBlend();
+        context.getMatrices().pop();
     }
 }
