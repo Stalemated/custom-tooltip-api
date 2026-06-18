@@ -12,10 +12,13 @@ public class InsertStrategy implements TooltipPositionStrategy {
 
     @Override
     public void modifyTooltip(List<Text> lines, List<Text> componentsToInsert, TooltipEntry entry) {
-        int baseIndex = isTop ? 1 : lines.size();
+        int baseIndex = isTop ? Math.min(1, lines.size()) : lines.size();
         int insertIndex = baseIndex + entry.getLineOffset(lines.size());
 
-        if (entry.empty_line_before) lines.add(insertIndex++, Text.empty());
+        if (entry.empty_line_before) {
+            lines.add(insertIndex, Text.empty());
+            insertIndex++;
+        }
         TextFormatter.insertLines(lines, componentsToInsert, insertIndex, 0);
     }
 

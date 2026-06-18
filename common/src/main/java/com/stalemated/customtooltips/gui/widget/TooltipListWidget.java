@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.gui;
+package com.stalemated.customtooltips.gui.widget;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.CustomTooltipApi;
@@ -6,9 +6,8 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.sorting.SortMode;
 import com.stalemated.customtooltips.core.sorting.TooltipSorter;
 import com.stalemated.customtooltips.ConfigManager;
-import com.stalemated.customtooltips.gui.widget.ReorderActionsWidget;
-import com.stalemated.customtooltips.gui.widget.RowActionsWidget;
-import com.stalemated.customtooltips.gui.widget.ScrollingTextRenderer;
+import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
+import com.stalemated.lib.helper.text.ScrollingTextRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
@@ -112,12 +111,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
             boolean isHoveringOverText = mouseX >= textStartX && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
             if (isHoveringOverText) {
-                List<Text> hoverTooltip = new ArrayList<>();
-                if (client.textRenderer.getWidth(targetText) > availableTextWidth) {
-                    hoverTooltip.add(Text.literal(targetText));
-                    hoverTooltip.add(Text.empty());
-                }
-                hoverTooltip.addAll(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
+                List<Text> hoverTooltip = new ArrayList<>(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
                 TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip, this.tooltipEntry);
             }
         }

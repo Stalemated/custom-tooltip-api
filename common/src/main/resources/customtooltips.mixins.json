@@ -6,10 +6,9 @@
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",
-    "KeyBindingAccessor",
+    "accessor.KeyBindingAccessor",
     "StringControllerElementMixin",
-    "TextFieldWidgetMixin",
-    "MouseMixin"
+    "TextFieldWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

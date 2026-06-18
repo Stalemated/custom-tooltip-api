@@ -28,6 +28,18 @@ subprojects {
         maven { url "https://maven.terraformersmc.com/releases/" }
         maven { url 'https://thedarkcolour.github.io/KotlinForForge/' }
         maven { url 'https://maven.quiltmc.org/repository/release' }
+        maven { url "https://api.modrinth.com/maven" }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url "https://cursemaven.com"
+                }
+            }
+            filter {
+                includeGroup "curse.maven"
+            }
+        }
+        mavenLocal()
     }
 
     dependencies {

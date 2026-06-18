@@ -22,9 +22,10 @@ public class NeoForgeTooltipEvents {
         if (entry != null) {
             if (entry.hasCustomBackground()) {
                 int width = 0;
-                int height = event.getComponents().size() == 1 ? -2 : 0;
-                
-                for (TooltipComponent component : event.getComponents()) {
+                int height = 0;
+
+                for (int i = 0; i < event.getComponents().size(); i++) {
+                    TooltipComponent component = event.getComponents().get(i);
                     width = Math.max(width, component.getWidth(event.getFont()));
                     height += component.getHeight();
                 }
@@ -36,20 +37,18 @@ public class NeoForgeTooltipEvents {
 
                 DrawContext context = event.getGraphics();
                 BackgroundRenderStrategy strategy = BackgroundStrategyFactory.getStrategy(entry.backgroundType);
-                
+
                 int originalColor = event.getBackgroundStart();
                 strategy.render(context, bgX, bgY, bgWidth, bgHeight, 400, originalColor, entry);
 
                 event.setBackgroundStart(0x00000000);
                 event.setBackgroundEnd(0x00000000);
-                event.setBorderStart(0x00000000);
-                event.setBorderEnd(0x00000000);
             } else {
                 event.setBackgroundStart(TooltipBackgroundManager.getBackgroundColorStart(event.getBackgroundStart()));
                 event.setBackgroundEnd(TooltipBackgroundManager.getBackgroundColorEnd(event.getBackgroundEnd()));
-                event.setBorderStart(TooltipBackgroundManager.getBorderColorStart(event.getBorderStart()));
-                event.setBorderEnd(TooltipBackgroundManager.getBorderColorEnd(event.getBorderEnd()));
             }
+            event.setBorderStart(TooltipBackgroundManager.getBorderColorStart(event.getBorderStart()));
+            event.setBorderEnd(TooltipBackgroundManager.getBorderColorEnd(event.getBorderEnd()));
         }
     }
 }

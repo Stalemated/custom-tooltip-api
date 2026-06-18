@@ -30,12 +30,27 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
-
+    // S-Lib common code
+    modImplementation("com.stalemated.lib:s-lib-fabric:${rootProject.s_lib_version}")
 
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-fabric"
     // ModMenu
     modImplementation "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
+
+    // Legendary Tooltips (compat)
+    modCompileOnly "curse.maven:legendary-tooltips-fabric-542478:4940615"
+    // Forge Config API Port (compat)
+    modCompileOnly "curse.maven:forge-config-api-port-547434:7260491"
+    // Prism (compat)
+    modCompileOnly "curse.maven:prism-fabric-665526:4650327"
+    // Iceberg (compat)
+    modCompileOnly "curse.maven:iceberg-fabric-539382:5838145"
+
+    // Tierify (compat)
+    modCompileOnly "curse.maven:tierify-974356:5803071"
+    // Necronomicon API (compat)
+    modCompileOnly "maven.modrinth:necronomicon:1.6.0+1.20.1-fabric"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

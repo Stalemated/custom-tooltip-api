@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.stalemated.lib.helper.PlatformHelper;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class CustomBackgroundManager {

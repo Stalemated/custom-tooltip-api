@@ -1,11 +1,12 @@
-package com.stalemated.customtooltips.gui;
+package com.stalemated.customtooltips.gui.screen;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.factories.ListScreenUIFactory;
+import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
+import com.stalemated.customtooltips.gui.widget.TooltipListWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import com.stalemated.customtooltips.util.ToastManager;
 import net.minecraft.text.Text;
@@ -22,8 +23,6 @@ public class TooltipListScreen extends Screen {
     private String searchText = "";
     private TooltipEntry activeTooltip = null;
     private List<Text> activeTooltipText = null;
-    private int activeTooltipBackgroundOpacity = -1;
-    private int activeTooltipBorderOpacity = -1;
     public static boolean showApiEntries = false;
 
     public TooltipListScreen(Screen parent) {
@@ -57,8 +56,6 @@ public class TooltipListScreen extends Screen {
     public void setHoveredTooltip(List<Text> tooltipText, TooltipEntry tooltip) {
         this.activeTooltip = tooltip;
         this.activeTooltipText = tooltipText;
-        this.activeTooltipBackgroundOpacity = tooltip.backgroundOpacity;
-        this.activeTooltipBorderOpacity = tooltip.borderOpacity;
     }
 
     private void showToasts() {
@@ -80,19 +77,13 @@ public class TooltipListScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.activeTooltipText = null;
-        this.activeTooltipBackgroundOpacity = -1;
-        this.activeTooltipBorderOpacity = -1;
 
         super.render(context, mouseX, mouseY, delta);
 
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
         if (this.activeTooltipText != null) {
-            TooltipBackgroundManager.setCurrentEntry(this.activeTooltip);
-            TooltipBackgroundManager.setCurrentBorderOpacity(this.activeTooltipBorderOpacity);
-            TooltipBackgroundManager.setCurrentBackgroundOpacity(this.activeTooltipBackgroundOpacity);
-            context.drawTooltip(this.textRenderer, this.activeTooltipText, mouseX, mouseY);
-            TooltipBackgroundManager.clearState();
+            RenderGuiTooltipHelper.renderGuiTooltip(this.activeTooltip, this.activeTooltipText, context, mouseX, mouseY);
         }
     }
 

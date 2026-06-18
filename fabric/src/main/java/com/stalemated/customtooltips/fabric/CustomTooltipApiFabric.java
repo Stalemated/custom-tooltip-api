@@ -1,7 +1,7 @@
 package com.stalemated.customtooltips.fabric;
 
 import com.stalemated.customtooltips.CustomTooltipApiClient;
-import com.stalemated.customtooltips.gui.TooltipEditScreen;
+import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;

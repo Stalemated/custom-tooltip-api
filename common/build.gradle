@@ -2,17 +2,31 @@ architectury {
     common rootProject.enabled_platforms.split(',')
 }
 
+loom {
+    mixin {
+        defaultRefmapName = "customtooltips-common.refmap.json"
+    }
+}
+
 dependencies {
     // We depend on Fabric Loader here to use the Fabric @Environment annotations,
     // which get remapped to the correct annotations on each platform.
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
-    // Required to resolve injected Fabric interfaces during compilation (like FabricItemStack)
-    modCompileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    // S-Lib common code
+    modImplementation("com.stalemated.lib:s-lib-common:${rootProject.s_lib_version}")
 
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-fabric"
+    
+    // Required to resolve injected Fabric interfaces during compilation (like FabricItemStack)
+    modCompileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+    // Legendary Tooltips (IDE Common compat)
+    modCompileOnly "curse.maven:legendary-tooltips-fabric-542478:4940615"
+    // Iceberg (IDE Common compat)
+    modCompileOnly "curse.maven:iceberg-fabric-539382:5838145"
 }
 
 jar {

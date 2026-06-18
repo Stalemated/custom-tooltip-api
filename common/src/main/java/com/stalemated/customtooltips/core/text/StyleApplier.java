@@ -1,7 +1,8 @@
 package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.util.ColorUtils;
+import com.stalemated.lib.util.color.ColorUtils;
+import com.stalemated.lib.util.color.GradientGenerator;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;

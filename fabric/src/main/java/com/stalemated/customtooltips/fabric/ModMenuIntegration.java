@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.fabric;
 
-import com.stalemated.customtooltips.gui.TooltipListScreen;
+import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.fabricmc.api.EnvType;

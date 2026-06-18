@@ -37,6 +37,13 @@ ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.customtooltips]]
+modId = "s_lib"
+mandatory = true
+versionRange = "[0.0.1,)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.customtooltips]]
 modId = "yet_another_config_lib_v3"
 type = "required"
 versionRange = "[3.8.2,)"

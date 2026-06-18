@@ -9,6 +9,7 @@ public class ReplaceAllStrategy implements TooltipPositionStrategy {
     @Override
     public void modifyTooltip(List<Text> lines, List<Text> componentsToInsert, TooltipEntry entry) {
         lines.clear();
+        if (componentsToInsert.isEmpty()) componentsToInsert = List.of(Text.of(""));
         lines.addAll(componentsToInsert);
     }
     @Override

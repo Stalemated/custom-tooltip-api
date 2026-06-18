@@ -2,7 +2,10 @@ package com.stalemated.customtooltips.core;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.item.ItemStack;
+
+import static com.stalemated.lib.util.color.ColorUtils.DEFAULT_OPACITY;
 
 public class TooltipBackgroundManager {
     private static int currentBackgroundOpacity = -1;
@@ -15,13 +18,15 @@ public class TooltipBackgroundManager {
         TooltipEntry targetEntry = null;
 
         for (TooltipEntry entry : ConfigManager.getConfig().entries) {
-            if (TooltipProcessor.shouldNotProcessEntry(entry, stack)) continue;
-            if (entry.require_keybind && !TooltipProcessor.isHoldKeyPressed()) continue;
+            if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) continue;
 
-            targetBackgroundOpacity = entry.backgroundOpacity;
-            targetBorderOpacity = entry.borderOpacity;
-            targetEntry = entry;
-            break;
+            if (entry.matches(stack) && entry.areItemConditionsMet(stack)) {
+                if (entry.require_keybind && !TooltipProcessor.isHoldKeyPressed()) continue;
+                targetBackgroundOpacity = entry.backgroundOpacity;
+                targetBorderOpacity = entry.borderOpacity;
+                targetEntry = entry;
+                break;
+            }
         }
 
         currentBorderOpacity = targetBorderOpacity;
@@ -59,20 +64,26 @@ public class TooltipBackgroundManager {
         currentEntry = null;
     }
 
-    private static int scaleAlpha(int color, int currentOpacity) {
-        int value = currentOpacity != -1 ? currentOpacity : TooltipEntry.DEFAULT_OPACITY;
+    public static int scaleBackgroundAlpha(int color) {
+        int value = TooltipBackgroundManager.getCurrentBackgroundOpacity() != -1
+                ? TooltipBackgroundManager.getCurrentBackgroundOpacity()
+                : DEFAULT_OPACITY;
+
         int originalAlpha = (color >> 24) & 0xFF;
         int newAlpha = Math.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
 
         return (color & 0x00FFFFFF) | (newAlpha << 24);
     }
 
-    public static int scaleBackgroundAlpha(int color) {
-        return scaleAlpha(color, getCurrentBackgroundOpacity());
-    }
-
     public static int scaleBorderAlpha(int color) {
-        return scaleAlpha(color, getCurrentBorderOpacity());
+        int value = TooltipBackgroundManager.getCurrentBorderOpacity() != -1
+                ? TooltipBackgroundManager.getCurrentBorderOpacity()
+                : DEFAULT_OPACITY;
+
+        int originalAlpha = (color >> 24) & 0xFF;
+        int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
+
+        return (color & 0x00FFFFFF) | (newAlpha << 24);
     }
 
     public static int getBorderColorStart(int originalColor) {

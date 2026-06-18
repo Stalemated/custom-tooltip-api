@@ -4,9 +4,10 @@ import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.core.text.StyleApplier;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
-import com.stalemated.customtooltips.core.target.TargetMatcher;
-import com.stalemated.customtooltips.core.target.TargetMatcherFactory;
-import com.stalemated.customtooltips.util.ColorUtils;
+import com.stalemated.lib.predicate.target.TargetMatcher;
+import com.stalemated.lib.predicate.target.TargetMatcherFactory;
+import com.stalemated.lib.util.color.ColorUtils;
+import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
@@ -14,8 +15,11 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+
+import static com.stalemated.lib.util.color.ColorUtils.*;
 
 public class TooltipEntry {
 
@@ -24,25 +28,17 @@ public class TooltipEntry {
     }
 
     public enum TooltipPosition {
-        REPLACE_NAME, REPLACE_ALL, TOP, BOTTOM, APPEND, PREPEND
+         TOP, BOTTOM, REPLACE_NAME, REPLACE_LINE, REPLACE_ALL, APPEND, PREPEND
     }
 
     public enum BackgroundType {
-        SOLID, GRADIENT, SIMPLE_TEXTURE, TEXTURE
+        SOLID, GRADIENT, SIMPLE_TEXTURE, TEXTURE, REPEATING_TEXTURE
     }
 
     public String target = "";
     public List<String> text = new ArrayList<>();
 
     public TooltipStyle style = TooltipStyle.SOLID;
-
-    public static final int DEFAULT_COLOR = 0xFFFFFF;
-    public static final int DEFAULT_OPACITY = 240;
-    public static final List<Integer> DEFAULT_BORDER_COLORS = new ArrayList<>(List.of(0x505000FF, 0x5028007F));
-    public static final List<Integer> DEFAULT_BACKGROUND_COLORS = new ArrayList<>(List.of(0xF0100010, 0xF0100010));
-    public static final String DEFAULT_COLOR_STRING = "#" + Integer.toHexString(DEFAULT_COLOR).toUpperCase();
-    public static final List<String> DEFAULT_BORDER_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BORDER_COLORS.getFirst()).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BORDER_COLORS.get(1)).toUpperCase()));
-    public static final List<String> DEFAULT_BACKGROUND_COLORS_STRING = new ArrayList<>(List.of("#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.getFirst()).toUpperCase(), "#" + Integer.toHexString(DEFAULT_BACKGROUND_COLORS.get(1)).toUpperCase()));
 
     public List<String> colors = new ArrayList<>();
     public List<String> borderColors = new ArrayList<>();
@@ -147,11 +143,21 @@ public class TooltipEntry {
     public List<Text> getCachedStaticText() { return this.cachedStaticText; }
     public void setCachedStaticText(List<Text> text) { this.cachedStaticText = text; }
 
-    public boolean hasCustomBorder() { return !this.borderColors.isEmpty(); }
+    public boolean hasCustomBorder() {
+        return !this.borderColors.isEmpty() && !List.of(this.parsedBorderColorStart, this.parsedBorderColorEnd).equals(DEFAULT_BORDER_COLORS) ||
+                this.borderOpacity != DEFAULT_OPACITY;
+    }
     public int getParsedBorderColorStart() { return this.parsedBorderColorStart; }
     public int getParsedBorderColorEnd() { return this.parsedBorderColorEnd; }
 
-    public boolean hasCustomBackground() { return !this.backgroundColors.isEmpty(); }
+    public boolean hasCustomBackground() {
+        return this.backgroundOpacity != DEFAULT_OPACITY ||
+                !this.backgroundColors.isEmpty() && this.parsedBackgroundColorStart != DEFAULT_BACKGROUND_COLORS.get(0) && this.backgroundType == BackgroundType.SOLID ||
+                !this.backgroundColors.isEmpty() && !List.of(this.parsedBackgroundColorStart, this.parsedBackgroundColorEnd).equals(DEFAULT_BACKGROUND_COLORS) && this.backgroundType == BackgroundType.GRADIENT ||
+                this.backgroundType == BackgroundType.TEXTURE && !this.backgroundTexture.isEmpty() ||
+                this.backgroundType == BackgroundType.SIMPLE_TEXTURE && !this.backgroundTexture.isEmpty() ||
+                this.backgroundType == BackgroundType.REPEATING_TEXTURE && !this.backgroundTexture.isEmpty();
+    }
     public int getParsedBackgroundColorStart() { return this.parsedBackgroundColorStart; }
     public int getParsedBackgroundColorEnd() { return this.parsedBackgroundColorEnd; }
 
@@ -264,11 +270,20 @@ public class TooltipEntry {
     }
 
     public int getLineOffset(int size) {
-        if (this.position == TooltipPosition.TOP || this.position == TooltipPosition.REPLACE_NAME || this.position == TooltipPosition.APPEND || this.position == TooltipPosition.PREPEND) {
-            return Math.max(this.lineOffset, 0) < size ? Math.max(this.lineOffset, 0) : Math.max(size - 1, 0);
+        if (size == 0) return 0;
+        if (acceptsPositiveOffset()) {
+            return Math.clamp(this.lineOffset, 0, size - 1);
         } else {
-            return Math.min(this.lineOffset, 0) > (-size) ? Math.min(this.lineOffset, 0) : Math.min(-(size - 1), 0);
+            return Math.clamp(this.lineOffset, -(size - 1), 0);
         }
+    }
+
+    private boolean acceptsPositiveOffset() {
+        return this.position == TooltipPosition.TOP ||
+                this.position == TooltipPosition.REPLACE_NAME ||
+                this.position == TooltipPosition.APPEND ||
+                this.position == TooltipPosition.PREPEND ||
+                this.position == TooltipPosition.REPLACE_LINE;
     }
 
     /**

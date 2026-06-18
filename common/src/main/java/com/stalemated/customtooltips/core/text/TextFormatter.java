@@ -2,9 +2,11 @@ package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.text.parser.TextParser;
+import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.item.ItemStack;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class TextFormatter {
     public static void insertLines(List<Text> destination, List<Text> source, int startIndex, int sourceOffset) {
         int currentIndex = startIndex;
         for (int i = sourceOffset; i < source.size(); i++) {
-            if (currentIndex > destination.size()) currentIndex = destination.size();
+            currentIndex = MathUtils.clamp(currentIndex, 0, destination.size());
             destination.add(currentIndex, source.get(i));
             currentIndex++;
         }
@@ -51,5 +53,14 @@ public class TextFormatter {
         }
         if (suffix.equals(" ")) modified.append(baseLine);
         return modified;
+    }
+
+    public static void replaceLine(List<Text> lines, List<Text> componentsToInsert, int index) {
+        if (lines.isEmpty()) {
+            insertLines(lines, componentsToInsert, 0, 0);
+            return;
+        }
+        lines.set(index, componentsToInsert.get(0));
+        TextFormatter.insertLines(lines, componentsToInsert, index + 1, 1);
     }
 }

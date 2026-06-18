@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.mixin.client;
+package com.stalemated.customtooltips.mixin.client.accessor;
 
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;

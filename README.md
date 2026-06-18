@@ -1,15 +1,16 @@
 # Custom Tooltip API
 
-**Custom Tooltip API** is a powerful client-side Minecraft mod and developer library that gives you full control over item tooltips. Add custom lore, dynamic real-time data, animated gradients, resizable scrollable panels, and custom backgrounds, all configurable in-game or through code.
+**Custom Tooltip API** is a powerful client-side Minecraft mod and developer library that gives you full control over item tooltips. Add custom lore, dynamic real-time data, animated gradients, and custom backgrounds, all configurable in-game or through code.
 
-> **Latest:** 3.3.0: Tooltips are now resizable and scrollable!
+> **⚠️ Looking for Tooltip Scrolling or Resizing?**
+> Starting with version **4.0.0**, all tooltip scrolling, resizing, and custom dimension limits have been moved to a separate standalone mod: **[Smart Tooltip Scroll (STS)](https://github.com/Stalemated/smart_tooltip_scroll)**. 
+> Additionally, this mod now requires **[S-Lib](https://github.com/Stalemated/s-lib)** to run.
 
 ---
 
 ## ✨ Key Features
 
 ### 🎨 Rich Visual Styling
-- **Resizable & scrollable tooltips:** Cap tooltips to a percentage of your screen. If they overflow, scroll through them with your mouse wheel.
 - **Animated gradients:** Rainbow, Slide, Breathing, and Solid Gradient styles
 - **Solid colors** via hex codes (`#RRGGBB`), legacy codes (`&d`), or Minecraft color names (`blue`)
 - **Custom backgrounds and borders:** Solid, Gradient, Texture (Stretch), or Texture (Framed) modes with full opacity control. Drop any background into `config/custom-tooltip-api/backgrounds/` and enable it per tooltip.
@@ -33,7 +34,6 @@ Place your tooltip exactly where it belongs: `Top`, `Bottom`, `Append`, `Prepend
 Full **YACL + ModMenu** integration with a completely redesigned config screen:
 - **Live Preview:** Hold `CTRL` in the Edit Screen to instantly see your tooltip
 - Copy/paste entries to clipboard, reorder, duplicate, enable/disable, and sort tooltips
-- Dedicated **Scroll & Custom Tooltip Dimensions** screen (v3.3.0+)
 - Toggleable visibility conditions: show only when an item is Damaged, Enchanted, or Unbreakable
 - "Require Keybind" mode: show tooltips when the player holds a configurable key
 
@@ -68,22 +68,28 @@ API entries merge seamlessly with user-defined JSON configs. See `com.stalemated
 
 ## 🏗️ Building from Source
 
-#### 1. Clone the repository
+Starting from v4.0.0, CTA depends on **S-Lib**, which must be published to your local Maven repository before compiling.
+
+#### 1. Clone and Publish S-Lib
+```bash
+git clone https://github.com/Stalemated/s-lib.git
+cd s-lib
+# Publish to maven local
+gradlew.bat publishToMavenLocal # (Windows)
+./gradlew publishToMavenLocal   # (Linux/macOS)
+cd ..
+```
+
+#### 2. Clone CTA and Build
 ```bash
 git clone https://github.com/Stalemated/custom-tooltip-api.git
 cd custom-tooltip-api
+# Build the mod
+gradlew.bat build # (Windows)
+./gradlew build   # (Linux/macOS)
 ```
 
-#### 2. Build with Gradle
-```bash
-# Windows
-gradlew.bat build
-
-# Linux / macOS
-./gradlew build
-```
-
-Output: `build/libs/custom-tooltip-api-<version>.jar`
+Output jars will be located in `[loader]/build/libs/` or `build/libs/` depending on the platform.
 
 ---
 
@@ -99,6 +105,7 @@ Output: `build/libs/custom-tooltip-api-<version>.jar`
 
 ## 📦 Dependencies
 
+- [S-Lib](https://github.com/Stalemated/s-lib)
 - [YACL](https://www.curseforge.com/minecraft/mc-mods/yacl)
 #### Fabric only
 - [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
