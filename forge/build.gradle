@@ -43,13 +43,6 @@ dependencies {
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-forge"
 
-    // Legendary Tooltips (compat)
-    modCompileOnly "curse.maven:legendary-tooltips-532127:4662781"
-    // Prism (compat)
-    modCompileOnly "curse.maven:prism-lib-638111:4650325"
-    // Iceberg (compat)
-    modCompileOnly "curse.maven:iceberg-520110:5838149"
-
     // quilt-parsers is a transitive runtime dependency of YACL Forge (used by GsonConfigSerializer)
     // Loom does not propagate JarJar (Jar-in-Jar) automatically so we declare it explicitly
     forgeRuntimeLibrary "org.quiltmc.parsers:gson:0.3.0"

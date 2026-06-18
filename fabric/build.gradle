@@ -38,15 +38,6 @@ dependencies {
     // ModMenu
     modImplementation "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
 
-    // Legendary Tooltips (compat)
-    modCompileOnly "curse.maven:legendary-tooltips-fabric-542478:4940615"
-    // Forge Config API Port (compat)
-    modCompileOnly "curse.maven:forge-config-api-port-547434:7260491"
-    // Prism (compat)
-    modCompileOnly "curse.maven:prism-fabric-665526:4650327"
-    // Iceberg (compat)
-    modCompileOnly "curse.maven:iceberg-fabric-539382:5838145"
-
     // Tierify (compat)
     modCompileOnly "curse.maven:tierify-974356:5803071"
     // Necronomicon API (compat)
