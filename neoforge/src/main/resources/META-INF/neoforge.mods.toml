@@ -38,8 +38,8 @@ side = "CLIENT"
 
 [[dependencies.customtooltips]]
 modId = "s_lib"
-mandatory = true
-versionRange = "[0.0.1,)"
+type = "required"
+versionRange = "[1.0.1+1.21.1,)"
 ordering = "AFTER"
 side = "CLIENT"
 

@@ -44,6 +44,9 @@ repositories {
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
+    // S-Lib common code
+    modImplementation("com.stalemated.lib:s-lib-neoforge:${rootProject.s_lib_version}")
+
     // YACL
     modImplementation "dev.isxander:yet-another-config-lib:${rootProject.yacl_version}-neoforge"
 
