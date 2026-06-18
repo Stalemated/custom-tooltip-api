@@ -7,7 +7,6 @@ import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
 import com.stalemated.lib.predicate.target.TargetMatcher;
 import com.stalemated.lib.predicate.target.TargetMatcherFactory;
 import com.stalemated.lib.util.color.ColorUtils;
-import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
@@ -15,7 +14,6 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -28,7 +26,7 @@ public class TooltipEntry {
     }
 
     public enum TooltipPosition {
-         TOP, BOTTOM, REPLACE_NAME, REPLACE_LINE, REPLACE_ALL, APPEND, PREPEND
+        TOP, BOTTOM, REPLACE_NAME, REPLACE_LINE, REPLACE_ALL, APPEND, PREPEND
     }
 
     public enum BackgroundType {
@@ -62,7 +60,7 @@ public class TooltipEntry {
     public boolean require_keybind = false;
     public boolean empty_line_before = false;
     public boolean hide_vanilla_lines = false;
-    
+
     public boolean show_only_if_damaged = false;
     public boolean show_only_if_enchanted = false;
     public boolean show_only_if_unbreakable = false;
@@ -152,7 +150,7 @@ public class TooltipEntry {
 
     public boolean hasCustomBackground() {
         return this.backgroundOpacity != DEFAULT_OPACITY ||
-                !this.backgroundColors.isEmpty() && this.parsedBackgroundColorStart != DEFAULT_BACKGROUND_COLORS.get(0) && this.backgroundType == BackgroundType.SOLID ||
+                !this.backgroundColors.isEmpty() && this.parsedBackgroundColorStart != DEFAULT_BACKGROUND_COLORS.getFirst() && this.backgroundType == BackgroundType.SOLID ||
                 !this.backgroundColors.isEmpty() && !List.of(this.parsedBackgroundColorStart, this.parsedBackgroundColorEnd).equals(DEFAULT_BACKGROUND_COLORS) && this.backgroundType == BackgroundType.GRADIENT ||
                 this.backgroundType == BackgroundType.TEXTURE && !this.backgroundTexture.isEmpty() ||
                 this.backgroundType == BackgroundType.SIMPLE_TEXTURE && !this.backgroundTexture.isEmpty() ||

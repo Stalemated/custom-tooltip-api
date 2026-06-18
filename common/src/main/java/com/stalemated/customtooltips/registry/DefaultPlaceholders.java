@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.registry;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import com.stalemated.lib.helper.attribute.AttributeGetter;
@@ -20,8 +21,8 @@ public class DefaultPlaceholders {
         PlaceholderRegistry.register("item_id", stack -> Registries.ITEM.getId(stack.getItem()).toString());
 
         PlaceholderRegistry.register("enchantments", AttributeGetter::getEnchantments);
-        PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getRepairCost()));
-        PlaceholderRegistry.register("unbreakable", stack -> (stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable")) ? Text.translatable("customtooltips.unbreakable_item").getString() : "");
+        PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getOrDefault(DataComponentTypes.REPAIR_COST, 0)));
+        PlaceholderRegistry.register("unbreakable", stack -> stack.contains(DataComponentTypes.UNBREAKABLE) ? Text.translatable("customtooltips.unbreakable_item").getString() : "");
 
         PlaceholderRegistry.register("weapon_damage", AttributeGetter::calculateWeaponDamage);
         PlaceholderRegistry.register("weapon_speed", AttributeGetter::calculateWeaponSpeed);
@@ -29,6 +30,6 @@ public class DefaultPlaceholders {
         PlaceholderRegistry.register("food_hunger", AttributeGetter::getHunger);
         PlaceholderRegistry.register("food_saturation", AttributeGetter::getSaturation);
 
-        PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getNbt()));
+        PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getComponentChanges()));
     }
 }

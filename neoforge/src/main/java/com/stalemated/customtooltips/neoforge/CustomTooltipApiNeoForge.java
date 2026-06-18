@@ -1,8 +1,8 @@
 package com.stalemated.customtooltips.neoforge;
 
 import com.stalemated.customtooltips.CustomTooltipApiClient;
-import com.stalemated.customtooltips.gui.TooltipEditScreen;
-import com.stalemated.customtooltips.gui.TooltipListScreen;
+import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
+import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.SynchronousResourceReloader;

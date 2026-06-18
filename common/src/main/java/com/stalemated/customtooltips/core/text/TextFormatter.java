@@ -60,7 +60,7 @@ public class TextFormatter {
             insertLines(lines, componentsToInsert, 0, 0);
             return;
         }
-        lines.set(index, componentsToInsert.get(0));
+        lines.set(index, componentsToInsert.getFirst());
         TextFormatter.insertLines(lines, componentsToInsert, index + 1, 1);
     }
 }

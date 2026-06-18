@@ -14,6 +14,6 @@ public class ReplaceAllStrategy implements TooltipPositionStrategy {
     }
     @Override
     public Text modifyHeldItemName(Text originalName, List<Text> componentsToInsert, TooltipEntry entry) {
-        return componentsToInsert.isEmpty() ? originalName : componentsToInsert.get(0);
+        return componentsToInsert.isEmpty() ? originalName : componentsToInsert.getFirst();
     }
 }

@@ -13,7 +13,7 @@ public class RenderGuiTooltipHelper {
     public static void renderGuiTooltip(TooltipEntry entry, List<Text> lines, DrawContext context, int mouseX, int mouseY) {
 
         if (entry.position != TooltipEntry.TooltipPosition.REPLACE_NAME) {
-            lines.add(0, Text.of(entry.target));
+            lines.addFirst(Text.of(entry.target));
         }
 
         TooltipBackgroundManager.setCurrentBackgroundOpacity(entry.backgroundOpacity);

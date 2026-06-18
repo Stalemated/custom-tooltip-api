@@ -14,7 +14,7 @@ public class RepeatingTextureBackgroundStrategy implements BackgroundRenderStrat
             return;
         }
 
-        Identifier texture = new Identifier(entry.backgroundTexture);
+        Identifier texture = Identifier.of(entry.backgroundTexture);
 
         BlendHelper.enableBlend(context, z, defaultColor);
 
