@@ -14,6 +14,7 @@ public class BackgroundStrategyFactory {
         STRATEGIES.put(BackgroundType.GRADIENT, new GradientBackgroundStrategy());
         STRATEGIES.put(BackgroundType.TEXTURE, new NineSliceTextureBackgroundStrategy());
         STRATEGIES.put(BackgroundType.SIMPLE_TEXTURE, new TextureBackgroundStrategy());
+        STRATEGIES.put(BackgroundType.REPEATING_TEXTURE, new RepeatingTextureBackgroundStrategy());
     }
 
     public static BackgroundRenderStrategy getStrategy(BackgroundType type) {

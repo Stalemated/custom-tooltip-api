@@ -31,7 +31,7 @@ public class TooltipEntry {
     }
 
     public enum BackgroundType {
-        SOLID, GRADIENT, SIMPLE_TEXTURE, TEXTURE
+        SOLID, GRADIENT, SIMPLE_TEXTURE, TEXTURE, REPEATING_TEXTURE
     }
 
     public String target = "";
@@ -154,7 +154,8 @@ public class TooltipEntry {
                 !this.backgroundColors.isEmpty() && this.parsedBackgroundColorStart != DEFAULT_BACKGROUND_COLORS.get(0) && this.backgroundType == BackgroundType.SOLID ||
                 !this.backgroundColors.isEmpty() && !List.of(this.parsedBackgroundColorStart, this.parsedBackgroundColorEnd).equals(DEFAULT_BACKGROUND_COLORS) && this.backgroundType == BackgroundType.GRADIENT ||
                 this.backgroundType == BackgroundType.TEXTURE && !this.backgroundTexture.isEmpty() ||
-                this.backgroundType == BackgroundType.SIMPLE_TEXTURE && !this.backgroundTexture.isEmpty();
+                this.backgroundType == BackgroundType.SIMPLE_TEXTURE && !this.backgroundTexture.isEmpty() ||
+                this.backgroundType == BackgroundType.REPEATING_TEXTURE && !this.backgroundTexture.isEmpty();
     }
     public int getParsedBackgroundColorStart() { return this.parsedBackgroundColorStart; }
     public int getParsedBackgroundColorEnd() { return this.parsedBackgroundColorEnd; }
