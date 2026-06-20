@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.fabric.mixin.compat;
 
-import net.fabricmc.loader.api.FabricLoader;
+import com.stalemated.lib.helper.PlatformHelper;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -23,7 +23,7 @@ public class TierifyCompatPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("compat.tierify")) {
-            return FabricLoader.getInstance().isModLoaded("tiered");
+            return PlatformHelper.INSTANCE.isModLoadedAtLaunch("tiered");
         }
         return true;
     }

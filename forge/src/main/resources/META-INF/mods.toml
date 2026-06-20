@@ -16,6 +16,9 @@ logoFile = "META-INF/icon.jpg"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api"
 
 [[mixins]]
+config = "customtooltips.mixins.json"
+
+[[mixins]]
 config = "customtooltips-forge.mixins.json"
 
 [[dependencies.customtooltips]]
