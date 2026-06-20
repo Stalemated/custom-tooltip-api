@@ -15,7 +15,6 @@ A completely customizable, tag-based tooltip manager for developers and modpack 
 logoFile = "META-INF/icon.png"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api"
 
-
 [[mixins]]
 config = "customtooltips.mixins.json"
 

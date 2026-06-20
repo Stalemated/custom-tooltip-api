@@ -23,7 +23,7 @@
 			"com.stalemated.customtooltips.fabric.ModMenuIntegration"
 		]
 	},
-	"client": [
+	"mixins": [
 		"customtooltips.mixins.json",
 		"customtooltips-fabric.mixins.json"
 	],
