@@ -2,8 +2,8 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.stalemated.customtooltips.neoforge.mixin",
-  "compatibilityLevel": "JAVA_17",
-  "refmap": "customtooltips-forge.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "customtooltips-neoforge.refmap.json",
   "client": [
     "NeoForgeInGameHudMixin"
   ],
