@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.1+1.21.1
+
+### New Features
+- Added a new background render strategy: Repeating
+  - This mode allows you to set a custom background image, and it will infinitely repeat inside the tooltip bounds
+
+### Fixes
+- Fixed hard crash on Neoforge due to a mixin error
+
 ## 4.0.0
 
 **This release marks a massive structural refactoring, splitting features into multiple mods and introducing S-Lib as a dependency!**
