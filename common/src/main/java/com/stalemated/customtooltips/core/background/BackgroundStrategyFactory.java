@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.core.background;
 
-import com.stalemated.customtooltips.TooltipEntry.BackgroundType;
+import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.core.background.strategies.*;
 
 import java.util.EnumMap;

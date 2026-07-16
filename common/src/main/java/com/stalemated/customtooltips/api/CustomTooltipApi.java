@@ -2,6 +2,7 @@ package com.stalemated.customtooltips.api;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipRegistry;
+import com.stalemated.customtooltips.core.builder.TooltipEntryBuilderImpl;
 import com.stalemated.customtooltips.registry.PlaceholderRegistry;
 import net.minecraft.item.ItemStack;
 
@@ -58,5 +59,26 @@ public class CustomTooltipApi {
      */
     public static void registerPlaceholder(String key, Function<ItemStack, String> provider) {
         PlaceholderRegistry.register(key, provider);
+    }
+
+    /**
+     * Creates a new Builder instance for configuring a TooltipEntry.
+     *
+     * @param target The target item ID, tag ("#c:swords"), namespace ("minecraft:*"), regex ("regex:.*sword.*"), or all items ("*").
+     * @return A new Builder instance.
+     */
+    public static TooltipBuilder builder(String target) {
+        return new TooltipEntryBuilderImpl(target);
+    }
+
+    /**
+     * Generates a translation block string to be used in the tooltip.
+     * Example: builder.addLine("This is a " + CustomTooltipApi.translate("cta.item.sword"));
+     *
+     * @param translationKey The translation key.
+     * @return The translation block string.
+     */
+    public static String translate(String translationKey) {
+        return "<translate:" + translationKey + ">";
     }
 }

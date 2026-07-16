@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.gui.helper;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.lib.util.state.SharedTooltipState;
 import net.minecraft.client.MinecraftClient;
@@ -12,7 +13,7 @@ import java.util.List;
 public class RenderGuiTooltipHelper {
     public static void renderGuiTooltip(TooltipEntry entry, List<Text> lines, DrawContext context, int mouseX, int mouseY) {
 
-        if (entry.position != TooltipEntry.TooltipPosition.REPLACE_NAME) {
+        if (entry.position != TooltipPosition.REPLACE_NAME) {
             lines.add(0, Text.of(entry.target));
         }
 
