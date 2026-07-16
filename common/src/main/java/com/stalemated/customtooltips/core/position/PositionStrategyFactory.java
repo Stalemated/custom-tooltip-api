@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.core.position;
 
-import com.stalemated.customtooltips.TooltipEntry.TooltipPosition;
+import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.core.position.strategies.*;
 import java.util.EnumMap;
 import java.util.Map;

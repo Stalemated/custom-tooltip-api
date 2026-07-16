@@ -1,9 +1,13 @@
 package com.stalemated.customtooltips;
 
-import com.stalemated.customtooltips.api.CustomTooltipApi;
+import com.stalemated.customtooltips.api.*;
+import com.stalemated.customtooltips.api.enums.BackgroundType;
+import com.stalemated.customtooltips.api.enums.TooltipPosition;
+import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import com.stalemated.customtooltips.core.text.StyleApplier;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
+import com.stalemated.customtooltips.core.text.parser.TranslationParser;
 import com.stalemated.lib.predicate.target.TargetMatcher;
 import com.stalemated.lib.predicate.target.TargetMatcherFactory;
 import com.stalemated.lib.util.color.ColorUtils;
@@ -20,18 +24,6 @@ import java.util.function.Function;
 import static com.stalemated.lib.util.color.ColorUtils.*;
 
 public class TooltipEntry {
-
-    public enum TooltipStyle {
-        SOLID, STATIC_GRADIENT, SLIDE_GRADIENT, BREATHING_GRADIENT, RAINBOW
-    }
-
-    public enum TooltipPosition {
-        TOP, BOTTOM, REPLACE_NAME, REPLACE_LINE, REPLACE_ALL, APPEND, PREPEND
-    }
-
-    public enum BackgroundType {
-        SOLID, GRADIENT, SIMPLE_TEXTURE, TEXTURE, REPEATING_TEXTURE
-    }
 
     public String target = "";
     public List<String> text = new ArrayList<>();
@@ -60,7 +52,7 @@ public class TooltipEntry {
     public boolean require_keybind = false;
     public boolean empty_line_before = false;
     public boolean hide_vanilla_lines = false;
-
+    
     public boolean show_only_if_damaged = false;
     public boolean show_only_if_enchanted = false;
     public boolean show_only_if_unbreakable = false;
@@ -199,7 +191,7 @@ public class TooltipEntry {
         
         this.hasDynamicText = false;
         for (String line : this.text) {
-            if (PlaceholderParser.containsDynamicPlaceholders(line)) {
+            if (PlaceholderParser.containsDynamicPlaceholders(line) || TranslationParser.containsTranslation(line)) {
                 this.hasDynamicText = true;
                 break;
             }
@@ -231,7 +223,7 @@ public class TooltipEntry {
     }
 
     public TooltipEntry copy() {
-        return TooltipEntry.builder(this.target)
+        return CustomTooltipApi.builder(this.target)
                 .text(this.text)
                 .dynamicText(this.dynamicTextProvider)
                 .style(this.style)
@@ -282,418 +274,5 @@ public class TooltipEntry {
                 this.position == TooltipPosition.APPEND ||
                 this.position == TooltipPosition.PREPEND ||
                 this.position == TooltipPosition.REPLACE_LINE;
-    }
-
-    /**
-     * Creates a new Builder instance for configuring a TooltipEntry.
-     *
-     * @param target The target item ID, tag ("#c:swords"), namespace ("minecraft:*"), regex ("regex:.*sword.*"), or all items ("*").
-     * @return A new Builder instance.
-     */
-    public static Builder builder(String target) {
-        return new Builder(target);
-    }
-
-    /**
-     * A fluent builder class for creating and configuring {@link TooltipEntry} instances.
-     * Allows for method chaining to easily set tooltip properties before building or registering.
-     */
-    public static class Builder {
-        private final TooltipEntry entry;
-
-        /**
-         * Initializes a new Builder with the specified target.
-         *
-         * @param target The target item ID or tag.
-         */
-        public Builder(String target) {
-            this.entry = new TooltipEntry();
-            this.entry.target = target;
-        }
-
-        /**
-         * Adds a single line of text to the tooltip.
-         *
-         * @param line The text line to add.
-         * @return This builder instance.
-         */
-        public Builder addLine(String line) {
-            this.entry.text.add(line);
-            return this;
-        }
-
-        /**
-         * Adds multiple lines of text to the tooltip.
-         *
-         * @param lines A list of text lines to add.
-         * @return This builder instance.
-         */
-        public Builder text(List<String> lines) {
-            this.entry.text.addAll(lines);
-            return this;
-        }
-
-        /**
-         * Sets a dynamic text provider for this tooltip.
-         * This allows the text to change every frame based on the ItemStack's state (e.g., NBT data, enchantments, or any other dynamic properties).
-         * Overrides the static text set by {@link #text(List)} or {@link #addLine(String)}.
-         *
-         * @param provider A function that takes an ItemStack and returns a list of strings.
-         * @return This builder instance.
-         */
-        public Builder dynamicText(Function<ItemStack, List<String>> provider) {
-            this.entry.dynamicTextProvider = provider;
-            return this;
-        }
-
-        /**
-         * Sets the rendering and animation style of the tooltip.
-         *
-         * @param style The desired {@link TooltipStyle} (e.g., SOLID, RAINBOW, SLIDE_GRADIENT).
-         * @return This builder instance.
-         */
-        public Builder style(TooltipStyle style) {
-            this.entry.style = style;
-            return this;
-        }
-
-        /**
-         * Sets the colors used by the tooltip style.
-         * <p>
-         * Accepts hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
-         *
-         * @param colors The colors to apply (1 or 2 depending on the style).
-         * @return This builder instance.
-         */
-        public Builder colors(String... colors) {
-            this.entry.colors.addAll(List.of(colors));
-            return this;
-        }
-
-        /**
-         * Sets the colors used by the tooltip style from a list.
-         * <p>
-         * Accepts RGB hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
-         *
-         * @param colors A list of color strings.
-         * @return This builder instance.
-         */
-        public Builder colors(List<String> colors) {
-            this.entry.colors.addAll(colors);
-            return this;
-        }
-
-        /**
-         * Sets the border colors used by the tooltip.
-         * <p>
-         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
-         *
-         * @param colors The colors to apply (2 colors, start and end).
-         * @return This builder instance.
-         */
-        public Builder borderColors(String... colors) {
-            this.entry.borderColors.addAll(List.of(colors));
-            return this;
-        }
-
-        /**
-         * Sets the border colors used by the tooltip from a list.
-         * <p>
-         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
-         *
-         * @param colors A list of color strings (2 colors, start and end).
-         * @return This builder instance.
-         */
-        public Builder borderColors(List<String> colors) {
-            this.entry.borderColors.addAll(colors);
-            return this;
-        }
-
-        /**
-         * Sets the background colors used by the tooltip.
-         * <p>
-         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
-         *
-         * @param colors The colors to apply (2 colors, start and end).
-         * @return This builder instance.
-         */
-        public Builder backgroundColors(String... colors) {
-            this.entry.backgroundColors.addAll(List.of(colors));
-            return this;
-        }
-
-        /**
-         * Sets the background colors used by the tooltip from a list.
-         * <p>
-         * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
-         *
-         * @param colors A list of color strings (2 colors, start and end).
-         * @return This builder instance.
-         */
-        public Builder backgroundColors(List<String> colors) {
-            this.entry.backgroundColors.addAll(colors);
-            return this;
-        }
-
-        /**
-         * Sets the background type used by the tooltip.
-         *
-         * @param backgroundType The background type (SOLID, GRADIENT, TEXTURE).
-         * @return This builder instance.
-         */
-        public Builder backgroundType(BackgroundType backgroundType) {
-            this.entry.backgroundType = backgroundType;
-            return this;
-        }
-
-        /**
-         * Sets the texture identifier used for TEXTURE or SIMPLE_TEXTURE background type.
-         * <p>
-         * The default auto-generated Identifiers use the following path:
-         * {@code custom_tooltip_api:textures/gui/tooltip_backgrounds/<IMAGE_NAME>.png}
-         *
-         * @param backgroundTexture The identifier of the texture.
-         * @return This builder instance.
-         */
-        public Builder backgroundTexture(String backgroundTexture) {
-            this.entry.backgroundTexture = backgroundTexture;
-            return this;
-        }
-
-        /**
-         * Sets the tooltip's background opacity.
-         * <p>
-         * Accepts integers from 0 to 255 to adjust the individual tooltip's background opacity. 0 is fully transparent, while 255 is fully opaque.
-         *
-         * @param backgroundOpacity The background opacity of the tooltip.
-         * @return This builder instance.
-         */
-        public Builder backgroundOpacity(int backgroundOpacity) {
-            this.entry.backgroundOpacity = backgroundOpacity;
-            return this;
-        }
-
-        /**
-         * Sets the tooltip's border opacity.
-         * <p>
-         * Accepts integers from 0 to 255 to adjust the individual tooltip's border opacity. 0 is fully transparent, while 255 is fully opaque.
-         *
-         * @param borderOpacity The border opacity of the tooltip.
-         * @return This builder instance.
-         */
-        public Builder borderOpacity(int borderOpacity) {
-            this.entry.borderOpacity = borderOpacity;
-            return this;
-        }
-
-        /**
-         * Sets the position where the tooltip will be injected.
-         *
-         * @param position The desired {@link TooltipPosition} (e.g., TOP, BOTTOM, REPLACE_NAME).
-         * @return This builder instance.
-         */
-        public Builder position(TooltipPosition position) {
-            this.entry.position = position;
-            return this;
-        }
-
-        /**
-         * Adjusts the specific line index where the tooltip is inserted.
-         * Positive values offset downwards, negative values offset upwards.
-         *
-         * @param lineOffset The amount of lines to offset.
-         * @return This builder instance.
-         */
-
-        public Builder lineOffset(int lineOffset) {
-            this.entry.lineOffset = lineOffset;
-            return this;
-        }
-
-        /**
-         * Applies bold formatting to the tooltip text.
-         *
-         * @param bold True to make the text bold.
-         * @return This builder instance.
-         */
-        public Builder bold(boolean bold) {
-            this.entry.bold = bold;
-            return this;
-        }
-
-        /**
-         * Applies italic formatting to the tooltip text.
-         *
-         * @param italic True to make the text italic.
-         * @return This builder instance.
-         */
-        public Builder italic(boolean italic) {
-            this.entry.italic = italic;
-            return this;
-        }
-
-        /**
-         * Applies an underline to the tooltip text.
-         *
-         * @param underlined True to underline the text.
-         * @return This builder instance.
-         */
-        public Builder underlined(boolean underlined) {
-            this.entry.underlined = underlined;
-            return this;
-        }
-
-        /**
-         * Applies a strikethrough to the tooltip text.
-         *
-         * @param strikethrough True to strike through the text.
-         * @return This builder instance.
-         */
-        public Builder strikethrough(boolean strikethrough) {
-            this.entry.strikethrough = strikethrough;
-            return this;
-        }
-
-        /**
-         * Obfuscates the tooltip text.
-         *
-         * @param obfuscated True to obfuscate the text.
-         * @return This builder instance.
-         */
-        public Builder obfuscated(boolean obfuscated) {
-            this.entry.obfuscated = obfuscated;
-            return this;
-        }
-
-        /**
-         * Makes the tooltip only visible when the player is holding the Shift key.
-         *
-         * @param requireKeybind True to require the Shift key.
-         * @return This builder instance.
-         */
-        public Builder requireKeybind(boolean requireKeybind) {
-            this.entry.require_keybind = requireKeybind;
-            return this;
-        }
-
-        /**
-         * Inserts a blank line before this tooltip for better visual spacing.
-         *
-         * @param emptyLineBefore True to add an empty line before the text.
-         * @return This builder instance.
-         */
-        public Builder emptyLineBefore(boolean emptyLineBefore) {
-            this.entry.empty_line_before = emptyLineBefore;
-            return this;
-        }
-
-        /**
-         * Hides the original vanilla tooltip lines (except the name) before applying this tooltip.
-         *
-         * @param hideVanillaLines True to hide vanilla lines.
-         * @return This builder instance.
-         */
-        public Builder hideVanillaLines(boolean hideVanillaLines) {
-            this.entry.hide_vanilla_lines = hideVanillaLines;
-            return this;
-        }
-
-        /**
-         * Makes the tooltip only visible when the item has lost durability (damaged).
-         *
-         * @param showOnlyIfDamaged True to require the item to be damaged.
-         * @return This builder instance.
-         */
-        public Builder showOnlyIfDamaged(boolean showOnlyIfDamaged) {
-            this.entry.show_only_if_damaged = showOnlyIfDamaged;
-            return this;
-        }
-
-        /**
-         * Makes the tooltip only visible when the item has at least one enchantment.
-         *
-         * @param showOnlyIfEnchanted True to require the item to be enchanted.
-         * @return This builder instance.
-         */
-        public Builder showOnlyIfEnchanted(boolean showOnlyIfEnchanted) {
-            this.entry.show_only_if_enchanted = showOnlyIfEnchanted;
-            return this;
-        }
-
-        /**
-         * Makes the tooltip only visible when the item possesses the "Unbreakable" NBT tag.
-         *
-         * @param showOnlyIfUnbreakable True to require the item to be unbreakable.
-         * @return This builder instance.
-         */
-        public Builder showOnlyIfUnbreakable(boolean showOnlyIfUnbreakable) {
-            this.entry.show_only_if_unbreakable = showOnlyIfUnbreakable;
-            return this;
-        }
-
-        /**
-         * Sets a custom font identifier for the tooltip text.
-         *
-         * @param fontIdentifier The Identifier of the font (e.g., "minecraft:default", "minecraft:alt").
-         * @return This builder instance.
-         */
-        public Builder font(String fontIdentifier) {
-            this.entry.font = fontIdentifier;
-            return this;
-        }
-
-        /**
-         * Sets the animation offset to desynchronize animations across different tooltips or lines.
-         *
-         * @param offset The animation offset value.
-         * @return This builder instance.
-         */
-        public Builder animationOffset(int offset) {
-            this.entry.animation_offset = offset;
-            return this;
-        }
-
-        /**
-         * Sets the animation tickrate (speed).
-         * Closer to 0 is faster. Value must be greater than 0.
-         *
-         * @param tickrate The cycle duration of the animation.
-         * @return This builder instance.
-         */
-        public Builder tickrate(int tickrate) {
-            this.entry.tickrate = tickrate;
-            return this;
-        }
-
-        /**
-         * Reverses the flow direction of animated gradients (e.g., Right to Left instead of Left to Right).
-         *
-         * @param reverse True to reverse the animation direction.
-         * @return This builder instance.
-         */
-        public Builder reverseAnimation(boolean reverse) {
-            this.entry.reverse_animation = reverse;
-            return this;
-        }
-
-        /**
-         * Builds and returns the configured {@link TooltipEntry} without registering it.
-         * The returned entry must be registered manually using {@link CustomTooltipApi#registerTooltip(TooltipEntry)}.
-         *
-         * @return The built TooltipEntry.
-         */
-        public TooltipEntry build() {
-            return this.entry;
-        }
-
-        /**
-         * Builds the TooltipEntry and automatically registers it to the Custom Tooltip API.
-         *
-         * @return The built and registered TooltipEntry.
-         */
-        public TooltipEntry register() {
-            CustomTooltipApi.registerTooltip(this.entry);
-            return this.entry;
-        }
     }
 }

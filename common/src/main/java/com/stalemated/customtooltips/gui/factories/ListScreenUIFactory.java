@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 
@@ -129,7 +130,7 @@ public class ListScreenUIFactory {
         int btnY = screen.height - 28;
 
         buttons.add(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
-            TooltipEntry newEntry = TooltipEntry.builder("")
+            TooltipEntry newEntry = CustomTooltipApi.builder("")
                     .addLine("Default Text")
                     .build();
 

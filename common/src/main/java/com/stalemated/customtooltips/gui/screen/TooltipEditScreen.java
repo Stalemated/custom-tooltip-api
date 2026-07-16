@@ -1,6 +1,9 @@
 package com.stalemated.customtooltips.gui.screen;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.api.enums.BackgroundType;
+import com.stalemated.customtooltips.api.enums.TooltipPosition;
+import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import com.stalemated.customtooltips.core.TooltipEntryUpdater;
 
 import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
@@ -31,7 +34,7 @@ public class TooltipEditScreen {
     public static TooltipEntry previewEntry = null;
 
     public static void renderPreview(Screen screen, DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        if (previewEntry != null && screen.getTitle().getString().contains("Edit Tooltip")) {
+        if (previewEntry != null && screen.getTitle().contains(Text.translatable("customtooltips.tooltip_edit_screen.title"))) {
             if (Screen.hasControlDown()) {
                 List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
                 RenderGuiTooltipHelper.renderGuiTooltip(previewEntry, previewLines, context, mouseX, mouseY);
@@ -125,10 +128,10 @@ public class TooltipEditScreen {
     }
 
     private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors) {
-        var style = Option.<TooltipEntry.TooltipStyle>createBuilder()
+        var style = Option.<TooltipStyle>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.style"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.style.description")))
-                .binding(TooltipEntry.TooltipStyle.SOLID, () -> entry.style, val -> entry.style = val)
+                .binding(TooltipStyle.SOLID, () -> entry.style, val -> entry.style = val)
                 .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
                         .formatValue(styleFormat -> Text.translatable("customtooltips.tooltip_edit_screen.style." + styleFormat.name().toLowerCase())))
                 .build();
@@ -233,10 +236,10 @@ public class TooltipEditScreen {
             }
         });
 
-        var backgroundType = Option.<TooltipEntry.BackgroundType>createBuilder()
+        var backgroundType = Option.<BackgroundType>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.background_type"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_type.description")))
-                .binding(TooltipEntry.BackgroundType.SOLID, () -> entry.backgroundType, val -> entry.backgroundType = val)
+                .binding(BackgroundType.SOLID, () -> entry.backgroundType, val -> entry.backgroundType = val)
                 .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
                         .formatValue(type -> Text.translatable("customtooltips.tooltip_edit_screen.background_type." + type.name().toLowerCase())))
                 .build();
@@ -332,10 +335,10 @@ public class TooltipEditScreen {
     }
 
     private static OptionGroup createPositionAndAnimationGroup(TooltipEntry entry) {
-        var position = Option.<TooltipEntry.TooltipPosition>createBuilder()
+        var position = Option.<TooltipPosition>createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.position"))
                 .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.position.description")))
-                .binding(TooltipEntry.TooltipPosition.BOTTOM, () -> entry.position, val -> entry.position = val)
+                .binding(TooltipPosition.BOTTOM, () -> entry.position, val -> entry.position = val)
                 .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
                         .formatValue(pos -> Text.translatable("customtooltips.tooltip_edit_screen.position." + pos.name().toLowerCase())))
                 .build();

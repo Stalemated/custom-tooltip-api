@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import com.stalemated.customtooltips.core.text.parser.TextParser;
 import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.text.MutableText;
@@ -13,7 +14,7 @@ import java.util.List;
 public class TextFormatter {
 
     public static List<Text> getOrGenerateComponents(TooltipEntry entry, ItemStack stack) {
-        boolean isStatic = (entry.style == TooltipEntry.TooltipStyle.SOLID || entry.style == TooltipEntry.TooltipStyle.STATIC_GRADIENT) && entry.dynamicTextProvider == null && !entry.hasDynamicText;
+        boolean isStatic = (entry.style == TooltipStyle.SOLID || entry.style == TooltipStyle.STATIC_GRADIENT) && entry.dynamicTextProvider == null && !entry.hasDynamicText;
         if (isStatic && entry.getCachedStaticText() != null) return entry.getCachedStaticText();
 
         List<Text> linesList = new ArrayList<>();
