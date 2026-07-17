@@ -26,6 +26,7 @@ Target exactly what you want, nothing more:
 
 ### 📊 Dynamic Placeholders
 Embed live item data directly in tooltip text using built-in variables like `%durability%`, `%max_durability%`, `%weapon_damage%`, and `%enchantments%`. You can also embed keybind hints using the format `<key:key.jump>` → `[Space]`.
+Translations are also supported by embedding `<translation:your.translation.key.here>` and using a resourcepack to create the lang files.
 
 ### 📌 Flexible Positioning
 Place your tooltip exactly where it belongs: `Top`, `Bottom`, `Append`, `Prepend`, `Replace Name`, or `Replace All` (blank canvas mode).
@@ -45,11 +46,11 @@ Register tooltips and custom placeholders directly from code using the fluent Bu
 
 ```java
 // Dynamic tooltip that reads live NBT/state every frame
-TooltipEntry.builder("minecraft:diamond_sword")
-    .style(TooltipEntry.TooltipStyle.BREATHING_GRADIENT)
+CustomTooltipApi.builder("minecraft:diamond_sword")
+    .style(TooltipStyle.BREATHING_GRADIENT)
     .colors("0x00FF00", "red")
     .bold(true)
-    .position(TooltipEntry.TooltipPosition.TOP)
+    .position(TooltipPosition.TOP)
     .tickrate(35)
     .requireKeybind(true)
     .dynamicText(stack -> {
