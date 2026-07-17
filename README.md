@@ -13,7 +13,7 @@
 ### 🎨 Rich Visual Styling
 - **Animated gradients:** Rainbow, Slide, Breathing, and Solid Gradient styles
 - **Solid colors** via hex codes (`#RRGGBB`), legacy codes (`&d`), or Minecraft color names (`blue`)
-- **Custom backgrounds and borders:** Solid, Gradient, Texture (Stretch), or Texture (Framed) modes with full opacity control. Drop any background into `config/custom-tooltip-api/backgrounds/` and enable it per tooltip.
+- **Custom backgrounds and borders:** Solid, Gradient, Texture (Stretch), or Texture (Framed) modes with full opacity control. Drop any background into `config/custom-tooltip-api/backgrounds/` and enable it per tooltip. **Supports fully animated textures via `.png.mcmeta` files!**
 - **Custom fonts:** Drop any font into `config/custom-tooltip-api/fonts/` and enable it per tooltip
 
 ### 🎯 Advanced Targeting
