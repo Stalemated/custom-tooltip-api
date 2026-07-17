@@ -1,5 +1,26 @@
 # Changelog
 
+## 5.0.0+1.21.1
+
+**This release introduces native dynamic translation support and a major structural refactoring of the API.**
+
+### BREAKING: API CHANGES
+- Moved `TooltipStyle`, `TooltipPosition` and`TooltipBuilder` to the public `com.stalemated.customtooltips.api` package to greatly improve Developer Experience and decouple internal code.
+- If your mod uses Custom Tooltip API, you must update your imports and use `CustomTooltipApi.builder(target)` instead of `TooltipEntry.builder(target)`.
+
+### New Features
+- Added native Translation Key support! You can now use the `<translate:your.translation.key>` block directly inside your custom text.
+- Tooltips using translation keys will bypass the static cache and evaluate dynamically, meaning the text will instantly update if the player changes their language in the Minecraft settings menu.
+- Added a new configuration file `external_backgrounds.json5`. This allows users to cleanly add external textures (or scan entire folders) from other mods or resource packs directly into the GUI dropdown.
+
+### Developer API
+- Completely redesigned tooltip creation logic. Developers must now interact purely with `CustomTooltipApi` to build tooltips.
+- Added a new helper method `CustomTooltipApi.translate(String key)` to easily inject translation blocks into your dynamic tooltips via code.
+
+### Fixes & Optimizations
+- Optimized resource pack generation: Custom textures and fonts are no longer aggressively rewritten to disk on every startup if they already exist, significantly reducing I/O operations
+- Cleaned up internal background rendering code
+
 ## 4.0.1+1.21.1
 
 ### New Features
