@@ -3,6 +3,8 @@ package com.stalemated.customtooltips.core.background.helper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.screen.PlayerScreenHandler;
 
 public class BlendHelper {
     public static void enableBlend(DrawContext context, int z, int defaultColor) {
@@ -21,5 +23,11 @@ public class BlendHelper {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
         context.getMatrices().pop();
+    }
+
+    public static void setupAtlasRendering(DrawContext context, int z, int defaultColor) {
+        enableBlend(context, z, defaultColor);
+        RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
     }
 }

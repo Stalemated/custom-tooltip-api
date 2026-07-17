@@ -5,7 +5,8 @@ import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.helper.DefaultBackgroundHelper;
 import com.stalemated.customtooltips.core.background.helper.BlendHelper;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
+import com.stalemated.customtooltips.core.background.helper.AtlasRenderHelper;
+import net.minecraft.client.texture.Sprite;
 
 public class RepeatingTextureBackgroundStrategy implements BackgroundRenderStrategy {
     @Override
@@ -14,21 +15,11 @@ public class RepeatingTextureBackgroundStrategy implements BackgroundRenderStrat
             return;
         }
 
-        Identifier texture = new Identifier(entry.backgroundTexture);
+        Sprite sprite = AtlasRenderHelper.getSprite(entry.backgroundTexture);
+        if (sprite == null) return;
 
-        BlendHelper.enableBlend(context, z, defaultColor);
-
-        int texW = 64;
-        int texH = 64;
-
-        for (int i = 0; i < width; i += texW) {
-            for (int j = 0; j < height; j += texH) {
-                int drawWidth = Math.min(texW, width - i);
-                int drawHeight = Math.min(texH, height - j);
-                context.drawTexture(texture, x + i, y + j, 0, 0, drawWidth, drawHeight, texW, texH);
-            }
-        }
-
+        BlendHelper.setupAtlasRendering(context, z, defaultColor);
+        AtlasRenderHelper.drawRepeating(context, sprite, x, y, width, height);
         BlendHelper.disableBlend(context);
     }
 }
