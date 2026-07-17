@@ -11,6 +11,7 @@
 ### New Features
 - Added native Translation Key support! You can now use the `<translate:your.translation.key>` block directly inside your custom text.
 - Tooltips using translation keys will bypass the static cache and evaluate dynamically, meaning the text will instantly update if the player changes their language in the Minecraft settings menu.
+- Added full support for **Animated Tooltip Backgrounds**! You can now place `.png.mcmeta` files alongside your custom backgrounds in the `backgrounds` folder, and they will be displayed as native animated textures.
 - Added a new configuration file `external_backgrounds.json5`. This allows users to cleanly add external textures (or scan entire folders) from other mods or resource packs directly into the GUI dropdown.
 
 ### Developer API
