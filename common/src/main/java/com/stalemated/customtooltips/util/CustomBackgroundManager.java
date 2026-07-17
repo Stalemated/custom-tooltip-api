@@ -6,6 +6,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import com.stalemated.customtooltips.config.ExternalBackgroundsConfig;
+import com.stalemated.customtooltips.ConfigManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
+
 import com.stalemated.lib.helper.PlatformHelper;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
@@ -14,7 +19,10 @@ public class CustomBackgroundManager {
 
     public static List<String> availableBackgrounds = new ArrayList<>();
 
+    private static final List<String> localBackgrounds = new ArrayList<>();
+
     public static void loadAndGenerateBackgrounds() {
+        localBackgrounds.clear();
         availableBackgrounds.clear();
 
         try {
@@ -35,6 +43,7 @@ public class CustomBackgroundManager {
                     if (!Files.exists(targetFile)) {
                         Files.copy(file.toPath(), targetFile, StandardCopyOption.REPLACE_EXISTING);
                     }
+                    localBackgrounds.add(textureIdentifier);
                     availableBackgrounds.add(textureIdentifier);
 
                     File mcmetaFile = new File(file.getParentFile(), file.getName() + ".mcmeta");
@@ -48,6 +57,46 @@ public class CustomBackgroundManager {
             }
         } catch (Exception e) {
             LOGGER.warn("Could not load backgrounds: {}", e.getMessage());
+        }
+    }
+
+    public static void reloadExternalBackgrounds() {
+        try {
+            ConfigManager.EXTERNAL_BG_HANDLER.load();
+            ExternalBackgroundsConfig config = ConfigManager.EXTERNAL_BG_HANDLER.instance();
+
+            availableBackgrounds.clear();
+            availableBackgrounds.addAll(localBackgrounds);
+
+            for (String tex : config.textures) {
+                if (!availableBackgrounds.contains(tex)) {
+                    availableBackgrounds.add(tex);
+                }
+            }
+
+            if (MinecraftClient.getInstance().getResourceManager() != null) {
+                for (String dir : config.directories) {
+                    try {
+                        String[] parts = dir.split(":");
+                        if (parts.length != 2) continue;
+                        String namespace = parts[0];
+                        String path = parts[1];
+
+                        var resources = MinecraftClient.getInstance().getResourceManager().findResources(path, id -> id.getNamespace().equals(namespace) && id.getPath().endsWith(".png"));
+                        
+                        for (Identifier id : resources.keySet()) {
+                            String textureIdentifier = id.getNamespace() + ":" + id.getPath();
+                            if (!availableBackgrounds.contains(textureIdentifier)) {
+                                availableBackgrounds.add(textureIdentifier);
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOGGER.warn("Error scanning directory {}: {}", dir, e.getMessage());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Could not reload external backgrounds: {}", e.getMessage());
         }
     }
 }

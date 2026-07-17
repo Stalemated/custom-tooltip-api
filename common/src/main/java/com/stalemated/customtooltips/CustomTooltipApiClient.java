@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
+import com.stalemated.customtooltips.util.CustomBackgroundManager;
 import com.stalemated.customtooltips.util.ResourcepackManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -37,6 +38,7 @@ public class CustomTooltipApiClient {
 
 	public static void onResourceReload() {
 		IconAligner.clearCache();
+		CustomBackgroundManager.reloadExternalBackgrounds();
 	}
 
 	public static void onItemTooltip(ItemStack stack, List<Text> lines) {
