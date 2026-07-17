@@ -38,11 +38,16 @@ public class CustomFontManager {
                     String rawName = file.getName().toLowerCase().replace(".ttf", "").replaceAll("[^a-z0-9_.-]", "");
                     String fontIdentifier = "custom_tooltip_api:" + rawName;
 
-                    Files.copy(file.toPath(), fontDir.resolve(rawName + ".ttf"), StandardCopyOption.REPLACE_EXISTING);
+                    Path targetTtf = fontDir.resolve(rawName + ".ttf");
+                    if (!Files.exists(targetTtf)) {
+                        Files.copy(file.toPath(), targetTtf, StandardCopyOption.REPLACE_EXISTING);
+                    }
 
                     File fontJson = fontDir.resolve(rawName + ".json").toFile();
-                    try (FileWriter writer = new FileWriter(fontJson)) {
-                        writer.write(getFontJsonString(fontIdentifier));
+                    if (!fontJson.exists()) {
+                        try (FileWriter writer = new FileWriter(fontJson)) {
+                            writer.write(getFontJsonString(fontIdentifier));
+                        }
                     }
 
                     availableFonts.add(fontIdentifier);

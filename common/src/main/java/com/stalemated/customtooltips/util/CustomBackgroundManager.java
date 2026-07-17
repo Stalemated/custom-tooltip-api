@@ -31,8 +31,19 @@ public class CustomBackgroundManager {
                     String rawName = file.getName().toLowerCase().replace(".png", "").replaceAll("[^a-z0-9_.-]", "");
                     String textureIdentifier = "custom_tooltip_api:textures/gui/tooltip_backgrounds/" + rawName + ".png";
 
-                    Files.copy(file.toPath(), texturesDir.resolve(rawName + ".png"), StandardCopyOption.REPLACE_EXISTING);
+                    Path targetFile = texturesDir.resolve(rawName + ".png");
+                    if (!Files.exists(targetFile)) {
+                        Files.copy(file.toPath(), targetFile, StandardCopyOption.REPLACE_EXISTING);
+                    }
                     availableBackgrounds.add(textureIdentifier);
+
+                    File mcmetaFile = new File(file.getParentFile(), file.getName() + ".mcmeta");
+                    if (mcmetaFile.exists()) {
+                        Path targetMcmeta = texturesDir.resolve(rawName + ".png.mcmeta");
+                        if (!Files.exists(targetMcmeta)) {
+                            Files.copy(mcmetaFile.toPath(), targetMcmeta, StandardCopyOption.REPLACE_EXISTING);
+                        }
+                    }
                 }
             }
         } catch (Exception e) {

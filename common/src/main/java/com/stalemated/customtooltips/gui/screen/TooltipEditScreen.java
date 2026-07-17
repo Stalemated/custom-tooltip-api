@@ -256,7 +256,7 @@ public class TooltipEditScreen {
                 .binding("", () -> entry.backgroundTexture, val -> entry.backgroundTexture = val)
                 .controller(opt -> SimpleStringDropdownControllerBuilder.create(opt)
                         .values(CustomBackgroundManager.availableBackgrounds)
-                        .formatValue(s -> Text.literal(s.replace("textures/gui/tooltip_backgrounds/", ""))))
+                        .formatValue(s -> Text.literal(s.replace("custom_tooltip_api:textures/gui/tooltip_backgrounds/", ""))))
                 .build();
         backgroundTextureOption.addEventListener((opt, event) -> {
             if (previewEntry != null) {
