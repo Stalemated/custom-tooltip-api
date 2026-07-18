@@ -30,7 +30,7 @@ public class ConfigManager {
             .build();
 
     public static final ConfigClassHandler<ExternalBackgroundsConfig> EXTERNAL_BG_HANDLER = ConfigClassHandler.createBuilder(ExternalBackgroundsConfig.class)
-            .id(new Identifier("customtooltips", "external_backgrounds"))
+            .id(Identifier.of("customtooltips", "external_backgrounds"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(EXTERNAL_CONFIG_PATH)
                     .setJson5(true)
