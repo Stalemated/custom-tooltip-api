@@ -11,20 +11,40 @@ import org.joml.Matrix4f;
 public class AtlasRenderHelper {
     private static final int textureWidth = 64;
     private static final int textureHeight = 64;
+    private static final int corner = 8;
 
     public static Sprite getSprite(String backgroundTexture) {
         Identifier spriteId = new Identifier(backgroundTexture.replace(".png", "").replace("textures/", ""));
         return MinecraftClient.getInstance().getBakedModelManager().getAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).getSprite(spriteId);
     }
 
-    public static void drawNineSlice(DrawContext context, Sprite sprite, int x, int y, int width, int height) {
-        int corner = 8;
+    public static boolean isMissingSprite(Sprite sprite) {
+        return sprite == null || sprite.getContents().getId().getPath().equals("missingno");
+    }
 
+    public static Identifier getRawTextureId(String backgroundTexture) {
+        return new Identifier(backgroundTexture);
+    }
+
+    public static void drawNineSlice(DrawContext context, Sprite sprite, int x, int y, int width, int height) {
         float minU = sprite.getMinU();
         float maxU = sprite.getMaxU();
         float minV = sprite.getMinV();
         float maxV = sprite.getMaxV();
 
+        drawNineSliceHelper(context, x, y, width, height, minU, maxU, minV, maxV);
+    }
+
+    public static void drawNineSliceStandalone(DrawContext context, int x, int y, int width, int height) {
+        float minU = 0.0f;
+        float maxU = 1.0f;
+        float minV = 0.0f;
+        float maxV = 1.0f;
+
+        drawNineSliceHelper(context, x, y, width, height, minU, maxU, minV, maxV);
+    }
+
+    private static void drawNineSliceHelper(DrawContext context, int x, int y, int width, int height, float minU, float maxU, float minV, float maxV) {
         float spanU = maxU - minU;
         float spanV = maxV - minV;
 
@@ -69,12 +89,35 @@ public class AtlasRenderHelper {
         BufferRenderer.drawWithGlobalProgram(buffer.end());
     }
 
+    public static void drawSimpleStandalone(DrawContext context, int x, int y, int width, int height) {
+        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
+        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+
+        drawQuad(buffer, matrix, x, y, width, height, 0.0f, 0.0f, 1.0f, 1.0f);
+
+        BufferRenderer.drawWithGlobalProgram(buffer.end());
+    }
+
     public static void drawRepeating(DrawContext context, Sprite sprite, int x, int y, int width, int height) {
         float minU = sprite.getMinU();
         float maxU = sprite.getMaxU();
         float minV = sprite.getMinV();
         float maxV = sprite.getMaxV();
 
+        drawRepeatingHelper(context, x, y, width, height, minU, minV, maxU, maxV);
+    }
+
+    public static void drawRepeatingStandalone(DrawContext context, int x, int y, int width, int height) {
+        float minU = 0.0f;
+        float maxU = 1.0f;
+        float minV = 0.0f;
+        float maxV = 1.0f;
+
+        drawRepeatingHelper(context, x, y, width, height, minU, minV, maxU, maxV);
+    }
+
+    private static void drawRepeatingHelper(DrawContext context, int x, int y, int width, int height, float minU, float minV,  float maxU, float maxV) {
         float spanU = maxU - minU;
         float spanV = maxV - minV;
 

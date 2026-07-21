@@ -5,6 +5,7 @@ import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.util.Identifier;
 
 public class BlendHelper {
     public static void enableBlend(DrawContext context, int z, int defaultColor) {
@@ -28,6 +29,12 @@ public class BlendHelper {
     public static void setupAtlasRendering(DrawContext context, int z, int defaultColor) {
         enableBlend(context, z, defaultColor);
         RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+    }
+
+    public static void setupStandaloneRendering(DrawContext context, Identifier texture, int z, int defaultColor) {
+        enableBlend(context, z, defaultColor);
+        RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
     }
 }
