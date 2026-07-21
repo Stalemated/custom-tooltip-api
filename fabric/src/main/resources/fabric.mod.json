@@ -32,7 +32,7 @@
 		"minecraft": "~1.21.1",
 		"java": ">=21",
 		"fabric-api": "*",
-        "s_lib": ">=1.0.2+1.21.1",
+        "s_lib": ">=1.0.4+1.21.1",
 		"yet_another_config_lib_v3": ">=3.8.2"
 	}
 }
