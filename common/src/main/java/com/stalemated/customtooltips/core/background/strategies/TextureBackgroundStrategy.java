@@ -16,7 +16,12 @@ public class TextureBackgroundStrategy implements BackgroundRenderStrategy {
         }
 
         Sprite sprite = AtlasRenderHelper.getSprite(entry.backgroundTexture);
-        if (sprite == null) return;
+        if (AtlasRenderHelper.isMissingSprite(sprite)) {
+            BlendHelper.setupStandaloneRendering(context, AtlasRenderHelper.getRawTextureId(entry.backgroundTexture), z, defaultColor);
+            AtlasRenderHelper.drawSimpleStandalone(context, x, y, width, height);
+            BlendHelper.disableBlend(context);
+            return;
+        }
 
         BlendHelper.setupAtlasRendering(context, z, defaultColor);
         AtlasRenderHelper.drawSimple(context, sprite, x, y, width, height);
