@@ -3,12 +3,14 @@
   "minVersion": "0.8",
   "package": "com.stalemated.customtooltips.mixin.client",
   "compatibilityLevel": "JAVA_21",
+  "plugin": "com.stalemated.customtooltips.mixin.client.compat.CustomTooltipApiMixinPlugin",
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",
     "accessor.KeyBindingAccessor",
     "StringControllerElementMixin",
-    "TextFieldWidgetMixin"
+    "TextFieldWidgetMixin",
+    "compat.legendarytooltips.LegendaryTooltipsBorderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
