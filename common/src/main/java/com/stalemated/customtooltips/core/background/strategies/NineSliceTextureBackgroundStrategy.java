@@ -18,13 +18,13 @@ public class NineSliceTextureBackgroundStrategy implements BackgroundRenderStrat
         Sprite sprite = AtlasRenderHelper.getSprite(entry.backgroundTexture);
         if (AtlasRenderHelper.isMissingSprite(sprite)) {
             BlendHelper.setupStandaloneRendering(context, AtlasRenderHelper.getRawTextureId(entry.backgroundTexture), z, defaultColor);
-            AtlasRenderHelper.drawNineSliceStandalone(context, x, y, width, height);
+            AtlasRenderHelper.drawNineSliceStandalone(context, x, y, width, height, entry.backgroundScale);
             BlendHelper.disableBlend(context);
             return;
         }
 
         BlendHelper.setupAtlasRendering(context, z, defaultColor);
-        AtlasRenderHelper.drawNineSlice(context, sprite, x, y, width, height);
+        AtlasRenderHelper.drawNineSlice(context, sprite, x, y, width, height, entry.backgroundScale);
         BlendHelper.disableBlend(context);
     }
 }

@@ -38,6 +38,7 @@ public class TooltipEntry {
 
     public int backgroundOpacity = DEFAULT_OPACITY;
     public int borderOpacity = DEFAULT_OPACITY;
+    public int backgroundScale = 100;
 
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
@@ -87,7 +88,7 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, List<String> borderColors, List<String> backgroundColors, int backgroundOpacity, int borderOpacity, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<String> colors, List<String> borderColors, List<String> backgroundColors, int backgroundOpacity, int borderOpacity, int backgroundScale, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, String font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -96,6 +97,7 @@ public class TooltipEntry {
         this.backgroundColors = backgroundColors != null ? backgroundColors : new ArrayList<>();
         this.backgroundOpacity = backgroundOpacity;
         this.borderOpacity = borderOpacity;
+        this.backgroundScale = backgroundScale;
         this.bold = bold;
         this.italic = italic;
         this.underlined = underlined;

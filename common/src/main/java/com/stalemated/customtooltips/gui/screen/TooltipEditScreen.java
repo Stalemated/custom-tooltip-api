@@ -265,6 +265,22 @@ public class TooltipEditScreen {
             }
         });
 
+        var backgroundScaleOption = Option.<Integer>createBuilder()
+                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_scale"))
+                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_scale.description")))
+                .binding(100, () -> entry.backgroundScale, val -> entry.backgroundScale = val)
+                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                        .range(10, 300)
+                        .step(5)
+                )
+                .build();
+        backgroundScaleOption.addEventListener((opt, event) -> {
+            if (previewEntry != null) {
+                previewEntry.backgroundScale = opt.pendingValue();
+                previewEntry.invalidateCaches();
+            }
+        });
+
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.background"))
                 .option(backgroundType)
@@ -272,6 +288,7 @@ public class TooltipEditScreen {
                 .option(backgroundColor1)
                 .option(backgroundColor2)
                 .option(backgroundTextureOption)
+                .option(backgroundScaleOption)
                 .build();
     }
 
