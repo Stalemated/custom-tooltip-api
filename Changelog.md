@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.2+1.20.1
+
+### New Features
+- Added a new slider in the background editing screen that allows backgrounds to be scaled in 5% intervals. This only applies to the Texture (Framed) and Texture (Repeating) background types.
+
 ## 5.0.1+1.20.1
 
 ### New Features
