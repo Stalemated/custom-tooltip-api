@@ -23,7 +23,7 @@ public class AtlasRenderHelper {
     }
 
     public static Identifier getRawTextureId(String backgroundTexture) {
-        return new Identifier(backgroundTexture);
+        return Identifier.of(backgroundTexture);
     }
 
     public static void drawNineSlice(DrawContext context, Sprite sprite, int x, int y, int width, int height, int scale) {
@@ -96,8 +96,7 @@ public class AtlasRenderHelper {
 
     public static void drawSimpleStandalone(DrawContext context, int x, int y, int width, int height) {
         Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
         drawQuad(buffer, matrix, x, y, width, height, 0.0f, 0.0f, 1.0f, 1.0f);
 
