@@ -97,6 +97,12 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     }
 
     @Override
+    public TooltipBuilder backgroundScale(int backgroundScale) {
+        this.entry.backgroundScale = backgroundScale;
+        return this;
+    }
+
+    @Override
     public TooltipBuilder borderOpacity(int borderOpacity) {
         this.entry.borderOpacity = borderOpacity;
         return this;

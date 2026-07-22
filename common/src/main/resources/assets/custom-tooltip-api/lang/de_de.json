@@ -61,6 +61,8 @@
   "customtooltips.tooltip_edit_screen.background_type.repeating_texture": "Textur (wiederholende)",
   "customtooltips.tooltip_edit_screen.background_texture": "Hintergrundtextur",
   "customtooltips.tooltip_edit_screen.background_texture.description": "Die Textur, die für den Hintergrund verwendet werden soll. Speichern Sie die PNG-Dateien in config/custom_tooltip_api/backgrounds/.\n\n§eNotiz:§r Im „Framed“-Modus werden Texturen auf ein 64x64-Raster mit 8-Pixel-Ecken abgebildet. Du kannst größere HD-Bilder verwenden (bsp., 128×128 mit 16-Pixel-Ecken), solange das Seitenverhältnis stimmt!\n\n§4Notiz: Das benutzerdefinierte Ressourcenpaket muss aktiviert sein!\n\n§bTipp:§f Transparente als auch animierte Texturen (die .mcmeta Dateien nutzen) sind komplett unterstützt.",
+  "customtooltips.tooltip_edit_screen.background_scale": "Hintergrundskalierung",
+  "customtooltips.tooltip_edit_screen.background_scale.description": "Passt die Skalierung der Hintergrundtextur an. Gilt nur für die Hintergrundtypen 'Textur (gerahmt)' und 'Textur (wiederholende)'.",
   "customtooltips.tooltip_edit_screen.position": "Position",
   "customtooltips.tooltip_edit_screen.position.description": "Einfügen (oben) §7(unter dem Namen des Items§r\nEinfügen (unten) §7(Am Ende des Tooltips)§r\nName ersetzen §7(Ersetzt den Namen des Items)§r\nZeile ersetzen §7(Ersetzt eine einzelne Zeile eines Tooltips)§r\nAlle ersetzen §7(Ersetzt den gesamten Tooltip)§r\nAnhängen §7(Ende einer Zeile)§r\nVoranstellen §7(Zeilenanfang)§r",
   "customtooltips.tooltip_edit_screen.position.replace_name": "Name ersetzen",

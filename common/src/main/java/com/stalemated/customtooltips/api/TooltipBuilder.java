@@ -139,6 +139,14 @@ public interface TooltipBuilder {
     TooltipBuilder backgroundOpacity(int backgroundOpacity);
 
     /**
+     * Sets the background scale of the tooltip (for repeating and framed background types).
+     *
+     * @param backgroundScale The scale percentage (e.g. 100 for native size, 50 for half size).
+     * @return This builder instance.
+     */
+    TooltipBuilder backgroundScale(int backgroundScale);
+
+    /**
      * Sets the tooltip's border opacity.
      * <p>
      * Accepts integers from 0 to 255 to adjust the individual tooltip's border opacity. 0 is fully transparent, while 255 is fully opaque.

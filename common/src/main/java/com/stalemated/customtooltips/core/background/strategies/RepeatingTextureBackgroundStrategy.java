@@ -18,13 +18,13 @@ public class RepeatingTextureBackgroundStrategy implements BackgroundRenderStrat
         Sprite sprite = AtlasRenderHelper.getSprite(entry.backgroundTexture);
         if (AtlasRenderHelper.isMissingSprite(sprite)) {
             BlendHelper.setupStandaloneRendering(context, AtlasRenderHelper.getRawTextureId(entry.backgroundTexture), z, defaultColor);
-            AtlasRenderHelper.drawRepeatingStandalone(context, x, y, width, height);
+            AtlasRenderHelper.drawRepeatingStandalone(context, x, y, width, height, entry.backgroundScale);
             BlendHelper.disableBlend(context);
             return;
         }
 
         BlendHelper.setupAtlasRendering(context, z, defaultColor);
-        AtlasRenderHelper.drawRepeating(context, sprite, x, y, width, height);
+        AtlasRenderHelper.drawRepeating(context, sprite, x, y, width, height, entry.backgroundScale);
         BlendHelper.disableBlend(context);
     }
 }
