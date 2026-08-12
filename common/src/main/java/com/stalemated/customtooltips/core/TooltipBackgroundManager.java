@@ -2,8 +2,10 @@ package com.stalemated.customtooltips.core;
 
 import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.lib.util.input.KeyBindingUtil;
 import net.minecraft.item.ItemStack;
 
+import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
 import static com.stalemated.lib.util.color.ColorUtils.DEFAULT_OPACITY;
 
 public class TooltipBackgroundManager {
@@ -20,7 +22,7 @@ public class TooltipBackgroundManager {
             if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) continue;
 
             if (entry.matches(stack) && entry.areItemConditionsMet(stack)) {
-                if (entry.require_keybind && !TooltipProcessor.isHoldKeyPressed()) continue;
+                if (entry.require_keybind && !KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)) continue;
                 targetBackgroundOpacity = entry.backgroundOpacity;
                 targetBorderOpacity = entry.borderOpacity;
                 targetEntry = entry;

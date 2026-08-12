@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.registry;
 
+import com.stalemated.lib.helper.PlatformHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -22,5 +23,8 @@ public class KeybindRegistry {
                 GLFW.GLFW_KEY_LEFT_SHIFT,
                 "category.customtooltips.keys"
         );
+
+        PlatformHelper.INSTANCE.registerKeyBinding(openConfigKeybind);
+        PlatformHelper.INSTANCE.registerKeyBinding(holdKeyKeybind);
     }
 }

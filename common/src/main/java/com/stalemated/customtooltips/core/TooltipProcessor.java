@@ -4,13 +4,10 @@ import com.stalemated.customtooltips.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.position.PositionStrategyFactory;
 import com.stalemated.customtooltips.core.position.TooltipPositionStrategy;
-import com.stalemated.customtooltips.mixin.client.accessor.KeyBindingAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
+import com.stalemated.lib.util.input.KeyBindingUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.lwjgl.glfw.GLFW;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
 
@@ -36,7 +33,7 @@ public class TooltipProcessor {
             lines.subList(1, lines.size()).clear();
         }
 
-        boolean holdKeyPressed = isHoldKeyPressed();
+        boolean holdKeyPressed = KeyBindingUtil.isKeyDownInGui(holdKeyKeybind);
         boolean needsShiftPrompt = false;
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
@@ -60,7 +57,7 @@ public class TooltipProcessor {
     public static Text processHeldItemName(ItemStack stack, Text originalName) {
         if (TooltipRegistry.getEntries().isEmpty()) return originalName;
 
-        boolean holdKeyPressed = isHoldKeyPressed();
+        boolean holdKeyPressed = KeyBindingUtil.isKeyDownInGui(holdKeyKeybind);
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (shouldNotProcessEntry(entry, stack)) continue;
@@ -82,24 +79,5 @@ public class TooltipProcessor {
         if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) return true;
 
         return !entry.areItemConditionsMet(stack);
-    }
-
-    public static boolean isHoldKeyPressed() {
-        if (holdKeyKeybind.isUnbound()) {
-            return false;
-        }
-
-        if (holdKeyKeybind instanceof KeyBindingAccessor accessor) {
-            InputUtil.Key boundKey = accessor.getBoundKey();
-            long windowHandle = MinecraftClient.getInstance().getWindow().getHandle();
-
-            if (boundKey.getCategory() == InputUtil.Type.KEYSYM) {
-                return InputUtil.isKeyPressed(windowHandle, boundKey.getCode());
-            } else if (boundKey.getCategory() == InputUtil.Type.MOUSE) {
-                return GLFW.glfwGetMouseButton(windowHandle, boundKey.getCode()) == GLFW.GLFW_PRESS;
-            }
-        }
-        
-        return false;
     }
 }
