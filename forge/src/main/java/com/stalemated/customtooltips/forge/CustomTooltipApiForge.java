@@ -3,13 +3,11 @@ package com.stalemated.customtooltips.forge;
 import com.stalemated.customtooltips.CustomTooltipApiClient;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
-import com.stalemated.customtooltips.registry.KeybindRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -27,7 +25,6 @@ public class CustomTooltipApiForge {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-            modBus.addListener(this::onRegisterKeyMappings);
             modBus.addListener(this::onRegisterReloadListeners);
 
             MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
@@ -43,11 +40,6 @@ public class CustomTooltipApiForge {
 
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> new TooltipListScreen(parent)));
-    }
-
-    private void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(KeybindRegistry.openConfigKeybind);
-        event.register(KeybindRegistry.holdKeyKeybind);
     }
 
     private void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {

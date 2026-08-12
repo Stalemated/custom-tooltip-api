@@ -6,7 +6,6 @@
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",
-    "accessor.KeyBindingAccessor",
     "StringControllerElementMixin",
     "TextFieldWidgetMixin",
     "compat.legendarytooltips.LegendaryTooltipsBorderMixin"
