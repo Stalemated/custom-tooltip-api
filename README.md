@@ -2,45 +2,67 @@
 
 **Custom Tooltip API** is a powerful client-side Minecraft mod and developer library that gives you full control over item tooltips. Add custom lore, dynamic real-time data, animated gradients, and custom backgrounds, all configurable in-game or through code.
 
-> **⚠️ Looking for Tooltip Scrolling or Resizing?**
-> Starting with version **4.0.0**, all tooltip scrolling, resizing, and custom dimension limits have been moved to a separate standalone mod: **[Smart Tooltip Scroll (STS)](https://github.com/Stalemated/smart_tooltip_scroll)**. 
-> Additionally, this mod now requires **[S-Lib](https://github.com/Stalemated/s-lib)** to run.
+No need to code for basic usage, as it features a powerful in-game interface and full JSON support. However, it also provides a robust **Developer API** for those who want to inject tooltips via code.
+
+***
+
+## Features
+
+*   **Icon Alignment:** Align tooltip icons from external resource packs to the start of the line so the position stays consistent!
+
+*   **Advanced Targeting:** Target specific item IDs (`minecraft:diamond_sword`), tag groups (`#c:swords`), entire mod namespaces (`minecraft:*`), Regex patterns (`regex:.*_sword`), or every item at once (`*`).
+
+*   **Dynamic Placeholders:** Embed real-time item data directly into your text using variables like `%durability%`, `%max_durability%`, `%weapon_damage%`, or `%enchantments%`. You can also embed keybind hints using the format `<key:key.jump>` -> `[Space]`.
+
+*   **Multi-line Support (Lore):** Add entire paragraphs of lore or skill descriptions.
+
+*   **Visual Effects & Gradients:**
+
+    *   **Rainbow:** Animated rainbow effect.
+    *   **Slide Gradient:** Two-color gradients that flow through the text.
+    *   **Breathing Gradient:** A smooth pulse between two colors.
+    *   **Static Gradient & Solid:** Fixed gradients or traditional solid text.
+    *   **Colors:** Hex codes (e.g. `#RRGGBB`), legacy codes (e.g. `&d`) or Minecraft color names (e.g. `blue`).
+
+*   **Custom Backgrounds & Borders:** Solid, Gradient, Texture (Stretch), or Texture (Framed / Nine-Slice) modes with full opacity control. Drop any background image into `config/custom-tooltip-api/backgrounds/` and enable it per tooltip via the dynamically generated resource pack. Supports full compatibility with **Tierify** custom rendering.
+
+*   **Custom Fonts:** Drop any font into `config/custom-tooltip-api/fonts/` and enable it per tooltip via the dynamically generated resource pack.
+
+*   **Positioning:** Decide exactly where your text appears:
+
+    *   **Top:** Right below the item's name.
+    *   **Bottom:** At the very end of all descriptions.
+    *   **Prepend:** At the start of a specific line.
+    *   **Append:** At the end of a specific line.
+    *   **Replace Name:** Swap the item's default name for your custom text.
+    *   **Replace Line:** Replace a specific line with your custom text.
+    *   **Replace All:** Completely clear the original tooltip and show only yours.
+
+*   **Visibility Conditions:** Show a tooltip only when an item is Damaged, Enchanted, or Unbreakable. Use **Require Keybind** mode to hide tooltips until the player holds a configurable key.
+
+*   **Text Modifiers:** Full support for **Bold**, _Italic_, Underlined, ~~Strikethrough~~, and O̷͍̞͐͑b̷̻̌f̶̯̈u̸̲͗͐s̶̩̬͝c̵͎̊a̸̹̟̎ẗ̴͖̿e̴̟̪͊̈́ď̴̹̪ (obfuscated) text.
+
+***
+
+## In-Game Interface (GUI)
+
+*   Manage all your tooltips directly from the **Mods Menu**. No need to manually edit files unless you want to.
+
+*   Hold `CTRL` in the edit screen for an instant **Live Preview** of your tooltip.
+
+*   Copy/paste entries to clipboard, reorder, duplicate, enable/disable, and sort by creation date or alphabetically.
+
+***
+
+## For Modpack Creators
+
+The mod generates a `custom_tooltip_api/config.json5` file in your `config` folder. It fully supports code comments, making it incredibly easy to document your modpack's systems for your development team or community.
+
+Drop custom backgrounds into `config/custom-tooltip-api/backgrounds/` and custom fonts into `config/custom-tooltip-api/fonts/`. Enable the dynamically generated resource pack to activate them.
 
 ---
 
-## ✨ Key Features
-
-### 🎨 Rich Visual Styling
-- **Animated gradients:** Rainbow, Slide, Breathing, and Solid Gradient styles
-- **Solid colors** via hex codes (`#RRGGBB`), legacy codes (`&d`), or Minecraft color names (`blue`)
-- **Custom backgrounds and borders:** Solid, Gradient, Texture (Stretch), or Texture (Framed) modes with full opacity control. Drop any background into `config/custom-tooltip-api/backgrounds/` and enable it per tooltip. **Supports fully animated textures via `.png.mcmeta` files!**
-- **Custom fonts:** Drop any font into `config/custom-tooltip-api/fonts/` and enable it per tooltip
-
-### 🎯 Advanced Targeting
-Target exactly what you want, nothing more:
-- Specific item IDs (`minecraft:diamond_sword`)
-- Tag groups (`#c:swords`)
-- Entire mod namespaces (`minecraft:*`)
-- Regex patterns (`regex:.*_sword`)
-- Every item at once (`*`)
-
-### 📊 Dynamic Placeholders
-Embed live item data directly in tooltip text using built-in variables like `%durability%`, `%max_durability%`, `%weapon_damage%`, and `%enchantments%`. You can also embed keybind hints using the format `<key:key.jump>` → `[Space]`.
-Translations are also supported by embedding `<translation:your.translation.key.here>` and using a resourcepack to create the lang files.
-
-### 📌 Flexible Positioning
-Place your tooltip exactly where it belongs: `Top`, `Bottom`, `Append`, `Prepend`, `Replace Name`, or `Replace All` (blank canvas mode).
-
-### 🖥️ In-Game GUI
-Full **YACL + ModMenu** integration with a completely redesigned config screen:
-- **Live Preview:** Hold `CTRL` in the Edit Screen to instantly see your tooltip
-- Copy/paste entries to clipboard, reorder, duplicate, enable/disable, and sort tooltips
-- Toggleable visibility conditions: show only when an item is Damaged, Enchanted, or Unbreakable
-- "Require Keybind" mode: show tooltips when the player holds a configurable key
-
----
-
-## 🛠️ Developer API
+## Developer API
 
 Register tooltips and custom placeholders directly from code using the fluent Builder API:
 
@@ -67,7 +89,7 @@ API entries merge seamlessly with user-defined JSON configs. See `com.stalemated
 
 ---
 
-## 🏗️ Building from Source
+## Building from Source
 
 Starting from v4.0.0, CTA depends on **S-Lib**, which must be published to your local Maven repository before compiling.
 
@@ -94,7 +116,7 @@ Output jars will be located in `[loader]/build/libs/` or `build/libs/` depending
 
 ---
 
-## 🌍 Platform Support
+## Platform Support
 
 | Platform | Versions       |
 |----------|----------------|
@@ -104,16 +126,10 @@ Output jars will be located in `[loader]/build/libs/` or `build/libs/` depending
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 - [S-Lib](https://github.com/Stalemated/s-lib)
 - [YACL](https://www.curseforge.com/minecraft/mc-mods/yacl)
 #### Fabric only
 - [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 - [ModMenu](https://www.curseforge.com/minecraft/mc-mods/modmenu)
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
