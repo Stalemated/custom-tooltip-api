@@ -5,7 +5,7 @@ import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.sorting.SortMode;
 import com.stalemated.customtooltips.core.sorting.TooltipSorter;
-import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.lib.helper.text.ScrollingTextRenderer;
 import net.minecraft.client.MinecraftClient;

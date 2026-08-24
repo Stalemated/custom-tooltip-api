@@ -2,6 +2,7 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.compat.CompatManager;
 import com.stalemated.customtooltips.compat.legendarytooltips.LegendaryTooltipsCompat;
+import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;

@@ -1,7 +1,7 @@
 package com.stalemated.customtooltips.gui.factories;
 
 import com.google.gson.Gson;
-import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.api.CustomTooltipApi;
