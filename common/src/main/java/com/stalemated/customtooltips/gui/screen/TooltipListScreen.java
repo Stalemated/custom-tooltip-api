@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.gui.screen;
 
-import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.factories.ListScreenUIFactory;
 import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;

@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
-import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import dev.isxander.yacl3.gui.controllers.string.StringControllerElement;
 import org.spongepowered.asm.mixin.Mixin;

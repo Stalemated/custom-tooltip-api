@@ -7,7 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import com.stalemated.customtooltips.config.ExternalBackgroundsConfig;
-import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.config.ConfigManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 

@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.core;
 
-import com.stalemated.customtooltips.ConfigManager;
+import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.customtooltips.util.ToastManager;
