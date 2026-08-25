@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.1.0+1.20.1
+
+### New feature
+- Added a new method to TooltipBuilder that allows for a Predicate function to set conditions for tooltip display for developers
+
+### Other changes
+- Updated S-Lib dependency to 2.0.0, making config registration be more unified
+
 ## 5.0.2+1.20.1
 
 ### New Features
