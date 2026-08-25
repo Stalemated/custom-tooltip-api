@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.stalemated.lib.util.color.ColorUtils.*;
 
@@ -82,6 +83,7 @@ public class TooltipEntry {
     public transient boolean apiEntry = false;
     public transient String apiEntryId = "";
     public transient Function<ItemStack, List<String>> dynamicTextProvider = null;
+    public transient Predicate<ItemStack> displayCondition = stack -> true;
     public transient boolean hasDynamicText = false;
 
     public TooltipEntry() {
@@ -215,6 +217,10 @@ public class TooltipEntry {
     public boolean matches(ItemStack stack) {
         if (!cachesInitialized) initCaches();
 
+        if (this.displayCondition != null && !this.displayCondition.test(stack)) {
+            return false;
+        }
+
         return this.targetMatcher != null && this.targetMatcher.matches(stack);
     }
 
@@ -228,6 +234,7 @@ public class TooltipEntry {
         return CustomTooltipApi.builder(this.target)
                 .text(this.text)
                 .dynamicText(this.dynamicTextProvider)
+                .displayCondition(this.displayCondition)
                 .style(this.style)
                 .colors(this.colors)
                 .borderColors(this.borderColors)
