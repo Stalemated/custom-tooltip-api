@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class TooltipEntryBuilderImpl implements TooltipBuilder {
     private final TooltipEntry entry;
@@ -207,6 +208,12 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     @Override
     public TooltipBuilder reverseAnimation(boolean reverse) {
         this.entry.reverse_animation = reverse;
+        return this;
+    }
+
+    @Override
+    public TooltipBuilder displayCondition(Predicate<ItemStack> condition) {
+        this.entry.displayCondition = condition;
         return this;
     }
 

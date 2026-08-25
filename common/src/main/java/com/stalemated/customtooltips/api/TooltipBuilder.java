@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * A fluent builder interface for creating and configuring {@link TooltipEntry} instances.
@@ -293,6 +294,14 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     TooltipBuilder reverseAnimation(boolean reverse);
+
+    /**
+     * Sets a dynamic condition that determines if the tooltip should be displayed.
+     *
+     * @param condition A predicate that takes the current ItemStack. If it returns false, the tooltip will be hidden.
+     * @return This builder instance.
+     */
+    TooltipBuilder displayCondition(Predicate<ItemStack> condition);
 
     /**
      * Builds and returns the configured {@link TooltipEntry} without registering it.
