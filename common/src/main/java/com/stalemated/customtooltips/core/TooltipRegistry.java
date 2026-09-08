@@ -7,30 +7,33 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TooltipRegistry {
 
-    private static final List<TooltipEntry> ACTIVE_ENTRIES = new ArrayList<>();
+    private static List<TooltipEntry> ACTIVE_ENTRIES = new CopyOnWriteArrayList<>();
 
-    public static void reload() {
-        ACTIVE_ENTRIES.clear();
+    public static synchronized void reload() {
+        List<TooltipEntry> newEntries = new ArrayList<>();
         IconAligner.clearCache();
         List<TooltipEntry> apiEntries = CustomTooltipApi.getApiEntries();
 
         if (apiEntries != null) {
-            ACTIVE_ENTRIES.addAll(apiEntries);
+            newEntries.addAll(apiEntries);
         }
 
         TooltipConfig config = ConfigManager.getConfig();
         if (config != null && config.entries != null) {
-            ACTIVE_ENTRIES.addAll(config.entries);
+            newEntries.addAll(config.entries);
         }
 
-        for (TooltipEntry entry : ACTIVE_ENTRIES) {
+        for (TooltipEntry entry : newEntries) {
             if (entry != null) {
                 entry.initCaches();
             }
         }
+        
+        ACTIVE_ENTRIES = new CopyOnWriteArrayList<>(newEntries);
     }
 
     public static List<TooltipEntry> getEntries() {
