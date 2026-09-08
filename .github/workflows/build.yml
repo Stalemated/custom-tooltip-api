@@ -12,6 +12,11 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
+      - name: checkout s-lib
+        uses: actions/checkout@v4
+        with:
+          repository: Stalemated/s-lib
+          path: s-lib-repo
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
       - name: setup jdk
@@ -21,6 +26,11 @@ jobs:
           distribution: 'microsoft'
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: publish s-lib to maven local
+        run: |
+          cd s-lib-repo
+          chmod +x ./gradlew
+          ./gradlew publishToMavenLocal
       - name: build
         run: ./gradlew build
       - name: capture build artifacts
