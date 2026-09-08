@@ -14,13 +14,9 @@ public class TooltipRegistry {
     private static List<TooltipEntry> ACTIVE_ENTRIES = new CopyOnWriteArrayList<>();
 
     public static synchronized void reload() {
-        List<TooltipEntry> newEntries = new ArrayList<>();
         IconAligner.clearCache();
         List<TooltipEntry> apiEntries = CustomTooltipApi.getApiEntries();
-
-        if (apiEntries != null) {
-            newEntries.addAll(apiEntries);
-        }
+        List<TooltipEntry> newEntries = new ArrayList<>(apiEntries);
 
         TooltipConfig config = ConfigManager.getConfig();
         if (config != null && config.entries != null) {
