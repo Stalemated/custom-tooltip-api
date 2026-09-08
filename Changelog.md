@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.1.1+1.21.1
+
+### Fixes
+- Fixed a crash due to ConcurrentModificationException by making the tooltip entries thread-safe
+
+### Other changes
+- Updated S-Lib dependency to 2.1.0, fixing another race condition in NeoForge
+
 ## 5.1.0+1.21.1
 
 ### New feature
