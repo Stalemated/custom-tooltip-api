@@ -2,11 +2,13 @@
 
 ## 5.1.1+1.21.1
 
-### Fixes
+### Fix
 - Fixed a crash due to ConcurrentModificationException by making the tooltip entries thread-safe
 
 ### Other changes
-- Updated S-Lib dependency to 2.1.0, fixing another race condition in NeoForge
+- Updated S-Lib dependency to 2.1.1,
+  - Fixes another race condition in NeoForge
+  - Fixes players with S-Lib installed client-side not being able to join servers without the mod installed server-side
 
 ## 5.1.0+1.21.1
 
