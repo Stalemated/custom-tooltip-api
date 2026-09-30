@@ -62,8 +62,7 @@ public class CustomBackgroundManager {
 
     public static void reloadExternalBackgrounds() {
         try {
-            ConfigManager.EXTERNAL_BG_HANDLER.load();
-            ExternalBackgroundsConfig config = ConfigManager.EXTERNAL_BG_HANDLER.instance();
+            ExternalBackgroundsConfig config = ConfigManager.EXTERNAL_BG_CONFIG.getConfig();
 
             availableBackgrounds.clear();
             availableBackgrounds.addAll(localBackgrounds);

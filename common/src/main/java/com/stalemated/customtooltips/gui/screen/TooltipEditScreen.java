@@ -4,30 +4,28 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
-import com.stalemated.customtooltips.core.TooltipEntryUpdater;
-
+import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
 import com.stalemated.customtooltips.util.CustomBackgroundManager;
-import com.stalemated.lib.compat.yacl.controller.builder.*;
-import dev.isxander.yacl3.api.ListOption;
-import dev.isxander.yacl3.api.Option;
-import dev.isxander.yacl3.api.OptionDescription;
-import dev.isxander.yacl3.api.YetAnotherConfigLib;
-import dev.isxander.yacl3.api.ConfigCategory;
-import dev.isxander.yacl3.api.OptionGroup;
-import dev.isxander.yacl3.api.controller.*;
+import com.stalemated.customtooltips.util.CustomFontManager;
+import com.stalemated.customtooltips.gui.factories.TooltipEditUIFactory;
 
+import com.stalemated.lib.compat.yacl.controller.builder.ItemOrTagControllerBuilder;
+import com.stalemated.lib.compat.yacl.controller.builder.SimpleEnumDropdownControllerBuilder;
+import com.stalemated.lib.compat.yacl.controller.builder.SimpleStringDropdownControllerBuilder;
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.StringControllerBuilder;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.stalemated.lib.util.color.ColorUtils.*;
+import static com.stalemated.lib.util.color.ColorUtils.DEFAULT_OPACITY;
 
 public class TooltipEditScreen {
 
@@ -45,59 +43,45 @@ public class TooltipEditScreen {
     public static Screen create(Screen parent, TooltipEntry entry, boolean isNew) {
         previewEntry = entry.copy();
 
-        final WeakReference<Boolean> isNewRef = new WeakReference<>(isNew);
-
-        String[] boundColors = getStrings(entry.colors, DEFAULT_COLOR_STRING, DEFAULT_COLOR_STRING);
-
-        String[] boundBorderColors = getStrings(entry.borderColors, DEFAULT_BORDER_COLORS_STRING.get(0), DEFAULT_BORDER_COLORS_STRING.get(1));
-
-        String[] boundBackgroundColors = getStrings(entry.backgroundColors, DEFAULT_BACKGROUND_COLORS_STRING.get(0), DEFAULT_BACKGROUND_COLORS_STRING.get(1));
-
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                 .save(() -> {
-                    Boolean isNewEntry = isNewRef.get();
-                    if (isNewEntry != null) {
-                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, boundBackgroundColors, isNewEntry, parent);
-                        if (isNewEntry) {
-                            // Prevent re-adding on subsequent saves within the same screen session
-                            isNewRef.clear();
-                        }
+                    if (isNew) {
+                        ConfigManager.getConfig().entries.add(entry);
                     } else {
-                        TooltipEntryUpdater.updateAndSave(entry, boundColors, boundBorderColors, boundBackgroundColors, false, parent);
+                        entry.invalidateCaches();
+                    }
+                    ConfigManager.save();
+                    if (parent instanceof TooltipListScreen listScreen) {
+                        listScreen.listWidget.updateEntries(listScreen.searchBox.getText());
                     }
                 })
                 .category(ConfigCategory.createBuilder()
                         .name(Text.translatable("customtooltips.tooltip_edit_screen.title"))
                         .group(createTargetGroup(entry))
                         .group(createCustomTextGroup(entry))
-                        .group(createStyleAndColorsGroup(entry, boundColors))
+                        .group(createStyleAndColorsGroup(entry))
                         .group(createPositionAndAnimationGroup(entry))
                         .group(createFormattingGroup(entry))
                         .group(createConditionsGroup(entry))
                         .build())
                 .category(ConfigCategory.createBuilder()
                         .name(Text.translatable("customtooltips.tooltip_edit_screen.title_background"))
-                        .group(createBackgroundOptionsGroup(entry, boundBackgroundColors))
-                        .group(createBorderOptionsGroup(entry, boundBorderColors))
+                        .group(createBackgroundOptionsGroup(entry))
+                        .group(createBorderOptionsGroup(entry))
                         .build())
                 .build()
                 .generateScreen(parent);
     }
 
-    public static String @NotNull [] getStrings(List<String> entry, String hashtag, String hashtag1) {
-        String rawColor1 = entry != null && !entry.isEmpty() && entry.get(0) != null && !entry.get(0).trim().isEmpty() ? entry.get(0) : hashtag;
-        String rawColor2 = entry != null && entry.size() > 1 && entry.get(1) != null && !entry.get(1).trim().isEmpty() ? entry.get(1) : hashtag1;
-        return new String[]{rawColor1, rawColor2};
-    }
-
     private static OptionGroup createTargetGroup(TooltipEntry entry) {
-        var target = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.target_id"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.target.description")))
-                .binding("", () -> entry.target, val -> entry.target = val)
-                .controller(ItemOrTagControllerBuilder::create)
-                .build();
+        var target = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.target_id",
+                "customtooltips.tooltip_edit_screen.target.description",
+                "",
+                e -> e.target, (e, val) -> e.target = val,
+                ItemOrTagControllerBuilder::create
+        );
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.target"))
@@ -127,54 +111,28 @@ public class TooltipEditScreen {
         return customText;
     }
 
-    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry, String[] boundColors) {
-        var style = Option.<TooltipStyle>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.style"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.style.description")))
-                .binding(TooltipStyle.SOLID, () -> entry.style, val -> entry.style = val)
-                .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
-                        .formatValue(styleFormat -> Text.translatable("customtooltips.tooltip_edit_screen.style." + styleFormat.name().toLowerCase())))
-                .build();
-        style.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.style = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+    private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry) {
+        var style = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.style",
+                "customtooltips.tooltip_edit_screen.style.description",
+                TooltipStyle.SOLID,
+                e -> e.style, (e, val) -> e.style = val,
+                opt -> SimpleEnumDropdownControllerBuilder.create(opt).formatValue(styleFormat -> Text.translatable("customtooltips.tooltip_edit_screen.style." + styleFormat.name().toLowerCase()))
+        );
 
-        var color1 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.primary_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.primary_color.description"),
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.color_override.description")
-                ))
-                .binding("white", () -> boundColors[0], val -> boundColors[0] = val.trim())
-                .controller(AdvancedColorControllerBuilder::create)
-                .build();
-        color1.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                if (previewEntry.colors.isEmpty()) previewEntry.colors.add(opt.pendingValue().trim());
-                else previewEntry.colors.set(0, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
+        var color1 = TooltipEditUIFactory.buildTextColor(entry,
+                "customtooltips.tooltip_edit_screen.colors.primary_color",
+                "customtooltips.tooltip_edit_screen.colors.primary_color.description",
+                "customtooltips.tooltip_edit_screen.colors.color_override.description",
+                0, e -> e.colors
+        );
 
-        var color2 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.secondary_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.secondary_color.description"),
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.color_override.description")
-                ))
-                .binding("white", () -> boundColors[1], val -> boundColors[1] = val.trim())
-                .controller(AdvancedColorControllerBuilder::create)
-                .build();
-        color2.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                while (previewEntry.colors.size() < 2) previewEntry.colors.add("white");
-                previewEntry.colors.set(1, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
+        var color2 = TooltipEditUIFactory.buildTextColor(entry,
+                "customtooltips.tooltip_edit_screen.colors.secondary_color",
+                "customtooltips.tooltip_edit_screen.colors.secondary_color.description",
+                "customtooltips.tooltip_edit_screen.colors.color_override.description",
+                1, e -> e.colors
+        );
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.style_colors"))
@@ -184,164 +142,84 @@ public class TooltipEditScreen {
                 .build();
     }
 
-    private static OptionGroup createBackgroundOptionsGroup(TooltipEntry entry, String[] boundBackgroundColors) {
+    private static OptionGroup createBackgroundOptionsGroup(TooltipEntry entry) {
+        var bgOpacity = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.background_opacity",
+                "customtooltips.tooltip_edit_screen.background_opacity.description",
+                DEFAULT_OPACITY,
+                e -> e.backgroundOpacity, (e, val) -> e.backgroundOpacity = val,
+                opt -> IntegerSliderControllerBuilder.create(opt).range(0, 255).step(1)
+        );
 
-        var backgroundOpacity = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_opacity"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_opacity.description")))
-                .binding(DEFAULT_OPACITY, () -> entry.backgroundOpacity, val -> entry.backgroundOpacity = val)
-                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                        .range(0, 255)
-                        .step(1)
-                )
-                .build();
-        backgroundOpacity.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.backgroundOpacity = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+        var bgColor1 = TooltipEditUIFactory.buildColor(entry,
+                "customtooltips.tooltip_edit_screen.colors.background_top_color",
+                "customtooltips.tooltip_edit_screen.colors.background_top_color.description",
+                0, "#F0100010", e -> e.backgroundColors
+        );
 
-        var backgroundColor1 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.background_top_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.background_top_color.description")
-                ))
-                .binding("#F0100010", () -> boundBackgroundColors[0], val -> boundBackgroundColors[0] = val.trim())
-                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
-                        .alpha(true))
-                .build();
-        backgroundColor1.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                if (previewEntry.backgroundColors.isEmpty()) previewEntry.backgroundColors.add(opt.pendingValue().trim());
-                else previewEntry.backgroundColors.set(0, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
+        var bgColor2 = TooltipEditUIFactory.buildColor(entry,
+                "customtooltips.tooltip_edit_screen.colors.background_bottom_color",
+                "customtooltips.tooltip_edit_screen.colors.background_bottom_color.description",
+                1, "#F0100010", e -> e.backgroundColors
+        );
 
-        var backgroundColor2 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.background_bottom_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.background_bottom_color.description")
-                ))
-                .binding("#F0100010", () -> boundBackgroundColors[1], val -> boundBackgroundColors[1] = val.trim())
-                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
-                        .alpha(true))
-                .build();
-        backgroundColor2.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                while (previewEntry.backgroundColors.size() < 2) previewEntry.backgroundColors.add("#F0100010");
-                previewEntry.backgroundColors.set(1, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
+        var bgType = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.background_type",
+                "customtooltips.tooltip_edit_screen.background_type.description",
+                BackgroundType.SOLID,
+                e -> e.backgroundType, (e, val) -> e.backgroundType = val,
+                opt -> SimpleEnumDropdownControllerBuilder.create(opt).formatValue(type -> Text.translatable("customtooltips.tooltip_edit_screen.background_type." + type.name().toLowerCase()))
+        );
 
-        var backgroundType = Option.<BackgroundType>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_type"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_type.description")))
-                .binding(BackgroundType.SOLID, () -> entry.backgroundType, val -> entry.backgroundType = val)
-                .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
-                        .formatValue(type -> Text.translatable("customtooltips.tooltip_edit_screen.background_type." + type.name().toLowerCase())))
-                .build();
-        backgroundType.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.backgroundType = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
-
-        var backgroundTextureOption = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_texture"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_texture.description")))
-                .binding("", () -> entry.backgroundTexture, val -> entry.backgroundTexture = val)
-                .controller(opt -> SimpleStringDropdownControllerBuilder.create(opt)
+        var bgTexture = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.background_texture",
+                "customtooltips.tooltip_edit_screen.background_texture.description",
+                "",
+                e -> e.backgroundTexture, (e, val) -> e.backgroundTexture = val,
+                opt -> SimpleStringDropdownControllerBuilder.create(opt)
                         .values(CustomBackgroundManager.availableBackgrounds)
-                        .formatValue(s -> Text.literal(s.replace("custom_tooltip_api:textures/gui/tooltip_backgrounds/", ""))))
-                .build();
-        backgroundTextureOption.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.backgroundTexture = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+                        .formatValue(s -> Text.literal(s.replace("custom_tooltip_api:textures/gui/tooltip_backgrounds/", "")))
+        );
 
-        var backgroundScaleOption = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.background_scale"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.background_scale.description")))
-                .binding(100, () -> entry.backgroundScale, val -> entry.backgroundScale = val)
-                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                        .range(10, 300)
-                        .step(5)
-                )
-                .build();
-        backgroundScaleOption.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.backgroundScale = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+        var bgScale = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.background_scale",
+                "customtooltips.tooltip_edit_screen.background_scale.description",
+                100,
+                e -> e.backgroundScale, (e, val) -> e.backgroundScale = val,
+                opt -> IntegerSliderControllerBuilder.create(opt).range(10, 300).step(5)
+        );
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.background"))
-                .option(backgroundType)
-                .option(backgroundOpacity)
-                .option(backgroundColor1)
-                .option(backgroundColor2)
-                .option(backgroundTextureOption)
-                .option(backgroundScaleOption)
+                .option(bgType)
+                .option(bgOpacity)
+                .option(bgColor1)
+                .option(bgColor2)
+                .option(bgTexture)
+                .option(bgScale)
                 .build();
     }
 
-    private static OptionGroup createBorderOptionsGroup(TooltipEntry entry, String[] boundBorderColors) {
-        var borderOpacity = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.border_opacity.description")))
-                .binding(DEFAULT_OPACITY, () -> entry.borderOpacity, val -> entry.borderOpacity = val)
-                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                        .range(0, 255)
-                        .step(1)
-                )
-                .build();
-        borderOpacity.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.borderOpacity = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+    private static OptionGroup createBorderOptionsGroup(TooltipEntry entry) {
+        var borderOpacity = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.border_opacity",
+                "customtooltips.tooltip_edit_screen.border_opacity.description",
+                DEFAULT_OPACITY,
+                e -> e.borderOpacity, (e, val) -> e.borderOpacity = val,
+                opt -> IntegerSliderControllerBuilder.create(opt).range(0, 255).step(1)
+        );
 
-        var borderColor1 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_top_color.description")
-                ))
-                .binding("#505000FF", () -> boundBorderColors[0], val -> boundBorderColors[0] = val.trim())
-                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
-                        .alpha(true))
-                .build();
-        borderColor1.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                if (previewEntry.borderColors.isEmpty()) previewEntry.borderColors.add(opt.pendingValue().trim());
-                else previewEntry.borderColors.set(0, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
+        var borderColor1 = TooltipEditUIFactory.buildColor(entry,
+                "customtooltips.tooltip_edit_screen.colors.border_top_color",
+                "customtooltips.tooltip_edit_screen.colors.border_top_color.description",
+                0, "#505000FF", e -> e.borderColors
+        );
 
-        var borderColor2 = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color"))
-                .description(OptionDescription.of(
-                        Text.translatable("customtooltips.tooltip_edit_screen.colors.border_bottom_color.description")
-                ))
-                .binding("#5028007F", () -> boundBorderColors[1], val -> boundBorderColors[1] = val.trim())
-                .controller(opt -> AdvancedColorControllerBuilder.create(opt)
-                        .alpha(true))
-                .build();
-        borderColor2.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                while (previewEntry.borderColors.size() < 2) previewEntry.borderColors.add("#5028007F");
-                previewEntry.borderColors.set(1, opt.pendingValue().trim());
-                previewEntry.invalidateCaches();
-            }
-        });
+        var borderColor2 = TooltipEditUIFactory.buildColor(entry,
+                "customtooltips.tooltip_edit_screen.colors.border_bottom_color",
+                "customtooltips.tooltip_edit_screen.colors.border_bottom_color.description",
+                1, "#5028007F", e -> e.borderColors
+        );
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.border"))
@@ -352,65 +230,44 @@ public class TooltipEditScreen {
     }
 
     private static OptionGroup createPositionAndAnimationGroup(TooltipEntry entry) {
-        var position = Option.<TooltipPosition>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.position"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.position.description")))
-                .binding(TooltipPosition.BOTTOM, () -> entry.position, val -> entry.position = val)
-                .controller(opt -> SimpleEnumDropdownControllerBuilder.create(opt)
-                        .formatValue(pos -> Text.translatable("customtooltips.tooltip_edit_screen.position." + pos.name().toLowerCase())))
-                .build();
+        var position = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.position",
+                "customtooltips.tooltip_edit_screen.position.description",
+                TooltipPosition.BOTTOM,
+                e -> e.position, (e, val) -> e.position = val,
+                opt -> SimpleEnumDropdownControllerBuilder.create(opt).formatValue(pos -> Text.translatable("customtooltips.tooltip_edit_screen.position." + pos.name().toLowerCase()))
+        );
 
-        var offset = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.line_offset"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.line_offset.description")))
-                .binding(0, () -> entry.lineOffset, val -> entry.lineOffset = val)
-                .controller(IntegerFieldControllerBuilder::create)
-                .build();
+        var offset = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.line_offset",
+                "customtooltips.tooltip_edit_screen.line_offset.description",
+                0,
+                e -> e.lineOffset, (e, val) -> e.lineOffset = val,
+                IntegerFieldControllerBuilder::create
+        );
 
-        var animOffset = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.animation_offset"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.animation_offset.description")))
-                .binding(0, () -> entry.animation_offset, val -> entry.animation_offset = val)
-                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                        .range(-100, 100)
-                        .step(1)
-                )
-                .build();
-        animOffset.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.animation_offset = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+        var animOffset = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.animation_offset",
+                "customtooltips.tooltip_edit_screen.animation_offset.description",
+                0,
+                e -> e.animation_offset, (e, val) -> e.animation_offset = val,
+                opt -> IntegerSliderControllerBuilder.create(opt).range(-100, 100).step(1)
+        );
 
-        var rate = Option.<Integer>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.tickrate"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.tickrate.description")))
-                .binding(100, () -> entry.tickrate, val -> entry.tickrate = val)
-                .controller(opt -> IntegerSliderControllerBuilder.create(opt)
-                        .range(1, 500)
-                        .step(1)
-                )
-                .build();
-        rate.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.tickrate = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+        var rate = TooltipEditUIFactory.buildOption(entry,
+                "customtooltips.tooltip_edit_screen.tickrate",
+                "customtooltips.tooltip_edit_screen.tickrate.description",
+                100,
+                e -> e.tickrate, (e, val) -> e.tickrate = val,
+                opt -> IntegerSliderControllerBuilder.create(opt).range(1, 500).step(1)
+        );
 
-        var reverseAnim = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.reverse_animation"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.reverse_animation.description")))
-                .binding(false, () -> entry.reverse_animation, val -> entry.reverse_animation = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-        reverseAnim.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.reverse_animation = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+        var reverseAnim = TooltipEditUIFactory.buildBoolean(entry,
+                "customtooltips.tooltip_edit_screen.reverse_animation",
+                "customtooltips.tooltip_edit_screen.reverse_animation.description",
+                false,
+                e -> e.reverse_animation, (e, val) -> e.reverse_animation = val
+        );
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.position_animation"))
@@ -423,86 +280,19 @@ public class TooltipEditScreen {
     }
 
     private static OptionGroup createFormattingGroup(TooltipEntry entry) {
-        var bold = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.bold"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.bold.description")))
-                .binding(false, () -> entry.bold, val -> entry.bold = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-        bold.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.bold = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+        var bold = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.bold", "customtooltips.tooltip_edit_screen.bold.description", false, e -> e.bold, (e, val) -> e.bold = val);
+        var italic = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.italic", "customtooltips.tooltip_edit_screen.italic.description", false, e -> e.italic, (e, val) -> e.italic = val);
+        var underlined = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.underlined", "customtooltips.tooltip_edit_screen.underlined.description", false, e -> e.underlined, (e, val) -> e.underlined = val);
+        var strikethrough = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.strikethrough", "customtooltips.tooltip_edit_screen.strikethrough.description", false, e -> e.strikethrough, (e, val) -> e.strikethrough = val);
+        var obfuscated = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.obfuscated", "customtooltips.tooltip_edit_screen.obfuscated.description", false, e -> e.obfuscated, (e, val) -> e.obfuscated = val);
 
-        var italic = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.italic"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.italic.description")))
-                .binding(false, () -> entry.italic, val -> entry.italic = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-        italic.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.italic = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
-
-        var underlined = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.underlined"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.underlined.description")))
-                .binding(false, () -> entry.underlined, val -> entry.underlined = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-        underlined.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.underlined = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
-
-        var strikethrough = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.strikethrough"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.strikethrough.description")))
-                .binding(false, () -> entry.strikethrough, val -> entry.strikethrough = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-        strikethrough.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.strikethrough = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
-
-        var obfuscated = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.obfuscated"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.obfuscated.description")))
-                .binding(false, () -> entry.obfuscated, val -> entry.obfuscated = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-        obfuscated.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.obfuscated = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
-
-        var fontOption = Option.<String>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.font"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.font.description")))
-                .binding("minecraft:default", () -> entry.font, val -> entry.font = val)
-                .controller(opt -> SimpleStringDropdownControllerBuilder.create(opt)
-                        .values(com.stalemated.customtooltips.util.CustomFontManager.availableFonts)
-                        .formatValue(Text::literal)
-                )
-                .build();
-        fontOption.addEventListener((opt, event) -> {
-            if (previewEntry != null) {
-                previewEntry.font = opt.pendingValue();
-                previewEntry.invalidateCaches();
-            }
-        });
+        var fontOption = TooltipEditUIFactory.buildIdentifierDropdown(entry,
+                "customtooltips.tooltip_edit_screen.font",
+                "customtooltips.tooltip_edit_screen.font.description",
+                "minecraft:default",
+                CustomFontManager.availableFonts,
+                e -> e.font, (e, val) -> e.font = val
+        );
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.formatting"))
@@ -517,47 +307,12 @@ public class TooltipEditScreen {
     }
 
     private static OptionGroup createConditionsGroup(TooltipEntry entry) {
-        var requireShift = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.require_keybind"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.require_keybind.description")))
-                .binding(false, () -> entry.require_keybind, val -> entry.require_keybind = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-
-        var emptyLineBefore = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.empty_line_before"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.empty_line_before.description")))
-                .binding(false, () -> entry.empty_line_before, val -> entry.empty_line_before = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-
-        var hideVanillaLines = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.hide_vanilla_lines"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.hide_vanilla_lines.description")))
-                .binding(false, () -> entry.hide_vanilla_lines, val -> entry.hide_vanilla_lines = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-
-        var showOnlyIfDamaged = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_damaged"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_damaged.description")))
-                .binding(false, () -> entry.show_only_if_damaged, val -> entry.show_only_if_damaged = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-
-        var showOnlyIfEnchanted = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_enchanted"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_enchanted.description")))
-                .binding(false, () -> entry.show_only_if_enchanted, val -> entry.show_only_if_enchanted = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
-
-        var showOnlyIfUnbreakable = Option.<Boolean>createBuilder()
-                .name(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_unbreakable"))
-                .description(OptionDescription.of(Text.translatable("customtooltips.tooltip_edit_screen.show_only_if_unbreakable.description")))
-                .binding(false, () -> entry.show_only_if_unbreakable, val -> entry.show_only_if_unbreakable = val)
-                .controller(TickBoxControllerBuilder::create)
-                .build();
+        var requireShift = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.require_keybind", "customtooltips.tooltip_edit_screen.require_keybind.description", false, e -> e.require_keybind, (e, val) -> e.require_keybind = val);
+        var emptyLineBefore = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.empty_line_before", "customtooltips.tooltip_edit_screen.empty_line_before.description", false, e -> e.empty_line_before, (e, val) -> e.empty_line_before = val);
+        var hideVanillaLines = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.hide_vanilla_lines", "customtooltips.tooltip_edit_screen.hide_vanilla_lines.description", false, e -> e.hide_vanilla_lines, (e, val) -> e.hide_vanilla_lines = val);
+        var showOnlyIfDamaged = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_damaged", "customtooltips.tooltip_edit_screen.show_only_if_damaged.description", false, e -> e.show_only_if_damaged, (e, val) -> e.show_only_if_damaged = val);
+        var showOnlyIfEnchanted = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_enchanted", "customtooltips.tooltip_edit_screen.show_only_if_enchanted.description", false, e -> e.show_only_if_enchanted, (e, val) -> e.show_only_if_enchanted = val);
+        var showOnlyIfUnbreakable = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_unbreakable", "customtooltips.tooltip_edit_screen.show_only_if_unbreakable.description", false, e -> e.show_only_if_unbreakable, (e, val) -> e.show_only_if_unbreakable = val);
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.conditions"))

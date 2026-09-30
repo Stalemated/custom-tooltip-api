@@ -1,6 +1,5 @@
 package com.stalemated.customtooltips.gui.factories;
 
-import com.google.gson.Gson;
 import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
@@ -99,11 +98,10 @@ public class ListScreenUIFactory {
         buttons.add(ButtonWidget.builder(getPasteIcon(), button -> {
             try {
                 String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
-                Gson gson = new com.google.gson.Gson();
-                TooltipEntry pasted = gson.fromJson(clipboard, TooltipEntry.class);
+                TooltipEntry pasted = ConfigManager.GSON.fromJson(clipboard, TooltipEntry.class);
 
                 if (pasted != null && pasted.target != null) {
-                    pasted.uuid = UUID.randomUUID().toString();
+                    pasted.uuid = UUID.randomUUID();
                     pasted.apiEntry = false;
                     pasted.apiEntryId = "";
 
