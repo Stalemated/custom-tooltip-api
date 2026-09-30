@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.2.0+1.21.1
+
+### General Changes
+- Updated the mod to work with S-Lib 3.0.1
+- Updated the API to support the native TextColor class as well as Java's Color class on top of String for tooltip text color, border color and background color
+
 ## 5.1.1+1.21.1
 
 ### Fix
