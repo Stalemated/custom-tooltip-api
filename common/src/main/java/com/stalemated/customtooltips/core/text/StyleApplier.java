@@ -1,13 +1,13 @@
 package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.lib.util.color.ColorUtils;
 import com.stalemated.lib.util.color.GradientGenerator;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
 
 public class StyleApplier {
 
@@ -26,19 +26,16 @@ public class StyleApplier {
                 break;
         }
 
-        String colorStr = (entry.colors != null && !entry.colors.isEmpty()) ? entry.colors.get(0) : "white";
-        Style style = Style.EMPTY.withColor(ColorUtils.parseColor(colorStr));
+        TextColor textColor = (entry.colors != null && !entry.colors.isEmpty() && entry.colors.get(0) != null) ? entry.colors.get(0) : TextColor.fromFormatting(Formatting.WHITE);
+        Style style = Style.EMPTY.withColor(textColor);
 
         return baseText.copy().setStyle(style);
     }
 
     public static Style buildStyleModifier(TooltipEntry entry) {
         Style style = Style.EMPTY;
-        if (entry.font != null && !entry.font.isEmpty() && !entry.font.equals("minecraft:default")) {
-            try {
-                style = style.withFont(new Identifier(entry.font));
-            }
-            catch (InvalidIdentifierException ignored) {}
+        if (entry.font != null && !entry.font.getPath().isEmpty() && !entry.font.equals(Identifier.of("minecraft", "default"))) {
+            style = style.withFont(entry.font);
         }
         if (entry.bold) style = style.withBold(true);
         if (entry.italic) style = style.withItalic(true);

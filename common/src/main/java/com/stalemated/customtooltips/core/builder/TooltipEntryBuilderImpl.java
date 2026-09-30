@@ -6,7 +6,10 @@ import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Identifier;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -44,37 +47,37 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     }
 
     @Override
-    public TooltipBuilder colors(String... colors) {
+    public TooltipBuilder colors(TextColor... colors) {
         this.entry.colors.addAll(List.of(colors));
         return this;
     }
 
     @Override
-    public TooltipBuilder colors(List<String> colors) {
+    public TooltipBuilder colorsList(List<TextColor> colors) {
         this.entry.colors.addAll(colors);
         return this;
     }
 
     @Override
-    public TooltipBuilder borderColors(String... colors) {
+    public TooltipBuilder borderColors(Color... colors) {
         this.entry.borderColors.addAll(List.of(colors));
         return this;
     }
 
     @Override
-    public TooltipBuilder borderColors(List<String> colors) {
+    public TooltipBuilder borderColorsList(List<Color> colors) {
         this.entry.borderColors.addAll(colors);
         return this;
     }
 
     @Override
-    public TooltipBuilder backgroundColors(String... colors) {
+    public TooltipBuilder backgroundColors(Color... colors) {
         this.entry.backgroundColors.addAll(List.of(colors));
         return this;
     }
 
     @Override
-    public TooltipBuilder backgroundColors(List<String> colors) {
+    public TooltipBuilder backgroundColorsList(List<Color> colors) {
         this.entry.backgroundColors.addAll(colors);
         return this;
     }
@@ -188,7 +191,7 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     }
 
     @Override
-    public TooltipBuilder font(String fontIdentifier) {
+    public TooltipBuilder font(Identifier fontIdentifier) {
         this.entry.font = fontIdentifier;
         return this;
     }

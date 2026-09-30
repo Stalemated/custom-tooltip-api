@@ -64,9 +64,9 @@ public class TooltipListScreen extends Screen {
             hasShownKeybindToast = true;
         }
 
-        if (ConfigManager.configLoadFailed) {
+        if (ConfigManager.TOOLTIP_CONFIG.configLoadFailed) {
             ToastManager.showBrokenConfigToast();
-            ConfigManager.configLoadFailed = false;
+            ConfigManager.TOOLTIP_CONFIG.configLoadFailed = false;
         }
     }
 
