@@ -77,7 +77,6 @@ public class TooltipEditScreen {
     private static OptionGroup createTargetGroup(TooltipEntry entry) {
         var target = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.target_id",
-                "customtooltips.tooltip_edit_screen.target.description",
                 "",
                 e -> e.target, (e, val) -> e.target = val,
                 ItemOrTagControllerBuilder::create
@@ -114,7 +113,6 @@ public class TooltipEditScreen {
     private static OptionGroup createStyleAndColorsGroup(TooltipEntry entry) {
         var style = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.style",
-                "customtooltips.tooltip_edit_screen.style.description",
                 TooltipStyle.SOLID,
                 e -> e.style, (e, val) -> e.style = val,
                 opt -> SimpleEnumDropdownControllerBuilder.create(opt).formatValue(styleFormat -> Text.translatable("customtooltips.tooltip_edit_screen.style." + styleFormat.name().toLowerCase()))
@@ -122,14 +120,12 @@ public class TooltipEditScreen {
 
         var color1 = TooltipEditUIFactory.buildTextColor(entry,
                 "customtooltips.tooltip_edit_screen.colors.primary_color",
-                "customtooltips.tooltip_edit_screen.colors.primary_color.description",
                 "customtooltips.tooltip_edit_screen.colors.color_override.description",
                 0, e -> e.colors
         );
 
         var color2 = TooltipEditUIFactory.buildTextColor(entry,
                 "customtooltips.tooltip_edit_screen.colors.secondary_color",
-                "customtooltips.tooltip_edit_screen.colors.secondary_color.description",
                 "customtooltips.tooltip_edit_screen.colors.color_override.description",
                 1, e -> e.colors
         );
@@ -145,7 +141,6 @@ public class TooltipEditScreen {
     private static OptionGroup createBackgroundOptionsGroup(TooltipEntry entry) {
         var bgOpacity = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.background_opacity",
-                "customtooltips.tooltip_edit_screen.background_opacity.description",
                 DEFAULT_OPACITY,
                 e -> e.backgroundOpacity, (e, val) -> e.backgroundOpacity = val,
                 opt -> IntegerSliderControllerBuilder.create(opt).range(0, 255).step(1)
@@ -153,19 +148,16 @@ public class TooltipEditScreen {
 
         var bgColor1 = TooltipEditUIFactory.buildColor(entry,
                 "customtooltips.tooltip_edit_screen.colors.background_top_color",
-                "customtooltips.tooltip_edit_screen.colors.background_top_color.description",
                 0, "#F0100010", e -> e.backgroundColors
         );
 
         var bgColor2 = TooltipEditUIFactory.buildColor(entry,
                 "customtooltips.tooltip_edit_screen.colors.background_bottom_color",
-                "customtooltips.tooltip_edit_screen.colors.background_bottom_color.description",
                 1, "#F0100010", e -> e.backgroundColors
         );
 
         var bgType = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.background_type",
-                "customtooltips.tooltip_edit_screen.background_type.description",
                 BackgroundType.SOLID,
                 e -> e.backgroundType, (e, val) -> e.backgroundType = val,
                 opt -> SimpleEnumDropdownControllerBuilder.create(opt).formatValue(type -> Text.translatable("customtooltips.tooltip_edit_screen.background_type." + type.name().toLowerCase()))
@@ -173,7 +165,6 @@ public class TooltipEditScreen {
 
         var bgTexture = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.background_texture",
-                "customtooltips.tooltip_edit_screen.background_texture.description",
                 "",
                 e -> e.backgroundTexture, (e, val) -> e.backgroundTexture = val,
                 opt -> SimpleStringDropdownControllerBuilder.create(opt)
@@ -183,7 +174,6 @@ public class TooltipEditScreen {
 
         var bgScale = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.background_scale",
-                "customtooltips.tooltip_edit_screen.background_scale.description",
                 100,
                 e -> e.backgroundScale, (e, val) -> e.backgroundScale = val,
                 opt -> IntegerSliderControllerBuilder.create(opt).range(10, 300).step(5)
@@ -203,7 +193,6 @@ public class TooltipEditScreen {
     private static OptionGroup createBorderOptionsGroup(TooltipEntry entry) {
         var borderOpacity = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.border_opacity",
-                "customtooltips.tooltip_edit_screen.border_opacity.description",
                 DEFAULT_OPACITY,
                 e -> e.borderOpacity, (e, val) -> e.borderOpacity = val,
                 opt -> IntegerSliderControllerBuilder.create(opt).range(0, 255).step(1)
@@ -211,13 +200,11 @@ public class TooltipEditScreen {
 
         var borderColor1 = TooltipEditUIFactory.buildColor(entry,
                 "customtooltips.tooltip_edit_screen.colors.border_top_color",
-                "customtooltips.tooltip_edit_screen.colors.border_top_color.description",
                 0, "#505000FF", e -> e.borderColors
         );
 
         var borderColor2 = TooltipEditUIFactory.buildColor(entry,
                 "customtooltips.tooltip_edit_screen.colors.border_bottom_color",
-                "customtooltips.tooltip_edit_screen.colors.border_bottom_color.description",
                 1, "#5028007F", e -> e.borderColors
         );
 
@@ -232,7 +219,6 @@ public class TooltipEditScreen {
     private static OptionGroup createPositionAndAnimationGroup(TooltipEntry entry) {
         var position = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.position",
-                "customtooltips.tooltip_edit_screen.position.description",
                 TooltipPosition.BOTTOM,
                 e -> e.position, (e, val) -> e.position = val,
                 opt -> SimpleEnumDropdownControllerBuilder.create(opt).formatValue(pos -> Text.translatable("customtooltips.tooltip_edit_screen.position." + pos.name().toLowerCase()))
@@ -240,7 +226,6 @@ public class TooltipEditScreen {
 
         var offset = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.line_offset",
-                "customtooltips.tooltip_edit_screen.line_offset.description",
                 0,
                 e -> e.lineOffset, (e, val) -> e.lineOffset = val,
                 IntegerFieldControllerBuilder::create
@@ -248,15 +233,13 @@ public class TooltipEditScreen {
 
         var animOffset = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.animation_offset",
-                "customtooltips.tooltip_edit_screen.animation_offset.description",
                 0,
-                e -> e.animation_offset, (e, val) -> e.animation_offset = val,
+                e -> e.animationOffset, (e, val) -> e.animationOffset = val,
                 opt -> IntegerSliderControllerBuilder.create(opt).range(-100, 100).step(1)
         );
 
         var rate = TooltipEditUIFactory.buildOption(entry,
                 "customtooltips.tooltip_edit_screen.tickrate",
-                "customtooltips.tooltip_edit_screen.tickrate.description",
                 100,
                 e -> e.tickrate, (e, val) -> e.tickrate = val,
                 opt -> IntegerSliderControllerBuilder.create(opt).range(1, 500).step(1)
@@ -264,9 +247,8 @@ public class TooltipEditScreen {
 
         var reverseAnim = TooltipEditUIFactory.buildBoolean(entry,
                 "customtooltips.tooltip_edit_screen.reverse_animation",
-                "customtooltips.tooltip_edit_screen.reverse_animation.description",
                 false,
-                e -> e.reverse_animation, (e, val) -> e.reverse_animation = val
+                e -> e.reverseAnimation, (e, val) -> e.reverseAnimation = val
         );
 
         return OptionGroup.createBuilder()
@@ -280,15 +262,14 @@ public class TooltipEditScreen {
     }
 
     private static OptionGroup createFormattingGroup(TooltipEntry entry) {
-        var bold = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.bold", "customtooltips.tooltip_edit_screen.bold.description", false, e -> e.bold, (e, val) -> e.bold = val);
-        var italic = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.italic", "customtooltips.tooltip_edit_screen.italic.description", false, e -> e.italic, (e, val) -> e.italic = val);
-        var underlined = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.underlined", "customtooltips.tooltip_edit_screen.underlined.description", false, e -> e.underlined, (e, val) -> e.underlined = val);
-        var strikethrough = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.strikethrough", "customtooltips.tooltip_edit_screen.strikethrough.description", false, e -> e.strikethrough, (e, val) -> e.strikethrough = val);
-        var obfuscated = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.obfuscated", "customtooltips.tooltip_edit_screen.obfuscated.description", false, e -> e.obfuscated, (e, val) -> e.obfuscated = val);
+        var bold = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.bold", false, e -> e.bold, (e, val) -> e.bold = val);
+        var italic = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.italic", false, e -> e.italic, (e, val) -> e.italic = val);
+        var underlined = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.underlined", false, e -> e.underlined, (e, val) -> e.underlined = val);
+        var strikethrough = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.strikethrough", false, e -> e.strikethrough, (e, val) -> e.strikethrough = val);
+        var obfuscated = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.obfuscated", false, e -> e.obfuscated, (e, val) -> e.obfuscated = val);
 
         var fontOption = TooltipEditUIFactory.buildIdentifierDropdown(entry,
                 "customtooltips.tooltip_edit_screen.font",
-                "customtooltips.tooltip_edit_screen.font.description",
                 "minecraft:default",
                 CustomFontManager.availableFonts,
                 e -> e.font, (e, val) -> e.font = val
@@ -307,12 +288,12 @@ public class TooltipEditScreen {
     }
 
     private static OptionGroup createConditionsGroup(TooltipEntry entry) {
-        var requireShift = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.require_keybind", "customtooltips.tooltip_edit_screen.require_keybind.description", false, e -> e.require_keybind, (e, val) -> e.require_keybind = val);
-        var emptyLineBefore = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.empty_line_before", "customtooltips.tooltip_edit_screen.empty_line_before.description", false, e -> e.empty_line_before, (e, val) -> e.empty_line_before = val);
-        var hideVanillaLines = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.hide_vanilla_lines", "customtooltips.tooltip_edit_screen.hide_vanilla_lines.description", false, e -> e.hide_vanilla_lines, (e, val) -> e.hide_vanilla_lines = val);
-        var showOnlyIfDamaged = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_damaged", "customtooltips.tooltip_edit_screen.show_only_if_damaged.description", false, e -> e.show_only_if_damaged, (e, val) -> e.show_only_if_damaged = val);
-        var showOnlyIfEnchanted = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_enchanted", "customtooltips.tooltip_edit_screen.show_only_if_enchanted.description", false, e -> e.show_only_if_enchanted, (e, val) -> e.show_only_if_enchanted = val);
-        var showOnlyIfUnbreakable = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_unbreakable", "customtooltips.tooltip_edit_screen.show_only_if_unbreakable.description", false, e -> e.show_only_if_unbreakable, (e, val) -> e.show_only_if_unbreakable = val);
+        var requireShift = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.require_keybind", false, e -> e.requireKeybind, (e, val) -> e.requireKeybind = val);
+        var emptyLineBefore = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.empty_line_before", false, e -> e.emptyLineBefore, (e, val) -> e.emptyLineBefore = val);
+        var hideVanillaLines = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.hide_vanilla_lines", false, e -> e.hideVanillaLines, (e, val) -> e.hideVanillaLines = val);
+        var showOnlyIfDamaged = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_damaged", false, e -> e.showOnlyIfDamaged, (e, val) -> e.showOnlyIfDamaged = val);
+        var showOnlyIfEnchanted = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_enchanted", false, e -> e.showOnlyIfEnchanted, (e, val) -> e.showOnlyIfEnchanted = val);
+        var showOnlyIfUnbreakable = TooltipEditUIFactory.buildBoolean(entry, "customtooltips.tooltip_edit_screen.show_only_if_unbreakable", false, e -> e.showOnlyIfUnbreakable, (e, val) -> e.showOnlyIfUnbreakable = val);
 
         return OptionGroup.createBuilder()
                 .name(Text.translatable("customtooltips.tooltip_edit_screen.category.conditions"))

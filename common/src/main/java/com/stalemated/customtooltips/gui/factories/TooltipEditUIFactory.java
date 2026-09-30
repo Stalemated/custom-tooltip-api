@@ -23,14 +23,14 @@ public class TooltipEditUIFactory {
 
     public static <T> Option<T> buildOption(
             TooltipEntry entry,
-            String nameKey, String descKey, T defaultValue,
+            String nameKey, T defaultValue,
             Function<TooltipEntry, T> getter,
             BiConsumer<TooltipEntry, T> setter,
             Function<Option<T>, ControllerBuilder<T>> controllerBuilder) {
 
         var option = Option.<T>createBuilder()
                 .name(Text.translatable(nameKey))
-                .description(OptionDescription.of(Text.translatable(descKey)))
+                .description(OptionDescription.of(Text.translatable(nameKey + ".description")))
                 .binding(defaultValue, () -> getter.apply(entry), val -> setter.accept(entry, val))
                 .controller(controllerBuilder)
                 .build();
@@ -46,14 +46,14 @@ public class TooltipEditUIFactory {
 
     public static <T> Option<T> buildOption(
             TooltipEntry entry,
-            String nameKey, String descKey, String secondDescKey, T defaultValue,
+            String nameKey, String secondDescKey, T defaultValue,
             Function<TooltipEntry, T> getter,
             BiConsumer<TooltipEntry, T> setter,
             Function<Option<T>, ControllerBuilder<T>> controllerBuilder) {
 
         var option = Option.<T>createBuilder()
                 .name(Text.translatable(nameKey))
-                .description(OptionDescription.of(Text.translatable(descKey), Text.translatable(secondDescKey)))
+                .description(OptionDescription.of(Text.translatable(nameKey + ".description"), Text.translatable(secondDescKey)))
                 .binding(defaultValue, () -> getter.apply(entry), val -> setter.accept(entry, val))
                 .controller(controllerBuilder)
                 .build();
@@ -69,17 +69,17 @@ public class TooltipEditUIFactory {
 
     public static Option<Boolean> buildBoolean(
             TooltipEntry entry,
-            String nameKey, String descKey, boolean defaultValue,
+            String nameKey, boolean defaultValue,
             Function<TooltipEntry, Boolean> getter, BiConsumer<TooltipEntry, Boolean> setter) {
-        return buildOption(entry, nameKey, descKey, defaultValue, getter, setter, TickBoxControllerBuilder::create);
+        return buildOption(entry, nameKey, defaultValue, getter, setter, TickBoxControllerBuilder::create);
     }
 
     public static Option<String> buildTextColor(
             TooltipEntry entry,
-            String nameKey, String descKey, String secondDescKey, int index,
+            String nameKey, String secondDescKey, int index,
             Function<TooltipEntry, List<TextColor>> listGetter) {
 
-        return buildOption(entry, nameKey, descKey, secondDescKey, "white",
+        return buildOption(entry, nameKey, secondDescKey, "white",
                 e -> {
                     List<TextColor> list = listGetter.apply(e);
                     return list.size() > index && list.get(index) != null ? ColorUtils.toHexString(list.get(index)) : "white";
@@ -95,10 +95,10 @@ public class TooltipEditUIFactory {
 
     public static Option<String> buildColor(
             TooltipEntry entry,
-            String nameKey, String descKey, int index, String defaultHex,
+            String nameKey, int index, String defaultHex,
             Function<TooltipEntry, List<Color>> listGetter) {
 
-        return buildOption(entry, nameKey, descKey, defaultHex,
+        return buildOption(entry, nameKey, defaultHex,
                 e -> {
                     List<Color> list = listGetter.apply(e);
                     return list.size() > index && list.get(index) != null ? ColorUtils.toRGBAHexString(list.get(index)) : defaultHex;
@@ -114,10 +114,10 @@ public class TooltipEditUIFactory {
 
     public static Option<String> buildIdentifier(
             TooltipEntry entry,
-            String nameKey, String descKey, String defaultId,
+            String nameKey, String defaultId,
             Function<TooltipEntry, Identifier> getter, BiConsumer<TooltipEntry, Identifier> setter) {
 
-        return buildOption(entry, nameKey, descKey, defaultId,
+        return buildOption(entry, nameKey, defaultId,
                 e -> getter.apply(e) != null ? getter.apply(e).toString() : defaultId,
                 (e, val) -> {
                     Identifier id = Identifier.tryParse(val);
@@ -129,11 +129,11 @@ public class TooltipEditUIFactory {
 
     public static Option<String> buildIdentifierDropdown(
             TooltipEntry entry,
-            String nameKey, String descKey, String defaultId,
+            String nameKey, String defaultId,
             List<String> availableValues,
             Function<TooltipEntry, Identifier> getter, BiConsumer<TooltipEntry, Identifier> setter) {
 
-        return buildOption(entry, nameKey, descKey, defaultId,
+        return buildOption(entry, nameKey, defaultId,
                 e -> getter.apply(e) != null ? getter.apply(e).toString() : defaultId,
                 (e, val) -> {
                     Identifier id = Identifier.tryParse(val);

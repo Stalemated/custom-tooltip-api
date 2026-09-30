@@ -54,19 +54,19 @@ public class TooltipEntry {
     public boolean strikethrough = false;
     public boolean obfuscated = false;
 
-    public boolean require_keybind = false;
-    public boolean empty_line_before = false;
-    public boolean hide_vanilla_lines = false;
+    public boolean requireKeybind = false;
+    public boolean emptyLineBefore = false;
+    public boolean hideVanillaLines = false;
     
-    public boolean show_only_if_damaged = false;
-    public boolean show_only_if_enchanted = false;
-    public boolean show_only_if_unbreakable = false;
+    public boolean showOnlyIfDamaged = false;
+    public boolean showOnlyIfEnchanted = false;
+    public boolean showOnlyIfUnbreakable = false;
 
     public Identifier font = Identifier.of("minecraft", "default");
 
-    public int animation_offset = 0;
+    public int animationOffset = 0;
     public int tickrate = 100;
-    public boolean reverse_animation = false;
+    public boolean reverseAnimation = false;
 
     public UUID uuid;
 
@@ -93,7 +93,7 @@ public class TooltipEntry {
         this.uuid = UUID.randomUUID();
     }
 
-    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<TextColor> colors, List<Color> borderColors, List<Color> backgroundColors, int backgroundOpacity, int borderOpacity, int backgroundScale, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean require_keybind, boolean empty_line_before, boolean hide_vanilla_lines, boolean show_only_if_damaged, boolean show_only_if_enchanted, boolean show_only_if_unbreakable, TooltipPosition position, int lineOffset, int animation_offset, int tickrate, boolean reverse_animation, Identifier font) {
+    public TooltipEntry(String target, List<String> text, TooltipStyle style, List<TextColor> colors, List<Color> borderColors, List<Color> backgroundColors, int backgroundOpacity, int borderOpacity, int backgroundScale, boolean bold, boolean italic, boolean underlined, boolean strikethrough, boolean obfuscated, boolean requireKeybind, boolean emptyLineBefore, boolean hideVanillaLines, boolean showOnlyIfDamaged, boolean showOnlyIfEnchanted, boolean showOnlyIfUnbreakable, TooltipPosition position, int lineOffset, int animationOffset, int tickrate, boolean reverseAnimation, Identifier font) {
         this.target = target;
         this.text = text != null ? text : new ArrayList<>();
         this.style = style;
@@ -108,17 +108,17 @@ public class TooltipEntry {
         this.underlined = underlined;
         this.strikethrough = strikethrough;
         this.obfuscated = obfuscated;
-        this.require_keybind = require_keybind;
-        this.empty_line_before = empty_line_before;
-        this.hide_vanilla_lines = hide_vanilla_lines;
-        this.show_only_if_damaged = show_only_if_damaged;
-        this.show_only_if_enchanted = show_only_if_enchanted;
-        this.show_only_if_unbreakable = show_only_if_unbreakable;
+        this.requireKeybind = requireKeybind;
+        this.emptyLineBefore = emptyLineBefore;
+        this.hideVanillaLines = hideVanillaLines;
+        this.showOnlyIfDamaged = showOnlyIfDamaged;
+        this.showOnlyIfEnchanted = showOnlyIfEnchanted;
+        this.showOnlyIfUnbreakable = showOnlyIfUnbreakable;
         this.position = position;
         this.lineOffset = lineOffset;
-        this.animation_offset = animation_offset;
+        this.animationOffset = animationOffset;
         this.tickrate = tickrate;
-        this.reverse_animation = reverse_animation;
+        this.reverseAnimation = reverseAnimation;
         this.font = font != null ? font : Identifier.of("minecraft", "default");
         this.uuid = UUID.randomUUID();
     }
@@ -217,9 +217,9 @@ public class TooltipEntry {
     }
 
     public boolean areItemConditionsMet(ItemStack stack) {
-        if (this.show_only_if_damaged && !stack.isDamaged()) return false;
-        if (this.show_only_if_enchanted && !stack.hasEnchantments()) return false;
-        return !this.show_only_if_unbreakable || stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable");
+        if (this.showOnlyIfDamaged && !stack.isDamaged()) return false;
+        if (this.showOnlyIfEnchanted && !stack.hasEnchantments()) return false;
+        return !this.showOnlyIfUnbreakable || stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable");
     }
 
     public TooltipEntry copy() {
@@ -242,16 +242,16 @@ public class TooltipEntry {
                 .underlined(this.underlined)
                 .strikethrough(this.strikethrough)
                 .obfuscated(this.obfuscated)
-                .requireKeybind(this.require_keybind)
-                .emptyLineBefore(this.empty_line_before)
-                .hideVanillaLines(this.hide_vanilla_lines)
-                .showOnlyIfDamaged(this.show_only_if_damaged)
-                .showOnlyIfEnchanted(this.show_only_if_enchanted)
-                .showOnlyIfUnbreakable(this.show_only_if_unbreakable)
+                .requireKeybind(this.requireKeybind)
+                .emptyLineBefore(this.emptyLineBefore)
+                .hideVanillaLines(this.hideVanillaLines)
+                .showOnlyIfDamaged(this.showOnlyIfDamaged)
+                .showOnlyIfEnchanted(this.showOnlyIfEnchanted)
+                .showOnlyIfUnbreakable(this.showOnlyIfUnbreakable)
                 .font(this.font)
-                .animationOffset(this.animation_offset)
+                .animationOffset(this.animationOffset)
                 .tickrate(this.tickrate)
-                .reverseAnimation(this.reverse_animation)
+                .reverseAnimation(this.reverseAnimation)
                 .build();
     }
 
