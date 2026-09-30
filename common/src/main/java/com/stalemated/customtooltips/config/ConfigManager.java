@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.config;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stalemated.customtooltips.core.TooltipRegistry;
@@ -14,17 +15,20 @@ public class ConfigManager {
     static {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         SLibGsonDefaults.apply(builder);
+        builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
         GSON = builder.create();
     }
 
     public static final LocalConfigManager<TooltipConfig> TOOLTIP_CONFIG = new LocalConfigBuilder<>(TooltipConfig.class)
             .modId("custom_tooltip_api")
             .configPath(PathUtils.buildPath("custom_tooltip_api", "config.json5"))
+            .gsonCustomizer(b -> b.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES))
             .build();
 
     public static final LocalConfigManager<ExternalBackgroundsConfig> EXTERNAL_BG_CONFIG = new LocalConfigBuilder<>(ExternalBackgroundsConfig.class)
             .modId("custom_tooltip_api")
             .configPath(PathUtils.buildPath("custom_tooltip_api", "external_backgrounds.json5"))
+            .gsonCustomizer(b -> b.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES))
             .build();
 
     public static void register() {

@@ -15,7 +15,7 @@ public class InsertStrategy implements TooltipPositionStrategy {
         int baseIndex = isTop ? Math.min(1, lines.size()) : lines.size();
         int insertIndex = baseIndex + entry.getLineOffset(lines.size());
 
-        if (entry.empty_line_before) {
+        if (entry.emptyLineBefore) {
             lines.add(insertIndex, Text.empty());
             insertIndex++;
         }

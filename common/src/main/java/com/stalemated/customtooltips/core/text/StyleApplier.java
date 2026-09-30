@@ -14,15 +14,15 @@ public class StyleApplier {
     public static MutableText apply(Text baseText, TooltipEntry entry) {
         switch (entry.style) {
             case RAINBOW:
-                return GradientGenerator.getRainbowGradient(baseText, entry.animation_offset, entry.tickrate, entry.reverse_animation);
+                return GradientGenerator.getRainbowGradient(baseText, entry.animationOffset, entry.tickrate, entry.reverseAnimation);
             case STATIC_GRADIENT:
                 if (entry.isGradient()) return GradientGenerator.getStaticGradient(baseText, entry.getParsedColor1(), entry.getParsedColor2());
                 break;
             case SLIDE_GRADIENT:
-                if (entry.isGradient()) return GradientGenerator.getSlideGradient(baseText, entry.animation_offset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate, entry.reverse_animation);
+                if (entry.isGradient()) return GradientGenerator.getSlideGradient(baseText, entry.animationOffset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate, entry.reverseAnimation);
                 break;
             case BREATHING_GRADIENT:
-                if (entry.isGradient()) return GradientGenerator.getBreathingGradient(baseText, entry.animation_offset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate, entry.reverse_animation);
+                if (entry.isGradient()) return GradientGenerator.getBreathingGradient(baseText, entry.animationOffset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate, entry.reverseAnimation);
                 break;
         }
 

@@ -156,37 +156,37 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
 
     @Override
     public TooltipBuilder requireKeybind(boolean requireKeybind) {
-        this.entry.require_keybind = requireKeybind;
+        this.entry.requireKeybind = requireKeybind;
         return this;
     }
 
     @Override
     public TooltipBuilder emptyLineBefore(boolean emptyLineBefore) {
-        this.entry.empty_line_before = emptyLineBefore;
+        this.entry.emptyLineBefore = emptyLineBefore;
         return this;
     }
 
     @Override
     public TooltipBuilder hideVanillaLines(boolean hideVanillaLines) {
-        this.entry.hide_vanilla_lines = hideVanillaLines;
+        this.entry.hideVanillaLines = hideVanillaLines;
         return this;
     }
 
     @Override
     public TooltipBuilder showOnlyIfDamaged(boolean showOnlyIfDamaged) {
-        this.entry.show_only_if_damaged = showOnlyIfDamaged;
+        this.entry.showOnlyIfDamaged = showOnlyIfDamaged;
         return this;
     }
 
     @Override
     public TooltipBuilder showOnlyIfEnchanted(boolean showOnlyIfEnchanted) {
-        this.entry.show_only_if_enchanted = showOnlyIfEnchanted;
+        this.entry.showOnlyIfEnchanted = showOnlyIfEnchanted;
         return this;
     }
 
     @Override
     public TooltipBuilder showOnlyIfUnbreakable(boolean showOnlyIfUnbreakable) {
-        this.entry.show_only_if_unbreakable = showOnlyIfUnbreakable;
+        this.entry.showOnlyIfUnbreakable = showOnlyIfUnbreakable;
         return this;
     }
 
@@ -198,7 +198,7 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
 
     @Override
     public TooltipBuilder animationOffset(int offset) {
-        this.entry.animation_offset = offset;
+        this.entry.animationOffset = offset;
         return this;
     }
 
@@ -210,7 +210,7 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
 
     @Override
     public TooltipBuilder reverseAnimation(boolean reverse) {
-        this.entry.reverse_animation = reverse;
+        this.entry.reverseAnimation = reverse;
         return this;
     }
 

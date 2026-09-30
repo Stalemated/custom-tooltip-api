@@ -24,7 +24,7 @@ public class TooltipProcessor {
 
         boolean shouldHideVanilla = false;
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (!shouldNotProcessEntry(entry, stack) && entry.hide_vanilla_lines) {
+            if (!shouldNotProcessEntry(entry, stack) && entry.hideVanillaLines) {
                 shouldHideVanilla = true;
                 break;
             }
@@ -39,7 +39,7 @@ public class TooltipProcessor {
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (shouldNotProcessEntry(entry, stack)) continue;
 
-            if (entry.require_keybind && !holdKeyPressed) {
+            if (entry.requireKeybind && !holdKeyPressed) {
                 needsShiftPrompt = true;
                 continue;
             }
@@ -61,7 +61,7 @@ public class TooltipProcessor {
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (shouldNotProcessEntry(entry, stack)) continue;
-            if (entry.require_keybind && !holdKeyPressed) continue;
+            if (entry.requireKeybind && !holdKeyPressed) continue;
 
             TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
             Text modified = strategy.modifyHeldItemName(originalName, entry.getTextComponents(stack), entry);
