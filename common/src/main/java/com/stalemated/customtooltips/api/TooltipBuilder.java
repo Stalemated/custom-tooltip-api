@@ -4,8 +4,13 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
+import com.stalemated.lib.util.color.ColorUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.TextColor;
+import net.minecraft.util.Identifier;
 
+import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -52,23 +57,59 @@ public interface TooltipBuilder {
 
     /**
      * Sets the colors used by the tooltip style.
+     *
+     * @param colors The colors to apply (1 or 2 depending on the style).
+     * @return This builder instance.
+     */
+    TooltipBuilder colors(TextColor... colors);
+
+    /**
+     * Sets the colors used by the tooltip style from a list.
+     *
+     * @param colors A list of colors.
+     * @return This builder instance.
+     */
+    TooltipBuilder colorsList(List<TextColor> colors);
+
+    /**
+     * Sets the colors used by the tooltip style.
      * <p>
      * Accepts hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
      *
      * @param colors The colors to apply (1 or 2 depending on the style).
      * @return This builder instance.
      */
-    TooltipBuilder colors(String... colors);
+    default TooltipBuilder colors(String... colors) {
+        return colorsList(Arrays.stream(colors).map(ColorUtils::resolveTextColor).toList());
+    }
 
     /**
      * Sets the colors used by the tooltip style from a list.
      * <p>
-     * Accepts RGB hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
+     * Accepts hex codes (e.g., "#FF0000", "0x00FF00", "x0000FF", "FFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
      *
-     * @param colors A list of color strings.
+     * @param colors A list of colors strings.
      * @return This builder instance.
      */
-    TooltipBuilder colors(List<String> colors);
+    default TooltipBuilder colors(List<String> colors) {
+        return colorsList(colors.stream().map(ColorUtils::resolveTextColor).toList());
+    }
+
+    /**
+     * Sets the border colors used by the tooltip.
+     *
+     * @param colors The colors to apply (2 colors, start and end).
+     * @return This builder instance.
+     */
+    TooltipBuilder borderColors(Color... colors);
+
+    /**
+     * Sets the border colors used by the tooltip from a list.
+     *
+     * @param colors A list of colors (2 colors, start and end).
+     * @return This builder instance.
+     */
+    TooltipBuilder borderColorsList(List<Color> colors);
 
     /**
      * Sets the border colors used by the tooltip.
@@ -78,7 +119,9 @@ public interface TooltipBuilder {
      * @param colors The colors to apply (2 colors, start and end).
      * @return This builder instance.
      */
-    TooltipBuilder borderColors(String... colors);
+    default TooltipBuilder borderColors(String... colors) {
+        return borderColorsList(Arrays.stream(colors).map(ColorUtils::parseRGBAToAWT).toList());
+    }
 
     /**
      * Sets the border colors used by the tooltip from a list.
@@ -88,7 +131,25 @@ public interface TooltipBuilder {
      * @param colors A list of color strings (2 colors, start and end).
      * @return This builder instance.
      */
-    TooltipBuilder borderColors(List<String> colors);
+    default TooltipBuilder borderColors(List<String> colors) {
+        return borderColorsList(colors.stream().map(ColorUtils::parseRGBAToAWT).toList());
+    }
+
+    /**
+     * Sets the background colors used by the tooltip.
+     *
+     * @param colors The colors to apply (2 colors, start and end).
+     * @return This builder instance.
+     */
+    TooltipBuilder backgroundColors(Color... colors);
+
+    /**
+     * Sets the background colors used by the tooltip from a list.
+     *
+     * @param colors A list of colors (2 colors, start and end).
+     * @return This builder instance.
+     */
+    TooltipBuilder backgroundColorsList(List<Color> colors);
 
     /**
      * Sets the background colors used by the tooltip.
@@ -98,17 +159,21 @@ public interface TooltipBuilder {
      * @param colors The colors to apply (2 colors, start and end).
      * @return This builder instance.
      */
-    TooltipBuilder backgroundColors(String... colors);
+    default TooltipBuilder backgroundColors(String... colors) {
+        return backgroundColorsList(Arrays.stream(colors).map(ColorUtils::parseRGBAToAWT).toList());
+    }
 
     /**
      * Sets the background colors used by the tooltip from a list.
      * <p>
      * Accepts ARGB hex codes (e.g., "#FAFF0000", "0x8000FF00", "xFF0000FF", "DDFFFFFF"), Minecraft color names (e.g., "red", "blue") or legacy color codes (e.g., "&4", "&c").
      *
-     * @param colors A list of color strings (2 colors, start and end).
+     * @param colors A list of colors strings.
      * @return This builder instance.
      */
-    TooltipBuilder backgroundColors(List<String> colors);
+    default TooltipBuilder backgroundColors(List<String> colors) {
+        return backgroundColorsList(colors.stream().map(ColorUtils::parseRGBAToAWT).toList());
+    }
 
     /**
      * Sets the background type used by the tooltip.
@@ -142,7 +207,7 @@ public interface TooltipBuilder {
     /**
      * Sets the background scale of the tooltip (for repeating and framed background types).
      *
-     * @param backgroundScale The scale percentage (e.g. 100 for native size, 50 for half size).
+     * @param backgroundScale The scale percentage (e.g., 100 for native size, 50 for half size).
      * @return This builder instance.
      */
     TooltipBuilder backgroundScale(int backgroundScale);
@@ -169,7 +234,7 @@ public interface TooltipBuilder {
      * Adjusts the specific line index where the tooltip is inserted.
      * Positive values offset downwards, negative values offset upwards.
      *
-     * @param lineOffset The amount of lines to offset.
+     * @param lineOffset The number of lines to offset.
      * @return This builder instance.
      */
     TooltipBuilder lineOffset(int lineOffset);
@@ -268,7 +333,17 @@ public interface TooltipBuilder {
      * @param fontIdentifier The Identifier of the font (e.g., "minecraft:default", "minecraft:alt").
      * @return This builder instance.
      */
-    TooltipBuilder font(String fontIdentifier);
+    TooltipBuilder font(Identifier fontIdentifier);
+
+    /**
+     * Sets a custom font identifier for the tooltip text.
+     *
+     * @param fontIdentifier The Identifier string of the font (e.g., "minecraft:default", "minecraft:alt").
+     * @return This builder instance.
+     */
+    default TooltipBuilder font(String fontIdentifier) {
+        return font(new Identifier(fontIdentifier));
+    }
 
     /**
      * Sets the animation offset to desynchronize animations across different tooltips or lines.

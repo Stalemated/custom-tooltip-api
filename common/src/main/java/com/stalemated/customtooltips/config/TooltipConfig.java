@@ -2,26 +2,26 @@ package com.stalemated.customtooltips.config;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.sorting.SortMode;
-import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import com.stalemated.lib.config.annotation.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TooltipConfig {
 
-    @SerialEntry(comment = "Aligns icons from resource packs at the start of the line so they stay aligned.")
+    @Comment("Aligns icons from resource packs at the start of the line so they stay aligned.")
     public boolean align_attribute_icons = false;
 
-    @SerialEntry(comment = "Enables double click to select text in textboxes throughout the entire game.")
+    @Comment("Enables double click to select text in textboxes throughout the entire game.")
     public boolean enable_double_click_selection = true;
 
-    @SerialEntry(comment = "Tooltip sorting mode in the config menu. Accepts: CREATION_DATE, NAME_AND_TAG, DISABLED_FIRST")
+    @Comment("Tooltip sorting mode in the config menu. Accepts: CREATION_DATE, NAME_AND_TAG, DISABLED_FIRST")
     public SortMode sort_mode = SortMode.CREATION_DATE;
 
-    @SerialEntry(comment = "List of unique entry Identifiers that have been disabled by the user.")
+    @Comment("List of unique entry Identifiers that have been disabled by the user.")
     public List<String> disabled_entries = new ArrayList<>();
 
-    @SerialEntry(comment = """
+    @Comment("""
             Custom Tooltip API Config
             'target': Accepts tags (e.g. #c:swords) or item ids (e.g. minecraft:diamond_sword).
             'text': Accepts multiple lines of text, each one limited by quotes and separated by a comma.

@@ -15,9 +15,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +54,7 @@ public class RowActionsWidget {
                 .build());
 
         apiButtons.add(ButtonWidget.builder(getCopyIcon(), btn -> {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            client.keyboard.setClipboard(gson.toJson(entry));
+            client.keyboard.setClipboard(ConfigManager.GSON.toJson(entry));
             
             ToastManager.showCopiedToast(entry.target);
         })
