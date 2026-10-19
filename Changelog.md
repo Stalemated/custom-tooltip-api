@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.2.1+1.20.1
+
+### Fix
+- Fixed custom tooltip backgrounds and borders not rendering when registered via API.
+
 ## 5.2.0+1.20.1
 
 ### General Changes
