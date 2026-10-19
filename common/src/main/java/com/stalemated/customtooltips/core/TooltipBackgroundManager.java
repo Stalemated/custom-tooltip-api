@@ -18,7 +18,7 @@ public class TooltipBackgroundManager {
         int targetBorderOpacity = -1;
         TooltipEntry targetEntry = null;
 
-        for (TooltipEntry entry : ConfigManager.getConfig().entries) {
+        for (TooltipEntry entry : TooltipRegistry.getEntries()) {
             if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) continue;
 
             if (entry.matches(stack) && entry.areItemConditionsMet(stack)) {
