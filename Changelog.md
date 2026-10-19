@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.2.1+1.21.1
+
+### Fixes
+- Fixed an issue in NeoForge where keybinds were being registered twice
+- Fixed custom tooltip backgrounds and borders not rendering when registered via API.
+
+> **For NeoForge users experiencing crashes on startup:**
+> If you used version 5.2.0, open your `.minecraft/options.txt` file and delete any duplicate lines starting with `key_key.customtooltips.` (or delete `options.txt` to regenerate it).
+
 ## 5.2.0+1.21.1
 
 ### General Changes
