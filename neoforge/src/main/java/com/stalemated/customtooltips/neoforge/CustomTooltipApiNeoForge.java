@@ -3,13 +3,11 @@ package com.stalemated.customtooltips.neoforge;
 import com.stalemated.customtooltips.CustomTooltipApiClient;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
-import com.stalemated.customtooltips.registry.KeybindRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.SynchronousResourceReloader;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -23,7 +21,6 @@ import net.neoforged.fml.loading.FMLEnvironment;
 public class CustomTooltipApiNeoForge {
     public CustomTooltipApiNeoForge(IEventBus modBus, ModContainer modContainer) {
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            modBus.addListener(this::onRegisterKeyMappings);
             modBus.addListener(this::onRegisterReloadListeners);
 
             NeoForge.EVENT_BUS.addListener(this::onClientTick);
@@ -39,11 +36,6 @@ public class CustomTooltipApiNeoForge {
 
         modContainer.registerExtensionPoint(IConfigScreenFactory.class,
                 (client, parent) -> new TooltipListScreen(parent));
-    }
-
-    private void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(KeybindRegistry.openConfigKeybind);
-        event.register(KeybindRegistry.holdKeyKeybind);
     }
 
     private void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
