@@ -7,9 +7,6 @@ loom {
         mixinConfig "customtooltips.mixins.json"
         mixinConfig "customtooltips-forge.mixins.json"
     }
-    mixin {
-        defaultRefmapName = "customtooltips-forge.refmap.json"
-    }
 }
 
 architectury {
