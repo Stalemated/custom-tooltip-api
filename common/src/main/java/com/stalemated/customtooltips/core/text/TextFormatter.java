@@ -14,7 +14,7 @@ import java.util.List;
 public class TextFormatter {
 
     public static List<Text> getOrGenerateComponents(TooltipEntry entry, ItemStack stack) {
-        boolean isStatic = (entry.style == TooltipStyle.SOLID || entry.style == TooltipStyle.STATIC_GRADIENT) && entry.dynamicTextProvider == null && !entry.hasDynamicText;
+        boolean isStatic = (entry.style == TooltipStyle.SOLID || entry.style == TooltipStyle.STATIC_GRADIENT) && entry.dynamicTextProvider == null && !entry.hasDynamicText();
         if (isStatic && entry.getCachedStaticText() != null) return entry.getCachedStaticText();
 
         List<Text> linesList = new ArrayList<>();
