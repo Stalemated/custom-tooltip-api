@@ -75,8 +75,8 @@ public class TooltipEditScreen {
                         cat.name(Text.translatable("customtooltips.tooltip_edit_screen.title_background"))
                         .group("background", grp ->
                                 grp.include("backgroundType", "backgroundOpacity")
-                                .listElement("backgroundColors", 0, "backgroundTopColor", ColorUtils.parseRGBAToAWT("#F0100010"))
-                                .listElement("backgroundColors", 1, "backgroundBottomColor", ColorUtils.parseRGBAToAWT("#F0100010"))
+                                .listElement("backgroundColors", 0, "backgroundTopColor", ColorUtils.parseToAWT("#F0100010"))
+                                .listElement("backgroundColors", 1, "backgroundBottomColor", ColorUtils.parseToAWT("#F0100010"))
                                 .dropdown("backgroundTexture", CustomBackgroundManager.availableBackgrounds,
                                         s -> Text.literal(s.replace("custom_tooltip_api:textures/gui/tooltip_backgrounds/", ""))
                                 )
@@ -84,8 +84,8 @@ public class TooltipEditScreen {
                         )
                         .group("border", grp ->
                                 grp.include("borderOpacity")
-                                .listElement("borderColors", 0, "borderTopColor", ColorUtils.parseRGBAToAWT("#505000FF"))
-                                .listElement("borderColors", 1, "borderBottomColor", ColorUtils.parseRGBAToAWT("#5028007F"))
+                                .listElement("borderColors", 0, "borderTopColor", ColorUtils.parseToAWT("#505000FF"))
+                                .listElement("borderColors", 1, "borderBottomColor", ColorUtils.parseToAWT("#5028007F"))
                         )
                 )
                 .generateScreen();
