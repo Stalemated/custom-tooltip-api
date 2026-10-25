@@ -23,7 +23,7 @@ public class TierifyCompatPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("compat.tierify")) {
-            return PlatformHelper.INSTANCE.isModLoadedAtLaunch("tiered");
+            return PlatformHelper.isModLoadedAtLaunch("tiered");
         }
         return true;
     }

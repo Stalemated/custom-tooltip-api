@@ -24,7 +24,7 @@ public class KeybindRegistry {
                 "category.customtooltips.keys"
         );
 
-        PlatformHelper.INSTANCE.registerKeyBinding(openConfigKeybind);
-        PlatformHelper.INSTANCE.registerKeyBinding(holdKeyKeybind);
+        PlatformHelper.registerKeyBinding(openConfigKeybind);
+        PlatformHelper.registerKeyBinding(holdKeyKeybind);
     }
 }

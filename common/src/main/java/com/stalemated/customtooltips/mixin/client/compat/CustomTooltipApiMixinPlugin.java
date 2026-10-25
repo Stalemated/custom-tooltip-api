@@ -21,7 +21,7 @@ public class CustomTooltipApiMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("compat.legendarytooltips")) {
-            return PlatformHelper.INSTANCE.isModLoadedAtLaunch("legendarytooltips");
+            return PlatformHelper.isModLoadedAtLaunch("legendarytooltips");
         }
         return true;
     }
