@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Pseudo
 @Mixin(TooltipDecor.class)
 public class LegendaryTooltipsBorderMixin {
-    @ModifyVariable(method = "setCurrentTooltipBorderStart", at = @At("HEAD"), argsOnly = true, remap = false)
+    @ModifyVariable(method = "setCurrentTooltipBorderStart", at = @At("HEAD"), argsOnly = true)
     private static int modifyBorderStart(int color) {
         return CompatManager.getBorderColorOverride(color);
     }

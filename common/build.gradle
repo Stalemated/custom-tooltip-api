@@ -5,7 +5,6 @@ architectury {
 loom {
     mixin {
         defaultRefmapName = "customtooltips-common.refmap.json"
-        useLegacyMixinAp = true
     }
 }
 

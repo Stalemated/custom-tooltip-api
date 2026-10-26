@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(StringControllerElement.class)
 public abstract class StringControllerElementMixin {
 
-    @Shadow(remap = false) 
+    @Shadow
     protected abstract boolean doSelectAll();
 
     @Unique
     private long custom_tooltip_api$lastClickedTime = 0L;
 
-    @Inject(method = "onMouseClicked", at = @At("RETURN"), remap = false)
+    @Inject(method = "onMouseClicked", at = @At("RETURN"))
     private void customtooltips$onYaclMouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
 
         if (cir.getReturnValueZ()) {
