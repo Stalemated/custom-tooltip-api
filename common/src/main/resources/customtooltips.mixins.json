@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "com.stalemated.customtooltips.mixin.client",
   "compatibilityLevel": "JAVA_21",
+  "refmap": "customtooltips-common.refmap.json",
   "plugin": "com.stalemated.customtooltips.mixin.client.compat.CustomTooltipApiMixinPlugin",
   "client": [
     "DrawContextMixin",
