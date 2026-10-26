@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(StringControllerElement.class)
 public abstract class StringControllerElementMixin {
 
-    @Shadow(remap = false) 
+    @Shadow
     protected abstract boolean doSelectAll();
 
     @Unique
