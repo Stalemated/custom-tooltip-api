@@ -120,7 +120,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder borderColors(String... colors) {
-        return borderColorsList(Arrays.stream(colors).map(ColorUtils::parseRGBAToAWT).toList());
+        return borderColorsList(Arrays.stream(colors).map(ColorUtils::parseToAWT).toList());
     }
 
     /**
@@ -132,7 +132,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder borderColors(List<String> colors) {
-        return borderColorsList(colors.stream().map(ColorUtils::parseRGBAToAWT).toList());
+        return borderColorsList(colors.stream().map(ColorUtils::parseToAWT).toList());
     }
 
     /**
@@ -160,7 +160,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder backgroundColors(String... colors) {
-        return backgroundColorsList(Arrays.stream(colors).map(ColorUtils::parseRGBAToAWT).toList());
+        return backgroundColorsList(Arrays.stream(colors).map(ColorUtils::parseToAWT).toList());
     }
 
     /**
@@ -172,7 +172,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder backgroundColors(List<String> colors) {
-        return backgroundColorsList(colors.stream().map(ColorUtils::parseRGBAToAWT).toList());
+        return backgroundColorsList(colors.stream().map(ColorUtils::parseToAWT).toList());
     }
 
     /**
