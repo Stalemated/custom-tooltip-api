@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.config;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.sorting.SortMode;
 import com.stalemated.lib.config.annotation.Comment;
+import com.stalemated.lib.config.annotation.Nest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,5 +40,6 @@ public class TooltipConfig {
             'animation_offset': Animation animation_offset that desynchronizes different animations. Accepts integers.
             'tickrate': Accepts positive integers. Cycle duration of the animation. 100 is normal speed, 50 is fast, 200 is slow.
             """)
+    @Nest
     public List<TooltipEntry> entries = new ArrayList<>();
 }
