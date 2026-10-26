@@ -15,7 +15,7 @@ import com.stalemated.lib.helper.PlatformHelper;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
 public class CustomBackgroundManager {
-    private static final Path BACKGROUNDS_INPUT_DIR = PlatformHelper.INSTANCE.getConfigDir().resolve("custom_tooltip_api").resolve("backgrounds");
+    private static final Path BACKGROUNDS_INPUT_DIR = PlatformHelper.getConfigDir().resolve("custom_tooltip_api").resolve("backgrounds");
 
     public static List<String> availableBackgrounds = new ArrayList<>();
 
