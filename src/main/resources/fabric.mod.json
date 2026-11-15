@@ -1,0 +1,41 @@
+{
+    "schemaVersion": 1,
+    "id": "${id}",
+    "version": "${version}",
+    "name": "${name}",
+    "description": "${description}",
+    "authors": [
+        "${author}"
+    ],
+    "contact": {
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api",
+        "sources": "${sources}",
+        "issues": "${sources}/issues"
+    },
+    "license": "MIT",
+    "icon": "assets/custom-tooltip-api/icon.jpg",
+    "environment": "${environment}",
+    "entrypoints": {
+        "client": [
+            "com.stalemated.customtooltips.CustomTooltipsClient"
+        ],
+        "modmenu": [
+            "com.stalemated.customtooltips.fabric.ModMenuIntegration"
+        ]
+    },
+    "mixins": [
+        "${id}.mixins.json",
+        "${id}-fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=${fabric_loader}",
+        "minecraft": "${minecraft}",
+        "java": ">=${java_version}",
+        "fabric-api": "*",
+        "s_lib": ">=${slib}"
+    },
+    "suggests": {
+        "modmenu": "*",
+        "yet_another_config_lib_v3": "*"
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.stalemated.customtooltips.fabric.mixin",
+  "compatibilityLevel": "${mixin_compatibility}",
+  "plugin": "com.stalemated.customtooltips.fabric.mixin.compat.TierifyCompatPlugin",
+  "client": [
+    "TooltipBackgroundRendererMixin",
+    "compat.tierify.TieredTooltipMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

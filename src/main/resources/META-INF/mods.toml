@@ -1,0 +1,47 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+issueTrackerURL = "${sources}/issues"
+license = "MIT"
+clientSideOnly = true
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+authors = "${author}"
+description = '''
+${description}
+'''
+logoFile = "assets/custom-tooltip-api/icon.jpg"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api"
+
+[[mixins]]
+config = "${id}.mixins.json"
+
+[[dependencies.${id}]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${id}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${id}]]
+modId = "s_lib"
+mandatory = true
+versionRange = "[${slib},)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies.${id}]]
+modId = "yet_another_config_lib_v3"
+mandatory = false
+versionRange = "[3.6.6,)"
+ordering = "AFTER"
+side = "CLIENT"
