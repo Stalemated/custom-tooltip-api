@@ -11,9 +11,9 @@ import com.stalemated.customtooltips.util.CustomBackgroundManager;
 import com.stalemated.customtooltips.util.ResourcepackManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +34,9 @@ public class CustomTooltipApiClient {
 		CompatManager.registerColorProvider(new LegendaryTooltipsCompat());
 	}
 
-	public static void onClientTick(MinecraftClient client) {
-		while (openConfigKeybind.wasPressed()) {
-			client.setScreen(new TooltipListScreen(client.currentScreen));
+	public static void onClientTick(Minecraft client) {
+		while (openConfigKeybind.consumeClick()) {
+			client.setScreen(new TooltipListScreen(client.screen));
 		}
 	}
 
@@ -45,7 +45,7 @@ public class CustomTooltipApiClient {
 		CustomBackgroundManager.reloadExternalBackgrounds();
 	}
 
-	public static void onItemTooltip(ItemStack stack, List<Text> lines) {
+	public static void onItemTooltip(ItemStack stack, List<Component> lines) {
 		if (stack.isEmpty()) return;
 		TooltipProcessor.processTooltipLines(stack, lines);
 	}

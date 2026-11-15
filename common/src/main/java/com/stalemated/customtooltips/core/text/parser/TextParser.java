@@ -1,10 +1,9 @@
 package com.stalemated.customtooltips.core.text.parser;
 
-import net.minecraft.item.ItemStack;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.minecraft.world.item.ItemStack;
 
 public class TextParser {
     public static String parse(String text, ItemStack stack) {

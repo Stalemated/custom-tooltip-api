@@ -1,10 +1,10 @@
 package com.stalemated.customtooltips.mixin.client;
 
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,21 +12,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(HandledScreen.class)
+@Mixin(AbstractContainerScreen.class)
 public abstract class HandledScreenMixin {
 
-    @Shadow @Nullable protected Slot focusedSlot;
+    @Shadow @Nullable protected Slot hoveredSlot;
 
-    @Inject(method = "drawMouseoverTooltip", at = @At("HEAD"))
-    private void customtooltips$captureInventoryTooltipOpacity(DrawContext context, int x, int y, CallbackInfo ci) {
-        if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
-            ItemStack stack = this.focusedSlot.getStack();
+    @Inject(method = "renderTooltip", at = @At("HEAD"))
+    private void customtooltips$captureInventoryTooltipOpacity(GuiGraphics context, int x, int y, CallbackInfo ci) {
+        if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
+            ItemStack stack = this.hoveredSlot.getItem();
             TooltipBackgroundManager.setMixinTooltipOpacity(stack);
         }
     }
 
-    @Inject(method = "drawMouseoverTooltip", at = @At("RETURN"))
-    private void customtooltips$resetInventoryTooltipOpacity(DrawContext context, int x, int y, CallbackInfo ci) {
+    @Inject(method = "renderTooltip", at = @At("RETURN"))
+    private void customtooltips$resetInventoryTooltipOpacity(GuiGraphics context, int x, int y, CallbackInfo ci) {
         TooltipBackgroundManager.clearState();
     }
 }

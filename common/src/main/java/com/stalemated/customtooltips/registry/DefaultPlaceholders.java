@@ -1,27 +1,27 @@
 package com.stalemated.customtooltips.registry;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
 import com.stalemated.lib.helper.attribute.AttributeGetter;
 
 import java.util.*;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 
 public class DefaultPlaceholders {
 
     public static void registerDefaults() {
-        PlaceholderRegistry.register("durability", stack -> stack.isDamageable() ? String.valueOf(stack.getMaxDamage() - stack.getDamage()) : "0");
-        PlaceholderRegistry.register("max_durability", stack -> stack.isDamageable() ? String.valueOf(stack.getMaxDamage()) : "0");
-        PlaceholderRegistry.register("item_damage", stack -> stack.isDamageable() ? String.valueOf(stack.getDamage()) : "0");
+        PlaceholderRegistry.register("durability", stack -> stack.isDamageableItem() ? String.valueOf(stack.getMaxDamage() - stack.getDamageValue()) : "0");
+        PlaceholderRegistry.register("max_durability", stack -> stack.isDamageableItem() ? String.valueOf(stack.getMaxDamage()) : "0");
+        PlaceholderRegistry.register("item_damage", stack -> stack.isDamageableItem() ? String.valueOf(stack.getDamageValue()) : "0");
 
         PlaceholderRegistry.register("count", stack -> String.valueOf(stack.getCount()));
-        PlaceholderRegistry.register("max_count", stack -> String.valueOf(stack.getMaxCount()));
+        PlaceholderRegistry.register("max_count", stack -> String.valueOf(stack.getMaxStackSize()));
 
-        PlaceholderRegistry.register("item_name", stack -> stack.getName().getString());
-        PlaceholderRegistry.register("item_id", stack -> Registries.ITEM.getId(stack.getItem()).toString());
+        PlaceholderRegistry.register("item_name", stack -> stack.getHoverName().getString());
+        PlaceholderRegistry.register("item_id", stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
 
         PlaceholderRegistry.register("enchantments", AttributeGetter::getEnchantments);
-        PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getRepairCost()));
-        PlaceholderRegistry.register("unbreakable", stack -> (stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable")) ? Text.translatable("customtooltips.unbreakable_item").getString() : "");
+        PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getBaseRepairCost()));
+        PlaceholderRegistry.register("unbreakable", stack -> (stack.hasTag() && Objects.requireNonNull(stack.getTag()).getBoolean("Unbreakable")) ? Component.translatable("customtooltips.unbreakable_item").getString() : "");
 
         PlaceholderRegistry.register("weapon_damage", AttributeGetter::calculateWeaponDamage);
         PlaceholderRegistry.register("weapon_speed", AttributeGetter::calculateWeaponSpeed);
@@ -29,6 +29,6 @@ public class DefaultPlaceholders {
         PlaceholderRegistry.register("food_hunger", AttributeGetter::getHunger);
         PlaceholderRegistry.register("food_saturation", AttributeGetter::getSaturation);
 
-        PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getNbt()));
+        PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getTag()));
     }
 }

@@ -8,21 +8,20 @@ import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 
 import com.stalemated.customtooltips.util.ToastManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
@@ -33,14 +32,14 @@ public class ListScreenUIFactory {
     private static final int START_Y = 24;
     private static final int ACTION_BAR_BUTTON_AMOUNT = 5;
 
-    public static TextFieldWidget createSearchBox(TooltipListScreen screen, TextRenderer textRenderer, String searchText) {
+    public static EditBox createSearchBox(TooltipListScreen screen, Font textRenderer, String searchText) {
         int screenWidth = screen.width;
         int searchBarWidth = Math.min(3 * screenWidth / 4 - getButtonsWidth() - SPACING, screenWidth / 2);
         int startX = screenWidth / 4;
 
-        TextFieldWidget searchBox = new TextFieldWidget(textRenderer, startX, START_Y, searchBarWidth, BUTTON_SIZE, Text.translatable("customtooltips.tooltip_list_screen.search"));
-        searchBox.setText(searchText);
-        searchBox.setChangedListener(newSearchText -> {
+        EditBox searchBox = new EditBox(textRenderer, startX, START_Y, searchBarWidth, BUTTON_SIZE, Component.translatable("customtooltips.tooltip_list_screen.search"));
+        searchBox.setValue(searchText);
+        searchBox.setResponder(newSearchText -> {
             screen.setSearchText(newSearchText);
             screen.listWidget.updateEntries(newSearchText);
         });
@@ -48,15 +47,15 @@ public class ListScreenUIFactory {
         return searchBox;
     }
 
-    public static List<ButtonWidget> createActionButtons(TooltipListScreen screen) {
-        List<ButtonWidget> buttons = new ArrayList<>();
+    public static List<Button> createActionButtons(TooltipListScreen screen) {
+        List<Button> buttons = new ArrayList<>();
 
         buttons.add(createToggleButton(
             screen, 4,
             () -> ConfigManager.getConfig().align_attribute_icons,
             (config, newVal) -> config.align_attribute_icons = newVal,
-            (isOn) -> Text.literal("\uDAC1\uDF24").formatted(isOn ? Formatting.GREEN : Formatting.RED),
-            (isOn) -> Text.translatable("customtooltips.tooltip_list_screen.align_icons")
+            (isOn) -> Component.literal("\uDAC1\uDF24").withStyle(isOn ? ChatFormatting.GREEN : ChatFormatting.RED),
+            (isOn) -> Component.translatable("customtooltips.tooltip_list_screen.align_icons")
                     .append("\n")
                     .append(getOnOffText(isOn))
         ));
@@ -65,39 +64,39 @@ public class ListScreenUIFactory {
             screen, 3,
             () -> ConfigManager.getConfig().enable_double_click_selection,
             (config, newVal) -> config.enable_double_click_selection = newVal,
-            (isOn) -> Text.literal("\uDAC1\uDF23").formatted(isOn ? Formatting.GREEN : Formatting.RED),
-            (isOn) -> Text.translatable("customtooltips.tooltip_list_screen.double_click_selection")
+            (isOn) -> Component.literal("\uDAC1\uDF23").withStyle(isOn ? ChatFormatting.GREEN : ChatFormatting.RED),
+            (isOn) -> Component.translatable("customtooltips.tooltip_list_screen.double_click_selection")
                     .append("\n")
                     .append(getOnOffText(isOn))
         ));
 
-        buttons.add(ButtonWidget.builder(getSortIcon(), button -> {
+        buttons.add(Button.builder(getSortIcon(), button -> {
             TooltipConfig config = ConfigManager.getConfig();
             config.sort_mode = config.sort_mode.next();
             ConfigManager.save();
 
             button.setMessage(getSortIcon());
-            button.setTooltip(Tooltip.of(getSortTooltip()));
-            screen.listWidget.updateEntries(screen.searchBox.getText());
+            button.setTooltip(Tooltip.create(getSortTooltip()));
+            screen.listWidget.updateEntries(screen.searchBox.getValue());
         })
-                .dimensions(getButtonStartX(2, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
-                .tooltip(Tooltip.of(getSortTooltip()))
+                .bounds(getButtonStartX(2, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
+                .tooltip(Tooltip.create(getSortTooltip()))
                 .build());
 
-        buttons.add(ButtonWidget.builder(getApiEntriesIcon(), button -> {
+        buttons.add(Button.builder(getApiEntriesIcon(), button -> {
             TooltipListScreen.showApiEntries = !TooltipListScreen.showApiEntries;
 
             button.setMessage(getApiEntriesIcon());
-            button.setTooltip(Tooltip.of(getApiEntriesTooltip()));
-            screen.listWidget.updateEntries(screen.searchBox.getText());
+            button.setTooltip(Tooltip.create(getApiEntriesTooltip()));
+            screen.listWidget.updateEntries(screen.searchBox.getValue());
         })
-                .dimensions(getButtonStartX(1, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
-                .tooltip(Tooltip.of(getApiEntriesTooltip()))
+                .bounds(getButtonStartX(1, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
+                .tooltip(Tooltip.create(getApiEntriesTooltip()))
                 .build());
 
-        buttons.add(ButtonWidget.builder(getPasteIcon(), button -> {
+        buttons.add(Button.builder(getPasteIcon(), button -> {
             try {
-                String clipboard = MinecraftClient.getInstance().keyboard.getClipboard();
+                String clipboard = Minecraft.getInstance().keyboardHandler.getClipboard();
                 TooltipEntry pasted = ConfigManager.GSON.fromJson(clipboard, TooltipEntry.class);
 
                 if (pasted != null && pasted.target != null) {
@@ -107,7 +106,7 @@ public class ListScreenUIFactory {
 
                     ConfigManager.getConfig().entries.add(pasted);
                     ConfigManager.save();
-                    screen.listWidget.updateEntries(screen.searchBox.getText());
+                    screen.listWidget.updateEntries(screen.searchBox.getValue());
 
                     ToastManager.showPastedToast(pasted.target);
                 }
@@ -115,49 +114,49 @@ public class ListScreenUIFactory {
                 LOGGER.error("Error pasting a new entry from clipboard", e);
             }
         })
-                .dimensions(getButtonStartX(5, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
-                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_screen.paste_button")))
+                .bounds(getButtonStartX(5, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
+                .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_screen.paste_button")))
                 .build());
 
         return buttons;
     }
 
-    public static List<ButtonWidget> createFooterButtons(TooltipListScreen screen) {
-        List<ButtonWidget> buttons = new ArrayList<>();
+    public static List<Button> createFooterButtons(TooltipListScreen screen) {
+        List<Button> buttons = new ArrayList<>();
         int btnWidth = 150;
         int btnY = screen.height - 28;
 
-        buttons.add(ButtonWidget.builder(Text.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
+        buttons.add(Button.builder(Component.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
             TooltipEntry newEntry = CustomTooltipApi.builder("")
                     .addLine("Default Text")
                     .build();
 
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
             if (client != null) {
                 client.setScreen(TooltipEditScreen.create(screen, newEntry, true));
             }
         })
-                .dimensions(screen.width / 2 - 155, btnY, btnWidth, BUTTON_SIZE)
+                .bounds(screen.width / 2 - 155, btnY, btnWidth, BUTTON_SIZE)
                 .build());
 
-        buttons.add(ButtonWidget.builder(Text.translatable("gui.done"), button -> screen.close())
-                .dimensions(screen.width / 2 + 5, btnY, btnWidth, BUTTON_SIZE)
+        buttons.add(Button.builder(Component.translatable("gui.done"), button -> screen.onClose())
+                .bounds(screen.width / 2 + 5, btnY, btnWidth, BUTTON_SIZE)
                 .build());
 
         return buttons;
     }
 
-    private static ButtonWidget createToggleButton(Screen screen, int index, Supplier<Boolean> getter, BiConsumer<TooltipConfig, Boolean> setter, Function<Boolean, Text> icon, Function<Boolean, Text> tooltip) {
+    private static Button createToggleButton(Screen screen, int index, Supplier<Boolean> getter, BiConsumer<TooltipConfig, Boolean> setter, Function<Boolean, Component> icon, Function<Boolean, Component> tooltip) {
         boolean initialValue = getter.get();
-        return ButtonWidget.builder(icon.apply(initialValue), button -> {
+        return Button.builder(icon.apply(initialValue), button -> {
             boolean newValue = !getter.get();
             setter.accept(ConfigManager.getConfig(), newValue);
             ConfigManager.save();
             button.setMessage(icon.apply(newValue));
-            button.setTooltip(Tooltip.of(tooltip.apply(newValue)));
+            button.setTooltip(Tooltip.create(tooltip.apply(newValue)));
         })
-                .dimensions(getButtonStartX(index, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
-                .tooltip(Tooltip.of(tooltip.apply(initialValue)))
+                .bounds(getButtonStartX(index, screen.width), START_Y, BUTTON_SIZE, BUTTON_SIZE)
+                .tooltip(Tooltip.create(tooltip.apply(initialValue)))
                 .build();
     }
 
@@ -169,44 +168,44 @@ public class ListScreenUIFactory {
         return ACTION_BAR_BUTTON_AMOUNT * BUTTON_SIZE + ACTION_BAR_BUTTON_AMOUNT * SPACING;
     }
 
-    private static Text getOnOffText(boolean isOn) {
-        return Text.translatable(isOn ? "options.on" : "options.off").formatted(isOn ? Formatting.GREEN : Formatting.RED);
+    private static Component getOnOffText(boolean isOn) {
+        return Component.translatable(isOn ? "options.on" : "options.off").withStyle(isOn ? ChatFormatting.GREEN : ChatFormatting.RED);
     }
 
-    private static Text getSortIcon() {
+    private static Component getSortIcon() {
         return switch (ConfigManager.getConfig().sort_mode) {
-            case NAME_AND_TAG -> Text.literal("AZ").formatted(Formatting.GOLD);
-            case DISABLED_FIRST -> Text.literal("\uDAC1\uDF26").formatted(Formatting.RED);
-            default -> Text.literal("\uDAC1\uDF25").formatted(Formatting.GOLD);
+            case NAME_AND_TAG -> Component.literal("AZ").withStyle(ChatFormatting.GOLD);
+            case DISABLED_FIRST -> Component.literal("\uDAC1\uDF26").withStyle(ChatFormatting.RED);
+            default -> Component.literal("\uDAC1\uDF25").withStyle(ChatFormatting.GOLD);
         };
     }
 
-    private static Text getSortTooltip() {
-        Text modeText = switch (ConfigManager.getConfig().sort_mode) {
-            case NAME_AND_TAG -> Text.translatable("customtooltips.tooltip_list_screen.sort_name");
-            case DISABLED_FIRST -> Text.translatable("customtooltips.tooltip_list_screen.sort_disabled");
-            default -> Text.translatable("customtooltips.tooltip_list_screen.sort_date");
+    private static Component getSortTooltip() {
+        Component modeText = switch (ConfigManager.getConfig().sort_mode) {
+            case NAME_AND_TAG -> Component.translatable("customtooltips.tooltip_list_screen.sort_name");
+            case DISABLED_FIRST -> Component.translatable("customtooltips.tooltip_list_screen.sort_disabled");
+            default -> Component.translatable("customtooltips.tooltip_list_screen.sort_date");
         };
-        return Text.translatable("customtooltips.tooltip_list_screen.sort_order").append("\n").append(modeText.copy().formatted(Formatting.GRAY));
+        return Component.translatable("customtooltips.tooltip_list_screen.sort_order").append("\n").append(modeText.copy().withStyle(ChatFormatting.GRAY));
     }
 
-    private static Text getApiEntriesIcon() {
-        return Text.literal("\uDAC1\uDF31").formatted(TooltipListScreen.showApiEntries ? Formatting.GREEN : Formatting.GRAY);
+    private static Component getApiEntriesIcon() {
+        return Component.literal("\uDAC1\uDF31").withStyle(TooltipListScreen.showApiEntries ? ChatFormatting.GREEN : ChatFormatting.GRAY);
     }
 
-    private static Text getApiEntriesTooltip() {
-        return Text.translatable("customtooltips.tooltip_list_screen.toggle_api_entries")
+    private static Component getApiEntriesTooltip() {
+        return Component.translatable("customtooltips.tooltip_list_screen.toggle_api_entries")
                 .append("\n")
-                .append(Text.translatable(TooltipListScreen.showApiEntries ? "customtooltips.tooltip_list_screen.showing_api_entries" : "customtooltips.tooltip_list_screen.showing_normal")
-                        .formatted(Formatting.GRAY)
+                .append(Component.translatable(TooltipListScreen.showApiEntries ? "customtooltips.tooltip_list_screen.showing_api_entries" : "customtooltips.tooltip_list_screen.showing_normal")
+                        .withStyle(ChatFormatting.GRAY)
                 );
     }
 
-    private static Text getPasteIcon() {
-        return Text.literal("\uDAC1\uDF33");
+    private static Component getPasteIcon() {
+        return Component.literal("\uDAC1\uDF33");
     }
 
-    private static Text getDimensionsScreenIcon() {
-        return Text.literal("\uDAC1\uDF34");
+    private static Component getDimensionsScreenIcon() {
+        return Component.literal("\uDAC1\uDF34");
     }
 }

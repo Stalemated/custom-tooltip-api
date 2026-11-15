@@ -6,11 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import com.stalemated.customtooltips.config.ExternalBackgroundsConfig;
 import com.stalemated.customtooltips.config.ConfigManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
-
 import com.stalemated.lib.helper.PlatformHelper;
 import static com.stalemated.customtooltips.CustomTooltipApiClient.LOGGER;
 
@@ -73,7 +72,7 @@ public class CustomBackgroundManager {
                 }
             }
 
-            if (MinecraftClient.getInstance().getResourceManager() != null) {
+            if (Minecraft.getInstance().getResourceManager() != null) {
                 for (String dir : config.directories) {
                     try {
                         String[] parts = dir.split(":");
@@ -81,9 +80,9 @@ public class CustomBackgroundManager {
                         String namespace = parts[0];
                         String path = parts[1];
 
-                        var resources = MinecraftClient.getInstance().getResourceManager().findResources(path, id -> id.getNamespace().equals(namespace) && id.getPath().endsWith(".png"));
+                        var resources = Minecraft.getInstance().getResourceManager().listResources(path, id -> id.getNamespace().equals(namespace) && id.getPath().endsWith(".png"));
                         
-                        for (Identifier id : resources.keySet()) {
+                        for (ResourceLocation id : resources.keySet()) {
                             String textureIdentifier = id.getNamespace() + ":" + id.getPath();
                             if (!availableBackgrounds.contains(textureIdentifier)) {
                                 availableBackgrounds.add(textureIdentifier);

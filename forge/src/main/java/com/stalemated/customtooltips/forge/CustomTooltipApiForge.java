@@ -3,8 +3,8 @@ package com.stalemated.customtooltips.forge;
 import com.stalemated.customtooltips.CustomTooltipApiClient;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.SynchronousResourceReloader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
@@ -43,12 +43,12 @@ public class CustomTooltipApiForge {
     }
 
     private void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener((SynchronousResourceReloader) manager -> CustomTooltipApiClient.onResourceReload());
+        event.registerReloadListener((ResourceManagerReloadListener) manager -> CustomTooltipApiClient.onResourceReload());
     }
 
     private void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            CustomTooltipApiClient.onClientTick(MinecraftClient.getInstance());
+            CustomTooltipApiClient.onClientTick(Minecraft.getInstance());
         }
     }
 

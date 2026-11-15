@@ -11,12 +11,6 @@ import com.stalemated.lib.config.annotation.Title;
 import com.stalemated.lib.config.model.OptionTree;
 import com.stalemated.lib.predicate.target.TargetMatcher;
 import com.stalemated.lib.util.math.MathUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +18,11 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import static com.stalemated.lib.util.color.ColorUtils.*;
 
@@ -73,7 +72,7 @@ public class TooltipEntry {
     public boolean reverseAnimation = false;
 
     @Title("formatting")
-    public Identifier font = Identifier.of("minecraft", "default");
+    public ResourceLocation font = ResourceLocation.tryBuild("minecraft", "default");
     public boolean bold = false;
     public boolean italic = false;
     public boolean underlined = false;
@@ -124,8 +123,8 @@ public class TooltipEntry {
     public int getParsedColor2() { return cache().getParsedColor2(this); }
 
     public Style getCachedStyleModifier() { return cache().getCachedStyleModifier(this); }
-    public List<Text> getCachedStaticText() { return cache().getCachedStaticText(this); }
-    public void setCachedStaticText(List<Text> text) { cache().setCachedStaticText(text); }
+    public List<Component> getCachedStaticText() { return cache().getCachedStaticText(this); }
+    public void setCachedStaticText(List<Component> text) { cache().setCachedStaticText(text); }
     public boolean hasDynamicText() { return cache().hasDynamicText(this); }
 
     public boolean hasCustomBorder() {
@@ -170,8 +169,8 @@ public class TooltipEntry {
 
     public boolean areItemConditionsMet(ItemStack stack) {
         if (this.showOnlyIfDamaged && !stack.isDamaged()) return false;
-        if (this.showOnlyIfEnchanted && !stack.hasEnchantments()) return false;
-        return !this.showOnlyIfUnbreakable || (stack.hasNbt() && Objects.requireNonNull(stack.getNbt()).getBoolean("Unbreakable"));
+        if (this.showOnlyIfEnchanted && !stack.isEnchanted()) return false;
+        return !this.showOnlyIfUnbreakable || (stack.hasTag() && Objects.requireNonNull(stack.getTag()).getBoolean("Unbreakable"));
     }
 
     public TooltipEntry copy() {
@@ -183,7 +182,7 @@ public class TooltipEntry {
         return clone;
     }
 
-    public List<Text> getTextComponents(ItemStack stack) {
+    public List<Component> getTextComponents(ItemStack stack) {
         return TextFormatter.getOrGenerateComponents(this, stack);
     }
 

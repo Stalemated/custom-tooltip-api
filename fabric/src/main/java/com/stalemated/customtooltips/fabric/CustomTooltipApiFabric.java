@@ -10,11 +10,10 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -28,15 +27,15 @@ public class CustomTooltipApiFabric implements ClientModInitializer {
 
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> CustomTooltipApiClient.onItemTooltip(stack, lines));
 
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
-            public Identifier getFabricId() {
-                return new Identifier(CustomTooltipApiClient.MOD_ID, "resources");
+            public ResourceLocation getFabricId() {
+                return new ResourceLocation(CustomTooltipApiClient.MOD_ID, "resources");
             }
 
             @Override
-            public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Profiler prepareProfiler, Profiler applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
-                return synchronizer.whenPrepared(null).thenRun(CustomTooltipApiClient::onResourceReload);
+            public CompletableFuture<Void> reload(PreparationBarrier synchronizer, ResourceManager manager, ProfilerFiller prepareProfiler, ProfilerFiller applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
+                return synchronizer.wait(null).thenRun(CustomTooltipApiClient::onResourceReload);
             }
         });
 

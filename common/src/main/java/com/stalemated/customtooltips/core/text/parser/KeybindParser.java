@@ -1,8 +1,8 @@
 package com.stalemated.customtooltips.core.text.parser;
 
-import net.minecraft.text.Text;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
 
 public class KeybindParser {
     private static final Pattern KEYBIND_PATTERN = Pattern.compile("<key:([^>]+)>");
@@ -15,7 +15,7 @@ public class KeybindParser {
 
         while (matcher.find()) {
             String keyId = matcher.group(1);
-            String keyText = "[" + Text.keybind(keyId).getString() + "]";
+            String keyText = "[" + Component.keybind(keyId).getString() + "]";
             matcher.appendReplacement(sb, Matcher.quoteReplacement(keyText));
         }
         matcher.appendTail(sb);

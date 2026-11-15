@@ -6,10 +6,6 @@ import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
 import com.stalemated.lib.util.color.ColorUtils;
 import draylar.tiered.api.BorderTemplate;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,28 +15,32 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 
 @Pseudo
 @Mixin(targets = "elocindev.tierify.util.TieredTooltip")
 public abstract class TieredTooltipMixin {
 
     @Shadow
-    private static void renderBorder(DrawContext context, int x, int y, int width, int height, int z, int startColor, int endColor) {
+    private static void renderBorder(GuiGraphics context, int x, int y, int width, int height, int z, int startColor, int endColor) {
         throw new AssertionError();
     }
 
     @Shadow
-    private static void renderHorizontalLine(DrawContext context, int x, int y, int width, int z, int color) {
+    private static void renderHorizontalLine(GuiGraphics context, int x, int y, int width, int z, int color) {
         throw new AssertionError();
     }
 
     @Shadow
-    private static void renderVerticalLine(DrawContext context, int x, int y, int height, int z, int color) {
+    private static void renderVerticalLine(GuiGraphics context, int x, int y, int height, int z, int color) {
         throw new AssertionError();
     }
 
     @Inject(method = "renderTooltipBackground", at = @At("HEAD"), cancellable = true)
-    private static void customtooltips$overrideTierifyBackground(DrawContext context, int x, int y, int width, int height, int z, int backgroundColor, int colorStart, int colorEnd, CallbackInfo ci) {
+    private static void customtooltips$overrideTierifyBackground(GuiGraphics context, int x, int y, int width, int height, int z, int backgroundColor, int colorStart, int colorEnd, CallbackInfo ci) {
         
         TooltipEntry entry = TooltipBackgroundManager.getCurrentEntry();
         if (entry != null && entry.hasCustomBackground()) {
@@ -66,33 +66,33 @@ public abstract class TieredTooltipMixin {
         }
     }
 
-    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderRectangle(Lnet/minecraft/client/gui/DrawContext;IIIIII)V"), index = 6)
+    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderRectangle(Lnet/minecraft/client/gui/GuiGraphics;IIIIII)V"), index = 6)
     private static int customtooltips$modifyTierifyBgColor(int color) {
         return TooltipBackgroundManager.scaleBackgroundAlpha(color);
     }
 
-    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderHorizontalLine(Lnet/minecraft/client/gui/DrawContext;IIIII)V"), index = 5)
+    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderHorizontalLine(Lnet/minecraft/client/gui/GuiGraphics;IIIII)V"), index = 5)
     private static int customtooltips$modifyTierifyBgOutlineH(int color) {
         return TooltipBackgroundManager.scaleBorderAlpha(color);
     }
 
-    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderVerticalLine(Lnet/minecraft/client/gui/DrawContext;IIIII)V"), index = 5)
+    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderVerticalLine(Lnet/minecraft/client/gui/GuiGraphics;IIIII)V"), index = 5)
     private static int customtooltips$modifyTierifyBgOutlineV(int color) {
         return TooltipBackgroundManager.scaleBorderAlpha(color);
     }
 
-    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderBorder(Lnet/minecraft/client/gui/DrawContext;IIIIIII)V"), index = 6)
+    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderBorder(Lnet/minecraft/client/gui/GuiGraphics;IIIIIII)V"), index = 6)
     private static int customtooltips$modifyTierifyBorderStart(int colorStart) {
         return TooltipBackgroundManager.getBorderColorStart(colorStart);
     }
 
-    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderBorder(Lnet/minecraft/client/gui/DrawContext;IIIIIII)V"), index = 7)
+    @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderBorder(Lnet/minecraft/client/gui/GuiGraphics;IIIIIII)V"), index = 7)
     private static int customtooltips$modifyTierifyBorderEnd(int colorEnd) {
         return TooltipBackgroundManager.getBorderColorEnd(colorEnd);
     }
 
     @Inject(method = "renderTieredTooltipFromComponents", at = @At("TAIL"))
-    private static void customtooltips$clearContext(DrawContext context, TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner, BorderTemplate borderTemplate, CallbackInfo ci) {
+    private static void customtooltips$clearContext(GuiGraphics context, Font textRenderer, List<ClientTooltipComponent> components, int x, int y, ClientTooltipPositioner positioner, BorderTemplate borderTemplate, CallbackInfo ci) {
         TooltipBackgroundManager.clearState();
     }
 }

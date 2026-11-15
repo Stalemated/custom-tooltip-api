@@ -1,57 +1,57 @@
 package com.stalemated.customtooltips.util;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
 
 public class ToastManager {
 
     public static void showKeybindMissingToast() {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
-                Text.translatable("customtooltips.toast.keybind_missing.title"),
-                Text.translatable("customtooltips.toast.keybind_missing.desc")
+        addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
+                Component.translatable("customtooltips.toast.keybind_missing.title"),
+                Component.translatable("customtooltips.toast.keybind_missing.desc")
         );
     }
 
     public static void showBrokenConfigToast() {
-        addToast(SystemToast.Type.PACK_LOAD_FAILURE,
-                Text.translatable("customtooltips.toast.config_backup.title"),
-                Text.translatable("customtooltips.toast.config_backup.desc")
+        addToast(SystemToast.SystemToastIds.PACK_LOAD_FAILURE,
+                Component.translatable("customtooltips.toast.config_backup.title"),
+                Component.translatable("customtooltips.toast.config_backup.desc")
         );
     }
 
     public static void showInvalidColorToast() {
-        addToast(SystemToast.Type.PACK_LOAD_FAILURE,
-                Text.translatable("customtooltips.toast.color.invalid.title"),
-                Text.translatable("customtooltips.toast.color.invalid.desc")
+        addToast(SystemToast.SystemToastIds.PACK_LOAD_FAILURE,
+                Component.translatable("customtooltips.toast.color.invalid.title"),
+                Component.translatable("customtooltips.toast.color.invalid.desc")
         );
     }
 
     public static void showDuplicatedToast(String targetName) {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
-                Text.translatable("customtooltips.toast.duplicated.title"),
-                Text.translatable("customtooltips.toast.duplicated.desc", targetName)
+        addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
+                Component.translatable("customtooltips.toast.duplicated.title"),
+                Component.translatable("customtooltips.toast.duplicated.desc", targetName)
         );
     }
 
-    private static void addToast(SystemToast.Type type, Text title, Text description) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client != null && client.getToastManager() != null) {
-            SystemToast.add(client.getToastManager(), type, title, description);
+    private static void addToast(SystemToast.SystemToastIds type, Component title, Component description) {
+        Minecraft client = Minecraft.getInstance();
+        if (client != null && client.getToasts() != null) {
+            SystemToast.add(client.getToasts(), type, title, description);
         }
     }
 
     public static void showCopiedToast(String targetName) {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
-                Text.translatable("customtooltips.toast.copied.title"),
-                Text.translatable("customtooltips.toast.copied.desc", targetName)
+        addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
+                Component.translatable("customtooltips.toast.copied.title"),
+                Component.translatable("customtooltips.toast.copied.desc", targetName)
         );
     }
 
     public static void showPastedToast(String targetName) {
-        addToast(SystemToast.Type.TUTORIAL_HINT,
-                Text.translatable("customtooltips.toast.pasted.title"),
-                Text.translatable("customtooltips.toast.pasted.desc", targetName)
+        addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
+                Component.translatable("customtooltips.toast.pasted.title"),
+                Component.translatable("customtooltips.toast.pasted.desc", targetName)
         );
     }
 }

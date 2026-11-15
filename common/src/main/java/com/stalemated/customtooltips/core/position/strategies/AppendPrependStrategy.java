@@ -1,10 +1,10 @@
 package com.stalemated.customtooltips.core.position.strategies;
 
-import net.minecraft.text.Text;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.position.TooltipPositionStrategy;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 
 public class AppendPrependStrategy implements TooltipPositionStrategy {
     private final String prefix;
@@ -16,7 +16,7 @@ public class AppendPrependStrategy implements TooltipPositionStrategy {
     }
 
     @Override
-    public void modifyTooltip(List<Text> lines, List<Text> componentsToInsert, TooltipEntry entry) {
+    public void modifyTooltip(List<Component> lines, List<Component> componentsToInsert, TooltipEntry entry) {
         int insertIndex = entry.getLineOffset(lines.size());
         if (insertIndex >= 0 && insertIndex < lines.size()) {
             lines.set(insertIndex, TextFormatter.appendToLine(lines.get(insertIndex), componentsToInsert, prefix, suffix));
@@ -24,7 +24,7 @@ public class AppendPrependStrategy implements TooltipPositionStrategy {
     }
 
     @Override
-    public Text modifyHeldItemName(Text originalName, List<Text> componentsToInsert, TooltipEntry entry) {
+    public Component modifyHeldItemName(Component originalName, List<Component> componentsToInsert, TooltipEntry entry) {
         return entry.lineOffset == 0 ? TextFormatter.appendToLine(originalName, componentsToInsert, prefix, suffix) : originalName;
     }
 }

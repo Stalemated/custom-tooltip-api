@@ -1,25 +1,25 @@
 package com.stalemated.customtooltips.registry;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.stalemated.lib.helper.PlatformHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 
 public class KeybindRegistry {
-    public static KeyBinding openConfigKeybind;
-    public static KeyBinding holdKeyKeybind;
+    public static KeyMapping openConfigKeybind;
+    public static KeyMapping holdKeyKeybind;
 
     public static void register() {
-        openConfigKeybind = new KeyBinding(
+        openConfigKeybind = new KeyMapping(
                 "key.customtooltips.open_config",
-                InputUtil.Type.KEYSYM,
+                InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_UNKNOWN,
                 "category.customtooltips.keys"
         );
 
-        holdKeyKeybind = new KeyBinding(
+        holdKeyKeybind = new KeyMapping(
                 "key.customtooltips.hold_key",
-                InputUtil.Type.KEYSYM,
+                InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_LEFT_SHIFT,
                 "category.customtooltips.keys"
         );

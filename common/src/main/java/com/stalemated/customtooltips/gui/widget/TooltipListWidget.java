@@ -8,20 +8,19 @@ import com.stalemated.customtooltips.core.sorting.TooltipSorter;
 import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.lib.helper.text.ScrollingTextRenderer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
-public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipListWidget.Entry> {
+public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Entry> {
 
     public final TooltipListScreen parentScreen;
 
-    public TooltipListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen parentScreen) {
+    public TooltipListWidget(Minecraft client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen parentScreen) {
         super(client, width, height, top, bottom, itemHeight);
         this.parentScreen = parentScreen;
         this.updateEntries();
@@ -46,7 +45,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
         for (TooltipEntry entry : sortedEntries) {
             if (lowerSearch.isEmpty() || entryMatchesSearch(entry, lowerSearch)) {
-                this.addEntry(new Entry(this, entry));
+                this.addEntry(new com.stalemated.customtooltips.gui.widget.TooltipListWidget.Entry(this, entry));
             }
         }
     }
@@ -74,9 +73,9 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
     }
 
     @Override
-    protected int getScrollbarPositionX() { return this.width - 5; }
+    protected int getScrollbarPosition() { return this.width - 5; }
 
-    public class Entry extends AlwaysSelectedEntryListWidget.Entry<Entry> {
+    public class Entry extends ObjectSelectionList.Entry<com.stalemated.customtooltips.gui.widget.TooltipListWidget.Entry> {
         private final TooltipEntry tooltipEntry;
         private final RowActionsWidget rowActions;
         private final ReorderActionsWidget reorderActions;
@@ -90,7 +89,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(this.tooltipEntry.getIdentifier());
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
 
@@ -111,7 +110,7 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
 
             boolean isHoveringOverText = mouseX >= textStartX && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
             if (isHoveringOverText) {
-                List<Text> hoverTooltip = new ArrayList<>(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
+                List<Component> hoverTooltip = new ArrayList<>(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
                 TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip, this.tooltipEntry);
             }
         }
@@ -124,8 +123,8 @@ public class TooltipListWidget extends AlwaysSelectedEntryListWidget<TooltipList
         }
 
         @Override
-        public Text getNarration() {
-            return Text.translatable("customtooltips.tooltip_list_widget.entry.narration", this.tooltipEntry.target);
+        public Component getNarration() {
+            return Component.translatable("customtooltips.tooltip_list_widget.entry.narration", this.tooltipEntry.target);
         }
     }
 }

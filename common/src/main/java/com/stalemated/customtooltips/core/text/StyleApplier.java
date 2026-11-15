@@ -2,16 +2,16 @@ package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.lib.util.color.GradientGenerator;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
 
 public class StyleApplier {
 
-    public static MutableText apply(Text baseText, TooltipEntry entry) {
+    public static MutableComponent apply(Component baseText, TooltipEntry entry) {
         switch (entry.style) {
             case RAINBOW:
                 return GradientGenerator.getRainbowGradient(baseText, entry.animationOffset, entry.tickrate, entry.reverseAnimation);
@@ -26,7 +26,7 @@ public class StyleApplier {
                 break;
         }
 
-        TextColor textColor = (entry.colors != null && !entry.colors.isEmpty() && entry.colors.get(0) != null) ? entry.colors.get(0) : TextColor.fromFormatting(Formatting.WHITE);
+        TextColor textColor = (entry.colors != null && !entry.colors.isEmpty() && entry.colors.get(0) != null) ? entry.colors.get(0) : TextColor.fromLegacyFormat(ChatFormatting.WHITE);
         Style style = Style.EMPTY.withColor(textColor);
 
         return baseText.copy().setStyle(style);
@@ -34,19 +34,19 @@ public class StyleApplier {
 
     public static Style buildStyleModifier(TooltipEntry entry) {
         Style style = Style.EMPTY;
-        if (entry.font != null && !entry.font.getPath().isEmpty() && !entry.font.equals(Identifier.of("minecraft", "default"))) {
+        if (entry.font != null && !entry.font.getPath().isEmpty() && !entry.font.equals(ResourceLocation.tryBuild("minecraft", "default"))) {
             style = style.withFont(entry.font);
         }
         if (entry.bold) style = style.withBold(true);
         if (entry.italic) style = style.withItalic(true);
-        if (entry.underlined) style = style.withUnderline(true);
+        if (entry.underlined) style = style.withUnderlined(true);
         if (entry.strikethrough) style = style.withStrikethrough(true);
         if (entry.obfuscated) style = style.withObfuscated(true);
         return style;
     }
 
-    public static void applyModifiers(MutableText processedText, Style cachedStyleModifier) {
+    public static void applyModifiers(MutableComponent processedText, Style cachedStyleModifier) {
         if (cachedStyleModifier == null || cachedStyleModifier == Style.EMPTY) return;
-        processedText.setStyle(processedText.getStyle().withParent(cachedStyleModifier));
+        processedText.setStyle(processedText.getStyle().applyTo(cachedStyleModifier));
     }
 }

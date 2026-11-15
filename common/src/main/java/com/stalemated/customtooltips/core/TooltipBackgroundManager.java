@@ -4,7 +4,7 @@ import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.lib.util.input.KeyBindingUtil;
 import com.stalemated.lib.util.math.MathUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
 import static com.stalemated.lib.util.color.ColorUtils.DEFAULT_OPACITY;

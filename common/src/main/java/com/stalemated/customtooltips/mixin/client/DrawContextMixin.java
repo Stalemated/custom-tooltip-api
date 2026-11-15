@@ -1,11 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.gui.tooltip.TooltipPositioner;
-import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,24 +8,29 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.world.item.ItemStack;
 
-@Mixin(DrawContext.class)
+@Mixin(GuiGraphics.class)
 public abstract class DrawContextMixin {
 
     @Shadow
-    protected abstract void drawTooltip(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner);
+    protected abstract void renderTooltipInternal(Font textRenderer, List<ClientTooltipComponent> components, int x, int y, ClientTooltipPositioner positioner);
 
-    @Inject(method = "drawItemTooltip", at = @At("HEAD"))
-    private void customtooltips$captureTooltipOpacity(TextRenderer textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
+    @Inject(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
+    private void customtooltips$captureTooltipOpacity(Font textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
         TooltipBackgroundManager.setMixinTooltipOpacity(stack);
     }
 
-    @Inject(method = "drawItemTooltip", at = @At("RETURN"))
-    private void customtooltips$resetTooltipOpacity(TextRenderer textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
+    @Inject(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("RETURN"))
+    private void customtooltips$resetTooltipOpacity(Font textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
         TooltipBackgroundManager.clearState();
     }
 
-    @Inject(method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;IILnet/minecraft/client/gui/tooltip/TooltipPositioner;)V", at = @At("TAIL"))
+    @Inject(method = "renderTooltipInternal(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;)V", at = @At("TAIL"))
     private void customTooltips$clearStateAfterRender(CallbackInfo ci) {
         TooltipBackgroundManager.clearState();
     }

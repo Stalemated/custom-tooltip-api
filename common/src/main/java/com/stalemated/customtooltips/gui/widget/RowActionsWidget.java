@@ -5,32 +5,30 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.util.ToastManager;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class RowActionsWidget {
-    private final List<ButtonWidget> buttons = new ArrayList<>();
-    private final List<ButtonWidget> apiButtons = new ArrayList<>();
+    private final List<Button> buttons = new ArrayList<>();
+    private final List<Button> apiButtons = new ArrayList<>();
 
     private final int BUTTON_STEP = 24;
 
     public RowActionsWidget(TooltipListWidget parent, TooltipEntry entry) {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         String identifier = entry.getIdentifier();
         boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(identifier);
 
-        buttons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF27").formatted(Formatting.RED), button -> {
-            Screen currentScreen = client.currentScreen;
+        buttons.add(Button.builder(Component.literal("\uDAC1\uDF27").withStyle(ChatFormatting.RED), button -> {
+            Screen currentScreen = client.screen;
             client.setScreen(new ConfirmScreen(
                     (confirmed) -> {
                         if (confirmed) {
@@ -38,30 +36,30 @@ public class RowActionsWidget {
                             config.entries.remove(entry);
                             if (isDisabled) config.disabled_entries.remove(identifier);
                             ConfigManager.save();
-                            parent.updateEntries(parent.parentScreen.searchBox.getText());
+                            parent.updateEntries(parent.parentScreen.searchBox.getValue());
                         }
                         client.setScreen(currentScreen);
                     },
-                    Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.title"),
-                    Text.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", entry.target.isEmpty() ? "New Tooltip" : entry.target)
+                    Component.translatable("customtooltips.tooltip_list_widget.delete_confirm.title"),
+                    Component.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", entry.target.isEmpty() ? "New Tooltip" : entry.target)
             ));
         })
-                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.delete_button")))
+                .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.delete_button")))
                 .build());
 
-        buttons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF28"), btn -> client.setScreen(TooltipEditScreen.create(client.currentScreen, entry, false)))
-                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.edit_button")))
+        buttons.add(Button.builder(Component.literal("\uDAC1\uDF28"), btn -> client.setScreen(TooltipEditScreen.create(client.screen, entry, false)))
+                .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.edit_button")))
                 .build());
 
-        apiButtons.add(ButtonWidget.builder(getCopyIcon(), btn -> {
-            client.keyboard.setClipboard(ConfigManager.GSON.toJson(entry));
+        apiButtons.add(Button.builder(getCopyIcon(), btn -> {
+            client.keyboardHandler.setClipboard(ConfigManager.GSON.toJson(entry));
             
             ToastManager.showCopiedToast(entry.target);
         })
-                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.copy_button")))
+                .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.copy_button")))
                 .build());
 
-        apiButtons.add(ButtonWidget.builder(Text.literal("\uDAC1\uDF29"), btn -> {
+        apiButtons.add(Button.builder(Component.literal("\uDAC1\uDF29"), btn -> {
             TooltipEntry newEntry = entry.copy();
 
             newEntry.apiEntry = false;
@@ -71,18 +69,18 @@ public class RowActionsWidget {
             ConfigManager.save();
 
             ToastManager.showDuplicatedToast(entry.target.isEmpty() ? "New Tooltip" : entry.target);
-            parent.updateEntries(parent.parentScreen.searchBox.getText());
+            parent.updateEntries(parent.parentScreen.searchBox.getValue());
         })
-                .tooltip(Tooltip.of(Text.translatable("customtooltips.tooltip_list_widget.duplicate_button")))
+                .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.duplicate_button")))
                 .build());
 
-        apiButtons.add(ButtonWidget.builder(getDisabledEntryIcon(isDisabled), btn -> {
+        apiButtons.add(Button.builder(getDisabledEntryIcon(isDisabled), btn -> {
             TooltipConfig config = ConfigManager.getConfig();
             if (isDisabled) config.disabled_entries.remove(identifier);
             else config.disabled_entries.add(identifier);
 
             ConfigManager.save();
-            parent.updateEntries(parent.parentScreen.searchBox.getText());
+            parent.updateEntries(parent.parentScreen.searchBox.getValue());
         })
                 .tooltip(getDisabledEntryTooltip(isDisabled))
                 .build());
@@ -90,12 +88,12 @@ public class RowActionsWidget {
         buttons.addAll(apiButtons);
     }
 
-    public void render(DrawContext context, int x, int y, int entryWidth, int mouseX, int mouseY, float tickDelta, boolean isApiEntry) {
+    public void render(GuiGraphics context, int x, int y, int entryWidth, int mouseX, int mouseY, float tickDelta, boolean isApiEntry) {
         int currentX = x + entryWidth;
 
-        List<ButtonWidget> visibleButtons = isApiEntry ? apiButtons : buttons;
+        List<Button> visibleButtons = isApiEntry ? apiButtons : buttons;
 
-        for (ButtonWidget button : visibleButtons) {
+        for (Button button : visibleButtons) {
             currentX -= BUTTON_STEP;
             button.setX(currentX);
             button.setY(y);
@@ -105,7 +103,7 @@ public class RowActionsWidget {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (ButtonWidget btn : buttons) {
+        for (Button btn : buttons) {
             if (btn.mouseClicked(mouseX, mouseY, button)) return true;
         }
         return false;
@@ -116,15 +114,15 @@ public class RowActionsWidget {
         return (buttons.size() * BUTTON_STEP) - btnAmount;
     }
 
-    private Text getDisabledEntryIcon(boolean isDisabled) {
-        return isDisabled ? Text.literal("\uDAC1\uDF26").formatted(Formatting.RED) : Text.literal("\uDAC1\uDF30").formatted(Formatting.GREEN);
+    private Component getDisabledEntryIcon(boolean isDisabled) {
+        return isDisabled ? Component.literal("\uDAC1\uDF26").withStyle(ChatFormatting.RED) : Component.literal("\uDAC1\uDF30").withStyle(ChatFormatting.GREEN);
     }
 
     private Tooltip getDisabledEntryTooltip(boolean isDisabled) {
-        return Tooltip.of(Text.translatable(isDisabled ? "customtooltips.tooltip_list_widget.disabled_button" : "customtooltips.tooltip_list_widget.enabled_button"));
+        return Tooltip.create(Component.translatable(isDisabled ? "customtooltips.tooltip_list_widget.disabled_button" : "customtooltips.tooltip_list_widget.enabled_button"));
     }
 
-    private Text getCopyIcon() {
-        return Text.literal("\uDAC1\uDF32");
+    private Component getCopyIcon() {
+        return Component.literal("\uDAC1\uDF32");
     }
 }

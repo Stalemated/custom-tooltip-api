@@ -7,10 +7,9 @@ import com.stalemated.customtooltips.core.text.parser.PlaceholderParser;
 import com.stalemated.customtooltips.core.text.parser.TranslationParser;
 import com.stalemated.lib.predicate.target.TargetMatcher;
 import com.stalemated.lib.predicate.target.TargetMatcherFactory;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-
 import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
 import static com.stalemated.lib.util.color.ColorUtils.*;
 
@@ -25,7 +24,7 @@ public final class TooltipRuntimeCache {
     private int parsedColor1 = DEFAULT_COLOR;
     private int parsedColor2 = DEFAULT_COLOR;
     private boolean gradient = false;
-    private List<Text> cachedStaticText = null;
+    private List<Component> cachedStaticText = null;
     private Style cachedStyleModifier = null;
     private int parsedBorderColorStart = DEFAULT_BORDER_COLORS.get(0);
     private int parsedBorderColorEnd = DEFAULT_BORDER_COLORS.get(1);
@@ -47,10 +46,10 @@ public final class TooltipRuntimeCache {
 
         this.gradient = entry.colors != null && entry.colors.size() >= 2;
         this.parsedColor1 = (entry.colors != null && !entry.colors.isEmpty() && entry.colors.get(0) != null)
-                ? entry.colors.get(0).getRgb()
+                ? entry.colors.get(0).getValue()
                 : DEFAULT_COLOR;
         this.parsedColor2 = (this.gradient && entry.colors.get(1) != null)
-                ? entry.colors.get(1).getRgb()
+                ? entry.colors.get(1).getValue()
                 : DEFAULT_COLOR;
 
         if (entry.tickrate <= 0) {
@@ -123,12 +122,12 @@ public final class TooltipRuntimeCache {
         return this.cachedStyleModifier;
     }
 
-    public List<Text> getCachedStaticText(TooltipEntry entry) {
+    public List<Component> getCachedStaticText(TooltipEntry entry) {
         ensureInitialized(entry);
         return this.cachedStaticText;
     }
 
-    public void setCachedStaticText(List<Text> text) {
+    public void setCachedStaticText(List<Component> text) {
         this.cachedStaticText = text;
     }
 

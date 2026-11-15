@@ -5,14 +5,13 @@ import com.stalemated.customtooltips.api.*;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Identifier;
-
 import java.awt.Color;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class TooltipEntryBuilderImpl implements TooltipBuilder {
     private final TooltipEntry entry;
@@ -191,7 +190,7 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     }
 
     @Override
-    public TooltipBuilder font(Identifier fontIdentifier) {
+    public TooltipBuilder font(ResourceLocation fontIdentifier) {
         this.entry.font = fontIdentifier;
         return this;
     }

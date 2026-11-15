@@ -5,60 +5,60 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.factories.ListScreenUIFactory;
 import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
 import com.stalemated.customtooltips.gui.widget.TooltipListWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import com.stalemated.customtooltips.util.ToastManager;
-import net.minecraft.text.Text;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.openConfigKeybind;
 
 import java.util.List;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class TooltipListScreen extends Screen {
     private final Screen parent;
     public TooltipListWidget listWidget;
-    public TextFieldWidget searchBox;
+    public EditBox searchBox;
     private static boolean hasShownKeybindToast = false;
     private String searchText = "";
     private TooltipEntry activeTooltip = null;
-    private List<Text> activeTooltipText = null;
+    private List<Component> activeTooltipText = null;
     public static boolean showApiEntries = false;
 
     public TooltipListScreen(Screen parent) {
-        super(Text.translatable("customtooltips.tooltip_list_screen.title"));
+        super(Component.translatable("customtooltips.tooltip_list_screen.title"));
         this.parent = parent;
     }
 
     @Override
     protected void init() {
-        this.listWidget = new TooltipListWidget(this.client, this.width, this.height, 55, this.height - 32, 25, this);
-        this.addSelectableChild(this.listWidget);
+        this.listWidget = new TooltipListWidget(this.minecraft, this.width, this.height, 55, this.height - 32, 25, this);
+        this.addWidget(this.listWidget);
 
-        this.searchBox = ListScreenUIFactory.createSearchBox(this, this.textRenderer, this.searchText);
-        this.addSelectableChild(this.searchBox);
+        this.searchBox = ListScreenUIFactory.createSearchBox(this, this.font, this.searchText);
+        this.addWidget(this.searchBox);
         this.setInitialFocus(this.searchBox);
 
         this.listWidget.updateEntries(this.searchText);
 
         showToasts();
 
-        ListScreenUIFactory.createActionButtons(this).forEach(this::addDrawableChild);
-        ListScreenUIFactory.createFooterButtons(this).forEach(this::addDrawableChild);
+        ListScreenUIFactory.createActionButtons(this).forEach(this::addRenderableWidget);
+        ListScreenUIFactory.createFooterButtons(this).forEach(this::addRenderableWidget);
     }
 
     public void setSearchText(String searchText) {
         this.searchText = searchText;
     }
 
-    public void setHoveredTooltip(List<Text> tooltipText, TooltipEntry tooltip) {
+    public void setHoveredTooltip(List<Component> tooltipText, TooltipEntry tooltip) {
         this.activeTooltip = tooltip;
         this.activeTooltipText = tooltipText;
     }
 
     private void showToasts() {
         if (!hasShownKeybindToast) {
-            if (this.client != null && this.client.options != null && openConfigKeybind.isUnbound()) {
+            if (this.minecraft != null && this.minecraft.options != null && openConfigKeybind.isUnbound()) {
                 ToastManager.showKeybindMissingToast();
             }
             hasShownKeybindToast = true;
@@ -73,12 +73,12 @@ public class TooltipListScreen extends Screen {
     // Overrides
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.activeTooltipText = null;
 
         this.listWidget.render(context, mouseX, mouseY, delta);
         this.searchBox.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
         
         if (this.activeTooltipText != null) {
@@ -94,9 +94,9 @@ public class TooltipListScreen extends Screen {
     }
 
     @Override
-    public void close() {
-        if (this.client != null) {
-            this.client.setScreen(this.parent);
+    public void onClose() {
+        if (this.minecraft != null) {
+            this.minecraft.setScreen(this.parent);
         }
     }
 }

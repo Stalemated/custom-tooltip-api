@@ -5,8 +5,8 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,7 +25,7 @@ public class ForgeTooltipEvents {
                 int height = 0;
 
                 for (int i = 0; i < event.getComponents().size(); i++) {
-                    TooltipComponent component = event.getComponents().get(i);
+                    ClientTooltipComponent component = event.getComponents().get(i);
                     width = Math.max(width, component.getWidth(event.getFont()));
                     height += component.getHeight();
                 }
@@ -35,7 +35,7 @@ public class ForgeTooltipEvents {
                 int bgWidth = width + 6;
                 int bgHeight = height + 6;
 
-                DrawContext context = event.getGraphics();
+                GuiGraphics context = event.getGraphics();
                 BackgroundRenderStrategy strategy = BackgroundStrategyFactory.getStrategy(entry.backgroundType);
 
                 int originalColor = event.getBackgroundStart();

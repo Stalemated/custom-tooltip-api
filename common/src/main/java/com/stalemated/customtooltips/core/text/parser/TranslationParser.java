@@ -1,8 +1,8 @@
 package com.stalemated.customtooltips.core.text.parser;
 
-import net.minecraft.text.Text;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.network.chat.Component;
 
 public class TranslationParser {
     private static final Pattern TRANSLATION_PATTERN = Pattern.compile("<translate:([^>]+)>");
@@ -15,7 +15,7 @@ public class TranslationParser {
 
         while (matcher.find()) {
             String key = matcher.group(1);
-            String translatedText = Text.translatable(key).getString();
+            String translatedText = Component.translatable(key).getString();
             matcher.appendReplacement(sb, Matcher.quoteReplacement(translatedText));
         }
         matcher.appendTail(sb);

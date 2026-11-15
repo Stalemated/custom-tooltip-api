@@ -3,24 +3,22 @@ package com.stalemated.customtooltips.gui.widget;
 import com.stalemated.customtooltips.config.ConfigManager;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
-
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
-
 import java.util.Collections;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 
 public class ReorderActionsWidget {
-    private final ButtonWidget moveUpButton;
-    private final ButtonWidget moveDownButton;
+    private final Button moveUpButton;
+    private final Button moveDownButton;
     private final TooltipEntry entry;
     private final TooltipListWidget parent;
 
     public ReorderActionsWidget(TooltipListWidget parent, TooltipEntry entry) {
         this.parent = parent;
         this.entry = entry;
-        this.moveUpButton = ButtonWidget.builder(Text.literal("▲"), btn -> move(-1)).dimensions(0, 0, 20, 20).build();
-        this.moveDownButton = ButtonWidget.builder(Text.literal("▼"), btn -> move(1)).dimensions(0, 0, 20, 20).build();
+        this.moveUpButton = Button.builder(Component.literal("▲"), btn -> move(-1)).bounds(0, 0, 20, 20).build();
+        this.moveDownButton = Button.builder(Component.literal("▼"), btn -> move(1)).bounds(0, 0, 20, 20).build();
     }
 
     private void move(int direction) {
@@ -30,11 +28,11 @@ public class ReorderActionsWidget {
         if (newIndex >= 0 && newIndex < config.entries.size()) {
             Collections.swap(config.entries, index, newIndex);
             ConfigManager.save();
-            parent.updateEntries(parent.parentScreen.searchBox.getText());
+            parent.updateEntries(parent.parentScreen.searchBox.getValue());
         }
     }
 
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {
         TooltipConfig config = ConfigManager.getConfig();
         int idx = config.entries.indexOf(this.entry);
 

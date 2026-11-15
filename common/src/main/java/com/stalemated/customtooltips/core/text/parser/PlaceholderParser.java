@@ -1,11 +1,10 @@
 package com.stalemated.customtooltips.core.text.parser;
 
 import com.stalemated.customtooltips.registry.PlaceholderRegistry;
-import net.minecraft.item.ItemStack;
-
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.world.item.ItemStack;
 
 public class PlaceholderParser {
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("%([a-zA-Z_]+)%");

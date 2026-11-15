@@ -1,11 +1,15 @@
 package com.stalemated.customtooltips.core.background.helper;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import org.joml.Matrix4f;
 
 public class AtlasRenderHelper {
@@ -13,29 +17,29 @@ public class AtlasRenderHelper {
     private static final int textureHeight = 64;
     private static final int corner = 8;
 
-    public static Sprite getSprite(String backgroundTexture) {
-        Identifier spriteId = new Identifier(backgroundTexture.replace(".png", "").replace("textures/", ""));
-        return MinecraftClient.getInstance().getBakedModelManager().getAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).getSprite(spriteId);
+    public static TextureAtlasSprite getSprite(String backgroundTexture) {
+        ResourceLocation spriteId = new ResourceLocation(backgroundTexture.replace(".png", "").replace("textures/", ""));
+        return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(spriteId);
     }
 
-    public static boolean isMissingSprite(Sprite sprite) {
-        return sprite == null || sprite.getContents().getId().getPath().equals("missingno");
+    public static boolean isMissingSprite(TextureAtlasSprite sprite) {
+        return sprite == null || sprite.contents().name().getPath().equals("missingno");
     }
 
-    public static Identifier getRawTextureId(String backgroundTexture) {
-        return new Identifier(backgroundTexture);
+    public static ResourceLocation getRawTextureId(String backgroundTexture) {
+        return new ResourceLocation(backgroundTexture);
     }
 
-    public static void drawNineSlice(DrawContext context, Sprite sprite, int x, int y, int width, int height, int scale) {
-        float minU = sprite.getMinU();
-        float maxU = sprite.getMaxU();
-        float minV = sprite.getMinV();
-        float maxV = sprite.getMaxV();
+    public static void drawNineSlice(GuiGraphics context, TextureAtlasSprite sprite, int x, int y, int width, int height, int scale) {
+        float minU = sprite.getU0();
+        float maxU = sprite.getU1();
+        float minV = sprite.getV0();
+        float maxV = sprite.getV1();
 
         drawNineSliceHelper(context, x, y, width, height, minU, maxU, minV, maxV, scale);
     }
 
-    public static void drawNineSliceStandalone(DrawContext context, int x, int y, int width, int height, int scale) {
+    public static void drawNineSliceStandalone(GuiGraphics context, int x, int y, int width, int height, int scale) {
         float minU = 0.0f;
         float maxU = 1.0f;
         float minV = 0.0f;
@@ -44,7 +48,7 @@ public class AtlasRenderHelper {
         drawNineSliceHelper(context, x, y, width, height, minU, maxU, minV, maxV, scale);
     }
 
-    private static void drawNineSliceHelper(DrawContext context, int x, int y, int width, int height, float minU, float maxU, float minV, float maxV, int scale) {
+    private static void drawNineSliceHelper(GuiGraphics context, int x, int y, int width, int height, float minU, float maxU, float minV, float maxV, int scale) {
         float scaleFactor = scale / 100.0f;
         int scaledCorner = Math.max(1, (int)(corner * scaleFactor));
         
@@ -58,9 +62,9 @@ public class AtlasRenderHelper {
         float cornerU = (spanU / textureWidth) * corner;
         float cornerV = (spanV / textureHeight) * corner;
 
-        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        Matrix4f matrix = context.pose().last().pose();
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
         // Top Left
         drawQuad(buffer, matrix, x, y, scaledCorner, scaledCorner, minU, minV, minU + cornerU, minV + cornerV);
@@ -83,39 +87,39 @@ public class AtlasRenderHelper {
         // Center
         drawQuad(buffer, matrix, x + scaledCorner, y + scaledCorner, width - scaledCorner * 2, height - scaledCorner * 2, minU + cornerU, minV + cornerV, maxU - cornerU, maxV - cornerV);
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        BufferUploader.drawWithShader(buffer.end());
     }
 
-    public static void drawSimple(DrawContext context, Sprite sprite, int x, int y, int width, int height) {
-        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+    public static void drawSimple(GuiGraphics context, TextureAtlasSprite sprite, int x, int y, int width, int height) {
+        Matrix4f matrix = context.pose().last().pose();
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        drawQuad(buffer, matrix, x, y, width, height, sprite.getMinU(), sprite.getMinV(), sprite.getMaxU(), sprite.getMaxV());
+        drawQuad(buffer, matrix, x, y, width, height, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        BufferUploader.drawWithShader(buffer.end());
     }
 
-    public static void drawSimpleStandalone(DrawContext context, int x, int y, int width, int height) {
-        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+    public static void drawSimpleStandalone(GuiGraphics context, int x, int y, int width, int height) {
+        Matrix4f matrix = context.pose().last().pose();
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
         drawQuad(buffer, matrix, x, y, width, height, 0.0f, 0.0f, 1.0f, 1.0f);
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        BufferUploader.drawWithShader(buffer.end());
     }
 
-    public static void drawRepeating(DrawContext context, Sprite sprite, int x, int y, int width, int height, int scale) {
-        float minU = sprite.getMinU();
-        float maxU = sprite.getMaxU();
-        float minV = sprite.getMinV();
-        float maxV = sprite.getMaxV();
+    public static void drawRepeating(GuiGraphics context, TextureAtlasSprite sprite, int x, int y, int width, int height, int scale) {
+        float minU = sprite.getU0();
+        float maxU = sprite.getU1();
+        float minV = sprite.getV0();
+        float maxV = sprite.getV1();
 
         drawRepeatingHelper(context, x, y, width, height, minU, minV, maxU, maxV, scale);
     }
 
-    public static void drawRepeatingStandalone(DrawContext context, int x, int y, int width, int height, int scale) {
+    public static void drawRepeatingStandalone(GuiGraphics context, int x, int y, int width, int height, int scale) {
         float minU = 0.0f;
         float maxU = 1.0f;
         float minV = 0.0f;
@@ -124,7 +128,7 @@ public class AtlasRenderHelper {
         drawRepeatingHelper(context, x, y, width, height, minU, minV, maxU, maxV, scale);
     }
 
-    private static void drawRepeatingHelper(DrawContext context, int x, int y, int width, int height, float minU, float minV,  float maxU, float maxV, int scale) {
+    private static void drawRepeatingHelper(GuiGraphics context, int x, int y, int width, int height, float minU, float minV,  float maxU, float maxV, int scale) {
         float scaleFactor = scale / 100.0f;
         int scaledTexW = Math.max(1, (int)(textureWidth * scaleFactor));
         int scaledTexH = Math.max(1, (int)(textureHeight * scaleFactor));
@@ -132,9 +136,9 @@ public class AtlasRenderHelper {
         float spanU = maxU - minU;
         float spanV = maxV - minV;
 
-        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        Matrix4f matrix = context.pose().last().pose();
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
         for (int i = 0; i < width; i += scaledTexW) {
             for (int j = 0; j < height; j += scaledTexH) {
@@ -148,13 +152,13 @@ public class AtlasRenderHelper {
             }
         }
 
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        BufferUploader.drawWithShader(buffer.end());
     }
 
     private static void drawQuad(BufferBuilder buffer, Matrix4f matrix, int x, int y, int width, int height, float minU, float minV, float maxU, float maxV) {
-        buffer.vertex(matrix, x, y, 0).texture(minU, minV).next();
-        buffer.vertex(matrix, x, y + height, 0).texture(minU, maxV).next();
-        buffer.vertex(matrix, x + width, y + height, 0).texture(maxU, maxV).next();
-        buffer.vertex(matrix, x + width, y, 0).texture(maxU, minV).next();
+        buffer.vertex(matrix, x, y, 0).uv(minU, minV).endVertex();
+        buffer.vertex(matrix, x, y + height, 0).uv(minU, maxV).endVertex();
+        buffer.vertex(matrix, x + width, y + height, 0).uv(maxU, maxV).endVertex();
+        buffer.vertex(matrix, x + width, y, 0).uv(maxU, minV).endVertex();
     }
 }

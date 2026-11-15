@@ -5,15 +5,14 @@ import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import com.stalemated.lib.util.color.ColorUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Identifier;
-
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A fluent builder interface for creating and configuring {@link TooltipEntry} instances.
@@ -333,7 +332,7 @@ public interface TooltipBuilder {
      * @param fontIdentifier The Identifier of the font (e.g., "minecraft:default", "minecraft:alt").
      * @return This builder instance.
      */
-    TooltipBuilder font(Identifier fontIdentifier);
+    TooltipBuilder font(ResourceLocation fontIdentifier);
 
     /**
      * Sets a custom font identifier for the tooltip text.
@@ -342,7 +341,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder font(String fontIdentifier) {
-        return font(new Identifier(fontIdentifier));
+        return font(new ResourceLocation(fontIdentifier));
     }
 
     /**

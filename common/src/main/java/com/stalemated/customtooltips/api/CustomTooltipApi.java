@@ -4,12 +4,11 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipRegistry;
 import com.stalemated.customtooltips.core.builder.TooltipEntryBuilderImpl;
 import com.stalemated.customtooltips.registry.PlaceholderRegistry;
-import net.minecraft.item.ItemStack;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
+import net.minecraft.world.item.ItemStack;
 
 
 /**

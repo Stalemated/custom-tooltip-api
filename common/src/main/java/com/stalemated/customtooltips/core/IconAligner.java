@@ -1,40 +1,39 @@
 package com.stalemated.customtooltips.core;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 
 public class IconAligner {
 
     private static final int CACHE_CAPACITY = 200;
-    private static final Map<String, Text> PROCESSED_CACHE = new LinkedHashMap<>(16, 0.75f, true) {
+    private static final Map<String, Component> PROCESSED_CACHE = new LinkedHashMap<>(16, 0.75f, true) {
         @Override
-        protected boolean removeEldestEntry(Map.Entry<String, Text> eldest) {
+        protected boolean removeEldestEntry(Map.Entry<String, Component> eldest) {
             return size() > CACHE_CAPACITY;
         }
     };
 
-    public static void alignIcons(List<Text> lines) {
+    public static void alignIcons(List<Component> lines) {
 
         for (int i = 0; i < lines.size(); i++) {
-            Text originalText = lines.get(i);
+            Component originalText = lines.get(i);
             String rawString = originalText.getString();
 
             if (!containsIcon(rawString)) continue;
 
-            Text cached = PROCESSED_CACHE.get(rawString);
+            Component cached = PROCESSED_CACHE.get(rawString);
             if (cached != null) {
                 lines.set(i, cached);
                 continue;
             }
 
-            Text processed = processAndAlignIcon(originalText);
+            Component processed = processAndAlignIcon(originalText);
             PROCESSED_CACHE.put(rawString, processed);
             lines.set(i, processed);
         }
@@ -66,7 +65,7 @@ public class IconAligner {
                 (codePoint >= 0xA980 && codePoint <= 0xA9DF); // Javanese (Eldritch End compat)
     }
 
-    private static Text processAndAlignIcon(Text originalText) {
+    private static Component processAndAlignIcon(Component originalText) {
         List<StyledChar> chars = extractStyledChars(originalText);
 
         int[] iconBounds = findIconBounds(chars);
@@ -104,7 +103,7 @@ public class IconAligner {
         return rebuildText(chars);
     }
 
-    private static List<StyledChar> extractStyledChars(Text text) {
+    private static List<StyledChar> extractStyledChars(Component text) {
         List<StyledChar> chars = new ArrayList<>();
         text.visit((style, string) -> {
 
@@ -166,8 +165,8 @@ public class IconAligner {
         }
     }
 
-    private static Text rebuildText(List<StyledChar> chars) {
-        MutableText result = Text.empty();
+    private static Component rebuildText(List<StyledChar> chars) {
+        MutableComponent result = Component.empty();
         StringBuilder stringBuilder = new StringBuilder();
         Style currentStyle = null;
 
@@ -176,7 +175,7 @@ public class IconAligner {
             if (currentStyle == null) {
                 currentStyle = styledChar.style;
             } else if (!currentStyle.equals(styledChar.style)) {
-                result.append(Text.literal(stringBuilder.toString()).setStyle(currentStyle));
+                result.append(Component.literal(stringBuilder.toString()).setStyle(currentStyle));
                 currentStyle = styledChar.style;
                 stringBuilder.setLength(0);
             }
@@ -184,7 +183,7 @@ public class IconAligner {
         }
 
         if (!stringBuilder.isEmpty()) {
-            result.append(Text.literal(stringBuilder.toString()).setStyle(currentStyle));
+            result.append(Component.literal(stringBuilder.toString()).setStyle(currentStyle));
         }
 
         return result;

@@ -56,8 +56,8 @@ public class CustomTooltipApiTest implements ClientModInitializer {
         // Example of a Dynamic Text Provider reading item state in real-time
         CustomTooltipApi.builder("minecraft:iron_sword")
                 .dynamicText(stack -> {
-                    if (stack.isDamageable()) {
-                        int remaining = stack.getMaxDamage() - stack.getDamage();
+                    if (stack.isDamageableItem()) {
+                        int remaining = stack.getMaxDamage() - stack.getDamageValue();
                         return List.of("Durability: " + remaining + " / " + stack.getMaxDamage());
                     }
                     return List.of("This item is Unbreakable");

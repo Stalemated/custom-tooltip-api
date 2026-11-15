@@ -8,22 +8,21 @@ import com.stalemated.customtooltips.util.CustomFontManager;
 import com.stalemated.lib.compat.yacl.builder.YaclScreenBuilder;
 import com.stalemated.lib.config.manager.LocalConfigManager;
 import com.stalemated.lib.util.color.ColorUtils;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class TooltipEditScreen {
 
     public static TooltipEntry previewEntry = null;
 
-    public static void renderPreview(Screen screen, DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        if (previewEntry != null && screen.getTitle().contains(Text.translatable("customtooltips.tooltip_edit_screen.title"))) {
+    public static void renderPreview(Screen screen, GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
+        if (previewEntry != null && screen.getTitle().contains(Component.translatable("customtooltips.tooltip_edit_screen.title"))) {
             if (Screen.hasControlDown()) {
-                List<Text> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
+                List<Component> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
                 RenderGuiTooltipHelper.renderGuiTooltip(previewEntry, previewLines, context, mouseX, mouseY);
             }
         }
@@ -43,14 +42,14 @@ public class TooltipEditScreen {
             saved.invalidateCaches();
             ConfigManager.save();
             if (parent instanceof TooltipListScreen listScreen) {
-                listScreen.listWidget.updateEntries(listScreen.searchBox.getText());
+                listScreen.listWidget.updateEntries(listScreen.searchBox.getValue());
             }
         });
 
-        return YaclScreenBuilder.create(parent, Text.translatable("customtooltips.tooltip_edit_screen.title"), "customtooltips")
+        return YaclScreenBuilder.create(parent, Component.translatable("customtooltips.tooltip_edit_screen.title"), "customtooltips")
                 .livePreview(entryManager, previewEntry, TooltipEntry::invalidateCaches)
                 .category(entryManager, cat ->
-                        cat.name(Text.translatable("customtooltips.tooltip_edit_screen.title"))
+                        cat.name(Component.translatable("customtooltips.tooltip_edit_screen.title"))
                         .group("target", grp -> grp.include("target"))
                         .listOption("text")
                         .group("style_colors", grp ->
@@ -72,13 +71,13 @@ public class TooltipEditScreen {
                         )
                 )
                 .category(entryManager, cat ->
-                        cat.name(Text.translatable("customtooltips.tooltip_edit_screen.title_background"))
+                        cat.name(Component.translatable("customtooltips.tooltip_edit_screen.title_background"))
                         .group("background", grp ->
                                 grp.include("backgroundType", "backgroundOpacity")
                                 .listElement("backgroundColors", 0, "backgroundTopColor", ColorUtils.parseToAWT("#F0100010"))
                                 .listElement("backgroundColors", 1, "backgroundBottomColor", ColorUtils.parseToAWT("#F0100010"))
                                 .dropdown("backgroundTexture", CustomBackgroundManager.availableBackgrounds,
-                                        s -> Text.literal(s.replace("custom_tooltip_api:textures/gui/tooltip_backgrounds/", ""))
+                                        s -> Component.literal(s.replace("custom_tooltip_api:textures/gui/tooltip_backgrounds/", ""))
                                 )
                                 .include("backgroundScale")
                         )
