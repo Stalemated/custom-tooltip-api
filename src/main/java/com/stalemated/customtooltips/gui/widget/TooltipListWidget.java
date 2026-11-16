@@ -5,7 +5,7 @@ import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.core.sorting.SortMode;
 import com.stalemated.customtooltips.core.sorting.TooltipSorter;
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.lib.helper.text.ScrollingTextRenderer;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
 
     public void updateEntries(String searchText) {
         this.clearEntries();
-        TooltipConfig config = ConfigManager.getConfig();
+        TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
         String lowerSearch = searchText != null ? searchText.toLowerCase() : "";
 
         List<TooltipEntry> sortedEntries = new ArrayList<>();
@@ -90,13 +90,13 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
 
         @Override
         public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(this.tooltipEntry.getIdentifier());
+            boolean isDisabled = CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(this.tooltipEntry.getIdentifier());
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
 
             rowActions.render(context, x, y, entryWidth, mouseX, mouseY, tickDelta, this.tooltipEntry.apiEntry);
 
             int textStartX = x;
-            if (ConfigManager.getConfig().sort_mode == SortMode.CREATION_DATE && !TooltipListScreen.showApiEntries && !this.tooltipEntry.apiEntry) {
+            if (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode == SortMode.CREATION_DATE && !TooltipListScreen.showApiEntries && !this.tooltipEntry.apiEntry) {
                 reorderActions.render(context, x, y, mouseX, mouseY, tickDelta);
                 textStartX += 48; // 2 buttons * 24px
             }

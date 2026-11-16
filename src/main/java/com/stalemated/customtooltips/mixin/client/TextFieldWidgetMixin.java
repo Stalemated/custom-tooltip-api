@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import net.minecraft.client.gui.components.EditBox;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ public abstract class TextFieldWidgetMixin {
         long time = System.currentTimeMillis();
         int timeBetweenClicksMs = 250;
         
-        TooltipConfig config = ConfigManager.getConfig();
+        TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
 
         if (config.enable_double_click_selection && time - this.custom_tooltip_api$lastClickTime < timeBetweenClicksMs) {
             instance.setCursorPosition(0);

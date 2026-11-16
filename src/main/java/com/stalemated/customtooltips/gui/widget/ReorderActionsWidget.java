@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.gui.widget;
 
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import java.util.Collections;
@@ -22,18 +22,18 @@ public class ReorderActionsWidget {
     }
 
     private void move(int direction) {
-        TooltipConfig config = ConfigManager.getConfig();
+        TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
         int index = config.entries.indexOf(entry);
         int newIndex = index + direction;
         if (newIndex >= 0 && newIndex < config.entries.size()) {
             Collections.swap(config.entries, index, newIndex);
-            ConfigManager.save();
+            CustomTooltipsConfigRegistry.CONFIG.save();
             parent.updateEntries(parent.parentScreen.searchBox.getValue());
         }
     }
 
     public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {
-        TooltipConfig config = ConfigManager.getConfig();
+        TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
         int idx = config.entries.indexOf(this.entry);
 
         moveUpButton.setX(x);

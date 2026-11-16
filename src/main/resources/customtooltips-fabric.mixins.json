@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.stalemated.customtooltips.fabric.mixin",
   "compatibilityLevel": "${mixin_compatibility}",
-  "plugin": "com.stalemated.customtooltips.fabric.mixin.compat.TierifyCompatPlugin",
+  "plugin": "com.stalemated.lib.mixin.ConditionalMixinPlugin",
   "client": [
     "TooltipBackgroundRendererMixin",
     "compat.tierify.TieredTooltipMixin"

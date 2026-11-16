@@ -4,7 +4,8 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipBackgroundManager;
 import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
 import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
-import com.stalemated.lib.util.color.ColorUtils;
+import com.stalemated.lib.mixin.RequiresMod;
+import com.stalemated.lib.util.color.VanillaTooltipColors;
 import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
+@RequiresMod("tiered")
 @Mixin(targets = "elocindev.tierify.util.TieredTooltip")
 public abstract class TieredTooltipMixin {
 
@@ -43,7 +45,7 @@ public abstract class TieredTooltipMixin {
             int k = width + 6;
             int l = height + 6;
 
-            int defaultBgColor = ColorUtils.DEFAULT_BACKGROUND_COLORS.get(0);
+            int defaultBgColor = VanillaTooltipColors.BACKGROUND;
             BackgroundRenderStrategy strategy = BackgroundStrategyFactory.getStrategy(entry.backgroundType);
 
             renderHorizontalLine(context, i, j - 1, k, z, defaultBgColor);

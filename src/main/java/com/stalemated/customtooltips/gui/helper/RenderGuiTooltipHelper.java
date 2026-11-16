@@ -20,9 +20,7 @@ public class RenderGuiTooltipHelper {
         TooltipBackgroundManager.setCurrentBorderOpacity(entry.borderOpacity);
         TooltipBackgroundManager.setCurrentEntry(entry);
 
-        SharedTooltipState.forceCustomDimensions = true;
-        context.renderComponentTooltip(Minecraft.getInstance().font, lines, mouseX, mouseY);
-        SharedTooltipState.forceCustomDimensions = false;
+        SharedTooltipState.withCustomDimensions(() -> context.renderComponentTooltip(Minecraft.getInstance().font, lines, mouseX, mouseY));
         TooltipBackgroundManager.clearState();
     }
 }

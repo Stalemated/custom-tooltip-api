@@ -3,13 +3,14 @@ package com.stalemated.customtooltips;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.core.TooltipRuntimeCache;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.lib.config.annotation.ItemDropdown;
 import com.stalemated.lib.config.annotation.RangeInt;
 import com.stalemated.lib.config.annotation.Title;
-import com.stalemated.lib.config.model.OptionTree;
 import com.stalemated.lib.predicate.target.TargetMatcher;
+import com.stalemated.lib.util.ResourceIds;
 import com.stalemated.lib.util.math.MathUtils;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -24,7 +25,9 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import static com.stalemated.lib.util.color.ColorUtils.*;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_GRADIENT;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_OPACITY;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BORDER;
 
 public class TooltipEntry {
 
@@ -43,13 +46,13 @@ public class TooltipEntry {
     public List<Color> borderColors = new ArrayList<>();
 
     @RangeInt(min = 0, max = 255)
-    public int borderOpacity = DEFAULT_OPACITY;
+    public int borderOpacity = BACKGROUND_OPACITY;
 
     @Title("background")
     public BackgroundType backgroundType = BackgroundType.SOLID;
 
     @RangeInt(min = 0, max = 255)
-    public int backgroundOpacity = DEFAULT_OPACITY;
+    public int backgroundOpacity = BACKGROUND_OPACITY;
 
     public List<Color> backgroundColors = new ArrayList<>();
 
@@ -72,7 +75,7 @@ public class TooltipEntry {
     public boolean reverseAnimation = false;
 
     @Title("formatting")
-    public ResourceLocation font = ResourceLocation.tryBuild("minecraft", "default");
+    public ResourceLocation font = ResourceIds.of("minecraft", "default");
     public boolean bold = false;
     public boolean italic = false;
     public boolean underlined = false;
@@ -89,7 +92,7 @@ public class TooltipEntry {
 
     public UUID uuid = UUID.randomUUID();
 
-    // Runtime-only API and cache state (excluded from serialization and OptionTree)
+    // Runtime-only API and cache state
     private transient TooltipRuntimeCache cache = new TooltipRuntimeCache();
 
     public transient boolean apiEntry = false;
@@ -130,8 +133,8 @@ public class TooltipEntry {
     public boolean hasCustomBorder() {
         int start = getParsedBorderColorStart();
         int end = getParsedBorderColorEnd();
-        return (!this.borderColors.isEmpty() && !List.of(start, end).equals(DEFAULT_BORDER_COLORS))
-                || this.borderOpacity != DEFAULT_OPACITY;
+        return (!this.borderColors.isEmpty() && !List.of(start, end).equals(BORDER))
+                || this.borderOpacity != BACKGROUND_OPACITY;
     }
 
     public int getParsedBorderColorStart() { return cache().getParsedBorderColorStart(this); }
@@ -140,9 +143,9 @@ public class TooltipEntry {
     public boolean hasCustomBackground() {
         int start = getParsedBackgroundColorStart();
         int end = getParsedBackgroundColorEnd();
-        return this.backgroundOpacity != DEFAULT_OPACITY
-                || (!this.backgroundColors.isEmpty() && start != DEFAULT_BACKGROUND_COLORS.get(0) && this.backgroundType == BackgroundType.SOLID)
-                || (!this.backgroundColors.isEmpty() && !List.of(start, end).equals(DEFAULT_BACKGROUND_COLORS) && this.backgroundType == BackgroundType.GRADIENT)
+        return this.backgroundOpacity != BACKGROUND_OPACITY
+                || (!this.backgroundColors.isEmpty() && start != BACKGROUND_GRADIENT.get(0) && this.backgroundType == BackgroundType.SOLID)
+                || (!this.backgroundColors.isEmpty() && !List.of(start, end).equals(BACKGROUND_GRADIENT) && this.backgroundType == BackgroundType.GRADIENT)
                 || (this.backgroundType == BackgroundType.TEXTURE && !this.backgroundTexture.isEmpty())
                 || (this.backgroundType == BackgroundType.SIMPLE_TEXTURE && !this.backgroundTexture.isEmpty())
                 || (this.backgroundType == BackgroundType.REPEATING_TEXTURE && !this.backgroundTexture.isEmpty());
@@ -174,8 +177,7 @@ public class TooltipEntry {
     }
 
     public TooltipEntry copy() {
-        TooltipEntry clone = new TooltipEntry();
-        OptionTree.of(TooltipEntry.class, TooltipEntry::new).copyAllValues(this, clone);
+        TooltipEntry clone = CustomTooltipsConfigRegistry.CONFIG.fromJson(CustomTooltipsConfigRegistry.CONFIG.toJson(this), TooltipEntry.class);
         clone.uuid = UUID.randomUUID();
         clone.dynamicTextProvider = this.dynamicTextProvider;
         clone.displayCondition = this.displayCondition;

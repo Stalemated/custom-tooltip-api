@@ -18,7 +18,6 @@ dependencies {
 
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
-    modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
     findProperty("deps.tierify")?.let { modCompileOnly("curse.maven:tierify-$it") }
     findProperty("deps.necronomicon")?.let { modCompileOnly("maven.modrinth:necronomicon:$it") }
 

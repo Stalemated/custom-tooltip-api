@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.stalemated.customtooltips.mixin.client",
   "compatibilityLevel": "${mixin_compatibility}",
-  "plugin": "com.stalemated.customtooltips.mixin.client.compat.CustomTooltipApiMixinPlugin",
+  "plugin": "com.stalemated.lib.mixin.ConditionalMixinPlugin",
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",

@@ -1,13 +1,13 @@
 package com.stalemated.customtooltips.core;
 
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.lib.util.input.KeyBindingUtil;
 import com.stalemated.lib.util.math.MathUtils;
 import net.minecraft.world.item.ItemStack;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
-import static com.stalemated.lib.util.color.ColorUtils.DEFAULT_OPACITY;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_OPACITY;
 
 public class TooltipBackgroundManager {
     private static int currentBackgroundOpacity = -1;
@@ -20,7 +20,7 @@ public class TooltipBackgroundManager {
         TooltipEntry targetEntry = null;
 
         for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) continue;
+            if (CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(entry.getIdentifier())) continue;
 
             if (entry.matches(stack) && entry.areItemConditionsMet(stack)) {
                 if (entry.requireKeybind && !KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)) continue;
@@ -69,7 +69,7 @@ public class TooltipBackgroundManager {
     public static int scaleBackgroundAlpha(int color) {
         int value = TooltipBackgroundManager.getCurrentBackgroundOpacity() != -1
                 ? TooltipBackgroundManager.getCurrentBackgroundOpacity()
-                : DEFAULT_OPACITY;
+                : BACKGROUND_OPACITY;
 
         int originalAlpha = (color >> 24) & 0xFF;
         int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);
@@ -80,7 +80,7 @@ public class TooltipBackgroundManager {
     public static int scaleBorderAlpha(int color) {
         int value = TooltipBackgroundManager.getCurrentBorderOpacity() != -1
                 ? TooltipBackgroundManager.getCurrentBorderOpacity()
-                : DEFAULT_OPACITY;
+                : BACKGROUND_OPACITY;
 
         int originalAlpha = (color >> 24) & 0xFF;
         int newAlpha = MathUtils.clamp((int) (originalAlpha * (value / 240.0f)), 0, 255);

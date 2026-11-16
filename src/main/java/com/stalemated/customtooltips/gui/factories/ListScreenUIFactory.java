@@ -1,9 +1,8 @@
 package com.stalemated.customtooltips.gui.factories;
 
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
-import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 
@@ -52,7 +51,7 @@ public class ListScreenUIFactory {
 
         buttons.add(createToggleButton(
             screen, 4,
-            () -> ConfigManager.getConfig().align_attribute_icons,
+            () -> CustomTooltipsConfigRegistry.CONFIG.get().align_attribute_icons,
             (config, newVal) -> config.align_attribute_icons = newVal,
             (isOn) -> Component.literal("\uDAC1\uDF24").withStyle(isOn ? ChatFormatting.GREEN : ChatFormatting.RED),
             (isOn) -> Component.translatable("customtooltips.tooltip_list_screen.align_icons")
@@ -62,7 +61,7 @@ public class ListScreenUIFactory {
 
         buttons.add(createToggleButton(
             screen, 3,
-            () -> ConfigManager.getConfig().enable_double_click_selection,
+            () -> CustomTooltipsConfigRegistry.CONFIG.get().enable_double_click_selection,
             (config, newVal) -> config.enable_double_click_selection = newVal,
             (isOn) -> Component.literal("\uDAC1\uDF23").withStyle(isOn ? ChatFormatting.GREEN : ChatFormatting.RED),
             (isOn) -> Component.translatable("customtooltips.tooltip_list_screen.double_click_selection")
@@ -71,9 +70,9 @@ public class ListScreenUIFactory {
         ));
 
         buttons.add(Button.builder(getSortIcon(), button -> {
-            TooltipConfig config = ConfigManager.getConfig();
+            TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
             config.sort_mode = config.sort_mode.next();
-            ConfigManager.save();
+            CustomTooltipsConfigRegistry.CONFIG.save();
 
             button.setMessage(getSortIcon());
             button.setTooltip(Tooltip.create(getSortTooltip()));
@@ -97,15 +96,15 @@ public class ListScreenUIFactory {
         buttons.add(Button.builder(getPasteIcon(), button -> {
             try {
                 String clipboard = Minecraft.getInstance().keyboardHandler.getClipboard();
-                TooltipEntry pasted = ConfigManager.GSON.fromJson(clipboard, TooltipEntry.class);
+                TooltipEntry pasted = CustomTooltipsConfigRegistry.CONFIG.fromJson(clipboard, TooltipEntry.class);
 
                 if (pasted != null && pasted.target != null) {
                     pasted.uuid = UUID.randomUUID();
                     pasted.apiEntry = false;
                     pasted.apiEntryId = "";
 
-                    ConfigManager.getConfig().entries.add(pasted);
-                    ConfigManager.save();
+                    CustomTooltipsConfigRegistry.CONFIG.get().entries.add(pasted);
+                    CustomTooltipsConfigRegistry.CONFIG.save();
                     screen.listWidget.updateEntries(screen.searchBox.getValue());
 
                     ToastManager.showPastedToast(pasted.target);
@@ -126,13 +125,8 @@ public class ListScreenUIFactory {
         int btnWidth = 150;
         int btnY = screen.height - 28;
 
-        buttons.add(Button.builder(Component.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"), button -> {
-            TooltipEntry newEntry = CustomTooltipApi.builder("")
-                    .addLine("Default Text")
-                    .build();
-
-            Minecraft.getInstance().setScreen(TooltipEditScreen.create(screen, newEntry, true));
-        })
+        buttons.add(Button.builder(Component.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"),
+                        button -> Minecraft.getInstance().setScreen(TooltipEditScreen.add(screen)))
                 .bounds(screen.width / 2 - 155, btnY, btnWidth, BUTTON_SIZE)
                 .build());
 
@@ -147,8 +141,8 @@ public class ListScreenUIFactory {
         boolean initialValue = getter.get();
         return Button.builder(icon.apply(initialValue), button -> {
             boolean newValue = !getter.get();
-            setter.accept(ConfigManager.getConfig(), newValue);
-            ConfigManager.save();
+            setter.accept(CustomTooltipsConfigRegistry.CONFIG.get(), newValue);
+            CustomTooltipsConfigRegistry.CONFIG.save();
             button.setMessage(icon.apply(newValue));
             button.setTooltip(Tooltip.create(tooltip.apply(newValue)));
         })
@@ -170,7 +164,7 @@ public class ListScreenUIFactory {
     }
 
     private static Component getSortIcon() {
-        return switch (ConfigManager.getConfig().sort_mode) {
+        return switch (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode) {
             case NAME_AND_TAG -> Component.literal("AZ").withStyle(ChatFormatting.GOLD);
             case DISABLED_FIRST -> Component.literal("\uDAC1\uDF26").withStyle(ChatFormatting.RED);
             default -> Component.literal("\uDAC1\uDF25").withStyle(ChatFormatting.GOLD);
@@ -178,7 +172,7 @@ public class ListScreenUIFactory {
     }
 
     private static Component getSortTooltip() {
-        Component modeText = switch (ConfigManager.getConfig().sort_mode) {
+        Component modeText = switch (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode) {
             case NAME_AND_TAG -> Component.translatable("customtooltips.tooltip_list_screen.sort_name");
             case DISABLED_FIRST -> Component.translatable("customtooltips.tooltip_list_screen.sort_disabled");
             default -> Component.translatable("customtooltips.tooltip_list_screen.sort_date");

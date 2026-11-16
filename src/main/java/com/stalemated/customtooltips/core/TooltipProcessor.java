@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.core;
 
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.position.PositionStrategyFactory;
 import com.stalemated.customtooltips.core.position.TooltipPositionStrategy;
@@ -19,7 +19,7 @@ public class TooltipProcessor {
     public static void processTooltipLines(ItemStack stack, List<Component> lines) {
         if (lines.isEmpty()) return;
 
-        if (ConfigManager.getConfig() != null && ConfigManager.getConfig().align_attribute_icons) {
+        if (CustomTooltipsConfigRegistry.CONFIG.get().align_attribute_icons) {
             IconAligner.alignIcons(lines);
         }
 
@@ -77,7 +77,7 @@ public class TooltipProcessor {
 
     private static boolean shouldNotProcessEntry(TooltipEntry entry, ItemStack stack) {
         if (entry == null || !entry.matches(stack)) return true;
-        if (ConfigManager.getConfig().disabled_entries.contains(entry.getIdentifier())) return true;
+        if (CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(entry.getIdentifier())) return true;
 
         if (entry.showOnlyIfDamaged && !stack.isDamaged()) return true;
         if (entry.showOnlyIfEnchanted && !stack.isEnchanted()) return true;

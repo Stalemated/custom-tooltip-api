@@ -11,7 +11,10 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
-import static com.stalemated.lib.util.color.ColorUtils.*;
+import static com.stalemated.customtooltips.CustomTooltips.LOGGER;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_GRADIENT;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BORDER;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.TEXT;
 
 /**
  * Encapsulates runtime-only parsed colors, style modifiers, static text caches,
@@ -21,15 +24,15 @@ public final class TooltipRuntimeCache {
 
     private boolean initialized = false;
     private TargetMatcher targetMatcher = null;
-    private int parsedColor1 = DEFAULT_COLOR;
-    private int parsedColor2 = DEFAULT_COLOR;
+    private int parsedColor1 = TEXT;
+    private int parsedColor2 = TEXT;
     private boolean gradient = false;
     private List<Component> cachedStaticText = null;
     private Style cachedStyleModifier = null;
-    private int parsedBorderColorStart = DEFAULT_BORDER_COLORS.get(0);
-    private int parsedBorderColorEnd = DEFAULT_BORDER_COLORS.get(1);
-    private int parsedBackgroundColorStart = DEFAULT_BACKGROUND_COLORS.get(0);
-    private int parsedBackgroundColorEnd = DEFAULT_BACKGROUND_COLORS.get(1);
+    private int parsedBorderColorStart = BORDER.get(0);
+    private int parsedBorderColorEnd = BORDER.get(1);
+    private int parsedBackgroundColorStart = BACKGROUND_GRADIENT.get(0);
+    private int parsedBackgroundColorEnd = BACKGROUND_GRADIENT.get(1);
     private boolean dynamicText = false;
 
     public void invalidate() {
@@ -42,15 +45,16 @@ public final class TooltipRuntimeCache {
     public void ensureInitialized(TooltipEntry entry) {
         if (this.initialized) return;
 
-        this.targetMatcher = TargetMatcherFactory.create(entry.target);
+        this.targetMatcher = TargetMatcherFactory.tryCreate(entry.target).orElse(null);
+        if (this.targetMatcher == null) LOGGER.warn("Tooltip target '{}' is invalid, the entry will not match any item", entry.target);
 
         this.gradient = entry.colors != null && entry.colors.size() >= 2;
         this.parsedColor1 = (entry.colors != null && !entry.colors.isEmpty() && entry.colors.get(0) != null)
                 ? entry.colors.get(0).getValue()
-                : DEFAULT_COLOR;
+                : TEXT;
         this.parsedColor2 = (this.gradient && entry.colors.get(1) != null)
                 ? entry.colors.get(1).getValue()
-                : DEFAULT_COLOR;
+                : TEXT;
 
         if (entry.tickrate <= 0) {
             entry.tickrate = 100;
@@ -71,27 +75,27 @@ public final class TooltipRuntimeCache {
         if (entry.borderColors != null && !entry.borderColors.isEmpty()) {
             this.parsedBorderColorStart = entry.borderColors.get(0) != null
                     ? entry.borderColors.get(0).getRGB()
-                    : DEFAULT_BORDER_COLORS.get(0);
+                    : BORDER.get(0);
             this.parsedBorderColorEnd = (entry.borderColors.size() > 1 && entry.borderColors.get(1) != null)
                     ? entry.borderColors.get(1).getRGB()
-                    : DEFAULT_BORDER_COLORS.get(1);
+                    : BORDER.get(1);
         } else {
-            this.parsedBorderColorStart = DEFAULT_BORDER_COLORS.get(0);
-            this.parsedBorderColorEnd = DEFAULT_BORDER_COLORS.get(1);
+            this.parsedBorderColorStart = BORDER.get(0);
+            this.parsedBorderColorEnd = BORDER.get(1);
         }
 
         if (entry.backgroundColors != null && !entry.backgroundColors.isEmpty()) {
             this.parsedBackgroundColorStart = entry.backgroundColors.get(0) != null
                     ? entry.backgroundColors.get(0).getRGB()
-                    : DEFAULT_BACKGROUND_COLORS.get(0);
+                    : BACKGROUND_GRADIENT.get(0);
             this.parsedBackgroundColorEnd = (entry.backgroundType != BackgroundType.SOLID
                     && entry.backgroundColors.size() > 1
                     && entry.backgroundColors.get(1) != null)
                     ? entry.backgroundColors.get(1).getRGB()
-                    : DEFAULT_BACKGROUND_COLORS.get(1);
+                    : BACKGROUND_GRADIENT.get(1);
         } else {
-            this.parsedBackgroundColorStart = DEFAULT_BACKGROUND_COLORS.get(0);
-            this.parsedBackgroundColorEnd = DEFAULT_BACKGROUND_COLORS.get(1);
+            this.parsedBackgroundColorStart = BACKGROUND_GRADIENT.get(0);
+            this.parsedBackgroundColorEnd = BACKGROUND_GRADIENT.get(1);
         }
 
         this.initialized = true;

@@ -9,7 +9,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import com.stalemated.customtooltips.config.ExternalBackgroundsConfig;
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.lib.helper.PlatformHelper;
 import static com.stalemated.customtooltips.CustomTooltips.LOGGER;
 
@@ -61,7 +61,7 @@ public class CustomBackgroundManager {
 
     public static void reloadExternalBackgrounds() {
         try {
-            ExternalBackgroundsConfig config = ConfigManager.EXTERNAL_BG_CONFIG.getConfig();
+            ExternalBackgroundsConfig config = CustomTooltipsConfigRegistry.EXTERNAL_BACKGROUNDS.get();
 
             availableBackgrounds.clear();
             availableBackgrounds.addAll(localBackgrounds);

@@ -2,7 +2,7 @@ package com.stalemated.customtooltips;
 
 import com.stalemated.customtooltips.compat.CompatManager;
 import com.stalemated.customtooltips.compat.legendarytooltips.LegendaryTooltipsCompat;
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
@@ -10,6 +10,7 @@ import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import com.stalemated.customtooltips.util.CustomBackgroundManager;
 import com.stalemated.customtooltips.util.ResourcepackManager;
+import com.stalemated.lib.client.SLibConfigScreens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 //? if fabric {
+import com.stalemated.lib.util.ResourceIds;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -33,13 +35,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 //?} elif forge {
 /*import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 *///?}
 
@@ -60,8 +60,9 @@ implements ClientModInitializer
 
     static void init() {
         ResourcepackManager.generateResourcePack();
-        ConfigManager.register();
+        CustomTooltipsConfigRegistry.register();
         KeybindRegistry.register();
+        SLibConfigScreens.register(CustomTooltips.MOD_ID, () -> TooltipListScreen::new);
         CompatManager.registerColorProvider(new LegendaryTooltipsCompat());
         registerLoaderEvents();
     }
@@ -73,7 +74,7 @@ implements ClientModInitializer
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
-                return new ResourceLocation(CustomTooltips.MOD_ID, "resources");
+                return ResourceIds.of(CustomTooltips.MOD_ID, "resources");
             }
 
             @Override
@@ -94,8 +95,6 @@ implements ClientModInitializer
         MinecraftForge.EVENT_BUS.addListener((ItemTooltipEvent event) -> onItemTooltip(event.getItemStack(), event.getToolTip()));
         MinecraftForge.EVENT_BUS.addListener((ScreenEvent.Render.Post event) ->
                 TooltipEditScreen.renderPreview(event.getScreen(), event.getGuiGraphics(), event.getMouseX(), event.getMouseY(), event.getPartialTick()));
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) -> new TooltipListScreen(parent)));
     }
     *///?}
 

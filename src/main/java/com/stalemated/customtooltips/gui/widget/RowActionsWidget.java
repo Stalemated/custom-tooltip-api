@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.gui.widget;
 
-import com.stalemated.customtooltips.config.ConfigManager;
+import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
@@ -25,17 +25,17 @@ public class RowActionsWidget {
     public RowActionsWidget(TooltipListWidget parent, TooltipEntry entry) {
         Minecraft client = Minecraft.getInstance();
         String identifier = entry.getIdentifier();
-        boolean isDisabled = ConfigManager.getConfig().disabled_entries.contains(identifier);
+        boolean isDisabled = CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(identifier);
 
         buttons.add(Button.builder(Component.literal("\uDAC1\uDF27").withStyle(ChatFormatting.RED), button -> {
             Screen currentScreen = client.screen;
             client.setScreen(new ConfirmScreen(
                     (confirmed) -> {
                         if (confirmed) {
-                            TooltipConfig config = ConfigManager.getConfig();
+                            TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
                             config.entries.remove(entry);
                             if (isDisabled) config.disabled_entries.remove(identifier);
-                            ConfigManager.save();
+                            CustomTooltipsConfigRegistry.CONFIG.save();
                             parent.updateEntries(parent.parentScreen.searchBox.getValue());
                         }
                         client.setScreen(currentScreen);
@@ -47,12 +47,12 @@ public class RowActionsWidget {
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.delete_button")))
                 .build());
 
-        buttons.add(Button.builder(Component.literal("\uDAC1\uDF28"), btn -> client.setScreen(TooltipEditScreen.create(client.screen, entry, false)))
+        buttons.add(Button.builder(Component.literal("\uDAC1\uDF28"), btn -> client.setScreen(TooltipEditScreen.edit(client.screen, entry)))
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.edit_button")))
                 .build());
 
         apiButtons.add(Button.builder(getCopyIcon(), btn -> {
-            client.keyboardHandler.setClipboard(ConfigManager.GSON.toJson(entry));
+            client.keyboardHandler.setClipboard(CustomTooltipsConfigRegistry.CONFIG.toJson(entry));
             
             ToastManager.showCopiedToast(entry.target);
         })
@@ -65,8 +65,8 @@ public class RowActionsWidget {
             newEntry.apiEntry = false;
             newEntry.apiEntryId = "";
 
-            ConfigManager.getConfig().entries.add(newEntry);
-            ConfigManager.save();
+            CustomTooltipsConfigRegistry.CONFIG.get().entries.add(newEntry);
+            CustomTooltipsConfigRegistry.CONFIG.save();
 
             ToastManager.showDuplicatedToast(entry.target.isEmpty() ? "New Tooltip" : entry.target);
             parent.updateEntries(parent.parentScreen.searchBox.getValue());
@@ -75,11 +75,11 @@ public class RowActionsWidget {
                 .build());
 
         apiButtons.add(Button.builder(getDisabledEntryIcon(isDisabled), btn -> {
-            TooltipConfig config = ConfigManager.getConfig();
+            TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
             if (isDisabled) config.disabled_entries.remove(identifier);
             else config.disabled_entries.add(identifier);
 
-            ConfigManager.save();
+            CustomTooltipsConfigRegistry.CONFIG.save();
             parent.updateEntries(parent.parentScreen.searchBox.getValue());
         })
                 .tooltip(getDisabledEntryTooltip(isDisabled))

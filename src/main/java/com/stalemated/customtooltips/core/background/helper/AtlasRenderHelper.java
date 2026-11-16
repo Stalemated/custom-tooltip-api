@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.stalemated.lib.util.ResourceIds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -18,7 +19,7 @@ public class AtlasRenderHelper {
     private static final int corner = 8;
 
     public static TextureAtlasSprite getSprite(String backgroundTexture) {
-        ResourceLocation spriteId = new ResourceLocation(backgroundTexture.replace(".png", "").replace("textures/", ""));
+        ResourceLocation spriteId = ResourceIds.parse(backgroundTexture.replace(".png", "").replace("textures/", ""));
         return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(spriteId);
     }
 
@@ -28,7 +29,7 @@ public class AtlasRenderHelper {
     }
 
     public static ResourceLocation getRawTextureId(String backgroundTexture) {
-        return new ResourceLocation(backgroundTexture);
+        return ResourceIds.parse(backgroundTexture);
     }
 
     public static void drawNineSlice(GuiGraphics context, TextureAtlasSprite sprite, int x, int y, int width, int height, int scale) {

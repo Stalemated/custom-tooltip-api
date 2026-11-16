@@ -18,9 +18,6 @@
     "entrypoints": {
         "client": [
             "com.stalemated.customtooltips.CustomTooltipsClient"
-        ],
-        "modmenu": [
-            "com.stalemated.customtooltips.fabric.ModMenuIntegration"
         ]
     },
     "mixins": [

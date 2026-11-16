@@ -1,13 +1,13 @@
 package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.lib.util.ResourceIds;
 import com.stalemated.lib.util.color.GradientGenerator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
 
 public class StyleApplier {
 
@@ -34,7 +34,7 @@ public class StyleApplier {
 
     public static Style buildStyleModifier(TooltipEntry entry) {
         Style style = Style.EMPTY;
-        if (entry.font != null && !entry.font.getPath().isEmpty() && !entry.font.equals(ResourceLocation.tryBuild("minecraft", "default"))) {
+        if (entry.font != null && !entry.font.getPath().isEmpty() && !entry.font.equals(ResourceIds.of("minecraft", "default"))) {
             style = style.withFont(entry.font);
         }
         if (entry.bold) style = style.withBold(true);

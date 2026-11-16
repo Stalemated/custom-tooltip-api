@@ -1,7 +1,7 @@
 package com.stalemated.customtooltips.registry;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.stalemated.lib.helper.PlatformHelper;
+import com.stalemated.lib.client.ClientPlatformHelper;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,7 +24,7 @@ public class KeybindRegistry {
                 "category.customtooltips.keys"
         );
 
-        PlatformHelper.registerKeyBinding(openConfigKeybind);
-        PlatformHelper.registerKeyBinding(holdKeyKeybind);
+        ClientPlatformHelper.registerKeyBinding(openConfigKeybind);
+        ClientPlatformHelper.registerKeyBinding(holdKeyKeybind);
     }
 }

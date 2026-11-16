@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
+import com.stalemated.lib.util.ResourceIds;
 import com.stalemated.lib.util.color.ColorUtils;
 import java.awt.*;
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder colors(String... colors) {
-        return colorsList(Arrays.stream(colors).map(ColorUtils::resolveTextColor).toList());
+        return colorsList(Arrays.stream(colors).map(ColorUtils::parseTextColor).toList());
     }
 
     /**
@@ -91,7 +92,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder colors(List<String> colors) {
-        return colorsList(colors.stream().map(ColorUtils::resolveTextColor).toList());
+        return colorsList(colors.stream().map(ColorUtils::parseTextColor).toList());
     }
 
     /**
@@ -119,7 +120,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder borderColors(String... colors) {
-        return borderColorsList(Arrays.stream(colors).map(ColorUtils::parseToAWT).toList());
+        return borderColorsList(Arrays.stream(colors).map(TooltipBuilder::parseArgbOrWhite).toList());
     }
 
     /**
@@ -131,7 +132,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder borderColors(List<String> colors) {
-        return borderColorsList(colors.stream().map(ColorUtils::parseToAWT).toList());
+        return borderColorsList(colors.stream().map(TooltipBuilder::parseArgbOrWhite).toList());
     }
 
     /**
@@ -159,7 +160,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder backgroundColors(String... colors) {
-        return backgroundColorsList(Arrays.stream(colors).map(ColorUtils::parseToAWT).toList());
+        return backgroundColorsList(Arrays.stream(colors).map(TooltipBuilder::parseArgbOrWhite).toList());
     }
 
     /**
@@ -171,7 +172,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder backgroundColors(List<String> colors) {
-        return backgroundColorsList(colors.stream().map(ColorUtils::parseToAWT).toList());
+        return backgroundColorsList(colors.stream().map(TooltipBuilder::parseArgbOrWhite).toList());
     }
 
     /**
@@ -341,7 +342,7 @@ public interface TooltipBuilder {
      * @return This builder instance.
      */
     default TooltipBuilder font(String fontIdentifier) {
-        return font(new ResourceLocation(fontIdentifier));
+        return font(ResourceIds.parse(fontIdentifier));
     }
 
     /**
@@ -391,4 +392,9 @@ public interface TooltipBuilder {
      * @return The built and registered TooltipEntry.
      */
     TooltipEntry register();
+
+    private static Color parseArgbOrWhite(String color) {
+        Color parsed = ColorUtils.parseArgbColor(color);
+        return parsed != null ? parsed : Color.WHITE;
+    }
 }
