@@ -2,7 +2,6 @@ package com.stalemated.customtooltips.gui.widget;
 
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.util.ToastManager;
 import java.util.ArrayList;
@@ -31,11 +30,12 @@ public class RowActionsWidget {
             Screen currentScreen = client.screen;
             client.setScreen(new ConfirmScreen(
                     (confirmed) -> {
-                        if (confirmed) {
-                            TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
-                            config.entries.remove(entry);
-                            if (isDisabled) config.disabled_entries.remove(identifier);
-                            CustomTooltipsConfigRegistry.CONFIG.save();
+                        int index = CustomTooltipsConfigRegistry.CONFIG.get().entries.indexOf(entry);
+                        if (confirmed && index >= 0) {
+                            CustomTooltipsConfigRegistry.CONFIG.modify(config -> {
+                                config.entries.remove(index);
+                                if (isDisabled) config.disabled_entries.remove(identifier);
+                            });
                             parent.updateEntries(parent.parentScreen.searchBox.getValue());
                         }
                         client.setScreen(currentScreen);
@@ -65,8 +65,7 @@ public class RowActionsWidget {
             newEntry.apiEntry = false;
             newEntry.apiEntryId = "";
 
-            CustomTooltipsConfigRegistry.CONFIG.get().entries.add(newEntry);
-            CustomTooltipsConfigRegistry.CONFIG.save();
+            CustomTooltipsConfigRegistry.CONFIG.modify(config -> config.entries.add(newEntry));
 
             ToastManager.showDuplicatedToast(entry.target.isEmpty() ? "New Tooltip" : entry.target);
             parent.updateEntries(parent.parentScreen.searchBox.getValue());
@@ -75,11 +74,10 @@ public class RowActionsWidget {
                 .build());
 
         apiButtons.add(Button.builder(getDisabledEntryIcon(isDisabled), btn -> {
-            TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
-            if (isDisabled) config.disabled_entries.remove(identifier);
-            else config.disabled_entries.add(identifier);
-
-            CustomTooltipsConfigRegistry.CONFIG.save();
+            CustomTooltipsConfigRegistry.CONFIG.modify(config -> {
+                if (isDisabled) config.disabled_entries.remove(identifier);
+                else config.disabled_entries.add(identifier);
+            });
             parent.updateEntries(parent.parentScreen.searchBox.getValue());
         })
                 .tooltip(getDisabledEntryTooltip(isDisabled))

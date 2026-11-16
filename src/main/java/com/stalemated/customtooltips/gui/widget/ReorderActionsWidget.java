@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import java.util.Collections;
+import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -22,14 +23,13 @@ public class ReorderActionsWidget {
     }
 
     private void move(int direction) {
-        TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
-        int index = config.entries.indexOf(entry);
+        List<TooltipEntry> entries = CustomTooltipsConfigRegistry.CONFIG.get().entries;
+        int index = entries.indexOf(entry);
         int newIndex = index + direction;
-        if (newIndex >= 0 && newIndex < config.entries.size()) {
-            Collections.swap(config.entries, index, newIndex);
-            CustomTooltipsConfigRegistry.CONFIG.save();
-            parent.updateEntries(parent.parentScreen.searchBox.getValue());
-        }
+        if (index < 0 || newIndex < 0 || newIndex >= entries.size()) return;
+
+        CustomTooltipsConfigRegistry.CONFIG.modify(config -> Collections.swap(config.entries, index, newIndex));
+        parent.updateEntries(parent.parentScreen.searchBox.getValue());
     }
 
     public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {

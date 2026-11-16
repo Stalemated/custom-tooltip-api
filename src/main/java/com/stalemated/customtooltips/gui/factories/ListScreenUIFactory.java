@@ -70,9 +70,7 @@ public class ListScreenUIFactory {
         ));
 
         buttons.add(Button.builder(getSortIcon(), button -> {
-            TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
-            config.sort_mode = config.sort_mode.next();
-            CustomTooltipsConfigRegistry.CONFIG.save();
+            CustomTooltipsConfigRegistry.CONFIG.modify(config -> config.sort_mode = config.sort_mode.next());
 
             button.setMessage(getSortIcon());
             button.setTooltip(Tooltip.create(getSortTooltip()));
@@ -103,8 +101,7 @@ public class ListScreenUIFactory {
                     pasted.apiEntry = false;
                     pasted.apiEntryId = "";
 
-                    CustomTooltipsConfigRegistry.CONFIG.get().entries.add(pasted);
-                    CustomTooltipsConfigRegistry.CONFIG.save();
+                    CustomTooltipsConfigRegistry.CONFIG.modify(config -> config.entries.add(pasted));
                     screen.listWidget.updateEntries(screen.searchBox.getValue());
 
                     ToastManager.showPastedToast(pasted.target);
@@ -141,8 +138,7 @@ public class ListScreenUIFactory {
         boolean initialValue = getter.get();
         return Button.builder(icon.apply(initialValue), button -> {
             boolean newValue = !getter.get();
-            setter.accept(CustomTooltipsConfigRegistry.CONFIG.get(), newValue);
-            CustomTooltipsConfigRegistry.CONFIG.save();
+            CustomTooltipsConfigRegistry.CONFIG.modify(config -> setter.accept(config, newValue));
             button.setMessage(icon.apply(newValue));
             button.setTooltip(Tooltip.create(tooltip.apply(newValue)));
         })
