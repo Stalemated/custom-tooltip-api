@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
+import com.stalemated.customtooltips.core.ItemConditions;
 import com.stalemated.customtooltips.core.TooltipRuntimeCache;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.lib.config.annotation.ItemDropdown;
@@ -15,7 +16,6 @@ import com.stalemated.lib.util.math.MathUtils;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -173,7 +173,7 @@ public class TooltipEntry {
     public boolean areItemConditionsMet(ItemStack stack) {
         if (this.showOnlyIfDamaged && !stack.isDamaged()) return false;
         if (this.showOnlyIfEnchanted && !stack.isEnchanted()) return false;
-        return !this.showOnlyIfUnbreakable || (stack.hasTag() && Objects.requireNonNull(stack.getTag()).getBoolean("Unbreakable"));
+        return !this.showOnlyIfUnbreakable || ItemConditions.isUnbreakable(stack);
     }
 
     public TooltipEntry copy() {

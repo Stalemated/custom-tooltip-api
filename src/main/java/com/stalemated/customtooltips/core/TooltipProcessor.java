@@ -9,7 +9,6 @@ import com.stalemated.lib.util.input.KeyBindingUtil;
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
 
 import java.util.List;
-import java.util.Objects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -23,47 +22,27 @@ public class TooltipProcessor {
             IconAligner.alignIcons(lines);
         }
 
-        boolean shouldHideVanilla = false;
-        for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (!shouldNotProcessEntry(entry, stack) && entry.hideVanillaLines) {
-                shouldHideVanilla = true;
-                break;
-            }
-        }
-        if (shouldHideVanilla && lines.size() > 1) {
+        MatchedEntries matched = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind));
+        if (matched.hidesVanillaLines() && lines.size() > 1) {
             lines.subList(1, lines.size()).clear();
         }
 
-        boolean holdKeyPressed = KeyBindingUtil.isKeyDownInGui(holdKeyKeybind);
-        boolean needsShiftPrompt = false;
-
-        for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (shouldNotProcessEntry(entry, stack)) continue;
-
-            if (entry.requireKeybind && !holdKeyPressed) {
-                needsShiftPrompt = true;
-                continue;
-            }
-
+        for (TooltipEntry entry : matched.shown()) {
             TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
             strategy.modifyTooltip(lines, entry.getTextComponents(stack), entry);
         }
 
-        if (needsShiftPrompt) {
+        if (matched.waitingForKey()) {
             Component keyName = holdKeyKeybind.getTranslatedKeyMessage();
             lines.add(Component.translatable("customtooltips.tooltip_processor.shift_prompt", keyName).withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
     public static Component processHeldItemName(ItemStack stack, Component originalName) {
-        if (TooltipRegistry.getEntries().isEmpty()) return originalName;
+        ActiveEntries activeEntries = TooltipRegistry.activeEntries();
+        if (activeEntries.isEmpty()) return originalName;
 
-        boolean holdKeyPressed = KeyBindingUtil.isKeyDownInGui(holdKeyKeybind);
-
-        for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (shouldNotProcessEntry(entry, stack)) continue;
-            if (entry.requireKeybind && !holdKeyPressed) continue;
-
+        for (TooltipEntry entry : activeEntries.match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)).shown()) {
             TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
             Component modified = strategy.modifyHeldItemName(originalName, entry.getTextComponents(stack), entry);
             
@@ -73,14 +52,5 @@ public class TooltipProcessor {
         }
 
         return originalName;
-    }
-
-    private static boolean shouldNotProcessEntry(TooltipEntry entry, ItemStack stack) {
-        if (entry == null || !entry.matches(stack)) return true;
-        if (CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(entry.getIdentifier())) return true;
-
-        if (entry.showOnlyIfDamaged && !stack.isDamaged()) return true;
-        if (entry.showOnlyIfEnchanted && !stack.isEnchanted()) return true;
-        return entry.showOnlyIfUnbreakable && !(stack.hasTag() && Objects.requireNonNull(stack.getTag()).getBoolean("Unbreakable"));
     }
 }

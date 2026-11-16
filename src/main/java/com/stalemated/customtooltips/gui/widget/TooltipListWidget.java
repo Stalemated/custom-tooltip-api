@@ -1,8 +1,8 @@
 package com.stalemated.customtooltips.gui.widget;
 
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.api.CustomTooltipApi;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.core.TooltipRegistry;
 import com.stalemated.customtooltips.core.sorting.SortMode;
 import com.stalemated.customtooltips.core.sorting.TooltipSorter;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
@@ -35,7 +35,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
         List<TooltipEntry> sortedEntries = new ArrayList<>();
 
         if (TooltipListScreen.showApiEntries ) {
-            sortedEntries.addAll(CustomTooltipApi.getApiEntries());
+            sortedEntries.addAll(TooltipRegistry.apiEntries());
 
         } else {
             if (config.entries != null) sortedEntries.addAll(config.entries);

@@ -4,9 +4,7 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipRegistry;
 import com.stalemated.customtooltips.core.builder.TooltipEntryBuilderImpl;
 import com.stalemated.customtooltips.registry.PlaceholderRegistry;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,8 +17,6 @@ import net.minecraft.world.item.ItemStack;
  */
 public class CustomTooltipApi {
 
-    private static final List<TooltipEntry> API_ENTRIES = new CopyOnWriteArrayList<>();
-
     /**
      * Registers a built {@link TooltipEntry} into the active tooltip registry.
      * Tooltips registered this way are volatile and will be applied instantly.
@@ -31,10 +27,7 @@ public class CustomTooltipApi {
      */
     public static void registerTooltip(TooltipEntry entry) {
         if (entry != null) {
-            entry.apiEntry = true;
-            entry.apiEntryId = entry.target;
-            API_ENTRIES.add(entry);
-            TooltipRegistry.reload();
+            TooltipRegistry.registerApiEntry(entry);
         }
     }
 
@@ -44,7 +37,7 @@ public class CustomTooltipApi {
      * @return A list containing all API-registered TooltipEntries.
      */
     public static List<TooltipEntry> getApiEntries() {
-        return Collections.unmodifiableList(API_ENTRIES);
+        return TooltipRegistry.apiEntries();
     }
 
     /**

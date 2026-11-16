@@ -1,9 +1,9 @@
 package com.stalemated.customtooltips.core;
 
-import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.lib.util.input.KeyBindingUtil;
 import com.stalemated.lib.util.math.MathUtils;
+import java.util.List;
 import net.minecraft.world.item.ItemStack;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
@@ -15,25 +15,16 @@ public class TooltipBackgroundManager {
     private static TooltipEntry currentEntry = null;
 
     public static void setMixinTooltipOpacity(ItemStack stack) {
-        int targetBackgroundOpacity = -1;
-        int targetBorderOpacity = -1;
-        TooltipEntry targetEntry = null;
-
-        for (TooltipEntry entry : TooltipRegistry.getEntries()) {
-            if (CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(entry.getIdentifier())) continue;
-
-            if (entry.matches(stack) && entry.areItemConditionsMet(stack)) {
-                if (entry.requireKeybind && !KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)) continue;
-                targetBackgroundOpacity = entry.backgroundOpacity;
-                targetBorderOpacity = entry.borderOpacity;
-                targetEntry = entry;
-                break;
-            }
+        List<TooltipEntry> shown = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)).shown();
+        if (shown.isEmpty()) {
+            clearState();
+            return;
         }
 
-        currentBorderOpacity = targetBorderOpacity;
-        currentBackgroundOpacity = targetBackgroundOpacity;
-        currentEntry = targetEntry;
+        TooltipEntry entry = shown.get(0);
+        currentBorderOpacity = entry.borderOpacity;
+        currentBackgroundOpacity = entry.backgroundOpacity;
+        currentEntry = entry;
     }
 
     public static void setCurrentBackgroundOpacity(int opacity) {

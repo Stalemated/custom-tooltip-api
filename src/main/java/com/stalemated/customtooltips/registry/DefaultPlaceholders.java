@@ -1,8 +1,8 @@
 package com.stalemated.customtooltips.registry;
 
+import com.stalemated.customtooltips.core.ItemConditions;
 import com.stalemated.lib.helper.attribute.AttributeGetter;
 
-import java.util.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 
@@ -21,7 +21,7 @@ public class DefaultPlaceholders {
 
         PlaceholderRegistry.register("enchantments", AttributeGetter::getEnchantments);
         PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getBaseRepairCost()));
-        PlaceholderRegistry.register("unbreakable", stack -> (stack.hasTag() && Objects.requireNonNull(stack.getTag()).getBoolean("Unbreakable")) ? Component.translatable("customtooltips.unbreakable_item").getString() : "");
+        PlaceholderRegistry.register("unbreakable", stack -> ItemConditions.isUnbreakable(stack) ? Component.translatable("customtooltips.unbreakable_item").getString() : "");
 
         PlaceholderRegistry.register("weapon_damage", AttributeGetter::calculateWeaponDamage);
         PlaceholderRegistry.register("weapon_speed", AttributeGetter::calculateWeaponSpeed);
