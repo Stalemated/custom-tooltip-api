@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.core.TooltipColors;
-import com.stalemated.lib.util.ResourceIds;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -43,14 +42,15 @@ public final class TooltipBackgroundPainter {
     }
 
     private static void paintTexture(GuiGraphics graphics, TooltipEntry entry, int x, int y, int width, int height, int z, int vanillaColor, Consumer<UvRect> quads) {
-        if (entry.backgroundTexture == null || entry.backgroundTexture.isEmpty()) {
+        ResourceLocation backgroundTexture = entry.runtimeCache().backgroundTexture();
+        if (backgroundTexture == null) {
             fill(graphics, entry, x, y, width, height, z, vanillaColor);
             return;
         }
 
-        TextureAtlasSprite sprite = atlasSprite(entry.backgroundTexture);
+        TextureAtlasSprite sprite = atlasSprite(entry.runtimeCache().backgroundSprite());
         boolean inAtlas = !isMissing(sprite);
-        ResourceLocation texture = inAtlas ? InventoryMenu.BLOCK_ATLAS : ResourceIds.parse(entry.backgroundTexture);
+        ResourceLocation texture = inAtlas ? InventoryMenu.BLOCK_ATLAS : backgroundTexture;
 
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, z);
@@ -67,8 +67,7 @@ public final class TooltipBackgroundPainter {
         graphics.pose().popPose();
     }
 
-    private static TextureAtlasSprite atlasSprite(String backgroundTexture) {
-        ResourceLocation spriteId = ResourceIds.parse(backgroundTexture.replace(".png", "").replace("textures/", ""));
+    private static TextureAtlasSprite atlasSprite(ResourceLocation spriteId) {
         return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(spriteId);
     }
 

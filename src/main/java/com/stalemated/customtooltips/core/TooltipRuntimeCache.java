@@ -6,11 +6,15 @@ import com.stalemated.customtooltips.core.text.StyleApplier;
 import com.stalemated.customtooltips.core.text.TooltipTextParser;
 import com.stalemated.lib.predicate.target.TargetMatcher;
 import com.stalemated.lib.predicate.target.TargetMatcherFactory;
+import com.stalemated.lib.util.ResourceIds;
 import java.awt.Color;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 
 import static com.stalemated.customtooltips.CustomTooltips.LOGGER;
 import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_GRADIENT;
@@ -33,9 +37,12 @@ public record TooltipRuntimeCache(
         int borderColorEnd,
         int backgroundColorStart,
         int backgroundColorEnd,
+        ResourceLocation backgroundTexture,
+        ResourceLocation backgroundSprite,
         AtomicReference<List<Component>> staticText
 ) {
     private static final int DEFAULT_TICKRATE = 100;
+    private static final Set<BackgroundType> TEXTURED = EnumSet.of(BackgroundType.SIMPLE_TEXTURE, BackgroundType.TEXTURE, BackgroundType.REPEATING_TEXTURE);
 
     public static TooltipRuntimeCache of(TooltipEntry entry) {
         TargetMatcher targetMatcher = TargetMatcherFactory.tryCreate(entry.target).orElse(null);
@@ -45,6 +52,7 @@ public record TooltipRuntimeCache(
         int primaryColor = entry.colors != null && !entry.colors.isEmpty() && entry.colors.get(0) != null ? entry.colors.get(0).getValue() : TEXT;
         int secondaryColor = gradient && entry.colors.get(1) != null ? entry.colors.get(1).getValue() : TEXT;
         int backgroundColorEnd = entry.backgroundType != BackgroundType.SOLID ? colorAt(entry.backgroundColors, 1, BACKGROUND_GRADIENT.get(1)) : BACKGROUND_GRADIENT.get(1);
+        ResourceLocation backgroundTexture = backgroundTextureOf(entry);
 
         return new TooltipRuntimeCache(
                 targetMatcher,
@@ -58,8 +66,22 @@ public record TooltipRuntimeCache(
                 colorAt(entry.borderColors, 1, BORDER.get(1)),
                 colorAt(entry.backgroundColors, 0, BACKGROUND_GRADIENT.get(0)),
                 backgroundColorEnd,
+                backgroundTexture,
+                backgroundTexture != null ? atlasSpriteOf(entry.backgroundTexture) : null,
                 new AtomicReference<>()
         );
+    }
+
+    private static ResourceLocation backgroundTextureOf(TooltipEntry entry) {
+        if (!TEXTURED.contains(entry.backgroundType) || entry.backgroundTexture == null || entry.backgroundTexture.isEmpty()) return null;
+        if (ResourceIds.isValid(entry.backgroundTexture)) return ResourceIds.parse(entry.backgroundTexture);
+
+        LOGGER.warn("Tooltip background texture '{}' is invalid, the entry fills its background with its color instead", entry.backgroundTexture);
+        return null;
+    }
+
+    private static ResourceLocation atlasSpriteOf(String backgroundTexture) {
+        return ResourceIds.parse(backgroundTexture.replace(".png", "").replace("textures/", ""));
     }
 
     private static int colorAt(List<Color> colors, int index, int fallback) {
