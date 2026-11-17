@@ -14,6 +14,7 @@
   "customtooltips.tooltip_list_widget.enabled_button": "Activado",
   "customtooltips.tooltip_list_widget.disabled_button": "Desactivado",
   "customtooltips.tooltip_list_screen.paste_button": "Pegar Tooltip del portapapeles",
+  "customtooltips.tooltip_list_screen.yacl_missing": "Instala YACL (Yet Another Config Lib) para editar tooltips",
 
   "customtooltips.tooltip_edit_screen.title": "Editar Tooltip [Mantén CTRL para vista previa]",
   "customtooltips.tooltip_edit_screen.title_background": "Opciones del Fondo del Tooltip",
@@ -134,6 +135,8 @@
   "customtooltips.toast.copied.desc": "Entrada %s copiada al portapapeles con éxito",
   "customtooltips.toast.pasted.title": "¡Entrada pegada desde el portapapeles!",
   "customtooltips.toast.pasted.desc": "Entrada %s pegada desde el portapapeles con éxito",
+  "customtooltips.toast.save_failed.title": "No se pudieron guardar los tooltips",
+  "customtooltips.toast.save_failed.desc": "Ya se aplica y se guarda con el siguiente cambio. Mira latest.log",
 
   "customtooltips.unbreakable_item": "Irrompible"
 }

@@ -3,6 +3,7 @@ package com.stalemated.customtooltips.gui.widget;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.gui.TooltipListChanges;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,7 +29,7 @@ public class ReorderActionsWidget {
         int newIndex = index + direction;
         if (index < 0 || newIndex < 0 || newIndex >= entries.size()) return;
 
-        CustomTooltipsConfigRegistry.CONFIG.modify(config -> Collections.swap(config.entries, index, newIndex));
+        TooltipListChanges.save(config -> Collections.swap(config.entries, index, newIndex));
         this.refreshList.run();
     }
 

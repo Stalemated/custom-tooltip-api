@@ -3,8 +3,10 @@ package com.stalemated.customtooltips.gui.widget;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
+import com.stalemated.customtooltips.gui.EditButtons;
 import com.stalemated.customtooltips.gui.GuiIcon;
 import com.stalemated.customtooltips.gui.TooltipClipboard;
+import com.stalemated.customtooltips.gui.TooltipListChanges;
 import com.stalemated.customtooltips.gui.TooltipListToasts;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class RowActionsWidget {
                     (confirmed) -> {
                         int index = CustomTooltipsConfigRegistry.CONFIG.get().entries.indexOf(entry);
                         if (confirmed && index >= 0) {
-                            CustomTooltipsConfigRegistry.CONFIG.modify(config -> {
+                            TooltipListChanges.save(config -> {
                                 config.entries.remove(index);
                                 if (isDisabled) config.disabled_entries.remove(identifier);
                             });
@@ -49,9 +51,9 @@ public class RowActionsWidget {
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.delete_button")))
                 .build());
 
-        buttons.add(Button.builder(GuiIcon.EDIT.text(), btn -> client.setScreen(TooltipEditScreen.edit(client.screen, entry)))
+        buttons.add(EditButtons.requireYacl(Button.builder(GuiIcon.EDIT.text(), btn -> client.setScreen(TooltipEditScreen.edit(client.screen, entry)))
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.edit_button")))
-                .build());
+                .build()));
 
         apiButtons.add(Button.builder(getCopyIcon(), btn -> {
             TooltipClipboard.copy(entry);
@@ -67,7 +69,7 @@ public class RowActionsWidget {
             newEntry.apiEntry = false;
             newEntry.apiEntryId = "";
 
-            CustomTooltipsConfigRegistry.CONFIG.modify(config -> config.entries.add(newEntry));
+            TooltipListChanges.save(config -> config.entries.add(newEntry));
 
             TooltipListToasts.showDuplicatedToast(entry.target.isEmpty() ? "New Tooltip" : entry.target);
             refreshList.run();
@@ -76,7 +78,7 @@ public class RowActionsWidget {
                 .build());
 
         apiButtons.add(Button.builder(getDisabledEntryIcon(isDisabled), btn -> {
-            CustomTooltipsConfigRegistry.CONFIG.modify(config -> {
+            TooltipListChanges.save(config -> {
                 if (isDisabled) config.disabled_entries.remove(identifier);
                 else config.disabled_entries.add(identifier);
             });

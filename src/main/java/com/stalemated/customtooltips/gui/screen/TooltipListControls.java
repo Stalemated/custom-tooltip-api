@@ -2,8 +2,10 @@ package com.stalemated.customtooltips.gui.screen;
 
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.gui.EditButtons;
 import com.stalemated.customtooltips.gui.GuiIcon;
 import com.stalemated.customtooltips.gui.TooltipClipboard;
+import com.stalemated.customtooltips.gui.TooltipListChanges;
 import com.stalemated.customtooltips.gui.TooltipListToasts;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +66,7 @@ final class TooltipListControls {
         ));
 
         buttons.add(iconButton(screen, 2, getSortIcon(), getSortTooltip(), button -> {
-            CustomTooltipsConfigRegistry.CONFIG.modify(config -> config.sort_mode = config.sort_mode.next());
+            TooltipListChanges.save(config -> config.sort_mode = config.sort_mode.next());
 
             button.setMessage(getSortIcon());
             button.setTooltip(Tooltip.create(getSortTooltip()));
@@ -81,7 +83,7 @@ final class TooltipListControls {
 
         buttons.add(iconButton(screen, 5, GuiIcon.PASTE.text(), Component.translatable("customtooltips.tooltip_list_screen.paste_button"), button ->
                 TooltipClipboard.paste().ifPresent(pasted -> {
-                    CustomTooltipsConfigRegistry.CONFIG.modify(config -> config.entries.add(pasted));
+                    TooltipListChanges.save(config -> config.entries.add(pasted));
                     screen.refreshList();
 
                     TooltipListToasts.showPastedToast(pasted.target);
@@ -95,10 +97,10 @@ final class TooltipListControls {
         int btnWidth = 150;
         int btnY = screen.height - 28;
 
-        buttons.add(Button.builder(Component.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"),
+        buttons.add(EditButtons.requireYacl(Button.builder(Component.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"),
                         button -> Minecraft.getInstance().setScreen(TooltipEditScreen.add(screen)))
                 .bounds(screen.width / 2 - 155, btnY, btnWidth, BUTTON_SIZE)
-                .build());
+                .build()));
 
         buttons.add(Button.builder(Component.translatable("gui.done"), button -> screen.onClose())
                 .bounds(screen.width / 2 + 5, btnY, btnWidth, BUTTON_SIZE)
@@ -111,7 +113,7 @@ final class TooltipListControls {
         boolean initialValue = getter.get();
         return iconButton(screen, slot, icon.apply(initialValue), tooltip.apply(initialValue), button -> {
             boolean newValue = !getter.get();
-            CustomTooltipsConfigRegistry.CONFIG.modify(config -> setter.accept(config, newValue));
+            TooltipListChanges.save(config -> setter.accept(config, newValue));
             button.setMessage(icon.apply(newValue));
             button.setTooltip(Tooltip.create(tooltip.apply(newValue)));
         });

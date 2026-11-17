@@ -44,6 +44,13 @@ public final class TooltipListToasts {
         );
     }
 
+    public static void showSaveFailedToast() {
+        SystemToast.addOrUpdate(Minecraft.getInstance().getToasts(), SystemToast.SystemToastIds.WORLD_ACCESS_FAILURE,
+                Component.translatable("customtooltips.toast.save_failed.title"),
+                Component.translatable("customtooltips.toast.save_failed.desc")
+        );
+    }
+
     private static void addToast(SystemToast.SystemToastIds type, Component title, Component description) {
         SystemToast.add(Minecraft.getInstance().getToasts(), type, title, description);
     }

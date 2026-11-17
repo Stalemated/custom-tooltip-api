@@ -14,6 +14,7 @@
   "customtooltips.tooltip_list_widget.enabled_button": "Enabled",
   "customtooltips.tooltip_list_widget.disabled_button": "Disabled",
   "customtooltips.tooltip_list_screen.paste_button": "Paste Tooltip from clipboard",
+  "customtooltips.tooltip_list_screen.yacl_missing": "Install YACL (Yet Another Config Lib) to edit tooltips",
 
   "customtooltips.tooltip_edit_screen.title": "Edit Tooltip [Hold CTRL for Live Preview]",
   "customtooltips.tooltip_edit_screen.title_background": "Tooltip Background Options",
@@ -134,6 +135,8 @@
   "customtooltips.toast.copied.desc": "Successfully copied entry %s to clipboard",
   "customtooltips.toast.pasted.title": "Entry pasted from clipboard!",
   "customtooltips.toast.pasted.desc": "Successfully pasted entry %s from clipboard",
+  "customtooltips.toast.save_failed.title": "Could not save the tooltips",
+  "customtooltips.toast.save_failed.desc": "Applied for now, saved with the next change. See latest.log",
 
   "customtooltips.unbreakable_item": "Unbreakable"
 }

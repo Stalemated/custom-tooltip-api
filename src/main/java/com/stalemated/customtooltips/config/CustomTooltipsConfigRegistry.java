@@ -16,7 +16,7 @@ public final class CustomTooltipsConfigRegistry {
             .configPath(PathUtils.buildPath(CONFIG_FOLDER, "config.json5"))
             .gsonCustomizer(CustomTooltipsConfigRegistry::useSnakeCaseKeys)
             .onLoad(TooltipRegistry::reload)
-            .onSave(TooltipRegistry::reload)
+            .onChange(TooltipRegistry::reload)
             .onLoadFailed(failure -> loadFailed = true)
             .build();
 
