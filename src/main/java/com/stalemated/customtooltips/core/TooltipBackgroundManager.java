@@ -81,28 +81,28 @@ public class TooltipBackgroundManager {
 
     public static int getBorderColorStart(int originalColor) {
         if (currentEntry != null && currentEntry.hasCustomBorder()) {
-            return scaleBorderAlpha(currentEntry.getParsedBorderColorStart());
+            return scaleBorderAlpha(currentEntry.runtimeCache().borderColorStart());
         }
         return scaleBorderAlpha(originalColor);
     }
 
     public static int getBorderColorEnd(int originalColor) {
         if (currentEntry != null && currentEntry.hasCustomBorder()) {
-            return scaleBorderAlpha(currentEntry.getParsedBorderColorEnd());
+            return scaleBorderAlpha(currentEntry.runtimeCache().borderColorEnd());
         }
         return scaleBorderAlpha(originalColor);
     }
 
     public static int getBackgroundColorStart(int originalColor) {
         if (currentEntry != null && currentEntry.hasCustomBackground()) {
-            return scaleBackgroundAlpha(currentEntry.getParsedBackgroundColorStart());
+            return scaleBackgroundAlpha(currentEntry.runtimeCache().backgroundColorStart());
         }
         return scaleBackgroundAlpha(originalColor);
     }
 
     public static int getBackgroundColorEnd(int originalColor) {
         if (currentEntry != null && currentEntry.hasCustomBackground()) {
-            return scaleBackgroundAlpha(currentEntry.getParsedBackgroundColorEnd());
+            return scaleBackgroundAlpha(currentEntry.runtimeCache().backgroundColorEnd());
         }
         return scaleBackgroundAlpha(originalColor);
     }

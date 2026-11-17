@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.core.text;
 
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.core.TooltipRuntimeCache;
 import com.stalemated.lib.util.ResourceIds;
 import com.stalemated.lib.util.color.GradientGenerator;
 import net.minecraft.ChatFormatting;
@@ -12,17 +13,18 @@ import net.minecraft.network.chat.TextColor;
 public class StyleApplier {
 
     public static MutableComponent apply(Component baseText, TooltipEntry entry) {
+        TooltipRuntimeCache cache = entry.runtimeCache();
         switch (entry.style) {
             case RAINBOW:
-                return GradientGenerator.getRainbowGradient(baseText, entry.animationOffset, entry.tickrate, entry.reverseAnimation);
+                return GradientGenerator.getRainbowGradient(baseText, entry.animationOffset, cache.tickrate(), entry.reverseAnimation);
             case STATIC_GRADIENT:
-                if (entry.isGradient()) return GradientGenerator.getStaticGradient(baseText, entry.getParsedColor1(), entry.getParsedColor2());
+                if (cache.gradient()) return GradientGenerator.getStaticGradient(baseText, cache.primaryColor(), cache.secondaryColor());
                 break;
             case SLIDE_GRADIENT:
-                if (entry.isGradient()) return GradientGenerator.getSlideGradient(baseText, entry.animationOffset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate, entry.reverseAnimation);
+                if (cache.gradient()) return GradientGenerator.getSlideGradient(baseText, entry.animationOffset, cache.primaryColor(), cache.secondaryColor(), cache.tickrate(), entry.reverseAnimation);
                 break;
             case BREATHING_GRADIENT:
-                if (entry.isGradient()) return GradientGenerator.getBreathingGradient(baseText, entry.animationOffset, entry.getParsedColor1(), entry.getParsedColor2(), entry.tickrate, entry.reverseAnimation);
+                if (cache.gradient()) return GradientGenerator.getBreathingGradient(baseText, entry.animationOffset, cache.primaryColor(), cache.secondaryColor(), cache.tickrate(), entry.reverseAnimation);
                 break;
         }
 

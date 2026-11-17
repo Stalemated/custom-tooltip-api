@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -93,7 +92,7 @@ public class TooltipEntry {
     public UUID uuid = UUID.randomUUID();
 
     // Runtime-only API and cache state
-    private transient TooltipRuntimeCache cache = new TooltipRuntimeCache();
+    private transient TooltipRuntimeCache runtimeCache;
 
     public transient boolean apiEntry = false;
     public transient String apiEntryId = "";
@@ -102,11 +101,13 @@ public class TooltipEntry {
 
     public TooltipEntry() {}
 
-    private TooltipRuntimeCache cache() {
-        if (this.cache == null) {
-            this.cache = new TooltipRuntimeCache();
+    public TooltipRuntimeCache runtimeCache() {
+        TooltipRuntimeCache current = this.runtimeCache;
+        if (current == null) {
+            current = TooltipRuntimeCache.of(this);
+            this.runtimeCache = current;
         }
-        return this.cache;
+        return current;
     }
 
     public String getIdentifier() {
@@ -121,28 +122,16 @@ public class TooltipEntry {
         return this.uuid.toString();
     }
 
-    public boolean isGradient() { return cache().isGradient(this); }
-    public int getParsedColor1() { return cache().getParsedColor1(this); }
-    public int getParsedColor2() { return cache().getParsedColor2(this); }
-
-    public Style getCachedStyleModifier() { return cache().getCachedStyleModifier(this); }
-    public List<Component> getCachedStaticText() { return cache().getCachedStaticText(this); }
-    public void setCachedStaticText(List<Component> text) { cache().setCachedStaticText(text); }
-    public boolean hasDynamicText() { return cache().hasDynamicText(this); }
-
     public boolean hasCustomBorder() {
-        int start = getParsedBorderColorStart();
-        int end = getParsedBorderColorEnd();
+        int start = runtimeCache().borderColorStart();
+        int end = runtimeCache().borderColorEnd();
         return (!this.borderColors.isEmpty() && !List.of(start, end).equals(BORDER))
                 || this.borderOpacity != BACKGROUND_OPACITY;
     }
 
-    public int getParsedBorderColorStart() { return cache().getParsedBorderColorStart(this); }
-    public int getParsedBorderColorEnd() { return cache().getParsedBorderColorEnd(this); }
-
     public boolean hasCustomBackground() {
-        int start = getParsedBackgroundColorStart();
-        int end = getParsedBackgroundColorEnd();
+        int start = runtimeCache().backgroundColorStart();
+        int end = runtimeCache().backgroundColorEnd();
         return this.backgroundOpacity != BACKGROUND_OPACITY
                 || (!this.backgroundColors.isEmpty() && start != BACKGROUND_GRADIENT.get(0) && this.backgroundType == BackgroundType.SOLID)
                 || (!this.backgroundColors.isEmpty() && !List.of(start, end).equals(BACKGROUND_GRADIENT) && this.backgroundType == BackgroundType.GRADIENT)
@@ -151,22 +140,19 @@ public class TooltipEntry {
                 || (this.backgroundType == BackgroundType.REPEATING_TEXTURE && !this.backgroundTexture.isEmpty());
     }
 
-    public int getParsedBackgroundColorStart() { return cache().getParsedBackgroundColorStart(this); }
-    public int getParsedBackgroundColorEnd() { return cache().getParsedBackgroundColorEnd(this); }
-
     public void invalidateCaches() {
-        cache().invalidate();
+        this.runtimeCache = null;
     }
 
     public void initCaches() {
-        cache().ensureInitialized(this);
+        runtimeCache();
     }
 
     public boolean matches(ItemStack stack) {
         if (this.displayCondition != null && !this.displayCondition.test(stack)) {
             return false;
         }
-        TargetMatcher matcher = cache().getTargetMatcher(this);
+        TargetMatcher matcher = runtimeCache().targetMatcher();
         return matcher != null && matcher.matches(stack);
     }
 
