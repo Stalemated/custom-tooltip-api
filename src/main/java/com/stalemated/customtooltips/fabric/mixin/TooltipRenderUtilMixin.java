@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(TooltipRenderUtil.class)
-public abstract class TooltipBackgroundRendererMixin {
+public abstract class TooltipRenderUtilMixin {
     @WrapOperation(method = "renderTooltipBackground",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/tooltip/TooltipRenderUtil;renderRectangle(Lnet/minecraft/client/gui/GuiGraphics;IIIIII)V"))
     private static void customtooltips$paintBackground(GuiGraphics graphics, int x, int y, int width, int height, int z, int color, Operation<Void> original) {

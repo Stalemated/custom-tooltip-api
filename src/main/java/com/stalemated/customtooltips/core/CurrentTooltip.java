@@ -17,9 +17,9 @@ public final class CurrentTooltip {
         return entry;
     }
 
-    public static void showFor(ItemStack stack) {
+    public static TooltipEntry entryFor(ItemStack stack) {
         List<TooltipEntry> shown = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)).shown();
-        entry = shown.isEmpty() ? null : shown.get(0);
+        return shown.isEmpty() ? null : shown.get(0);
     }
 
     public static void render(TooltipEntry shownEntry, Runnable render) {
@@ -27,11 +27,7 @@ public final class CurrentTooltip {
         try {
             render.run();
         } finally {
-            clear();
+            entry = null;
         }
-    }
-
-    public static void clear() {
-        entry = null;
     }
 }

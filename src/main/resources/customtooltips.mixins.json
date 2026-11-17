@@ -5,11 +5,11 @@
   "compatibilityLevel": "${mixin_compatibility}",
   "plugin": "com.stalemated.lib.mixin.ConditionalMixinPlugin",
   "client": [
-    "DrawContextMixin",
-    "HandledScreenMixin",
-    "InGameHudMixin",
+    "GuiGraphicsMixin",
+    "AbstractContainerScreenMixin",
+    "GuiMixin",
     "StringControllerElementMixin",
-    "TextFieldWidgetMixin",
+    "EditBoxMixin",
     "compat.legendarytooltips.LegendaryTooltipsBorderMixin"
   ],
   "injectors": {

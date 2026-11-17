@@ -10,9 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
 @RequiresMod("tiered")
@@ -43,10 +41,5 @@ public abstract class TieredTooltipMixin {
     @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderBorder(Lnet/minecraft/client/gui/GuiGraphics;IIIIIII)V"), index = 7)
     private static int customtooltips$borderEnd(int color) {
         return TooltipColors.borderEnd(CurrentTooltip.entry(), color);
-    }
-
-    @Inject(method = "renderTieredTooltipFromComponents", at = @At("TAIL"))
-    private static void customtooltips$clearContext(CallbackInfo ci) {
-        CurrentTooltip.clear();
     }
 }

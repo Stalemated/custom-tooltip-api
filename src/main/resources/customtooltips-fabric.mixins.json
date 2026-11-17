@@ -5,7 +5,7 @@
   "compatibilityLevel": "${mixin_compatibility}",
   "plugin": "com.stalemated.lib.mixin.ConditionalMixinPlugin",
   "client": [
-    "TooltipBackgroundRendererMixin",
+    "TooltipRenderUtilMixin",
     "compat.tierify.TieredTooltipMixin"
   ],
   "injectors": {
