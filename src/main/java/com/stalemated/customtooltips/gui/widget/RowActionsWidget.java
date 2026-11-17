@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.GuiIcon;
+import com.stalemated.customtooltips.gui.TooltipClipboard;
 import com.stalemated.customtooltips.gui.TooltipListToasts;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,8 @@ public class RowActionsWidget {
                 .build());
 
         apiButtons.add(Button.builder(getCopyIcon(), btn -> {
-            client.keyboardHandler.setClipboard(CustomTooltipsConfigRegistry.CONFIG.toJson(entry));
-            
+            TooltipClipboard.copy(entry);
+
             TooltipListToasts.showCopiedToast(entry.target);
         })
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.copy_button")))

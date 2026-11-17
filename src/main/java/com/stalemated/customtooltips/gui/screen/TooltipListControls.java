@@ -1,13 +1,12 @@
 package com.stalemated.customtooltips.gui.screen;
 
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
-import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.gui.GuiIcon;
+import com.stalemated.customtooltips.gui.TooltipClipboard;
 import com.stalemated.customtooltips.gui.TooltipListToasts;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -18,8 +17,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-
-import static com.stalemated.customtooltips.CustomTooltips.LOGGER;
 
 final class TooltipListControls {
 
@@ -82,25 +79,13 @@ final class TooltipListControls {
             screen.refreshList();
         }));
 
-        buttons.add(iconButton(screen, 5, GuiIcon.PASTE.text(), Component.translatable("customtooltips.tooltip_list_screen.paste_button"), button -> {
-            try {
-                String clipboard = Minecraft.getInstance().keyboardHandler.getClipboard();
-                TooltipEntry pasted = CustomTooltipsConfigRegistry.CONFIG.fromJson(clipboard, TooltipEntry.class);
-
-                if (pasted != null && pasted.target != null) {
-                    pasted.uuid = UUID.randomUUID();
-                    pasted.apiEntry = false;
-                    pasted.apiEntryId = "";
-
+        buttons.add(iconButton(screen, 5, GuiIcon.PASTE.text(), Component.translatable("customtooltips.tooltip_list_screen.paste_button"), button ->
+                TooltipClipboard.paste().ifPresent(pasted -> {
                     CustomTooltipsConfigRegistry.CONFIG.modify(config -> config.entries.add(pasted));
                     screen.refreshList();
 
                     TooltipListToasts.showPastedToast(pasted.target);
-                }
-            } catch (Exception e) {
-                LOGGER.error("Error pasting a new entry from clipboard", e);
-            }
-        }));
+                })));
 
         return buttons;
     }
