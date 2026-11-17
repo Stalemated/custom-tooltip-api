@@ -3,9 +3,9 @@ package com.stalemated.customtooltips.forge;
 //? if forge {
 /*import com.stalemated.customtooltips.CustomTooltips;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
-import com.stalemated.customtooltips.core.background.BackgroundRenderStrategy;
-import com.stalemated.customtooltips.core.background.BackgroundStrategyFactory;
+import com.stalemated.customtooltips.core.CurrentTooltip;
+import com.stalemated.customtooltips.core.TooltipColors;
+import com.stalemated.customtooltips.core.background.TooltipBackgroundPainter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +18,7 @@ public class ForgeTooltipEvents {
 
     @SubscribeEvent
     public static void onRenderTooltipColor(RenderTooltipEvent.Color event) {
-        TooltipEntry entry = TooltipBackgroundManager.getCurrentEntry();
+        TooltipEntry entry = CurrentTooltip.entry();
 
         if (entry != null) {
             if (entry.hasCustomBackground()) {
@@ -37,19 +37,16 @@ public class ForgeTooltipEvents {
                 int bgHeight = height + 6;
 
                 GuiGraphics context = event.getGraphics();
-                BackgroundRenderStrategy strategy = BackgroundStrategyFactory.getStrategy(entry.backgroundType);
-
-                int originalColor = event.getBackgroundStart();
-                strategy.render(context, bgX, bgY, bgWidth, bgHeight, 400, originalColor, entry);
+                TooltipBackgroundPainter.paint(context, entry, bgX, bgY, bgWidth, bgHeight, 400, event.getBackgroundStart());
 
                 event.setBackgroundStart(0x00000000);
                 event.setBackgroundEnd(0x00000000);
             } else {
-                event.setBackgroundStart(TooltipBackgroundManager.getBackgroundColorStart(event.getBackgroundStart()));
-                event.setBackgroundEnd(TooltipBackgroundManager.getBackgroundColorEnd(event.getBackgroundEnd()));
+                event.setBackgroundStart(TooltipColors.backgroundStart(entry, event.getBackgroundStart()));
+                event.setBackgroundEnd(TooltipColors.backgroundEnd(entry, event.getBackgroundEnd()));
             }
-            event.setBorderStart(TooltipBackgroundManager.getBorderColorStart(event.getBorderStart()));
-            event.setBorderEnd(TooltipBackgroundManager.getBorderColorEnd(event.getBorderEnd()));
+            event.setBorderStart(TooltipColors.borderStart(entry, event.getBorderStart()));
+            event.setBorderEnd(TooltipColors.borderEnd(entry, event.getBorderEnd()));
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
+import com.stalemated.customtooltips.core.CurrentTooltip;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
@@ -21,12 +21,12 @@ public abstract class HandledScreenMixin {
     private void customtooltips$captureInventoryTooltipOpacity(GuiGraphics context, int x, int y, CallbackInfo ci) {
         if (this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
             ItemStack stack = this.hoveredSlot.getItem();
-            TooltipBackgroundManager.setMixinTooltipOpacity(stack);
+            CurrentTooltip.showFor(stack);
         }
     }
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void customtooltips$resetInventoryTooltipOpacity(GuiGraphics context, int x, int y, CallbackInfo ci) {
-        TooltipBackgroundManager.clearState();
+        CurrentTooltip.clear();
     }
 }

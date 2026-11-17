@@ -1,6 +1,6 @@
 package com.stalemated.customtooltips.mixin.client;
 
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
+import com.stalemated.customtooltips.core.CurrentTooltip;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,16 +22,16 @@ public abstract class DrawContextMixin {
 
     @Inject(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("HEAD"))
     private void customtooltips$captureTooltipOpacity(Font textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
-        TooltipBackgroundManager.setMixinTooltipOpacity(stack);
+        CurrentTooltip.showFor(stack);
     }
 
     @Inject(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At("RETURN"))
     private void customtooltips$resetTooltipOpacity(Font textRenderer, ItemStack stack, int x, int y, CallbackInfo ci) {
-        TooltipBackgroundManager.clearState();
+        CurrentTooltip.clear();
     }
 
     @Inject(method = "renderTooltipInternal(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;)V", at = @At("TAIL"))
     private void customTooltips$clearStateAfterRender(CallbackInfo ci) {
-        TooltipBackgroundManager.clearState();
+        CurrentTooltip.clear();
     }
 }

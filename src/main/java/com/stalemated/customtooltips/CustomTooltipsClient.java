@@ -1,7 +1,5 @@
 package com.stalemated.customtooltips;
 
-import com.stalemated.customtooltips.compat.CompatManager;
-import com.stalemated.customtooltips.compat.legendarytooltips.LegendaryTooltipsCompat;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
@@ -63,7 +61,6 @@ implements ClientModInitializer
         CustomTooltipsConfigRegistry.register();
         KeybindRegistry.register();
         SLibConfigScreens.register(CustomTooltips.MOD_ID, () -> TooltipListScreen::new);
-        CompatManager.registerColorProvider(new LegendaryTooltipsCompat());
         registerLoaderEvents();
     }
 

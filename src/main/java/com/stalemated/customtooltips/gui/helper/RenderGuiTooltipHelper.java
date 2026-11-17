@@ -2,7 +2,7 @@ package com.stalemated.customtooltips.gui.helper;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
-import com.stalemated.customtooltips.core.TooltipBackgroundManager;
+import com.stalemated.customtooltips.core.CurrentTooltip;
 import com.stalemated.lib.util.state.SharedTooltipState;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -16,11 +16,6 @@ public class RenderGuiTooltipHelper {
             lines.add(0, Component.nullToEmpty(entry.target));
         }
 
-        TooltipBackgroundManager.setCurrentBackgroundOpacity(entry.backgroundOpacity);
-        TooltipBackgroundManager.setCurrentBorderOpacity(entry.borderOpacity);
-        TooltipBackgroundManager.setCurrentEntry(entry);
-
-        SharedTooltipState.withCustomDimensions(() -> context.renderComponentTooltip(Minecraft.getInstance().font, lines, mouseX, mouseY));
-        TooltipBackgroundManager.clearState();
+        CurrentTooltip.render(entry, () -> SharedTooltipState.withCustomDimensions(() -> context.renderComponentTooltip(Minecraft.getInstance().font, lines, mouseX, mouseY)));
     }
 }
