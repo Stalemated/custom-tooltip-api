@@ -68,4 +68,10 @@ dependencies {
         add(loaderConfiguration.runtimeOnly, yacl)
         devMods[loader]?.let { add(loaderConfiguration.runtimeOnly, it()) { isTransitive = false } }
     }
+
+    slibTestLibraries[loader]?.let { add("testRuntimeOnly", it()) }
+    mixinExtrasAnnotations[loader]?.let {
+        add("compileOnly", it())
+        add("annotationProcessor", it())
+    }
 }
