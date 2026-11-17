@@ -13,10 +13,10 @@ public class ReorderActionsWidget {
     private final Button moveUpButton;
     private final Button moveDownButton;
     private final TooltipEntry entry;
-    private final TooltipListWidget parent;
+    private final Runnable refreshList;
 
-    public ReorderActionsWidget(TooltipListWidget parent, TooltipEntry entry) {
-        this.parent = parent;
+    public ReorderActionsWidget(Runnable refreshList, TooltipEntry entry) {
+        this.refreshList = refreshList;
         this.entry = entry;
         this.moveUpButton = Button.builder(Component.literal("▲"), btn -> move(-1)).bounds(0, 0, 20, 20).build();
         this.moveDownButton = Button.builder(Component.literal("▼"), btn -> move(1)).bounds(0, 0, 20, 20).build();
@@ -29,7 +29,7 @@ public class ReorderActionsWidget {
         if (index < 0 || newIndex < 0 || newIndex >= entries.size()) return;
 
         CustomTooltipsConfigRegistry.CONFIG.modify(config -> Collections.swap(config.entries, index, newIndex));
-        parent.updateEntries(parent.parentScreen.searchBox.getValue());
+        this.refreshList.run();
     }
 
     public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {

@@ -2,12 +2,11 @@ package com.stalemated.customtooltips.gui.screen;
 
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.gui.factories.ListScreenUIFactory;
-import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
+import com.stalemated.customtooltips.gui.TooltipListToasts;
+import com.stalemated.customtooltips.gui.TooltipPreview;
 import com.stalemated.customtooltips.gui.widget.TooltipListWidget;
-import com.stalemated.customtooltips.util.ToastManager;
 
-import static com.stalemated.customtooltips.registry.KeybindRegistry.openConfigKeybind;
+import static com.stalemated.customtooltips.registry.KeybindRegistry.OPEN_CONFIG;
 
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,17 +16,25 @@ import net.minecraft.network.chat.Component;
 
 public class TooltipListScreen extends Screen {
     private final Screen parent;
-    public TooltipListWidget listWidget;
-    public EditBox searchBox;
+    private TooltipListWidget listWidget;
+    private EditBox searchBox;
     private static boolean hasShownKeybindToast = false;
     private String searchText = "";
     private TooltipEntry activeTooltip = null;
     private List<Component> activeTooltipText = null;
-    public static boolean showApiEntries = false;
+    private static boolean showApiEntries = false;
 
     public TooltipListScreen(Screen parent) {
         super(Component.translatable("customtooltips.tooltip_list_screen.title"));
         this.parent = parent;
+    }
+
+    public static boolean showsApiEntries() {
+        return showApiEntries;
+    }
+
+    static void toggleApiEntries() {
+        showApiEntries = !showApiEntries;
     }
 
     @Override
@@ -35,20 +42,25 @@ public class TooltipListScreen extends Screen {
         this.listWidget = new TooltipListWidget(this.minecraft, this.width, this.height, 55, this.height - 32, 25, this);
         this.addWidget(this.listWidget);
 
-        this.searchBox = ListScreenUIFactory.createSearchBox(this, this.font, this.searchText);
+        this.searchBox = TooltipListControls.createSearchBox(this, this.font, this.searchText);
         this.addWidget(this.searchBox);
         this.setInitialFocus(this.searchBox);
 
-        this.listWidget.updateEntries(this.searchText);
+        refreshList();
 
         showToasts();
 
-        ListScreenUIFactory.createActionButtons(this).forEach(this::addRenderableWidget);
-        ListScreenUIFactory.createFooterButtons(this).forEach(this::addRenderableWidget);
+        TooltipListControls.createActionButtons(this).forEach(this::addRenderableWidget);
+        TooltipListControls.createFooterButtons(this).forEach(this::addRenderableWidget);
     }
 
-    public void setSearchText(String searchText) {
+    void search(String searchText) {
         this.searchText = searchText;
+        refreshList();
+    }
+
+    public void refreshList() {
+        this.listWidget.updateEntries(this.searchText);
     }
 
     public void setHoveredTooltip(List<Component> tooltipText, TooltipEntry tooltip) {
@@ -58,14 +70,14 @@ public class TooltipListScreen extends Screen {
 
     private void showToasts() {
         if (!hasShownKeybindToast) {
-            if (openConfigKeybind.isUnbound()) {
-                ToastManager.showKeybindMissingToast();
+            if (OPEN_CONFIG.isUnbound()) {
+                TooltipListToasts.showKeybindMissingToast();
             }
             hasShownKeybindToast = true;
         }
 
         if (CustomTooltipsConfigRegistry.consumeLoadFailure()) {
-            ToastManager.showBrokenConfigToast();
+            TooltipListToasts.showBrokenConfigToast();
         }
     }
 
@@ -81,7 +93,7 @@ public class TooltipListScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         
         if (this.activeTooltipText != null) {
-            RenderGuiTooltipHelper.renderGuiTooltip(this.activeTooltip, this.activeTooltipText, context, mouseX, mouseY);
+            TooltipPreview.render(this.activeTooltip, this.activeTooltipText, context, mouseX, mouseY);
         }
     }
 

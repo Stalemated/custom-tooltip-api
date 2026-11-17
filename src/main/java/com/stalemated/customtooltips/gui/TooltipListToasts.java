@@ -1,10 +1,13 @@
-package com.stalemated.customtooltips.util;
+package com.stalemated.customtooltips.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 
-public class ToastManager {
+public final class TooltipListToasts {
+
+    private TooltipListToasts() {
+    }
 
     public static void showKeybindMissingToast() {
         addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
@@ -20,22 +23,11 @@ public class ToastManager {
         );
     }
 
-    public static void showInvalidColorToast() {
-        addToast(SystemToast.SystemToastIds.PACK_LOAD_FAILURE,
-                Component.translatable("customtooltips.toast.color.invalid.title"),
-                Component.translatable("customtooltips.toast.color.invalid.desc")
-        );
-    }
-
     public static void showDuplicatedToast(String targetName) {
         addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
                 Component.translatable("customtooltips.toast.duplicated.title"),
                 Component.translatable("customtooltips.toast.duplicated.desc", targetName)
         );
-    }
-
-    private static void addToast(SystemToast.SystemToastIds type, Component title, Component description) {
-        SystemToast.add(Minecraft.getInstance().getToasts(), type, title, description);
     }
 
     public static void showCopiedToast(String targetName) {
@@ -50,5 +42,9 @@ public class ToastManager {
                 Component.translatable("customtooltips.toast.pasted.title"),
                 Component.translatable("customtooltips.toast.pasted.desc", targetName)
         );
+    }
+
+    private static void addToast(SystemToast.SystemToastIds type, Component title, Component description) {
+        SystemToast.add(Minecraft.getInstance().getToasts(), type, title, description);
     }
 }

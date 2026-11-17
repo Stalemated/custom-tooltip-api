@@ -3,7 +3,7 @@ package com.stalemated.customtooltips.gui.screen;
 import com.stalemated.customtooltips.CustomTooltips;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
-import com.stalemated.customtooltips.gui.helper.RenderGuiTooltipHelper;
+import com.stalemated.customtooltips.gui.TooltipPreview;
 import com.stalemated.customtooltips.util.CustomBackgroundManager;
 import com.stalemated.customtooltips.util.CustomFontManager;
 import com.stalemated.lib.compat.yacl.builder.YaclScreenBuilder;
@@ -20,17 +20,6 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
 public class TooltipEditScreen {
-
-    public static TooltipEntry previewEntry = null;
-
-    public static void renderPreview(Screen screen, GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
-        if (previewEntry != null && screen.getTitle().contains(Component.translatable("customtooltips.tooltip_edit_screen.title"))) {
-            if (Screen.hasControlDown()) {
-                List<Component> previewLines = new ArrayList<>(previewEntry.getTextComponents(ItemStack.EMPTY));
-                RenderGuiTooltipHelper.renderGuiTooltip(previewEntry, previewLines, context, mouseX, mouseY);
-            }
-        }
-    }
 
     public static Screen edit(Screen parent, TooltipEntry entry) {
         return create(parent, CustomTooltipsConfigRegistry.CONFIG.editListElement(config -> config.entries, entry, TooltipEditScreen::defaultEntry));
@@ -50,13 +39,19 @@ public class TooltipEditScreen {
         return builder(parent, entryManager, CustomFontManager.availableFonts, CustomBackgroundManager.availableBackgrounds).generateScreen();
     }
 
+    private static void renderPreview(TooltipEntry preview, GuiGraphics context, int mouseX, int mouseY) {
+        if (!Screen.hasControlDown()) return;
+        TooltipPreview.render(preview, new ArrayList<>(preview.getTextComponents(ItemStack.EMPTY)), context, mouseX, mouseY);
+    }
+
     static YaclScreenBuilder builder(Screen parent, ConfigManager<TooltipEntry> entryManager, List<String> fonts, List<String> backgrounds) {
-        previewEntry = entryManager.cloneConfig(entryManager.get());
+        TooltipEntry preview = entryManager.cloneConfig(entryManager.get());
         TextColor white = TextColor.fromLegacyFormat(ChatFormatting.WHITE);
         Color vanillaBackground = new Color(VanillaTooltipColors.BACKGROUND, true);
 
         return YaclScreenBuilder.create(parent, Component.translatable("customtooltips.tooltip_edit_screen.title"), CustomTooltips.MOD_ID)
-                .livePreview(entryManager, previewEntry, TooltipEntry::invalidateCaches)
+                .livePreview(entryManager, preview, TooltipEntry::invalidateCaches)
+                .onRender((context, mouseX, mouseY, partialTick) -> renderPreview(preview, context, mouseX, mouseY))
                 .category(entryManager, "tooltip", cat ->
                         cat.name(Component.translatable("customtooltips.tooltip_edit_screen.title"))
                         .group("target", grp -> grp.include("target"))

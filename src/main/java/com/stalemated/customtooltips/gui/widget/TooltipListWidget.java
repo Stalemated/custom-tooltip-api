@@ -19,11 +19,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Entry> {
 
-    public final TooltipListScreen parentScreen;
+    private final TooltipListScreen screen;
 
-    public TooltipListWidget(Minecraft client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen parentScreen) {
+    public TooltipListWidget(Minecraft client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen screen) {
         super(client, width, height, top, bottom, itemHeight);
-        this.parentScreen = parentScreen;
+        this.screen = screen;
         this.updateEntries();
     }
 
@@ -34,7 +34,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
 
         List<TooltipEntry> sortedEntries = new ArrayList<>();
 
-        if (TooltipListScreen.showApiEntries ) {
+        if (TooltipListScreen.showsApiEntries()) {
             sortedEntries.addAll(TooltipRegistry.apiEntries());
 
         } else {
@@ -45,7 +45,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
 
         for (TooltipEntry entry : sortedEntries) {
             if (lowerSearch.isEmpty() || entryMatchesSearch(entry, lowerSearch)) {
-                this.addEntry(new com.stalemated.customtooltips.gui.widget.TooltipListWidget.Entry(this, entry));
+                this.addEntry(new TooltipListWidget.Entry(entry));
             }
         }
     }
@@ -75,16 +75,16 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
     @Override
     protected int getScrollbarPosition() { return this.width - 5; }
 
-    public class Entry extends ObjectSelectionList.Entry<com.stalemated.customtooltips.gui.widget.TooltipListWidget.Entry> {
+    public class Entry extends ObjectSelectionList.Entry<TooltipListWidget.Entry> {
         private final TooltipEntry tooltipEntry;
         private final RowActionsWidget rowActions;
         private final ReorderActionsWidget reorderActions;
         private final ScrollingTextRenderer scrollingText;
 
-        public Entry(TooltipListWidget parent, TooltipEntry tooltipEntry) {
+        public Entry(TooltipEntry tooltipEntry) {
             this.tooltipEntry = tooltipEntry;
-            this.rowActions = new RowActionsWidget(parent, tooltipEntry);
-            this.reorderActions = new ReorderActionsWidget(parent, tooltipEntry);
+            this.rowActions = new RowActionsWidget(TooltipListWidget.this.screen::refreshList, tooltipEntry);
+            this.reorderActions = new ReorderActionsWidget(TooltipListWidget.this.screen::refreshList, tooltipEntry);
             this.scrollingText = new ScrollingTextRenderer();
         }
 
@@ -96,7 +96,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
             rowActions.render(context, x, y, entryWidth, mouseX, mouseY, tickDelta, this.tooltipEntry.apiEntry);
 
             int textStartX = x;
-            if (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode == SortMode.CREATION_DATE && !TooltipListScreen.showApiEntries && !this.tooltipEntry.apiEntry) {
+            if (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode == SortMode.CREATION_DATE && !TooltipListScreen.showsApiEntries() && !this.tooltipEntry.apiEntry) {
                 reorderActions.render(context, x, y, mouseX, mouseY, tickDelta);
                 textStartX += 48; // 2 buttons * 24px
             }
@@ -111,7 +111,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
             boolean isHoveringOverText = mouseX >= textStartX && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;
             if (isHoveringOverText) {
                 List<Component> hoverTooltip = new ArrayList<>(this.tooltipEntry.getTextComponents(ItemStack.EMPTY));
-                TooltipListWidget.this.parentScreen.setHoveredTooltip(hoverTooltip, this.tooltipEntry);
+                TooltipListWidget.this.screen.setHoveredTooltip(hoverTooltip, this.tooltipEntry);
             }
         }
 

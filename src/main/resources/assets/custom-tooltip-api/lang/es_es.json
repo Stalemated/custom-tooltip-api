@@ -116,7 +116,7 @@
   "customtooltips.tooltip_list_widget.delete_confirm.message": "¿Estás seguro de que quieres eliminar\nel tooltip para %s?",
   "customtooltips.tooltip_list_widget.copy_button": "Copiar Tooltip al portapapeles",
 
-  "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Mantén [%s] para detalles",
+  "customtooltips.tooltip_processor.shift_prompt": "Mantén [%s] para detalles",
 
   "category.customtooltips.keys": "Custom Tooltip API",
   "key.customtooltips.open_config": "Abrir Configuración",

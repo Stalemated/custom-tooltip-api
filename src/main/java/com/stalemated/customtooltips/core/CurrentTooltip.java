@@ -5,7 +5,7 @@ import com.stalemated.lib.util.input.KeyBindingUtil;
 import java.util.List;
 import net.minecraft.world.item.ItemStack;
 
-import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
+import static com.stalemated.customtooltips.registry.KeybindRegistry.HOLD_KEY;
 
 public final class CurrentTooltip {
     private static TooltipEntry entry;
@@ -18,7 +18,7 @@ public final class CurrentTooltip {
     }
 
     public static TooltipEntry entryFor(ItemStack stack) {
-        List<TooltipEntry> shown = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)).shown();
+        List<TooltipEntry> shown = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(HOLD_KEY)).shown();
         return shown.isEmpty() ? null : shown.get(0);
     }
 

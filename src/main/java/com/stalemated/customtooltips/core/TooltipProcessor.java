@@ -3,9 +3,10 @@ package com.stalemated.customtooltips.core;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.position.LinePlacement;
+import com.stalemated.customtooltips.gui.GuiIcon;
 import com.stalemated.lib.util.input.KeyBindingUtil;
 
-import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
+import static com.stalemated.customtooltips.registry.KeybindRegistry.HOLD_KEY;
 
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -21,7 +22,7 @@ public class TooltipProcessor {
             IconAligner.alignIcons(lines);
         }
 
-        MatchedEntries matched = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind));
+        MatchedEntries matched = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(HOLD_KEY));
         if (matched.hidesVanillaLines() && lines.size() > 1) {
             lines.subList(1, lines.size()).clear();
         }
@@ -31,8 +32,12 @@ public class TooltipProcessor {
         }
 
         if (matched.waitingForKey()) {
-            Component keyName = holdKeyKeybind.getTranslatedKeyMessage();
-            lines.add(Component.translatable("customtooltips.tooltip_processor.shift_prompt", keyName).withStyle(ChatFormatting.DARK_GRAY));
+            Component keyName = HOLD_KEY.getTranslatedKeyMessage();
+            lines.add(Component.empty()
+                    .append(GuiIcon.SHIFT_PROMPT.text())
+                    .append(" ")
+                    .append(Component.translatable("customtooltips.tooltip_processor.shift_prompt", keyName))
+                    .withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
@@ -40,7 +45,7 @@ public class TooltipProcessor {
         ActiveEntries activeEntries = TooltipRegistry.activeEntries();
         if (activeEntries.isEmpty()) return originalName;
 
-        for (TooltipEntry entry : activeEntries.match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)).shown()) {
+        for (TooltipEntry entry : activeEntries.match(stack, KeyBindingUtil.isKeyDownInGui(HOLD_KEY)).shown()) {
             Component modified = LinePlacement.heldItemName(originalName, entry.getTextComponents(stack), entry);
             
             if (modified != originalName) {

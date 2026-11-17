@@ -116,7 +116,7 @@
   "customtooltips.tooltip_list_widget.delete_confirm.message": "Bist du dir sicher du möchtest\nden tooltip für %s löschen?",
   "customtooltips.tooltip_list_widget.copy_button": "Tooltip in die Zwischenablage kopieren",
 
-  "customtooltips.tooltip_processor.shift_prompt": "\uDAC1\uDF22 Halte [%s] für Details",
+  "customtooltips.tooltip_processor.shift_prompt": "Halte [%s] für Details",
 
   "category.customtooltips.keys": "Custom Tooltip API",
   "key.customtooltips.open_config": "Config öffnen",

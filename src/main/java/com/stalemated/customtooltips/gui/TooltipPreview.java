@@ -1,4 +1,4 @@
-package com.stalemated.customtooltips.gui.helper;
+package com.stalemated.customtooltips.gui;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
@@ -9,9 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
-public class RenderGuiTooltipHelper {
-    public static void renderGuiTooltip(TooltipEntry entry, List<Component> lines, GuiGraphics context, int mouseX, int mouseY) {
+public final class TooltipPreview {
 
+    private TooltipPreview() {
+    }
+
+    public static void render(TooltipEntry entry, List<Component> lines, GuiGraphics context, int mouseX, int mouseY) {
         if (entry.position != TooltipPosition.REPLACE_NAME) {
             lines.add(0, Component.nullToEmpty(entry.target));
         }
