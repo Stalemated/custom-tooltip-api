@@ -6,13 +6,13 @@ import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.core.ItemConditions;
 import com.stalemated.customtooltips.core.TooltipRuntimeCache;
+import com.stalemated.customtooltips.core.position.LinePlacement;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.lib.config.annotation.ItemDropdown;
 import com.stalemated.lib.config.annotation.RangeInt;
 import com.stalemated.lib.config.annotation.Title;
 import com.stalemated.lib.predicate.target.TargetMatcher;
 import com.stalemated.lib.util.ResourceIds;
-import com.stalemated.lib.util.math.MathUtils;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,18 +189,6 @@ public class TooltipEntry {
     }
 
     public int getLineOffset(int size) {
-        if (size == 0) return 0;
-        if (acceptsPositiveOffset()) {
-            return MathUtils.clamp(this.lineOffset, 0, size - 1);
-        }
-        return MathUtils.clamp(this.lineOffset, -(size - 1), 0);
-    }
-
-    private boolean acceptsPositiveOffset() {
-        return this.position == TooltipPosition.TOP
-                || this.position == TooltipPosition.REPLACE_NAME
-                || this.position == TooltipPosition.APPEND
-                || this.position == TooltipPosition.PREPEND
-                || this.position == TooltipPosition.REPLACE_LINE;
+        return LinePlacement.lineOffset(this, size);
     }
 }

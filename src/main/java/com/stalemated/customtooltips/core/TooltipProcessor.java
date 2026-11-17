@@ -2,8 +2,7 @@ package com.stalemated.customtooltips.core;
 
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
-import com.stalemated.customtooltips.core.position.PositionStrategyFactory;
-import com.stalemated.customtooltips.core.position.TooltipPositionStrategy;
+import com.stalemated.customtooltips.core.position.LinePlacement;
 import com.stalemated.lib.util.input.KeyBindingUtil;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.holdKeyKeybind;
@@ -28,8 +27,7 @@ public class TooltipProcessor {
         }
 
         for (TooltipEntry entry : matched.shown()) {
-            TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
-            strategy.modifyTooltip(lines, entry.getTextComponents(stack), entry);
+            LinePlacement.place(lines, entry.getTextComponents(stack), entry);
         }
 
         if (matched.waitingForKey()) {
@@ -43,8 +41,7 @@ public class TooltipProcessor {
         if (activeEntries.isEmpty()) return originalName;
 
         for (TooltipEntry entry : activeEntries.match(stack, KeyBindingUtil.isKeyDownInGui(holdKeyKeybind)).shown()) {
-            TooltipPositionStrategy strategy = PositionStrategyFactory.get(entry.position);
-            Component modified = strategy.modifyHeldItemName(originalName, entry.getTextComponents(stack), entry);
+            Component modified = LinePlacement.heldItemName(originalName, entry.getTextComponents(stack), entry);
             
             if (modified != originalName) {
                 return modified;
