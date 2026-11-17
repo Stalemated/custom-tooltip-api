@@ -4,7 +4,6 @@ import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.position.LinePlacement;
 import com.stalemated.customtooltips.gui.GuiIcon;
-import com.stalemated.lib.util.input.KeyBindingUtil;
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.HOLD_KEY;
 
@@ -22,7 +21,7 @@ public class TooltipProcessor {
             IconAligner.alignIcons(lines);
         }
 
-        MatchedEntries matched = TooltipRegistry.activeEntries().match(stack, KeyBindingUtil.isKeyDownInGui(HOLD_KEY));
+        MatchedEntries matched = TooltipRegistry.activeEntries().match(stack, HoldKey.isDown());
         if (matched.hidesVanillaLines() && lines.size() > 1) {
             lines.subList(1, lines.size()).clear();
         }
@@ -45,7 +44,7 @@ public class TooltipProcessor {
         ActiveEntries activeEntries = TooltipRegistry.activeEntries();
         if (activeEntries.isEmpty()) return originalName;
 
-        for (TooltipEntry entry : activeEntries.match(stack, KeyBindingUtil.isKeyDownInGui(HOLD_KEY)).shown()) {
+        for (TooltipEntry entry : activeEntries.match(stack, HoldKey.isDown()).shown()) {
             Component modified = LinePlacement.heldItemName(originalName, entry.getTextComponents(stack), entry);
             
             if (modified != originalName) {

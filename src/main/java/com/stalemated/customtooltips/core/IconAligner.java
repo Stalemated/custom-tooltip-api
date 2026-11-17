@@ -1,6 +1,7 @@
 package com.stalemated.customtooltips.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +13,12 @@ import net.minecraft.network.chat.Style;
 public class IconAligner {
 
     private static final int CACHE_CAPACITY = 200;
-    private static final Map<String, Component> PROCESSED_CACHE = new LinkedHashMap<>(16, 0.75f, true) {
+    private static final Map<String, Component> PROCESSED_CACHE = Collections.synchronizedMap(new LinkedHashMap<>(16, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<String, Component> eldest) {
             return size() > CACHE_CAPACITY;
         }
-    };
+    });
 
     public static void alignIcons(List<Component> lines) {
 
