@@ -140,17 +140,17 @@ final class TooltipListControls {
 
     private static Component getSortIcon() {
         return switch (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode) {
+            case MANUAL_ORDER -> GuiIcon.CLOCK.text().withStyle(ChatFormatting.GOLD);
             case NAME_AND_TAG -> Component.literal("AZ").withStyle(ChatFormatting.GOLD);
             case DISABLED_FIRST -> GuiIcon.DISABLED.text().withStyle(ChatFormatting.RED);
-            default -> GuiIcon.CLOCK.text().withStyle(ChatFormatting.GOLD);
         };
     }
 
     private static Component getSortTooltip() {
         Component modeText = switch (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode) {
+            case MANUAL_ORDER -> Component.translatable("customtooltips.tooltip_list_screen.sort_manual");
             case NAME_AND_TAG -> Component.translatable("customtooltips.tooltip_list_screen.sort_name");
             case DISABLED_FIRST -> Component.translatable("customtooltips.tooltip_list_screen.sort_disabled");
-            default -> Component.translatable("customtooltips.tooltip_list_screen.sort_date");
         };
         return Component.translatable("customtooltips.tooltip_list_screen.sort_order").append("\n").append(modeText.copy().withStyle(ChatFormatting.GRAY));
     }

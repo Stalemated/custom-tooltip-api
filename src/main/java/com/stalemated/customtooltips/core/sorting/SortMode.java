@@ -1,7 +1,10 @@
 package com.stalemated.customtooltips.core.sorting;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum SortMode {
-    CREATION_DATE,
+    @SerializedName(value = "MANUAL_ORDER", alternate = "CREATION_DATE")
+    MANUAL_ORDER,
     NAME_AND_TAG,
     DISABLED_FIRST;
 

@@ -96,7 +96,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
             rowActions.render(context, x, y, entryWidth, mouseX, mouseY, tickDelta, this.tooltipEntry.apiEntry);
 
             int textStartX = x;
-            if (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode == SortMode.CREATION_DATE && !TooltipListScreen.showsApiEntries() && !this.tooltipEntry.apiEntry) {
+            if (CustomTooltipsConfigRegistry.CONFIG.get().sort_mode == SortMode.MANUAL_ORDER && !TooltipListScreen.showsApiEntries() && !this.tooltipEntry.apiEntry) {
                 reorderActions.render(context, x, y, mouseX, mouseY, tickDelta);
                 textStartX += 48; // 2 buttons * 24px
             }

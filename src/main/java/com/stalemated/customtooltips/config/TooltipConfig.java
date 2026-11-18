@@ -16,8 +16,8 @@ public class TooltipConfig {
     @Comment("Enables double click to select text in textboxes throughout the entire game.")
     public boolean enable_double_click_selection = true;
 
-    @Comment("Tooltip sorting mode in the config menu. Accepts: CREATION_DATE, NAME_AND_TAG, DISABLED_FIRST")
-    public SortMode sort_mode = SortMode.CREATION_DATE;
+    @Comment("Tooltip sorting mode in the config menu. Accepts: MANUAL_ORDER, NAME_AND_TAG, DISABLED_FIRST")
+    public SortMode sort_mode = SortMode.MANUAL_ORDER;
 
     @Comment("List of unique entry Identifiers that have been disabled by the user.")
     public List<String> disabled_entries = new ArrayList<>();

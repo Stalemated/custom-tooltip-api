@@ -6,7 +6,7 @@
   "customtooltips.tooltip_list_screen.search": "Suchen...",
   "customtooltips.tooltip_list_screen.sort_order": "Sortiere Reihenfolge",
   "customtooltips.tooltip_list_screen.sort_name": "Nach Name & Tag",
-  "customtooltips.tooltip_list_screen.sort_date": "Nach Erstellungsdatum",
+  "customtooltips.tooltip_list_screen.sort_manual": "Manuelle Reihenfolge: ein weiter unten stehender Eintrag gewinnt",
   "customtooltips.tooltip_list_screen.sort_disabled": "Deaktivierte Einträge zuerst",
   "customtooltips.tooltip_list_screen.toggle_api_entries": "Tooltips für API-Einträge ein- und ausblenden",
   "customtooltips.tooltip_list_screen.showing_api_entries": "Tooltips für API-Einträge ein- und ausblenden",

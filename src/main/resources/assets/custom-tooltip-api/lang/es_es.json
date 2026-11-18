@@ -6,7 +6,7 @@
   "customtooltips.tooltip_list_screen.search": "Buscar...",
   "customtooltips.tooltip_list_screen.sort_order": "Orden",
   "customtooltips.tooltip_list_screen.sort_name": "Por Nombre y Etiqueta",
-  "customtooltips.tooltip_list_screen.sort_date": "Por Fecha de Creación",
+  "customtooltips.tooltip_list_screen.sort_manual": "Orden manual: una entrada gana a las que tiene encima",
   "customtooltips.tooltip_list_screen.sort_disabled": "Entradas desactivadas primero",
   "customtooltips.tooltip_list_screen.toggle_api_entries": "Mostrar entradas de la API",
   "customtooltips.tooltip_list_screen.showing_api_entries": "Mostrando: Entradas de la API",
