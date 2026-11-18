@@ -4,8 +4,7 @@ import com.stalemated.customtooltips.CustomTooltips;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.gui.TooltipPreview;
-import com.stalemated.customtooltips.util.CustomBackgroundManager;
-import com.stalemated.customtooltips.util.CustomFontManager;
+import com.stalemated.customtooltips.resource.AssetChoices;
 import com.stalemated.lib.compat.yacl.builder.YaclScreenBuilder;
 import com.stalemated.lib.config.ConfigManager;
 import com.stalemated.lib.util.color.VanillaTooltipColors;
@@ -36,7 +35,7 @@ public class TooltipEditScreen {
     }
 
     private static Screen create(Screen parent, ConfigManager<TooltipEntry> entryManager) {
-        return builder(parent, entryManager, CustomFontManager.availableFonts, CustomBackgroundManager.availableBackgrounds).generateScreen();
+        return builder(parent, entryManager, AssetChoices.fonts(), AssetChoices.backgrounds()).generateScreen();
     }
 
     private static void renderPreview(TooltipEntry preview, GuiGraphics context, int mouseX, int mouseY) {
@@ -81,7 +80,7 @@ public class TooltipEditScreen {
                                 .listElement("backgroundColors", 0, "backgroundTopColor", vanillaBackground)
                                 .listElement("backgroundColors", 1, "backgroundBottomColor", vanillaBackground)
                                 .dropdown("backgroundTexture", backgrounds,
-                                        s -> Component.literal(s.replace("custom_tooltip_api:textures/gui/tooltip_backgrounds/", ""))
+                                        s -> Component.literal(s.replace(AssetChoices.BACKGROUND_PREFIX, ""))
                                 )
                                 .include("backgroundScale")
                         )

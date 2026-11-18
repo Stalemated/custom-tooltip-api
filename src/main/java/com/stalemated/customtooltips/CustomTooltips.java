@@ -15,6 +15,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 public final class CustomTooltips {
     public static final String MOD_ID = "customtooltips";
     public static final String ASSETS_NAMESPACE = "custom-tooltip-api";
+    public static final String PACK_NAMESPACE = "custom_tooltip_api";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     //? if forge {

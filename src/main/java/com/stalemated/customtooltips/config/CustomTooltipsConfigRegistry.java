@@ -8,7 +8,7 @@ import com.stalemated.lib.config.SLibConfig;
 import com.stalemated.lib.util.io.PathUtils;
 
 public final class CustomTooltipsConfigRegistry {
-    private static final String CONFIG_FOLDER = "custom_tooltip_api";
+    public static final String CONFIG_FOLDER = "custom_tooltip_api";
 
     private static boolean loadFailed;
 

@@ -60,7 +60,7 @@
   "customtooltips.option.background_type.value.simple_texture": "Textura (Estirar)",
   "customtooltips.option.background_type.value.repeating_texture": "Textura (Repetitiva)",
   "customtooltips.option.background_texture": "Textura de Fondo",
-  "customtooltips.option.background_texture.desc": "La textura que se usará para el fondo. Coloca archivos .png en config/custom_tooltip_api/backgrounds/.\n\n§eNota:§r Para el modo 'Enmarcado', las texturas se mapean en una cuadrícula de 64x64 con esquinas de 8px. Puedes usar imágenes HD más grandes (ej., 128x128 con esquinas de 16px) siempre y cuando las proporciones coincidan.\n\n§4Nota: ¡Debe estar habilitado el paquete de recursos del mod!\n\n§bConsejo:§f Las transparencias además de las texturas animadas (usando archivos .mcmeta) están completamente soportadas.§r",
+  "customtooltips.option.background_texture.desc": "La textura que se usará para el fondo. Coloca archivos .png en config/custom_tooltip_api/backgrounds/.\n\n§eNota:§r Para el modo 'Enmarcado', las texturas se mapean en una cuadrícula de 64x64 con esquinas de 8px. Puedes usar imágenes HD más grandes (ej., 128x128 con esquinas de 16px) siempre y cuando las proporciones coincidan.\n\n§eNota:§r Los archivos nuevos o cambiados de esa carpeta se cargan con F3+T.\n\n§bConsejo:§f Las transparencias además de las texturas animadas (usando archivos .mcmeta) están completamente soportadas.§r",
   "customtooltips.option.background_scale": "Escala del Fondo",
   "customtooltips.option.background_scale.desc": "Ajusta la escala de la textura del fondo. Solo aplica para los tipos de fondo 'Textura (Enmarcado)' y 'Textura (Repetitiva)'.",
   "customtooltips.option.position": "Posición",
@@ -75,7 +75,7 @@
   "customtooltips.option.line_offset": "Desplazamiento de línea",
   "customtooltips.option.line_offset.desc": "Desplaza la posición de la línea en el tooltip.\nAcepta números enteros positivos si la posición es §6Arriba§r, §6Reemplazar Nombre§r, §6Añadir al final§r, §6Añadir al inicio§r, o enteros negativos si es §6Abajo§r.",
   "customtooltips.option.font": "Fuente Personalizada",
-  "customtooltips.option.font.desc": "El ID de la fuente a utilizar. Déjalo como 'minecraft:default' para usar la fuente por defecto.\n\n§4Nota: ¡Debe estar habilitado el paquete de recursos del mod!",
+  "customtooltips.option.font.desc": "El ID de la fuente a utilizar. Déjalo como 'minecraft:default' para usar la fuente por defecto.\n\n§eNota:§r Pon archivos .ttf en config/custom_tooltip_api/fonts/ y pulsa F3+T para cargarlos.",
   "customtooltips.option.bold": "Negrita",
   "customtooltips.option.bold.desc": "Si el texto mostrado debe estar en §lnegrita§r.",
   "customtooltips.option.italic": "Cursiva",
@@ -137,6 +137,8 @@
   "customtooltips.toast.pasted.desc": "Entrada %s pegada desde el portapapeles con éxito",
   "customtooltips.toast.save_failed.title": "No se pudieron guardar los tooltips",
   "customtooltips.toast.save_failed.desc": "Ya se aplica y se guarda con el siguiente cambio. Mira latest.log",
+
+  "customtooltips.resource_pack.title": "Custom Tooltip API: fondos y fuentes",
 
   "customtooltips.unbreakable_item": "Irrompible"
 }

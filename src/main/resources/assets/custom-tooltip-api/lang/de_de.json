@@ -60,7 +60,7 @@
   "customtooltips.option.background_type.value.simple_texture": "Textur (gedehnt)",
   "customtooltips.option.background_type.value.repeating_texture": "Textur (wiederholende)",
   "customtooltips.option.background_texture": "Hintergrundtextur",
-  "customtooltips.option.background_texture.desc": "Die Textur, die für den Hintergrund verwendet werden soll. Speichern Sie die PNG-Dateien in config/custom_tooltip_api/backgrounds/.\n\n§eNotiz:§r Im „Framed“-Modus werden Texturen auf ein 64x64-Raster mit 8-Pixel-Ecken abgebildet. Du kannst größere HD-Bilder verwenden (bsp., 128×128 con 16-Pixel-Ecken), solange das Seitenverhältnis stimmt!\n\n§4Notiz: Das benutzerdefinierte Ressourcenpaket muss aktiviert sein!\n\n§bTipp:§f Transparente als auch animierte Texturen (die .mcmeta Dateien nutzen) sind komplett unterstützt.",
+  "customtooltips.option.background_texture.desc": "Die Textur, die für den Hintergrund verwendet werden soll. Speichern Sie die PNG-Dateien in config/custom_tooltip_api/backgrounds/.\n\n§eNotiz:§r Im „Framed“-Modus werden Texturen auf ein 64x64-Raster mit 8-Pixel-Ecken abgebildet. Du kannst größere HD-Bilder verwenden (bsp., 128×128 con 16-Pixel-Ecken), solange das Seitenverhältnis stimmt!\n\n§eNotiz:§r Neue oder bearbeitete Dateien in diesem Ordner werden mit F3+T geladen.\n\n§bTipp:§f Transparente als auch animierte Texturen (die .mcmeta Dateien nutzen) sind komplett unterstützt.",
   "customtooltips.option.background_scale": "Hintergrundskalierung",
   "customtooltips.option.background_scale.desc": "Passt die Skalierung der Hintergrundtextur an. Gilt nur für die Hintergrundtypen 'Textur (gerahmt)' und 'Textur (wiederholende)'.",
   "customtooltips.option.position": "Position",
@@ -75,7 +75,7 @@
   "customtooltips.option.line_offset": "Zeilenversatz",
   "customtooltips.option.line_offset.desc": "Verschiebt die Zeilenposition im Tooltip.\nAkzeptiert positive Ganzzahlen, wenn die Position auf §6Oben§r, §6Namen ersetzen§r, §6Anhängen§r oder §6Voranstellend§r gesetzt ist, bzw. negative Ganzzahlen, wenn die Position auf §6Unten§r gesetzt ist.",
   "customtooltips.option.font": "Benutzerdefinierte Schriftart",
-  "customtooltips.option.font.desc": "Die zu verwendende Schriftart-ID. Belassen Sie den Wert auf „minecraft:default“, um die Standardschriftart zu verwenden.\n\n§4Notiz: Das benutzerdefinierte Ressourcenpaket muss aktiviert sein!",
+  "customtooltips.option.font.desc": "Die zu verwendende Schriftart-ID. Belassen Sie den Wert auf „minecraft:default“, um die Standardschriftart zu verwenden.\n\n§eNotiz:§r Lege .ttf-Dateien in config/custom_tooltip_api/fonts/ ab und lade sie mit F3+T.",
   "customtooltips.option.bold": "fett",
   "customtooltips.option.bold.desc": "Wenn der angezeigte Text §fett§ sein soll.",
   "customtooltips.option.italic": "kursiv",
@@ -137,6 +137,8 @@
   "customtooltips.toast.pasted.desc": "Der Eintrag %s wurde erfolgreich aus der Zwischenablage eingefügt",
   "customtooltips.toast.save_failed.title": "Tooltips konnten nicht gespeichert werden",
   "customtooltips.toast.save_failed.desc": "Aktiv, wird beim folgenden Speichern geschrieben. Siehe latest.log",
+
+  "customtooltips.resource_pack.title": "Custom Tooltip API: Hintergrundbilder und Schriftarten",
 
   "customtooltips.unbreakable_item": "Unzerbrechlich"
 }

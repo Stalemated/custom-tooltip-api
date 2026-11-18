@@ -60,7 +60,7 @@
   "customtooltips.option.background_type.value.simple_texture": "Texture (Stretch)",
   "customtooltips.option.background_type.value.repeating_texture": "Texture (Repeating)",
   "customtooltips.option.background_texture": "Background Texture",
-  "customtooltips.option.background_texture.desc": "The texture to use for the background. Place .png files in config/custom_tooltip_api/backgrounds/.\n\n§eNote:§r For 'Framed' mode, textures are mapped to a 64x64 grid with 8px corners. You can use larger HD images (e.g., 128x128 with 16px corners) as long as the proportions match!\n\n§4Note: The custom Resource Pack needs to be enabled!\n\n§bTip:§f Transparencies as well as animated textures (using .mcmeta files) are fully supported.§r",
+  "customtooltips.option.background_texture.desc": "The texture to use for the background. Place .png files in config/custom_tooltip_api/backgrounds/.\n\n§eNote:§r For 'Framed' mode, textures are mapped to a 64x64 grid with 8px corners. You can use larger HD images (e.g., 128x128 with 16px corners) as long as the proportions match!\n\n§eNote:§r New or changed files in that folder load with F3+T.\n\n§bTip:§f Transparencies as well as animated textures (using .mcmeta files) are fully supported.§r",
   "customtooltips.option.background_scale": "Background Scale",
   "customtooltips.option.background_scale.desc": "Adjusts the scale of the background texture. Only applies to 'Texture (Framed)' and 'Texture (Repeating)' background types.",
   "customtooltips.option.position": "Position",
@@ -75,7 +75,7 @@
   "customtooltips.option.line_offset": "Line offset",
   "customtooltips.option.line_offset.desc": "Offsets the line position in the tooltip.\nAccepts positive integers if position is set to §6Top§r, §6Replace Name§r, §6Append§r, §6Prepend§r, or negative integers if position is set to §6Bottom§r.",
   "customtooltips.option.font": "Custom Font",
-  "customtooltips.option.font.desc": "The font ID to use. Leave as 'minecraft:default' for the default font.\n\n§4Note: The custom Resource Pack needs to be enabled!",
+  "customtooltips.option.font.desc": "The font ID to use. Leave as 'minecraft:default' for the default font.\n\n§eNote:§r Place .ttf files in config/custom_tooltip_api/fonts/ and press F3+T to load them.",
   "customtooltips.option.bold": "Bold",
   "customtooltips.option.bold.desc": "If the displayed text should be §lbold§r.",
   "customtooltips.option.italic": "Italic",
@@ -137,6 +137,8 @@
   "customtooltips.toast.pasted.desc": "Successfully pasted entry %s from clipboard",
   "customtooltips.toast.save_failed.title": "Could not save the tooltips",
   "customtooltips.toast.save_failed.desc": "Applied for now, saved with the next change. See latest.log",
+
+  "customtooltips.resource_pack.title": "Custom Tooltip API: backgrounds and fonts",
 
   "customtooltips.unbreakable_item": "Unbreakable"
 }

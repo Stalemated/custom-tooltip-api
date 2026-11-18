@@ -6,11 +6,12 @@ import com.stalemated.customtooltips.core.TooltipProcessor;
 import com.stalemated.customtooltips.core.background.TooltipBackgroundAtlas;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
-import com.stalemated.customtooltips.util.CustomBackgroundManager;
-import com.stalemated.customtooltips.util.ResourcepackManager;
+import com.stalemated.customtooltips.resource.AssetChoices;
+import com.stalemated.customtooltips.resource.ConfigFolderPack;
 import com.stalemated.lib.client.SLibConfigScreens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -28,7 +29,6 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 //?} elif forge {
@@ -56,7 +56,7 @@ implements ClientModInitializer
     *///?}
 
     static void init() {
-        ResourcepackManager.generateResourcePack();
+        ConfigFolderPack.register();
         CustomTooltipsConfigRegistry.register();
         KeybindRegistry.register();
         SLibConfigScreens.register(CustomTooltips.MOD_ID, () -> TooltipListScreen::new);
@@ -87,7 +87,7 @@ implements ClientModInitializer
 
             @Override
             public void onResourceManagerReload(ResourceManager manager) {
-                onResourceReload();
+                onResourceReload(manager);
             }
         });
     }
@@ -96,7 +96,7 @@ implements ClientModInitializer
     private static void registerLoaderEvents() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterClientReloadListenersEvent event) -> {
             event.registerReloadListener(TooltipBackgroundAtlas::reload);
-            event.registerReloadListener((ResourceManagerReloadListener) manager -> onResourceReload());
+            event.registerReloadListener((ResourceManagerReloadListener) CustomTooltipsClient::onResourceReload);
         });
         MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
             if (event.phase == TickEvent.Phase.END) onClientTick(Minecraft.getInstance());
@@ -111,9 +111,9 @@ implements ClientModInitializer
         }
     }
 
-    private static void onResourceReload() {
+    private static void onResourceReload(ResourceManager manager) {
         IconAligner.clearCache();
-        CustomBackgroundManager.reloadExternalBackgrounds();
+        AssetChoices.reload(manager);
     }
 
     private static void onItemTooltip(ItemStack stack, List<Component> lines) {
