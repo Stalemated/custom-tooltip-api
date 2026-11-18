@@ -4,34 +4,32 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.lib.util.math.MathUtils;
 import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public final class LinePlacement {
+    private static final int UNDER_THE_NAME = 1;
 
-    private LinePlacement() {
+    private final List<Component> lines;
+    private final NavigableMap<Integer, Integer> topLinesAt = new TreeMap<>();
+
+    private LinePlacement(List<Component> lines) {
+        this.lines = lines;
     }
 
-    public static void place(List<Component> lines, List<Component> text, TooltipEntry entry) {
-        switch (positionOf(entry)) {
-            case TOP -> insert(lines, text, Math.min(1, lines.size()) + lineOffset(entry, lines.size()), entry.emptyLineBefore);
-            case BOTTOM -> insert(lines, text, lines.size() + lineOffset(entry, lines.size()), entry.emptyLineBefore);
-            case REPLACE_NAME -> replaceName(lines, text);
-            case REPLACE_LINE -> replaceLine(lines, text, entry);
-            case REPLACE_ALL -> replaceAll(lines, text);
-            case APPEND -> editLine(lines, entry, line -> append(line, text));
-            case PREPEND -> editLine(lines, entry, line -> prepend(line, text));
-        }
+    public static void placeAll(List<Component> lines, List<TooltipEntry> entries, Function<TooltipEntry, List<Component>> textOf) {
+        LinePlacement placement = new LinePlacement(lines);
+        for (TooltipEntry entry : entries) placement.place(textOf.apply(entry), entry);
     }
 
-    public static Component heldItemName(Component name, List<Component> text, TooltipEntry entry) {
-        return switch (positionOf(entry)) {
-            case REPLACE_NAME, REPLACE_ALL -> text.isEmpty() ? name : text.get(0);
-            case APPEND -> entry.lineOffset == 0 ? append(name, text) : name;
-            case PREPEND -> entry.lineOffset == 0 ? prepend(name, text) : name;
-            case TOP, BOTTOM, REPLACE_LINE -> name;
-        };
+    public static Component heldItemName(Component name, List<TooltipEntry> entries, Function<TooltipEntry, List<Component>> textOf) {
+        Component heldName = name;
+        for (TooltipEntry entry : entries) heldName = nameAfter(heldName, textOf.apply(entry), entry);
+        return heldName;
     }
 
     public static int lineOffset(TooltipEntry entry, int lineCount) {
@@ -43,40 +41,79 @@ public final class LinePlacement {
         };
     }
 
+    private static Component nameAfter(Component name, List<Component> text, TooltipEntry entry) {
+        return switch (positionOf(entry)) {
+            case REPLACE_NAME, REPLACE_ALL -> text.isEmpty() ? name : text.get(0);
+            case APPEND -> entry.lineOffset == 0 ? append(name, text) : name;
+            case PREPEND -> entry.lineOffset == 0 ? prepend(name, text) : name;
+            case TOP, BOTTOM, REPLACE_LINE -> name;
+        };
+    }
+
     private static TooltipPosition positionOf(TooltipEntry entry) {
         return entry.position != null ? entry.position : TooltipPosition.BOTTOM;
     }
 
-    private static void insert(List<Component> lines, List<Component> text, int index, boolean emptyLineBefore) {
+    private void place(List<Component> text, TooltipEntry entry) {
+        switch (positionOf(entry)) {
+            case TOP -> insertUnderTheName(text, entry);
+            case BOTTOM -> insert(lines.size() + lineOffset(entry, lines.size()), text, entry.emptyLineBefore);
+            case REPLACE_NAME -> replaceName(text);
+            case REPLACE_LINE -> replaceLine(text, entry);
+            case REPLACE_ALL -> replaceAll(text);
+            case APPEND -> editLine(entry, line -> append(line, text));
+            case PREPEND -> editLine(entry, line -> prepend(line, text));
+        }
+    }
+
+    private void insertUnderTheName(List<Component> text, TooltipEntry entry) {
+        int linesWithoutTopText = lines.size() - topLinesUpTo(Integer.MAX_VALUE);
+        int anchor = Math.min(UNDER_THE_NAME, linesWithoutTopText) + lineOffset(entry, linesWithoutTopText);
+        int inserted = insert(anchor + topLinesUpTo(anchor), text, entry.emptyLineBefore);
+        topLinesAt.merge(anchor, inserted, Integer::sum);
+    }
+
+    private int topLinesUpTo(int anchor) {
+        return topLinesAt.headMap(anchor, true).values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    private int insert(int index, List<Component> text, boolean emptyLineBefore) {
         int textIndex = index;
         if (emptyLineBefore) lines.add(textIndex++, Component.empty());
         lines.addAll(textIndex, text);
+        return textIndex - index + text.size();
     }
 
-    private static void replaceName(List<Component> lines, List<Component> text) {
+    private void replaceName(List<Component> text) {
         if (text.isEmpty()) return;
-        if (lines.isEmpty()) lines.addAll(text);
-        else replaceFrom(lines, 0, text);
+        if (lines.isEmpty()) {
+            lines.addAll(text);
+            return;
+        }
+
+        replaceFrom(0, text);
+        if (text.size() > 1) topLinesAt.merge(UNDER_THE_NAME, text.size() - 1, Integer::sum);
     }
 
-    private static void replaceLine(List<Component> lines, List<Component> text, TooltipEntry entry) {
+    private void replaceLine(List<Component> text, TooltipEntry entry) {
         if (text.isEmpty() || lines.isEmpty()) return;
 
         int index = Math.min(lineOffset(entry, lines.size()) + 1, lines.size() - 1);
-        if (index >= 1) replaceFrom(lines, index, text);
+        if (index >= 1) replaceFrom(index, text);
     }
 
-    private static void replaceFrom(List<Component> lines, int index, List<Component> text) {
+    private void replaceFrom(int index, List<Component> text) {
         lines.set(index, text.get(0));
         lines.addAll(index + 1, text.subList(1, text.size()));
     }
 
-    private static void replaceAll(List<Component> lines, List<Component> text) {
+    private void replaceAll(List<Component> text) {
         lines.clear();
         lines.addAll(text.isEmpty() ? List.of(Component.literal("")) : text);
+        topLinesAt.clear();
     }
 
-    private static void editLine(List<Component> lines, TooltipEntry entry, UnaryOperator<Component> edit) {
+    private void editLine(TooltipEntry entry, UnaryOperator<Component> edit) {
         if (lines.isEmpty()) return;
 
         int index = lineOffset(entry, lines.size());

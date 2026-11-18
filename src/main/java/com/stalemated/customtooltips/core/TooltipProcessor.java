@@ -1,7 +1,6 @@
 package com.stalemated.customtooltips.core;
 
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
-import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.position.LinePlacement;
 import com.stalemated.customtooltips.gui.GuiIcon;
 
@@ -26,9 +25,7 @@ public class TooltipProcessor {
             lines.subList(1, lines.size()).clear();
         }
 
-        for (TooltipEntry entry : matched.shown()) {
-            LinePlacement.place(lines, entry.getTextComponents(stack), entry);
-        }
+        LinePlacement.placeAll(lines, matched.shown(), entry -> entry.getTextComponents(stack));
 
         if (matched.waitingForKey()) {
             Component keyName = HOLD_KEY.getTranslatedKeyMessage();
@@ -44,14 +41,6 @@ public class TooltipProcessor {
         ActiveEntries activeEntries = TooltipRegistry.activeEntries();
         if (activeEntries.isEmpty()) return originalName;
 
-        for (TooltipEntry entry : activeEntries.match(stack, HoldKey.isDown()).shown()) {
-            Component modified = LinePlacement.heldItemName(originalName, entry.getTextComponents(stack), entry);
-            
-            if (modified != originalName) {
-                return modified;
-            }
-        }
-
-        return originalName;
+        return LinePlacement.heldItemName(originalName, activeEntries.match(stack, HoldKey.isDown()).shown(), entry -> entry.getTextComponents(stack));
     }
 }
