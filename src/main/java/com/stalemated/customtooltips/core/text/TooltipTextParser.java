@@ -16,7 +16,7 @@ public final class TooltipTextParser {
     private static final Pattern TRANSLATION = Pattern.compile("<translate:([^>]+)>");
     private static final Pattern KEYBIND = Pattern.compile("<key:([^>]+)>");
     private static final Pattern PLACEHOLDER = Pattern.compile("%([a-zA-Z_]+)%");
-    private static final String TRANSLATION_START = "<translate:";
+    private static final List<Pattern> CHANGING_PARTS = List.of(TRANSLATION, KEYBIND, PLACEHOLDER);
 
     private TooltipTextParser() {
     }
@@ -32,8 +32,7 @@ public final class TooltipTextParser {
 
     public static boolean isDynamic(String line) {
         if (line == null) return false;
-        if (line.contains(TRANSLATION_START)) return true;
-        return PLACEHOLDER.matcher(line).results().anyMatch(match -> PlaceholderRegistry.contains(match.group(1)));
+        return CHANGING_PARTS.stream().anyMatch(part -> part.matcher(line).find());
     }
 
     private static String parse(String text, ItemStack stack) {
