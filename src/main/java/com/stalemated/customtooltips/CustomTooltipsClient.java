@@ -3,6 +3,7 @@ package com.stalemated.customtooltips;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.core.IconAligner;
 import com.stalemated.customtooltips.core.TooltipProcessor;
+import com.stalemated.customtooltips.core.background.TooltipBackgroundAtlas;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.customtooltips.registry.KeybindRegistry;
 import com.stalemated.customtooltips.util.CustomBackgroundManager;
@@ -16,14 +17,20 @@ import java.util.List;
 
 //? if fabric {
 import com.stalemated.lib.util.ResourceIds;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import org.jetbrains.annotations.NotNull;
 //?} elif forge {
 /*import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
@@ -60,7 +67,19 @@ implements ClientModInitializer
     private static void registerLoaderEvents() {
         ClientTickEvents.END_CLIENT_TICK.register(CustomTooltipsClient::onClientTick);
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> onItemTooltip(stack, lines));
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+        ResourceManagerHelper resources = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES);
+        resources.registerReloadListener(new IdentifiableResourceReloadListener() {
+            @Override
+            public ResourceLocation getFabricId() {
+                return ResourceIds.of(CustomTooltips.MOD_ID, "tooltip_backgrounds");
+            }
+
+            @Override
+            public @NotNull CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier barrier, ResourceManager manager, ProfilerFiller preparationProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+                return TooltipBackgroundAtlas.reload(barrier, manager, preparationProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+            }
+        });
+        resources.registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
                 return ResourceIds.of(CustomTooltips.MOD_ID, "resources");
@@ -75,8 +94,10 @@ implements ClientModInitializer
     //?} elif forge {
     /*@SuppressWarnings("removal")
     private static void registerLoaderEvents() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterClientReloadListenersEvent event) ->
-                event.registerReloadListener((ResourceManagerReloadListener) manager -> onResourceReload()));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterClientReloadListenersEvent event) -> {
+            event.registerReloadListener(TooltipBackgroundAtlas::reload);
+            event.registerReloadListener((ResourceManagerReloadListener) manager -> onResourceReload());
+        });
         MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
             if (event.phase == TickEvent.Phase.END) onClientTick(Minecraft.getInstance());
         });

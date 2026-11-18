@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import com.stalemated.lib.helper.PlatformHelper;
+
 import static com.stalemated.customtooltips.CustomTooltips.LOGGER;
 
 public class ResourcepackManager {
@@ -20,7 +21,7 @@ public class ResourcepackManager {
             CustomFontManager.loadAndGenerateFonts();
             CustomBackgroundManager.loadAndGenerateBackgrounds();
 
-            generateAtlasJson();
+            removeBlockAtlasJson();
         } catch (Exception e) {
             LOGGER.error("Failed to generate resource pack", e);
         }
@@ -42,25 +43,8 @@ public class ResourcepackManager {
         }
     }
 
-    private static void generateAtlasJson() throws Exception {
-        Path atlasesDir = RESOURCE_PACK_DIR.resolve("assets").resolve("minecraft").resolve("atlases");
-        if (!Files.exists(atlasesDir)) Files.createDirectories(atlasesDir);
-
-        File blocksJson = atlasesDir.resolve("blocks.json").toFile();
-        if (!blocksJson.exists()) {
-            try (FileWriter writer = new FileWriter(blocksJson)) {
-                writer.write("""
-                    {
-                        "sources": [
-                            {
-                                "type": "directory",
-                                "source": "gui/tooltip_backgrounds",
-                                "prefix": "gui/tooltip_backgrounds/"
-                            }
-                        ]
-                    }
-                    """);
-            }
-        }
+    private static void removeBlockAtlasJson() throws IOException {
+        Path blocksJson = RESOURCE_PACK_DIR.resolve("assets").resolve("minecraft").resolve("atlases").resolve("blocks.json");
+        if (Files.deleteIfExists(blocksJson)) LOGGER.info("Removed {}, tooltip backgrounds have their own atlas now", blocksJson);
     }
 }

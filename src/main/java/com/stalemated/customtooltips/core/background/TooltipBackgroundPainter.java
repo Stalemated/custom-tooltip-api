@@ -5,12 +5,10 @@ import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.core.TooltipColors;
 import java.util.function.Consumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 
 public final class TooltipBackgroundPainter {
 
@@ -48,9 +46,9 @@ public final class TooltipBackgroundPainter {
             return;
         }
 
-        TextureAtlasSprite sprite = atlasSprite(entry.runtimeCache().backgroundSprite());
+        TextureAtlasSprite sprite = TooltipBackgroundAtlas.sprite(entry.runtimeCache().backgroundSprite());
         boolean inAtlas = !isMissing(sprite);
-        ResourceLocation texture = inAtlas ? InventoryMenu.BLOCK_ATLAS : backgroundTexture;
+        ResourceLocation texture = inAtlas ? TooltipBackgroundAtlas.LOCATION : backgroundTexture;
 
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, z);
@@ -65,10 +63,6 @@ public final class TooltipBackgroundPainter {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
         graphics.pose().popPose();
-    }
-
-    private static TextureAtlasSprite atlasSprite(ResourceLocation spriteId) {
-        return Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(spriteId);
     }
 
     @SuppressWarnings("resource")

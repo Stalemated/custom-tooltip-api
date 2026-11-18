@@ -1,5 +1,6 @@
 package com.stalemated.customtooltips.gui;
 
+import com.stalemated.customtooltips.CustomTooltips;
 import com.stalemated.lib.util.ResourceIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,7 +20,7 @@ public enum GuiIcon {
     COPY("\uDAC1\uDF32"),
     PASTE("\uDAC1\uDF33");
 
-    private static final ResourceLocation FONT = ResourceIds.of("custom-tooltip-api", "icons");
+    private static final ResourceLocation FONT = ResourceIds.of(CustomTooltips.ASSETS_NAMESPACE, "icons");
 
     private final String glyph;
 
