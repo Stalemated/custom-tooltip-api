@@ -51,7 +51,7 @@ public final class TooltipBackgroundPainter {
         graphics.pose().translate(0, 0, z);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, TooltipColors.backgroundAlpha(look, vanillaColor) / 255.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, look.backgroundOpacity());
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 

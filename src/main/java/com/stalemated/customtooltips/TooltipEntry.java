@@ -10,6 +10,7 @@ import com.stalemated.customtooltips.core.TooltipRuntimeCache;
 import com.stalemated.customtooltips.core.position.LinePlacement;
 import com.stalemated.customtooltips.core.text.TextFormatter;
 import com.stalemated.lib.config.annotation.ItemDropdown;
+import com.stalemated.lib.config.annotation.RangeFloat;
 import com.stalemated.lib.config.annotation.RangeInt;
 import com.stalemated.lib.config.annotation.Title;
 import com.stalemated.lib.predicate.target.TargetMatcher;
@@ -25,7 +26,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_OPACITY;
+import static com.stalemated.customtooltips.core.TooltipColors.UNCHANGED_OPACITY;
 
 public class TooltipEntry {
 
@@ -43,14 +44,14 @@ public class TooltipEntry {
     @Title("border")
     public List<Color> borderColors = new ArrayList<>();
 
-    @RangeInt(min = 0, max = 255)
-    public int borderOpacity = BACKGROUND_OPACITY;
+    @RangeFloat(min = 0, max = 1, step = 0.01f)
+    public float borderOpacity = UNCHANGED_OPACITY;
 
     @Title("background")
     public BackgroundType backgroundType = BackgroundType.SOLID;
 
-    @RangeInt(min = 0, max = 255)
-    public int backgroundOpacity = BACKGROUND_OPACITY;
+    @RangeFloat(min = 0, max = 1, step = 0.01f)
+    public float backgroundOpacity = UNCHANGED_OPACITY;
 
     public List<Color> backgroundColors = new ArrayList<>();
 
@@ -122,11 +123,11 @@ public class TooltipEntry {
     }
 
     public boolean hasCustomBorder() {
-        return TooltipLook.setsBorderColors(this) || this.borderOpacity != BACKGROUND_OPACITY;
+        return TooltipLook.setsBorderColors(this) || this.borderOpacity != UNCHANGED_OPACITY;
     }
 
     public boolean hasCustomBackground() {
-        return TooltipLook.setsBackground(this) || this.backgroundOpacity != BACKGROUND_OPACITY;
+        return TooltipLook.setsBackground(this) || this.backgroundOpacity != UNCHANGED_OPACITY;
     }
 
     public void invalidateCaches() {

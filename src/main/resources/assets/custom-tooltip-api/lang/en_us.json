@@ -105,9 +105,9 @@
   "customtooltips.option.show_only_if_unbreakable": "Show only if Unbreakable",
   "customtooltips.option.show_only_if_unbreakable.desc": "If enabled, the tooltip will only appear when the item possesses the Unbreakable tag.",
   "customtooltips.option.background_opacity": "Background Opacity",
-  "customtooltips.option.background_opacity.desc": "Adjusts the transparency of the tooltip's background.\n\n§eNote:§r 255 is fully opaque, 0 is fully transparent. Default is 240.",
+  "customtooltips.option.background_opacity.desc": "Adjusts the transparency of the tooltip's background by multiplying the alpha of its colors or its texture.\n\n§eNote:§r 1 keeps them as chosen, 0 makes them invisible. For a more opaque background, raise the alpha of its colors. Default is 1.",
   "customtooltips.option.border_opacity": "Border Opacity",
-  "customtooltips.option.border_opacity.desc": "Adjusts the transparency of the tooltip's borders.\n\n§eNote:§r 255 is fully opaque, 0 is fully transparent. Default is 240.",
+  "customtooltips.option.border_opacity.desc": "Adjusts the transparency of the tooltip's borders by multiplying the alpha of their colors.\n\n§eNote:§r 1 keeps them as chosen, 0 makes them invisible. For more opaque borders, raise the alpha of their colors. Default is 1.",
 
   "customtooltips.tooltip_list_widget.entry.narration": "Tooltip entry for: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Delete",

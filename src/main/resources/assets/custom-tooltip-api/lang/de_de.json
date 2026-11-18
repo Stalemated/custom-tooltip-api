@@ -105,9 +105,9 @@
   "customtooltips.option.show_only_if_unbreakable": "Nur anzeigen, wenn unzerstörbar",
   "customtooltips.option.show_only_if_unbreakable.desc": "Wenn diese Option aktiviert ist, wird der Tooltip nur angezeigt, wenn der Gegenstand das Tag Unzerstörbar“ trägt.",
   "customtooltips.option.background_opacity": "Hintergrundtransparenz",
-  "customtooltips.option.background_opacity.desc": "Stellt die Transparenz des Hintergrunds des Tooltips ein.\n\n§eNotiz:§r 255 ist vollständig undurchsichtig, 0 ist vollständig transparent. Der Standardwert ist 240.",
+  "customtooltips.option.background_opacity.desc": "Stellt die Transparenz des Hintergrunds des Tooltips ein: der Wert multipliziert den Alphawert seiner Farben oder seiner Textur.\n\n§eNotiz:§r Bei 1 bleibt alles wie eingestellt, bei 0 ist es unsichtbar. Mehr Deckkraft: den Alphawert der Farben anheben. Der Standardwert ist 1.",
   "customtooltips.option.border_opacity": "Deckkraft der Rahmen",
-  "customtooltips.option.border_opacity.desc": "Stellt die Transparenz der Ränder des Tooltips ein.\n\n§eNotiz:§r 255 ist vollständig undurchsichtig, 0 ist vollständig transparent. Der Standardwert ist 240.",
+  "customtooltips.option.border_opacity.desc": "Stellt die Transparenz der Rahmen des Tooltips ein: der Wert multipliziert den Alphawert ihrer Farben.\n\n§eNotiz:§r Bei 1 bleibt alles wie eingestellt, bei 0 sind sie unsichtbar. Mehr Deckkraft: den Alphawert der Farben anheben. Der Standardwert ist 1.",
 
   "customtooltips.tooltip_list_widget.entry.narration": "Tooltip-Eintrag für: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Löschen",

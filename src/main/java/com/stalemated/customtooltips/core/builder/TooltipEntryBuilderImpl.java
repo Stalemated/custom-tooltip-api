@@ -94,8 +94,8 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     }
 
     @Override
-    public TooltipBuilder backgroundOpacity(int backgroundOpacity) {
-        this.entry.backgroundOpacity = backgroundOpacity;
+    public TooltipBuilder backgroundOpacity(float backgroundOpacity) {
+        this.entry.backgroundOpacity = requireOpacity("background opacity", backgroundOpacity);
         return this;
     }
 
@@ -106,8 +106,8 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     }
 
     @Override
-    public TooltipBuilder borderOpacity(int borderOpacity) {
-        this.entry.borderOpacity = borderOpacity;
+    public TooltipBuilder borderOpacity(float borderOpacity) {
+        this.entry.borderOpacity = requireOpacity("border opacity", borderOpacity);
         return this;
     }
 
@@ -228,5 +228,10 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     public TooltipEntry register() {
         CustomTooltipApi.registerTooltip(this.entry);
         return this.entry;
+    }
+
+    private static float requireOpacity(String option, float opacity) {
+        if (!(opacity >= 0 && opacity <= 1)) throw new IllegalArgumentException(option + " must be 0-1, got " + opacity);
+        return opacity;
     }
 }

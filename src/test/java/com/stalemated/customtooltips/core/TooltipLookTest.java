@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.awt.Color;
 import java.util.List;
 
-import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_OPACITY;
+import static com.stalemated.customtooltips.core.TooltipColors.UNCHANGED_OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -35,16 +35,16 @@ class TooltipLookTest {
     void eachPartIsResolvedOnItsOwn() {
         TooltipEntry gold = background(0xFFFFD700);
         TooltipEntry halfOpacity = new TooltipEntry();
-        halfOpacity.backgroundOpacity = 120;
+        halfOpacity.backgroundOpacity = 0.5f;
         TooltipEntry rarityBorder = new TooltipEntry();
         rarityBorder.borderColors = List.of(new Color(0xFFAA00FF, true), new Color(0xFF5500AA, true));
 
         TooltipLook look = TooltipLook.of(List.of(gold, halfOpacity, rarityBorder));
 
         assertSame(gold, look.background());
-        assertEquals(120, look.backgroundOpacity());
+        assertEquals(0.5f, look.backgroundOpacity());
         assertSame(rarityBorder, look.border());
-        assertEquals(BACKGROUND_OPACITY, look.borderOpacity());
+        assertEquals(UNCHANGED_OPACITY, look.borderOpacity());
         assertNull(TooltipLook.of(List.of(halfOpacity)).background());
     }
 

@@ -22,7 +22,8 @@ class TooltipClipboardTest {
             "{\"font\": \"Bad Font\"}",
             "{\"font\": {}}",
             "{\"uuid\": \"not-a-uuid\"}",
-            "{\"borderColors\": [\"not a color\"]}"
+            "{\"borderColors\": [\"not a color\"]}",
+            "{\"target\": {}}"
     })
     void textThatIsNotATooltipEntryIsRejected(String clipboard) {
         assertTrue(TooltipClipboard.read(clipboard, config).isEmpty());

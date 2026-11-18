@@ -113,6 +113,7 @@ implements ClientModInitializer
 
     private static void onResourceReload(ResourceManager manager) {
         IconAligner.clearCache();
+        CustomTooltipsConfigRegistry.EXTERNAL_BACKGROUNDS.reload();
         AssetChoices.reload(manager);
     }
 

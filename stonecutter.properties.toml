@@ -15,7 +15,7 @@ deps.jupiter = "6.1.3"
 deps.slf4j = "2.0.7"
 deps.log4j = "2.19.0"
 
-deps.slib = "4.1.0.4"
+deps.slib = "4.1.0.5"
 deps.jankson = "1.2.3"
 
 publish.modrinth_id = ""

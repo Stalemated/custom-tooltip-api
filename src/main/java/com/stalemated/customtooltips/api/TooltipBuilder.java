@@ -195,14 +195,15 @@ public interface TooltipBuilder {
     TooltipBuilder backgroundTexture(String backgroundTexture);
 
     /**
-     * Sets the tooltip's background opacity.
+     * Sets the tooltip's background opacity, a multiplier on the alpha of everything the background paints: its colors, its texture, or the vanilla colors if the entry keeps them.
      * <p>
-     * Accepts integers from 0 to 255 to adjust the individual tooltip's background opacity. 0 is fully transparent, while 255 is fully opaque.
+     * 1 keeps the background as its colors and texture are, 0 makes it invisible, and 0.5 halves its alpha. To make a background more opaque than its colors, raise the alpha of the colors instead. Defaults to 1.
      *
-     * @param backgroundOpacity The background opacity of the tooltip.
+     * @param backgroundOpacity The multiplier, from 0 to 1.
      * @return This builder instance.
+     * @throws IllegalArgumentException if {@code backgroundOpacity} is not between 0 and 1.
      */
-    TooltipBuilder backgroundOpacity(int backgroundOpacity);
+    TooltipBuilder backgroundOpacity(float backgroundOpacity);
 
     /**
      * Sets the background scale of the tooltip (for repeating and framed background types).
@@ -213,14 +214,15 @@ public interface TooltipBuilder {
     TooltipBuilder backgroundScale(int backgroundScale);
 
     /**
-     * Sets the tooltip's border opacity.
+     * Sets the tooltip's border opacity, a multiplier on the alpha of the border colors, or of the vanilla ones if the entry keeps them.
      * <p>
-     * Accepts integers from 0 to 255 to adjust the individual tooltip's border opacity. 0 is fully transparent, while 255 is fully opaque.
+     * 1 keeps the border as its colors are, 0 makes it invisible, and 0.5 halves its alpha. To make a border more opaque than its colors, raise the alpha of the colors instead: the vanilla border colors have an alpha of 0x50. Defaults to 1.
      *
-     * @param borderOpacity The border opacity of the tooltip.
+     * @param borderOpacity The multiplier, from 0 to 1.
      * @return This builder instance.
+     * @throws IllegalArgumentException if {@code borderOpacity} is not between 0 and 1.
      */
-    TooltipBuilder borderOpacity(int borderOpacity);
+    TooltipBuilder borderOpacity(float borderOpacity);
 
     /**
      * Sets the position where the tooltip will be injected.

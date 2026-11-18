@@ -105,9 +105,9 @@
   "customtooltips.option.show_only_if_unbreakable": "Mostrar solo si es Irrompible",
   "customtooltips.option.show_only_if_unbreakable.desc": "Si está activado, el tooltip solo aparecerá cuando el objeto posea la etiqueta Irrompible (Unbreakable).",
   "customtooltips.option.background_opacity": "Opacidad de Fondo",
-  "customtooltips.option.background_opacity.desc": "Ajusta la transparencia del fondo del tooltip.\n\n§eNota:§r 255 es completamente opaco, 0 es completamente transparente. El valor por defecto es 240.",
+  "customtooltips.option.background_opacity.desc": "Ajusta la transparencia del fondo del tooltip multiplicando el alfa de sus colores o de su textura.\n\n§eNota:§r 1 los deja como se eligieron y 0 los hace invisibles. Para un fondo menos transparente, sube el alfa de sus colores. El valor por defecto es 1.",
   "customtooltips.option.border_opacity": "Opacidad de Borde",
-  "customtooltips.option.border_opacity.desc": "Ajusta la transparencia de los bordes del tooltip.\n\n§eNota:§r 255 es completamente opaco, 0 es completamente transparente. El valor por defecto es 240.",
+  "customtooltips.option.border_opacity.desc": "Ajusta la transparencia de los bordes del tooltip multiplicando el alfa de sus colores.\n\n§eNota:§r 1 los deja como se eligieron y 0 los hace invisibles. Para unos bordes menos transparentes, sube el alfa de sus colores. El valor por defecto es 1.",
 
   "customtooltips.tooltip_list_widget.entry.narration": "Entrada de tooltip para: %s",
   "customtooltips.tooltip_list_widget.delete_button": "Eliminar",

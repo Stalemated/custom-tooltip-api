@@ -6,26 +6,26 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.stalemated.customtooltips.core.TooltipColors.UNCHANGED_OPACITY;
 import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_GRADIENT;
-import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_OPACITY;
 import static com.stalemated.lib.util.color.VanillaTooltipColors.BORDER;
 
-public record TooltipLook(TooltipEntry background, int backgroundOpacity, TooltipEntry border, int borderOpacity) {
-    public static final TooltipLook VANILLA = new TooltipLook(null, BACKGROUND_OPACITY, null, BACKGROUND_OPACITY);
+public record TooltipLook(TooltipEntry background, float backgroundOpacity, TooltipEntry border, float borderOpacity) {
+    public static final TooltipLook VANILLA = new TooltipLook(null, UNCHANGED_OPACITY, null, UNCHANGED_OPACITY);
 
     private static final Set<BackgroundType> TEXTURED = EnumSet.of(BackgroundType.TEXTURE, BackgroundType.SIMPLE_TEXTURE, BackgroundType.REPEATING_TEXTURE);
 
     public static TooltipLook of(List<TooltipEntry> shown) {
         TooltipEntry background = null;
-        int backgroundOpacity = BACKGROUND_OPACITY;
+        float backgroundOpacity = UNCHANGED_OPACITY;
         TooltipEntry border = null;
-        int borderOpacity = BACKGROUND_OPACITY;
+        float borderOpacity = UNCHANGED_OPACITY;
 
         for (TooltipEntry entry : shown) {
             if (setsBackground(entry)) background = entry;
-            if (entry.backgroundOpacity != BACKGROUND_OPACITY) backgroundOpacity = entry.backgroundOpacity;
+            if (entry.backgroundOpacity != UNCHANGED_OPACITY) backgroundOpacity = entry.backgroundOpacity;
             if (setsBorderColors(entry)) border = entry;
-            if (entry.borderOpacity != BACKGROUND_OPACITY) borderOpacity = entry.borderOpacity;
+            if (entry.borderOpacity != UNCHANGED_OPACITY) borderOpacity = entry.borderOpacity;
         }
         return new TooltipLook(background, backgroundOpacity, border, borderOpacity);
     }
@@ -49,7 +49,7 @@ public record TooltipLook(TooltipEntry background, int backgroundOpacity, Toolti
     }
 
     public boolean changesBackground() {
-        return this.background != null || this.backgroundOpacity != BACKGROUND_OPACITY;
+        return this.background != null || this.backgroundOpacity != UNCHANGED_OPACITY;
     }
 
     public BackgroundType backgroundType() {

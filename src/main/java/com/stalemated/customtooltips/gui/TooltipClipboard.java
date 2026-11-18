@@ -6,7 +6,6 @@ import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.lib.config.ConfigManager;
 import java.util.Optional;
 import java.util.UUID;
-import net.minecraft.ResourceLocationException;
 import net.minecraft.client.Minecraft;
 
 import static com.stalemated.customtooltips.CustomTooltips.LOGGER;
@@ -27,7 +26,7 @@ public final class TooltipClipboard {
         TooltipEntry entry;
         try {
             entry = config.fromJson(clipboard, TooltipEntry.class);
-        } catch (JsonParseException | ResourceLocationException | IllegalArgumentException | UnsupportedOperationException e) {
+        } catch (JsonParseException e) {
             LOGGER.warn("Clipboard does not hold a tooltip entry: {}", e.getMessage());
             return Optional.empty();
         }

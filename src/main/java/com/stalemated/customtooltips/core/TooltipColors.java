@@ -3,16 +3,15 @@ package com.stalemated.customtooltips.core;
 import com.stalemated.lib.util.color.VanillaTooltipColors;
 import com.stalemated.lib.util.math.MathUtils;
 
-import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_OPACITY;
-
 public final class TooltipColors {
+    public static final float UNCHANGED_OPACITY = 1f;
 
     private TooltipColors() {
     }
 
-    public static int scaleAlpha(int color, int opacity) {
+    public static int scaleAlpha(int color, float opacity) {
         int originalAlpha = (color >> 24) & 0xFF;
-        int newAlpha = MathUtils.clamp((int) (originalAlpha * (opacity / (float) BACKGROUND_OPACITY)), 0, 255);
+        int newAlpha = MathUtils.clamp(Math.round(originalAlpha * opacity), 0, 255);
         return (color & 0x00FFFFFF) | (newAlpha << 24);
     }
 
@@ -42,9 +41,5 @@ public final class TooltipColors {
 
     public static int tierifyOutline(TooltipLook look, int tierColor) {
         return look.changesBackground() ? VanillaTooltipColors.BACKGROUND : outline(look, tierColor);
-    }
-
-    public static int backgroundAlpha(TooltipLook look, int vanillaColor) {
-        return (scaleAlpha(vanillaColor, look.backgroundOpacity()) >> 24) & 0xFF;
     }
 }
