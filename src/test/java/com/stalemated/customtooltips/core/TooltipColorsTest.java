@@ -17,8 +17,8 @@ class TooltipColorsTest {
     @Test
     void theDefaultOpacityLeavesTheColorAsItIs() {
         assertEquals(BACKGROUND, TooltipColors.scaleAlpha(BACKGROUND, 240));
-        assertEquals(BACKGROUND, TooltipColors.backgroundStart(new TooltipEntry(), BACKGROUND));
-        assertEquals(BACKGROUND, TooltipColors.backgroundStart(null, BACKGROUND));
+        assertEquals(BACKGROUND, TooltipColors.backgroundStart(TooltipLook.of(List.of(new TooltipEntry())), BACKGROUND));
+        assertEquals(BACKGROUND, TooltipColors.backgroundStart(TooltipLook.VANILLA, BACKGROUND));
     }
 
     @Test
@@ -34,7 +34,7 @@ class TooltipColorsTest {
         entry.backgroundOpacity = 120;
 
         assertTrue(entry.hasCustomBackground());
-        assertEquals(0x7FFF0000, TooltipColors.backgroundStart(entry, BACKGROUND));
+        assertEquals(0x7FFF0000, TooltipColors.backgroundStart(TooltipLook.of(List.of(entry)), BACKGROUND));
     }
 
     @Test

@@ -14,6 +14,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class LegendaryTooltipsBorderMixin {
     @ModifyVariable(method = "setCurrentTooltipBorderStart", at = @At("HEAD"), argsOnly = true)
     private static int customtooltips$borderStart(int color) {
-        return TooltipColors.borderStart(CurrentTooltip.entry(), color);
+        return TooltipColors.borderStart(CurrentTooltip.look(), color);
     }
 }

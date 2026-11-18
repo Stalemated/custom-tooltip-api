@@ -2,9 +2,9 @@ package com.stalemated.customtooltips.forge;
 
 //? if forge {
 /*import com.stalemated.customtooltips.CustomTooltips;
-import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.CurrentTooltip;
 import com.stalemated.customtooltips.core.TooltipColors;
+import com.stalemated.customtooltips.core.TooltipLook;
 import com.stalemated.customtooltips.core.background.TooltipBackgroundPainter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -18,36 +18,30 @@ public class ForgeTooltipEvents {
 
     @SubscribeEvent
     public static void onRenderTooltipColor(RenderTooltipEvent.Color event) {
-        TooltipEntry entry = CurrentTooltip.entry();
+        TooltipLook look = CurrentTooltip.look();
+        if (look.changesBackground()) {
+            int width = 0;
+            int height = 0;
 
-        if (entry != null) {
-            if (entry.hasCustomBackground()) {
-                int width = 0;
-                int height = 0;
-
-                for (int i = 0; i < event.getComponents().size(); i++) {
-                    ClientTooltipComponent component = event.getComponents().get(i);
-                    width = Math.max(width, component.getWidth(event.getFont()));
-                    height += component.getHeight();
-                }
-
-                int bgX = event.getX() - 3;
-                int bgY = event.getY() - 3;
-                int bgWidth = width + 6;
-                int bgHeight = height + 6;
-
-                GuiGraphics context = event.getGraphics();
-                TooltipBackgroundPainter.paint(context, entry, bgX, bgY, bgWidth, bgHeight, 400, event.getBackgroundStart());
-
-                event.setBackgroundStart(0x00000000);
-                event.setBackgroundEnd(0x00000000);
-            } else {
-                event.setBackgroundStart(TooltipColors.backgroundStart(entry, event.getBackgroundStart()));
-                event.setBackgroundEnd(TooltipColors.backgroundEnd(entry, event.getBackgroundEnd()));
+            for (int i = 0; i < event.getComponents().size(); i++) {
+                ClientTooltipComponent component = event.getComponents().get(i);
+                width = Math.max(width, component.getWidth(event.getFont()));
+                height += component.getHeight();
             }
-            event.setBorderStart(TooltipColors.borderStart(entry, event.getBorderStart()));
-            event.setBorderEnd(TooltipColors.borderEnd(entry, event.getBorderEnd()));
+
+            int bgX = event.getX() - 3;
+            int bgY = event.getY() - 3;
+            int bgWidth = width + 6;
+            int bgHeight = height + 6;
+
+            GuiGraphics context = event.getGraphics();
+            TooltipBackgroundPainter.paint(context, look, bgX, bgY, bgWidth, bgHeight, 400, event.getBackgroundStart());
+
+            event.setBackgroundStart(0x00000000);
+            event.setBackgroundEnd(0x00000000);
         }
+        event.setBorderStart(TooltipColors.borderStart(look, event.getBorderStart()));
+        event.setBorderEnd(TooltipColors.borderEnd(look, event.getBorderEnd()));
     }
 }
 *///?}

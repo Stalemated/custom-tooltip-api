@@ -19,27 +19,27 @@ public abstract class TieredTooltipMixin {
 
     @WrapOperation(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderRectangle(Lnet/minecraft/client/gui/GuiGraphics;IIIIII)V"))
     private static void customtooltips$paintBackground(GuiGraphics context, int x, int y, int width, int height, int z, int color, Operation<Void> original) {
-        boolean painted = TooltipBackgroundPainter.paint(context, CurrentTooltip.entry(), x, y, width, height, z, color);
+        boolean painted = TooltipBackgroundPainter.paint(context, CurrentTooltip.look(), x, y, width, height, z, color);
         if (!painted) original.call(context, x, y, width, height, z, color);
     }
 
     @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderHorizontalLine(Lnet/minecraft/client/gui/GuiGraphics;IIIII)V"), index = 5)
     private static int customtooltips$horizontalOutline(int color) {
-        return TooltipColors.tierifyOutline(CurrentTooltip.entry(), color);
+        return TooltipColors.tierifyOutline(CurrentTooltip.look(), color);
     }
 
     @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderVerticalLine(Lnet/minecraft/client/gui/GuiGraphics;IIIII)V"), index = 5)
     private static int customtooltips$verticalOutline(int color) {
-        return TooltipColors.tierifyOutline(CurrentTooltip.entry(), color);
+        return TooltipColors.tierifyOutline(CurrentTooltip.look(), color);
     }
 
     @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderBorder(Lnet/minecraft/client/gui/GuiGraphics;IIIIIII)V"), index = 6)
     private static int customtooltips$borderStart(int color) {
-        return TooltipColors.borderStart(CurrentTooltip.entry(), color);
+        return TooltipColors.borderStart(CurrentTooltip.look(), color);
     }
 
     @ModifyArg(method = "renderTooltipBackground", at = @At(value = "INVOKE", target = "Lelocindev/tierify/util/TieredTooltip;renderBorder(Lnet/minecraft/client/gui/GuiGraphics;IIIIIII)V"), index = 7)
     private static int customtooltips$borderEnd(int color) {
-        return TooltipColors.borderEnd(CurrentTooltip.entry(), color);
+        return TooltipColors.borderEnd(CurrentTooltip.look(), color);
     }
 }

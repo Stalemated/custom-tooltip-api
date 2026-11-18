@@ -5,6 +5,7 @@ import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.core.ItemConditions;
+import com.stalemated.customtooltips.core.TooltipLook;
 import com.stalemated.customtooltips.core.TooltipRuntimeCache;
 import com.stalemated.customtooltips.core.position.LinePlacement;
 import com.stalemated.customtooltips.core.text.TextFormatter;
@@ -24,9 +25,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_GRADIENT;
 import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND_OPACITY;
-import static com.stalemated.lib.util.color.VanillaTooltipColors.BORDER;
 
 public class TooltipEntry {
 
@@ -123,21 +122,11 @@ public class TooltipEntry {
     }
 
     public boolean hasCustomBorder() {
-        int start = runtimeCache().borderColorStart();
-        int end = runtimeCache().borderColorEnd();
-        return (!this.borderColors.isEmpty() && !List.of(start, end).equals(BORDER))
-                || this.borderOpacity != BACKGROUND_OPACITY;
+        return TooltipLook.setsBorderColors(this) || this.borderOpacity != BACKGROUND_OPACITY;
     }
 
     public boolean hasCustomBackground() {
-        int start = runtimeCache().backgroundColorStart();
-        int end = runtimeCache().backgroundColorEnd();
-        return this.backgroundOpacity != BACKGROUND_OPACITY
-                || (!this.backgroundColors.isEmpty() && start != BACKGROUND_GRADIENT.get(0) && this.backgroundType == BackgroundType.SOLID)
-                || (!this.backgroundColors.isEmpty() && !List.of(start, end).equals(BACKGROUND_GRADIENT) && this.backgroundType == BackgroundType.GRADIENT)
-                || (this.backgroundType == BackgroundType.TEXTURE && !this.backgroundTexture.isEmpty())
-                || (this.backgroundType == BackgroundType.SIMPLE_TEXTURE && !this.backgroundTexture.isEmpty())
-                || (this.backgroundType == BackgroundType.REPEATING_TEXTURE && !this.backgroundTexture.isEmpty());
+        return TooltipLook.setsBackground(this) || this.backgroundOpacity != BACKGROUND_OPACITY;
     }
 
     public void invalidateCaches() {

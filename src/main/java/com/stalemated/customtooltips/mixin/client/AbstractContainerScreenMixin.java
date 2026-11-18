@@ -2,8 +2,8 @@ package com.stalemated.customtooltips.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.CurrentTooltip;
+import com.stalemated.customtooltips.core.TooltipLook;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
@@ -18,7 +18,7 @@ public abstract class AbstractContainerScreenMixin {
 
     @WrapMethod(method = "renderTooltip")
     private void customtooltips$renderWithEntry(GuiGraphics context, int x, int y, Operation<Void> original) {
-        TooltipEntry entry = this.hoveredSlot != null && this.hoveredSlot.hasItem() ? CurrentTooltip.entryFor(this.hoveredSlot.getItem()) : null;
-        CurrentTooltip.render(entry, () -> original.call(context, x, y));
+        TooltipLook look = this.hoveredSlot != null && this.hoveredSlot.hasItem() ? CurrentTooltip.lookFor(this.hoveredSlot.getItem()) : TooltipLook.VANILLA;
+        CurrentTooltip.render(look, () -> original.call(context, x, y));
     }
 }

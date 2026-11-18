@@ -13,6 +13,6 @@ public abstract class GuiGraphicsMixin {
 
     @WrapMethod(method = "renderTooltip(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V")
     private void customtooltips$renderWithEntry(Font font, ItemStack stack, int x, int y, Operation<Void> original) {
-        CurrentTooltip.render(CurrentTooltip.entryFor(stack), () -> original.call(font, stack, x, y));
+        CurrentTooltip.render(CurrentTooltip.lookFor(stack), () -> original.call(font, stack, x, y));
     }
 }
