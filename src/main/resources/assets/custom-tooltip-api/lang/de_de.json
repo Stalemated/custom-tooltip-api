@@ -97,7 +97,7 @@
   "customtooltips.option.reverse_animation": "Rückwärtsanimation",
   "customtooltips.option.reverse_animation.desc": "Kehrt die Animation des Farbverlaufs um.\nFunktioniert nur mit den Farbverläufen §6Gleiten§r, §6Atmend§r und §6Regenbogen§r.",
   "customtooltips.option.hide_vanilla_lines": "Vanilla-Tooltip ausblenden",
-  "customtooltips.option.hide_vanilla_lines.desc": "Wenn diese Option aktiviert ist, werden alle standardmäßigen Vanilla-Hintergrundinformationen und Werte des Gegenstands entfernt, bevor dieser benutzerdefinierte Tooltip eingefügt wird.\n\n§eTip:§r Ideal, um die Beschreibung eines Gegenstands von Grund auf neu zu gestalten.",
+  "customtooltips.option.hide_vanilla_lines.desc": "Wenn diese Option aktiviert ist, werden alle standardmäßigen Vanilla-Hintergrundinformationen und Werte des Gegenstands entfernt, bevor dieser benutzerdefinierte Tooltip eingefügt wird. Mit der Option Erfordert eine Tastenkombination werden sie nur entfernt, solange die Taste gehalten wird.\n\n§eTip:§r Ideal, um die Beschreibung eines Gegenstands von Grund auf neu zu gestalten.",
   "customtooltips.option.show_only_if_damaged": "Nur anzeigen, wenn beschädigt",
   "customtooltips.option.show_only_if_damaged.desc": "Wenn diese Option aktiviert ist, wird der Tooltip nur angezeigt, wenn die Haltbarkeit des Gegenstands abgenommen hat.",
   "customtooltips.option.show_only_if_enchanted": "Nur zeigen wenn verzaubert",

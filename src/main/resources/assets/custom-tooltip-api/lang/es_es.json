@@ -97,7 +97,7 @@
   "customtooltips.option.reverse_animation": "Invertir Animación",
   "customtooltips.option.reverse_animation.desc": "Invierte la animación del degradado.\nSolo funciona con los estilos §6Deslizante§r, §6Respiración§r y §6Arcoíris§r.",
   "customtooltips.option.hide_vanilla_lines": "Ocultar Tooltip Vanilla",
-  "customtooltips.option.hide_vanilla_lines.desc": "Si está activado, elimina todas las estadísticas y descripciones por defecto del objeto antes de inyectar este tooltip personalizado.\n\n§eConsejo:§r Ideal para rediseñar completamente la descripción de un objeto desde cero.",
+  "customtooltips.option.hide_vanilla_lines.desc": "Si está activado, elimina todas las estadísticas y descripciones por defecto del objeto antes de inyectar este tooltip personalizado. Con Requiere Tecla, solo se eliminan mientras se mantiene la tecla.\n\n§eConsejo:§r Ideal para rediseñar completamente la descripción de un objeto desde cero.",
   "customtooltips.option.show_only_if_damaged": "Mostrar solo si está Dañado",
   "customtooltips.option.show_only_if_damaged.desc": "Si está activado, el tooltip solo aparecerá cuando el objeto haya perdido durabilidad.",
   "customtooltips.option.show_only_if_enchanted": "Mostrar solo si está Encantado",

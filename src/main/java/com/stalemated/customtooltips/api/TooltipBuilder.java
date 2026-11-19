@@ -299,6 +299,7 @@ public interface TooltipBuilder {
 
     /**
      * Hides the original vanilla tooltip lines (except the name) before applying this tooltip.
+     * With {@link #requireKeybind(boolean)}, the lines are hidden only while the key is held.
      *
      * @param hideVanillaLines True to hide vanilla lines.
      * @return This builder instance.

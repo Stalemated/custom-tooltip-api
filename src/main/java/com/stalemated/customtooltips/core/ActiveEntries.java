@@ -22,16 +22,14 @@ public final class ActiveEntries {
     public MatchedEntries match(ItemStack stack, boolean holdKeyDown) {
         List<TooltipEntry> shown = new ArrayList<>();
         boolean waitingForKey = false;
-        boolean hidesVanillaLines = false;
 
         for (TooltipEntry entry : this.entries) {
             if (!entry.matches(stack) || !entry.areItemConditionsMet(stack)) continue;
 
-            hidesVanillaLines |= entry.hideVanillaLines;
             if (entry.requireKeybind && !holdKeyDown) waitingForKey = true;
             else shown.add(entry);
         }
 
-        return new MatchedEntries(List.copyOf(shown), waitingForKey, hidesVanillaLines);
+        return new MatchedEntries(List.copyOf(shown), waitingForKey);
     }
 }

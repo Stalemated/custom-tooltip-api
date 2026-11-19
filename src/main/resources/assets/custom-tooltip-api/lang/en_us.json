@@ -97,7 +97,7 @@
   "customtooltips.option.reverse_animation": "Reverse Animation",
   "customtooltips.option.reverse_animation.desc": "Reverses the animation of the gradient.\nOnly works with §6Slide§r, §6Breathing§r, and §6Rainbow§r gradients.",
   "customtooltips.option.hide_vanilla_lines": "Hide Vanilla Tooltip",
-  "customtooltips.option.hide_vanilla_lines.desc": "If enabled, removes all default vanilla lore and stats from the item before injecting this custom tooltip.\n\n§eTip:§r Great for completely redesigning an item's description from scratch.",
+  "customtooltips.option.hide_vanilla_lines.desc": "If enabled, removes all default vanilla lore and stats from the item before injecting this custom tooltip. With Requires Keybind, they are only removed while the key is held.\n\n§eTip:§r Great for completely redesigning an item's description from scratch.",
   "customtooltips.option.show_only_if_damaged": "Show only if Damaged",
   "customtooltips.option.show_only_if_damaged.desc": "If enabled, the tooltip will only appear when the item has lost durability.",
   "customtooltips.option.show_only_if_enchanted": "Show only if Enchanted",

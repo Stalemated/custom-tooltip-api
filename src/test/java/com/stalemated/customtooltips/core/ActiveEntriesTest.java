@@ -60,6 +60,18 @@ class ActiveEntriesTest {
     }
 
     @Test
+    void anEntryWaitingForTheKeyKeepsTheVanillaLines() {
+        TooltipEntry entry = entryFor("minecraft:diamond_sword");
+        entry.requireKeybind = true;
+        entry.hideVanillaLines = true;
+        ActiveEntries active = new ActiveEntries(List.of(entry), Set.of());
+        ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
+
+        assertFalse(active.match(sword, false).hidesVanillaLines());
+        assertTrue(active.match(sword, true).hidesVanillaLines());
+    }
+
+    @Test
     void eachItemConditionNeedsItsOwnItemState() {
         TooltipEntry damagedOnly = entryFor("minecraft:diamond_sword");
         damagedOnly.showOnlyIfDamaged = true;
