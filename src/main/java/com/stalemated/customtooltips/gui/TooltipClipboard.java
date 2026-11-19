@@ -37,7 +37,7 @@ public final class TooltipClipboard {
 
         entry.uuid = UUID.randomUUID();
         entry.apiEntry = false;
-        entry.apiEntryId = "";
+        entry.apiId = null;
         return Optional.of(entry);
     }
 }

@@ -2,6 +2,7 @@ package com.stalemated.customtooltips.core.sorting;
 
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.config.TooltipConfig;
+import com.stalemated.customtooltips.core.TooltipRegistry;
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class TooltipSorter {
                 String targetA = a.target == null ? "" : a.target;
                 String targetB = b.target == null ? "" : b.target;
 
-                boolean disabledA = config.disabled_entries.contains(a.getIdentifier());
-                boolean disabledB = config.disabled_entries.contains(b.getIdentifier());
+                boolean disabledA = TooltipRegistry.isDisabled(a);
+                boolean disabledB = TooltipRegistry.isDisabled(b);
 
                 if (disabledA && !disabledB) return -1;
                 if (!disabledA && disabledB) return 1;

@@ -17,4 +17,16 @@ class TooltipEntryBuilderImplTest {
 
         assertEquals(1f, builder.backgroundOpacity(1).borderOpacity(0.5f).build().backgroundOpacity);
     }
+
+    @Test
+    void anIdNeedsANamespaceAndAPath() {
+        TooltipEntryBuilderImpl builder = new TooltipEntryBuilderImpl("minecraft:stick");
+
+        IllegalArgumentException spaces = assertThrows(IllegalArgumentException.class, () -> builder.id("skull multishot"));
+        assertEquals("tooltip id must be namespace:path, got 'skull multishot'", spaces.getMessage());
+        assertThrows(IllegalArgumentException.class, () -> builder.id("skull_multishot"));
+        assertThrows(IllegalArgumentException.class, () -> builder.id(":skull_multishot"));
+
+        assertEquals("mutantskeletweaks:skull_multishot", builder.id("mutantskeletweaks:skull_multishot").build().apiId);
+    }
 }

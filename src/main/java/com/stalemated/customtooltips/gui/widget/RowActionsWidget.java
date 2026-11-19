@@ -2,6 +2,8 @@ package com.stalemated.customtooltips.gui.widget;
 
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.TooltipEntry;
+import com.stalemated.customtooltips.core.LegacyApiIds;
+import com.stalemated.customtooltips.core.TooltipRegistry;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.EditButtons;
 import com.stalemated.customtooltips.gui.GuiIcon;
@@ -28,7 +30,7 @@ public class RowActionsWidget {
     public RowActionsWidget(Runnable refreshList, TooltipEntry entry) {
         Minecraft client = Minecraft.getInstance();
         String identifier = entry.getIdentifier();
-        boolean isDisabled = CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(identifier);
+        boolean isDisabled = TooltipRegistry.isDisabled(entry);
 
         buttons.add(Button.builder(GuiIcon.DELETE.text().withStyle(ChatFormatting.RED), button -> {
             Screen currentScreen = client.screen;
@@ -67,7 +69,7 @@ public class RowActionsWidget {
             TooltipEntry newEntry = entry.copy();
 
             newEntry.apiEntry = false;
-            newEntry.apiEntryId = "";
+            newEntry.apiId = null;
 
             TooltipListChanges.save(config -> config.entries.add(newEntry));
 
@@ -79,6 +81,7 @@ public class RowActionsWidget {
 
         apiButtons.add(Button.builder(getDisabledEntryIcon(isDisabled), btn -> {
             TooltipListChanges.save(config -> {
+                config.disabled_entries = LegacyApiIds.replaceIn(config.disabled_entries, TooltipRegistry.apiEntries());
                 if (isDisabled) config.disabled_entries.remove(identifier);
                 else config.disabled_entries.add(identifier);
             });

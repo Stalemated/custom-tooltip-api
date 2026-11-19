@@ -24,6 +24,7 @@ public class CustomTooltipApi {
      * <b>Tip:</b> You can use {@code TooltipEntry.builder(...).register()} to build and register in a single chain.
      *
      * @param entry The TooltipEntry object to register.
+     * @throws IllegalArgumentException If a tooltip with the same {@link TooltipBuilder#id(String) id} is already registered.
      */
     public static void registerTooltip(TooltipEntry entry) {
         if (entry != null) {

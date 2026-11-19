@@ -56,6 +56,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
 
     private boolean entryMatchesSearch(TooltipEntry entry, String lowerSearch) {
         if (entry.target != null && entry.target.toLowerCase().contains(lowerSearch)) return true;
+        if (entry.apiEntry && entry.getIdentifier().toLowerCase().contains(lowerSearch)) return true;
 
         if (entry.text != null) {
             for (String line : entry.text) {
@@ -90,8 +91,9 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
 
         @Override
         public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            boolean isDisabled = CustomTooltipsConfigRegistry.CONFIG.get().disabled_entries.contains(this.tooltipEntry.getIdentifier());
+            boolean isDisabled = TooltipRegistry.isDisabled(this.tooltipEntry);
             String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
+            if (this.tooltipEntry.apiEntry) targetText += "  (" + this.tooltipEntry.getIdentifier() + ")";
 
             rowActions.render(context, x, y, entryWidth, mouseX, mouseY, tickDelta, this.tooltipEntry.apiEntry);
 

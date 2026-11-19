@@ -19,7 +19,7 @@ public class TooltipConfig {
     @Comment("Tooltip sorting mode in the config menu. Accepts: MANUAL_ORDER, NAME_AND_TAG, DISABLED_FIRST")
     public SortMode sort_mode = SortMode.MANUAL_ORDER;
 
-    @Comment("List of unique entry Identifiers that have been disabled by the user.")
+    @Comment("List of unique IDs that are disabled from showing.")
     public List<String> disabled_entries = new ArrayList<>();
 
     @Comment("""

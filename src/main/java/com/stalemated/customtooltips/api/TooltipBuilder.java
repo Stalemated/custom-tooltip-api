@@ -382,6 +382,21 @@ public interface TooltipBuilder {
     TooltipBuilder displayCondition(Predicate<ItemStack> condition);
 
     /**
+     * Gives the tooltip a stable id, which is what the player's list of disabled tooltips stores.
+     * Without one, the tooltip is known by its target plus a hash of its text, position, style, and
+     * colors, so changing any of those brings it back for players who had disabled it.
+     * <p>
+     * Use your mod id as the namespace, for example {@code "mymod:sword_lore"}. Each id can be
+     * registered only once. A player who disabled the tooltip before it had an id keeps it disabled,
+     * as long as the tooltip gets its id in a release that does not also change those fields.
+     *
+     * @param id The id, as {@code namespace:path}.
+     * @return This builder instance.
+     * @throws IllegalArgumentException If the id is not a valid {@code namespace:path}.
+     */
+    TooltipBuilder id(String id);
+
+    /**
      * Builds and returns the configured {@link TooltipEntry} without registering it.
      * The returned entry must be registered manually using {@link CustomTooltipApi#registerTooltip(TooltipEntry)}.
      *
@@ -393,6 +408,7 @@ public interface TooltipBuilder {
      * Builds the TooltipEntry and automatically registers it to the Custom Tooltip API.
      *
      * @return The built and registered TooltipEntry.
+     * @throws IllegalArgumentException If a tooltip with the same {@link #id(String) id} is already registered.
      */
     TooltipEntry register();
 

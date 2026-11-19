@@ -95,7 +95,7 @@ public class TooltipEntry {
     private transient TooltipRuntimeCache runtimeCache;
 
     public transient boolean apiEntry = false;
-    public transient String apiEntryId = "";
+    public transient String apiId = null;
     public transient Function<ItemStack, List<String>> dynamicTextProvider = null;
     public transient Predicate<ItemStack> displayCondition = stack -> true;
 
@@ -111,15 +111,17 @@ public class TooltipEntry {
     }
 
     public String getIdentifier() {
-        if (this.apiEntry && this.apiEntryId != null && !this.apiEntryId.isEmpty()) {
-            long hash = this.target.hashCode()
-                    + this.text.hashCode()
-                    + this.position.toString().hashCode()
-                    + this.style.toString().hashCode()
-                    + this.colors.hashCode();
-            return this.apiEntryId + ":" + hash;
-        }
-        return this.uuid.toString();
+        if (!this.apiEntry) return this.uuid.toString();
+        return this.apiId != null ? this.apiId : this.legacyApiIdentifier();
+    }
+
+    public String legacyApiIdentifier() {
+        long hash = this.target.hashCode()
+                + this.text.hashCode()
+                + this.position.toString().hashCode()
+                + this.style.toString().hashCode()
+                + this.colors.hashCode();
+        return this.target + ":" + hash;
     }
 
     public boolean hasCustomBorder() {

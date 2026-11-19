@@ -5,6 +5,7 @@ import com.stalemated.customtooltips.api.*;
 import com.stalemated.customtooltips.api.enums.BackgroundType;
 import com.stalemated.customtooltips.api.enums.TooltipPosition;
 import com.stalemated.customtooltips.api.enums.TooltipStyle;
+import com.stalemated.lib.util.ResourceIds;
 import java.awt.Color;
 import java.util.List;
 import java.util.function.Function;
@@ -216,6 +217,13 @@ public class TooltipEntryBuilderImpl implements TooltipBuilder {
     @Override
     public TooltipBuilder displayCondition(Predicate<ItemStack> condition) {
         this.entry.displayCondition = condition;
+        return this;
+    }
+
+    @Override
+    public TooltipBuilder id(String id) {
+        if (id == null || id.indexOf(':') < 1 || !ResourceIds.isValid(id)) throw new IllegalArgumentException("tooltip id must be namespace:path, got '" + id + "'");
+        this.entry.apiId = id;
         return this;
     }
 
