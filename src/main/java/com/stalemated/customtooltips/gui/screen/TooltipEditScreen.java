@@ -57,8 +57,10 @@ public class TooltipEditScreen {
                         .listOption("text")
                         .group("style_colors", grp ->
                                 grp.include("style")
-                                .listElement("colors", 0, "primaryColor", white)
-                                .listElement("colors", 1, "secondaryColor", white)
+                                .listElement("colors", 0, "primaryColor", white,
+                                        "style", "SOLID", "STATIC_GRADIENT", "SLIDE_GRADIENT", "BREATHING_GRADIENT")
+                                .listElement("colors", 1, "secondaryColor", white,
+                                        "style", "STATIC_GRADIENT", "SLIDE_GRADIENT", "BREATHING_GRADIENT")
                         )
                         .group("position_animation", grp ->
                                 grp.include("position", "lineOffset", "tickrate", "animationOffset", "reverseAnimation")
@@ -78,7 +80,8 @@ public class TooltipEditScreen {
                         .group("background", grp ->
                                 grp.include("backgroundType", "backgroundOpacity")
                                 .listElement("backgroundColors", 0, "backgroundTopColor", vanillaBackground)
-                                .listElement("backgroundColors", 1, "backgroundBottomColor", vanillaBackground)
+                                .listElement("backgroundColors", 1, "backgroundBottomColor", vanillaBackground,
+                                        "backgroundType", "GRADIENT", "SIMPLE_TEXTURE", "TEXTURE", "REPEATING_TEXTURE")
                                 .dropdown("backgroundTexture", backgrounds,
                                         s -> Component.literal(s.replace(AssetChoices.BACKGROUND_PREFIX, ""))
                                 )

@@ -9,6 +9,7 @@ import com.stalemated.customtooltips.core.TooltipLook;
 import com.stalemated.customtooltips.core.TooltipRuntimeCache;
 import com.stalemated.customtooltips.core.position.LinePlacement;
 import com.stalemated.customtooltips.core.text.TextFormatter;
+import com.stalemated.lib.config.annotation.EnabledIf;
 import com.stalemated.lib.config.annotation.ItemDropdown;
 import com.stalemated.lib.config.annotation.RangeFloat;
 import com.stalemated.lib.config.annotation.RangeInt;
@@ -55,22 +56,28 @@ public class TooltipEntry {
 
     public List<Color> backgroundColors = new ArrayList<>();
 
+    @EnabledIf(value = "backgroundType", equals = {"SIMPLE_TEXTURE", "TEXTURE", "REPEATING_TEXTURE"})
     public String backgroundTexture = "";
 
     @RangeInt(min = 10, max = 300, step = 5)
+    @EnabledIf(value = "backgroundType", equals = {"TEXTURE", "REPEATING_TEXTURE"})
     public int backgroundScale = 100;
 
     @Title("position_animation")
     public TooltipPosition position = TooltipPosition.BOTTOM;
 
+    @EnabledIf(value = "position", equals = {"TOP", "BOTTOM", "REPLACE_LINE", "APPEND", "PREPEND"})
     public int lineOffset = 0;
 
     @RangeInt(min = 1, max = 500)
+    @EnabledIf(value = "style", equals = {"SLIDE_GRADIENT", "BREATHING_GRADIENT", "RAINBOW"})
     public int tickrate = 100;
 
     @RangeInt(min = -100, max = 100)
+    @EnabledIf(value = "style", equals = {"SLIDE_GRADIENT", "BREATHING_GRADIENT", "RAINBOW"})
     public int animationOffset = 0;
 
+    @EnabledIf(value = "style", equals = {"SLIDE_GRADIENT", "BREATHING_GRADIENT", "RAINBOW"})
     public boolean reverseAnimation = false;
 
     @Title("formatting")
@@ -83,6 +90,7 @@ public class TooltipEntry {
 
     @Title("conditions")
     public boolean requireKeybind = false;
+    @EnabledIf(value = "position", equals = {"TOP", "BOTTOM"})
     public boolean emptyLineBefore = false;
     public boolean hideVanillaLines = false;
     public boolean showOnlyIfDamaged = false;
