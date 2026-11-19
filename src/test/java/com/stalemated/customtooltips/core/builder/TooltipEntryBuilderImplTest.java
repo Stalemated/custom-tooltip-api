@@ -1,5 +1,10 @@
 package com.stalemated.customtooltips.core.builder;
 
+import com.stalemated.customtooltips.TooltipEntry;
+import java.awt.Color;
+import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,6 +21,21 @@ class TooltipEntryBuilderImplTest {
         assertThrows(IllegalArgumentException.class, () -> builder.borderOpacity(Float.NaN));
 
         assertEquals(1f, builder.backgroundOpacity(1).borderOpacity(0.5f).build().backgroundOpacity);
+    }
+
+    @Test
+    void aColorThatCannotBeReadIsRejectedWithItsValue() {
+        TooltipEntryBuilderImpl builder = new TooltipEntryBuilderImpl("minecraft:stick");
+
+        IllegalArgumentException border = assertThrows(IllegalArgumentException.class, () -> builder.borderColors("#FF0000", "blurple"));
+        assertEquals("border color must be AARRGGBB or RRGGBB hex, a color name or an & code, got 'blurple'", border.getMessage());
+        assertThrows(IllegalArgumentException.class, () -> builder.backgroundColors(List.of("#FF00")));
+        assertThrows(IllegalArgumentException.class, () -> builder.colors("&l"));
+
+        TooltipEntry entry = builder.colors("gold").borderColors("#80FF0000").backgroundColors("&c").build();
+        assertEquals(List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD)), entry.colors);
+        assertEquals(List.of(new Color(0xFF, 0, 0, 0x80)), entry.borderColors);
+        assertEquals(1, entry.backgroundColors.size());
     }
 
     @Test

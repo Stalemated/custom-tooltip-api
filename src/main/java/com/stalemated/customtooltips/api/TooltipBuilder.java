@@ -78,9 +78,10 @@ public interface TooltipBuilder {
      *
      * @param colors The colors to apply (1 or 2 depending on the style).
      * @return This builder instance.
+     * @throws IllegalArgumentException If a color cannot be read, with that color in the message.
      */
     default TooltipBuilder colors(String... colors) {
-        return colorsList(Arrays.stream(colors).map(ColorUtils::parseTextColor).toList());
+        return colorsList(Arrays.stream(colors).map(TooltipBuilder::requireTextColor).toList());
     }
 
     /**
@@ -90,9 +91,10 @@ public interface TooltipBuilder {
      *
      * @param colors A list of colors strings.
      * @return This builder instance.
+     * @throws IllegalArgumentException If a color cannot be read, with that color in the message.
      */
     default TooltipBuilder colors(List<String> colors) {
-        return colorsList(colors.stream().map(ColorUtils::parseTextColor).toList());
+        return colorsList(colors.stream().map(TooltipBuilder::requireTextColor).toList());
     }
 
     /**
@@ -118,9 +120,10 @@ public interface TooltipBuilder {
      *
      * @param colors The colors to apply (2 colors, start and end).
      * @return This builder instance.
+     * @throws IllegalArgumentException If a color cannot be read, with that color in the message.
      */
     default TooltipBuilder borderColors(String... colors) {
-        return borderColorsList(Arrays.stream(colors).map(TooltipBuilder::parseArgbOrWhite).toList());
+        return borderColorsList(Arrays.stream(colors).map(color -> requireArgb("border color", color)).toList());
     }
 
     /**
@@ -130,9 +133,10 @@ public interface TooltipBuilder {
      *
      * @param colors A list of color strings (2 colors, start and end).
      * @return This builder instance.
+     * @throws IllegalArgumentException If a color cannot be read, with that color in the message.
      */
     default TooltipBuilder borderColors(List<String> colors) {
-        return borderColorsList(colors.stream().map(TooltipBuilder::parseArgbOrWhite).toList());
+        return borderColorsList(colors.stream().map(color -> requireArgb("border color", color)).toList());
     }
 
     /**
@@ -158,9 +162,10 @@ public interface TooltipBuilder {
      *
      * @param colors The colors to apply (2 colors, start and end).
      * @return This builder instance.
+     * @throws IllegalArgumentException If a color cannot be read, with that color in the message.
      */
     default TooltipBuilder backgroundColors(String... colors) {
-        return backgroundColorsList(Arrays.stream(colors).map(TooltipBuilder::parseArgbOrWhite).toList());
+        return backgroundColorsList(Arrays.stream(colors).map(color -> requireArgb("background color", color)).toList());
     }
 
     /**
@@ -170,9 +175,10 @@ public interface TooltipBuilder {
      *
      * @param colors A list of colors strings.
      * @return This builder instance.
+     * @throws IllegalArgumentException If a color cannot be read, with that color in the message.
      */
     default TooltipBuilder backgroundColors(List<String> colors) {
-        return backgroundColorsList(colors.stream().map(TooltipBuilder::parseArgbOrWhite).toList());
+        return backgroundColorsList(colors.stream().map(color -> requireArgb("background color", color)).toList());
     }
 
     /**
@@ -412,8 +418,15 @@ public interface TooltipBuilder {
      */
     TooltipEntry register();
 
-    private static Color parseArgbOrWhite(String color) {
+    private static TextColor requireTextColor(String color) {
+        TextColor parsed = ColorUtils.parseTextColor(color);
+        if (parsed == null) throw new IllegalArgumentException("text color must be RRGGBB hex, a color name or an & code, got '" + color + "'");
+        return parsed;
+    }
+
+    private static Color requireArgb(String option, String color) {
         Color parsed = ColorUtils.parseArgbColor(color);
-        return parsed != null ? parsed : Color.WHITE;
+        if (parsed == null) throw new IllegalArgumentException(option + " must be AARRGGBB or RRGGBB hex, a color name or an & code, got '" + color + "'");
+        return parsed;
     }
 }
