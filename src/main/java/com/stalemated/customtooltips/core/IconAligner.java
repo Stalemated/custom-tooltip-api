@@ -13,9 +13,9 @@ import net.minecraft.network.chat.Style;
 public class IconAligner {
 
     private static final int CACHE_CAPACITY = 200;
-    private static final Map<String, Component> PROCESSED_CACHE = Collections.synchronizedMap(new LinkedHashMap<>(16, 0.75f, true) {
+    private static final Map<List<StyledRun>, Component> PROCESSED_CACHE = Collections.synchronizedMap(new LinkedHashMap<>(16, 0.75f, true) {
         @Override
-        protected boolean removeEldestEntry(Map.Entry<String, Component> eldest) {
+        protected boolean removeEldestEntry(Map.Entry<List<StyledRun>, Component> eldest) {
             return size() > CACHE_CAPACITY;
         }
     });
@@ -24,18 +24,18 @@ public class IconAligner {
 
         for (int i = 0; i < lines.size(); i++) {
             Component originalText = lines.get(i);
-            String rawString = originalText.getString();
+            List<StyledRun> runs = runsOf(originalText);
 
-            if (!containsIcon(rawString)) continue;
+            if (runs.stream().noneMatch(run -> containsIcon(run.text()))) continue;
 
-            Component cached = PROCESSED_CACHE.get(rawString);
+            Component cached = PROCESSED_CACHE.get(runs);
             if (cached != null) {
                 lines.set(i, cached);
                 continue;
             }
 
-            Component processed = processAndAlignIcon(originalText);
-            PROCESSED_CACHE.put(rawString, processed);
+            Component processed = processAndAlignIcon(originalText, runs);
+            PROCESSED_CACHE.put(runs, processed);
             lines.set(i, processed);
         }
     }
@@ -66,8 +66,8 @@ public class IconAligner {
                 (codePoint >= 0xA980 && codePoint <= 0xA9DF); // Javanese (Eldritch End compat)
     }
 
-    private static Component processAndAlignIcon(Component originalText) {
-        List<StyledChar> chars = extractStyledChars(originalText);
+    private static Component processAndAlignIcon(Component originalText, List<StyledRun> runs) {
+        List<StyledChar> chars = extractStyledChars(runs);
 
         int[] iconBounds = findIconBounds(chars);
         if (iconBounds == null) return originalText;
@@ -104,20 +104,29 @@ public class IconAligner {
         return rebuildText(chars);
     }
 
-    private static List<StyledChar> extractStyledChars(Component text) {
-        List<StyledChar> chars = new ArrayList<>();
+    private static List<StyledRun> runsOf(Component text) {
+        List<StyledRun> runs = new ArrayList<>();
         text.visit((style, string) -> {
+            runs.add(new StyledRun(style, string));
+            return Optional.empty();
+        }, Style.EMPTY);
+        return runs;
+    }
+
+    private static List<StyledChar> extractStyledChars(List<StyledRun> runs) {
+        List<StyledChar> chars = new ArrayList<>();
+        for (StyledRun run : runs) {
+            String string = run.text();
 
             for (int i = 0; i < string.length(); ) {
 
                 int codePoint = string.codePointAt(i);
                 int charCount = Character.charCount(codePoint);
 
-                chars.add(new StyledChar(string.substring(i, i + charCount), style));
+                chars.add(new StyledChar(string.substring(i, i + charCount), run.style()));
                 i += charCount;
             }
-            return Optional.empty();
-        }, Style.EMPTY);
+        }
         return chars;
     }
 
@@ -188,6 +197,9 @@ public class IconAligner {
         }
 
         return result;
+    }
+
+    private record StyledRun(Style style, String text) {
     }
 
     private static class StyledChar {

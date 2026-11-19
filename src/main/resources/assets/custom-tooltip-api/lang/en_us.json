@@ -30,7 +30,7 @@
   "customtooltips.option.target": "Target",
   "customtooltips.option.target.desc": "Accepts exact IDs §c(minecraft:apple)§f, tags §6(#c:swords)§f, namespaces §e(minecraft:*)§f, regex §a(regex:.*_sword)§f, all items §b(*)§f and negation §c(!)§f.\n\n§eNote:§r§f Tags are world-specific and will only appear in the dropdown after loading a world.",
   "customtooltips.option.text": "Custom text",
-  "customtooltips.option.text.desc": "Accepts multiple lines of text.\n\nInline color/formatting codes (e.g., §c&c§r, §l&l§r) only work with the Solid style. Use the toggles below for gradient text formatting.\n\n§eTip:§r Use dynamic placeholders like §b%max_durability%§r, §b%weapon_damage%§r or §b%enchantments%§r, and embed translations and keybinds using §b<translation:translation.key>§r and §b<key:translation.key>§r correspondingly(e.g. §b<key:key.forward>§r -> §b[W]§r).\n\n§eNote:§r Make sure you have setup your translations in a custom resource pack.",
+  "customtooltips.option.text.desc": "Accepts multiple lines of text.\n\nInline color/formatting codes (e.g., §c&c§r, §l&l§r) only work with the Solid style. Use the toggles below for gradient text formatting. Write §b&&c§r to show §b&c§r as plain text.\n\n§eTip:§r Use dynamic placeholders like §b%max_durability%§r, §b%weapon_damage%§r or §b%enchantments%§r, and embed translations and keybinds using §b<translate:translation.key>§r and §b<key:translation.key>§r correspondingly (e.g. §b<key:key.forward>§r -> §b[W]§r).\n\n§eNote:§r Make sure you have setup your translations in a custom resource pack.",
   "customtooltips.option.style": "Style",
   "customtooltips.option.style.desc": "The rendering and animation style.\n\n§6Solid:§r Single static color.\n§6Static Gradient:§r Fixed gradient between two colors.\n§6Slide Gradient:§r Animated gradient between two colors.\n§6Breathing Gradient:§r Fixed gradient that pulsates back and forth.\n§6Rainbow:§r Animated flowing rainbow.",
   "customtooltips.option.style.value.solid": "Solid",
@@ -115,6 +115,7 @@
   "customtooltips.tooltip_list_widget.duplicate_button": "Duplicate",
   "customtooltips.tooltip_list_widget.delete_confirm.title": "Delete Tooltip",
   "customtooltips.tooltip_list_widget.delete_confirm.message": "Are you sure you want to delete\nthe tooltip for %s?",
+  "customtooltips.tooltip_list_widget.new_tooltip": "New Tooltip",
   "customtooltips.tooltip_list_widget.copy_button": "Copy Tooltip to clipboard",
 
   "customtooltips.tooltip_processor.shift_prompt": "Hold [%s] for details",

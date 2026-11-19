@@ -42,6 +42,11 @@ class TooltipTextParserTest {
     }
 
     @Test
+    void aDoubledAmpersandWritesTheCodeAsText() {
+        assertEquals(List.of("&c is red, & stays"), parse("&&c is red, & stays"));
+    }
+
+    @Test
     void aLineBreakSplitsTheLine() {
         assertEquals(List.of("first", "second", "third"), parse("first\nsecond", "third"));
     }

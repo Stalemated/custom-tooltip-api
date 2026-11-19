@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public final class TooltipTextParser {
-    private static final Pattern FORMATTING_CODE = Pattern.compile("(?i)&([0-9a-fk-or])");
+    private static final Pattern FORMATTING_CODE = Pattern.compile("(?i)&(&|[0-9a-fk-or])");
     private static final Pattern TRANSLATION = Pattern.compile("<translate:([^>]+)>");
     private static final Pattern KEYBIND = Pattern.compile("<key:([^>]+)>");
     private static final Pattern PLACEHOLDER = Pattern.compile("%([a-zA-Z_]+)%");
@@ -36,10 +36,14 @@ public final class TooltipTextParser {
     }
 
     private static String parse(String text, ItemStack stack) {
-        String formatted = FORMATTING_CODE.matcher(text).replaceAll(ChatFormatting.PREFIX_CODE + "$1").replace("&&", "&");
+        String formatted = FORMATTING_CODE.matcher(text).replaceAll(match -> formattingCode(match.group(1)));
         String translated = TRANSLATION.matcher(formatted).replaceAll(match -> Matcher.quoteReplacement(Component.translatable(match.group(1)).getString()));
         String withKeys = KEYBIND.matcher(translated).replaceAll(match -> Matcher.quoteReplacement("[" + Component.keybind(match.group(1)).getString() + "]"));
         return PLACEHOLDER.matcher(withKeys).replaceAll(match -> Matcher.quoteReplacement(placeholderValue(match.group(1), match.group(), stack)));
+    }
+
+    private static String formattingCode(String code) {
+        return code.equals("&") ? "&" : ChatFormatting.PREFIX_CODE + code;
     }
 
     private static String placeholderValue(String name, String asWritten, ItemStack stack) {

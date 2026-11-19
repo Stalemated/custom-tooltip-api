@@ -30,7 +30,7 @@
   "customtooltips.option.target": "Ziel",
   "customtooltips.option.target.desc": "Akzeptiert exakte IDs §c(minecraft:apple)§f, tags §6(#c:swords)§f, Namensräume §e(minecraft:*)§f, regex §a(regex:.*_sword)§f, oder alle Gegenstände §b(*)§f und Verneinungen §c(!)§f.\n\n§eNotiz:§r§f Tags sind welt-spezifisch und wird erst nach dem Laden eine Welt in der Auswahlliste angezeigt.",
   "customtooltips.option.text": "Nutzerdefinierter Text",
-  "customtooltips.option.text.desc": "Mehrere Zeilen an Text sind möglich\n\nInline-Farbe/Formattierungs Codes (bsp., §c&c§r, §l&l§r) funktioniert nur mit dem Solid Stil. Verwende die untere schaltfläche, um den Text mit Farbverläufen zu formatieren.\n\n§eTip:§r Nutze dynamische Platzhalter wie §b%max_durability%§r, §b%weapon_damage%§r oder §b%enchantments%§r, und eingebettete Tastenkombinationen die §b<key:translation.key>§r (bsp. §b<key:key.forward>§r -> §b[W]§r) nutzen.\n\n§eNotiz:§r Die vollständige Liste der Platzhalter findest du auf der Wiki-Seite des Mods! (WIP)",
+  "customtooltips.option.text.desc": "Mehrere Zeilen an Text sind möglich\n\nInline-Farbe/Formattierungs Codes (bsp., §c&c§r, §l&l§r) funktioniert nur mit dem Solid Stil. Verwende die untere schaltfläche, um den Text mit Farbverläufen zu formatieren. Schreibe §b&&c§r, um §b&c§r als Text anzuzeigen.\n\n§eTip:§r Nutze dynamische Platzhalter wie §b%max_durability%§r, §b%weapon_damage%§r oder §b%enchantments%§r, und bette Übersetzungen und Tastenkombinationen mit §b<translate:translation.key>§r und §b<key:translation.key>§r ein (bsp. §b<key:key.forward>§r -> §b[W]§r).\n\n§eNotiz:§r Die vollständige Liste der Platzhalter findest du auf der Wiki-Seite des Mods! (WIP)",
   "customtooltips.option.style": "Stil",
   "customtooltips.option.style.desc": "Der Render und Animations-Style.\n\n§6Fest:§r Einfarbig.\n§Statischer Farbverlauf:§r Fester Farbverlauf zwischen zwei Farben.\n§6Farbverlauf:§r Animierter Farbverlauf zwischen zwei Farben.\n§6Atemgradient:§r Ein fester Farbverlauf, der hin und her pulsiert.\n§6Regenbogen:§r Animierter, fließender Regenbogen.",
   "customtooltips.option.style.value.solid": "Fest",
@@ -115,6 +115,7 @@
   "customtooltips.tooltip_list_widget.duplicate_button": "Duplizieren",
   "customtooltips.tooltip_list_widget.delete_confirm.title": "Tooltip löschen",
   "customtooltips.tooltip_list_widget.delete_confirm.message": "Bist du dir sicher du möchtest\nden tooltip für %s löschen?",
+  "customtooltips.tooltip_list_widget.new_tooltip": "Neuer Tooltip",
   "customtooltips.tooltip_list_widget.copy_button": "Tooltip in die Zwischenablage kopieren",
 
   "customtooltips.tooltip_processor.shift_prompt": "Halte [%s] für Details",

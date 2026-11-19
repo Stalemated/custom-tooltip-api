@@ -4,6 +4,7 @@ import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
 import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.gui.EditButtons;
 import com.stalemated.customtooltips.gui.GuiIcon;
+import com.stalemated.customtooltips.gui.TargetName;
 import com.stalemated.customtooltips.gui.TooltipClipboard;
 import com.stalemated.customtooltips.gui.TooltipListChanges;
 import com.stalemated.customtooltips.gui.TooltipListToasts;
@@ -86,7 +87,7 @@ final class TooltipListControls {
                     TooltipListChanges.save(config -> config.entries.add(pasted));
                     screen.refreshList();
 
-                    TooltipListToasts.showPastedToast(pasted.target);
+                    TooltipListToasts.showPastedToast(TargetName.of(pasted));
                 })));
 
         return buttons;

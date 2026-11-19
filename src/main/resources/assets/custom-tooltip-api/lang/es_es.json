@@ -30,7 +30,7 @@
   "customtooltips.option.target": "Objetivo",
   "customtooltips.option.target.desc": "Acepta IDs exactos §c(minecraft:apple)§f, etiquetas §6(#c:swords)§f, namespaces §e(minecraft:*)§f, regex §a(regex:.*_sword)§f, todos los objetos §b(*)§f y negación §c(!)§f.\n\n§eNota:§r§f Las etiquetas son específicas para cada mundo y solo aparecerán en el desplegable después de cargar un mundo.",
   "customtooltips.option.text": "Texto personalizado",
-  "customtooltips.option.text.desc": "Acepta múltiples líneas de texto.\n\nLos códigos de color/formato en línea (ej., §c&c§r, §l&l§r) solo funcionan con el estilo Sólido. Usa los botones de abajo para dar formato a textos con degradados.\n\n§eConsejo:§r Usa marcadores dinámicos como §b%max_durability%§r, §b%weapon_damage%§r o §b%enchantments%§r, e inserta traducciones y teclas (keybinds) usando §b<translation:translation.key>§r o §b<key:translation.key>§r (ej. §b<key:key.forward>§r -> §b[W]§r).\n\n§eNota:§r Asegurate de haber configurado traducciones en un resource pack custom.",
+  "customtooltips.option.text.desc": "Acepta múltiples líneas de texto.\n\nLos códigos de color/formato en línea (ej., §c&c§r, §l&l§r) solo funcionan con el estilo Sólido. Usa los botones de abajo para dar formato a textos con degradados. Escribe §b&&c§r para mostrar §b&c§r como texto.\n\n§eConsejo:§r Usa marcadores dinámicos como §b%max_durability%§r, §b%weapon_damage%§r o §b%enchantments%§r, e inserta traducciones y teclas (keybinds) usando §b<translate:translation.key>§r o §b<key:translation.key>§r (ej. §b<key:key.forward>§r -> §b[W]§r).\n\n§eNota:§r Asegurate de haber configurado traducciones en un resource pack custom.",
   "customtooltips.option.style": "Estilo",
   "customtooltips.option.style.desc": "El estilo de renderizado y animación.\n\n§6Sólido:§r Color único estático.\n§6Degradado Estático:§r Degradado fijo entre dos colores.\n§6Degradado Deslizante:§r Degradado animado entre dos colores.\n§6Degradado con Respiración:§r Degradado fijo que pulsa de un lado a otro.\n§6Arcoíris:§r Arcoíris animado y fluido.",
   "customtooltips.option.style.value.solid": "Sólido",
@@ -115,6 +115,7 @@
   "customtooltips.tooltip_list_widget.duplicate_button": "Duplicar",
   "customtooltips.tooltip_list_widget.delete_confirm.title": "Eliminar Tooltip",
   "customtooltips.tooltip_list_widget.delete_confirm.message": "¿Estás seguro de que quieres eliminar\nel tooltip para %s?",
+  "customtooltips.tooltip_list_widget.new_tooltip": "Nuevo Tooltip",
   "customtooltips.tooltip_list_widget.copy_button": "Copiar Tooltip al portapapeles",
 
   "customtooltips.tooltip_processor.shift_prompt": "Mantén [%s] para detalles",

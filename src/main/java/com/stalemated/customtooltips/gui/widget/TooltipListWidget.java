@@ -6,6 +6,7 @@ import com.stalemated.customtooltips.core.TooltipRegistry;
 import com.stalemated.customtooltips.core.sorting.SortMode;
 import com.stalemated.customtooltips.core.sorting.TooltipSorter;
 import com.stalemated.customtooltips.config.CustomTooltipsConfigRegistry;
+import com.stalemated.customtooltips.gui.TargetName;
 import com.stalemated.customtooltips.gui.screen.TooltipListScreen;
 import com.stalemated.lib.helper.text.ScrollingTextRenderer;
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
         @Override
         public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             boolean isDisabled = TooltipRegistry.isDisabled(this.tooltipEntry);
-            String targetText = this.tooltipEntry.target.isEmpty() ? "New Tooltip" : this.tooltipEntry.target;
+            String targetText = TargetName.of(this.tooltipEntry).getString();
             if (this.tooltipEntry.apiEntry) targetText += "  (" + this.tooltipEntry.getIdentifier() + ")";
 
             rowActions.render(context, x, y, entryWidth, mouseX, mouseY, tickDelta, this.tooltipEntry.apiEntry);
@@ -126,7 +127,7 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
 
         @Override
         public @NotNull Component getNarration() {
-            return Component.translatable("customtooltips.tooltip_list_widget.entry.narration", this.tooltipEntry.target);
+            return Component.translatable("customtooltips.tooltip_list_widget.entry.narration", TargetName.of(this.tooltipEntry));
         }
     }
 }

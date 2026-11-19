@@ -23,21 +23,21 @@ public final class TooltipListToasts {
         );
     }
 
-    public static void showDuplicatedToast(String targetName) {
+    public static void showDuplicatedToast(Component targetName) {
         addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
                 Component.translatable("customtooltips.toast.duplicated.title"),
                 Component.translatable("customtooltips.toast.duplicated.desc", targetName)
         );
     }
 
-    public static void showCopiedToast(String targetName) {
+    public static void showCopiedToast(Component targetName) {
         addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
                 Component.translatable("customtooltips.toast.copied.title"),
                 Component.translatable("customtooltips.toast.copied.desc", targetName)
         );
     }
 
-    public static void showPastedToast(String targetName) {
+    public static void showPastedToast(Component targetName) {
         addToast(SystemToast.SystemToastIds.TUTORIAL_HINT,
                 Component.translatable("customtooltips.toast.pasted.title"),
                 Component.translatable("customtooltips.toast.pasted.desc", targetName)

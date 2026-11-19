@@ -7,6 +7,7 @@ import com.stalemated.customtooltips.core.TooltipRegistry;
 import com.stalemated.customtooltips.gui.screen.TooltipEditScreen;
 import com.stalemated.customtooltips.gui.EditButtons;
 import com.stalemated.customtooltips.gui.GuiIcon;
+import com.stalemated.customtooltips.gui.TargetName;
 import com.stalemated.customtooltips.gui.TooltipClipboard;
 import com.stalemated.customtooltips.gui.TooltipListChanges;
 import com.stalemated.customtooltips.gui.TooltipListToasts;
@@ -47,7 +48,7 @@ public class RowActionsWidget {
                         client.setScreen(currentScreen);
                     },
                     Component.translatable("customtooltips.tooltip_list_widget.delete_confirm.title"),
-                    Component.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", entry.target.isEmpty() ? "New Tooltip" : entry.target)
+                    Component.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", TargetName.of(entry))
             ));
         })
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.delete_button")))
@@ -60,7 +61,7 @@ public class RowActionsWidget {
         apiButtons.add(Button.builder(getCopyIcon(), btn -> {
             TooltipClipboard.copy(entry);
 
-            TooltipListToasts.showCopiedToast(entry.target);
+            TooltipListToasts.showCopiedToast(TargetName.of(entry));
         })
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.copy_button")))
                 .build());
@@ -73,7 +74,7 @@ public class RowActionsWidget {
 
             TooltipListChanges.save(config -> config.entries.add(newEntry));
 
-            TooltipListToasts.showDuplicatedToast(entry.target.isEmpty() ? "New Tooltip" : entry.target);
+            TooltipListToasts.showDuplicatedToast(TargetName.of(entry));
             refreshList.run();
         })
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.duplicate_button")))
