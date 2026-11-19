@@ -1,6 +1,5 @@
 package com.stalemated.customtooltips.core;
 
-import com.stalemated.lib.util.color.VanillaTooltipColors;
 import com.stalemated.lib.util.math.MathUtils;
 
 public final class TooltipColors {
@@ -15,31 +14,31 @@ public final class TooltipColors {
         return (color & 0x00FFFFFF) | (newAlpha << 24);
     }
 
-    public static int backgroundStart(TooltipLook look, int vanillaColor) {
-        int color = look.background() != null ? look.background().runtimeCache().backgroundColorStart() : vanillaColor;
+    public static TooltipPalette palette(TooltipLook look, TooltipPalette base) {
+        return new TooltipPalette(
+                backgroundStart(look, base.backgroundTop()),
+                backgroundEnd(look, base.backgroundBottom()),
+                borderStart(look, base.borderTop()),
+                borderEnd(look, base.borderBottom()));
+    }
+
+    public static int backgroundStart(TooltipLook look, int baseColor) {
+        int color = look.background() != null ? look.background().runtimeCache().backgroundColorStart() : baseColor;
         return scaleAlpha(color, look.backgroundOpacity());
     }
 
-    public static int backgroundEnd(TooltipLook look, int vanillaColor) {
-        int color = look.background() != null ? look.background().runtimeCache().backgroundColorEnd() : vanillaColor;
+    public static int backgroundEnd(TooltipLook look, int baseColor) {
+        int color = look.background() != null ? look.background().runtimeCache().backgroundColorEnd() : baseColor;
         return scaleAlpha(color, look.backgroundOpacity());
     }
 
-    public static int borderStart(TooltipLook look, int vanillaColor) {
-        int color = look.border() != null ? look.border().runtimeCache().borderColorStart() : vanillaColor;
+    public static int borderStart(TooltipLook look, int baseColor) {
+        int color = look.border() != null ? look.border().runtimeCache().borderColorStart() : baseColor;
         return scaleAlpha(color, look.borderOpacity());
     }
 
-    public static int borderEnd(TooltipLook look, int vanillaColor) {
-        int color = look.border() != null ? look.border().runtimeCache().borderColorEnd() : vanillaColor;
+    public static int borderEnd(TooltipLook look, int baseColor) {
+        int color = look.border() != null ? look.border().runtimeCache().borderColorEnd() : baseColor;
         return scaleAlpha(color, look.borderOpacity());
-    }
-
-    public static int outline(TooltipLook look, int vanillaColor) {
-        return scaleAlpha(vanillaColor, look.borderOpacity());
-    }
-
-    public static int tierifyOutline(TooltipLook look, int tierColor) {
-        return look.changesBackground() ? VanillaTooltipColors.BACKGROUND : outline(look, tierColor);
     }
 }

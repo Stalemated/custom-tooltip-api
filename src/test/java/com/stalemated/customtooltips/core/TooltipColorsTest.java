@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.util.List;
 
 import static com.stalemated.lib.util.color.VanillaTooltipColors.BACKGROUND;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BORDER_BOTTOM;
+import static com.stalemated.lib.util.color.VanillaTooltipColors.BORDER_TOP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +39,28 @@ class TooltipColorsTest {
 
         assertTrue(entry.hasCustomBackground());
         assertEquals(0x80FF0000, TooltipColors.backgroundStart(TooltipLook.of(List.of(entry)), BACKGROUND));
+    }
+
+    @Test
+    void theBackgroundOpacityCoversTheWholeBackgroundAndLeavesTheBorder() {
+        TooltipEntry entry = new TooltipEntry();
+        entry.backgroundColors = List.of(new Color(0xFFFF0000, true));
+        entry.backgroundOpacity = 0.5f;
+
+        TooltipPalette palette = TooltipColors.palette(TooltipLook.of(List.of(entry)), TooltipPalette.VANILLA);
+
+        assertEquals(new TooltipPalette(0x80FF0000, 0x80FF0000, BORDER_TOP, BORDER_BOTTOM), palette);
+    }
+
+    @Test
+    void anotherModsColorsStayWhereTheEntryChangesNothing() {
+        TooltipEntry entry = new TooltipEntry();
+        entry.borderColors = List.of(new Color(0xFF00FF00, true), new Color(0xFF0000FF, true));
+        TooltipPalette otherMod = new TooltipPalette(0xF0202020, 0xF0404040, 0x50FFFFFF, 0x50000000);
+
+        TooltipPalette palette = TooltipColors.palette(TooltipLook.of(List.of(entry)), otherMod);
+
+        assertEquals(new TooltipPalette(0xF0202020, 0xF0404040, 0xFF00FF00, 0xFF0000FF), palette);
     }
 
     @Test

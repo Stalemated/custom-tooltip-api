@@ -51,7 +51,8 @@ public record TooltipRuntimeCache(
         boolean gradient = entry.colors != null && entry.colors.size() >= 2;
         int primaryColor = entry.colors != null && !entry.colors.isEmpty() && entry.colors.get(0) != null ? entry.colors.get(0).getValue() : TEXT;
         int secondaryColor = gradient && entry.colors.get(1) != null ? entry.colors.get(1).getValue() : TEXT;
-        int backgroundColorEnd = entry.backgroundType != BackgroundType.SOLID ? colorAt(entry.backgroundColors, 1, BACKGROUND_GRADIENT.get(1)) : BACKGROUND_GRADIENT.get(1);
+        int backgroundColorStart = colorAt(entry.backgroundColors, 0, BACKGROUND_GRADIENT.get(0));
+        int backgroundColorEnd = entry.backgroundType != BackgroundType.SOLID ? colorAt(entry.backgroundColors, 1, BACKGROUND_GRADIENT.get(1)) : backgroundColorStart;
         ResourceLocation backgroundTexture = backgroundTextureOf(entry);
 
         return new TooltipRuntimeCache(
@@ -64,7 +65,7 @@ public record TooltipRuntimeCache(
                 entry.text != null && entry.text.stream().anyMatch(TooltipTextParser::isDynamic),
                 colorAt(entry.borderColors, 0, BORDER.get(0)),
                 colorAt(entry.borderColors, 1, BORDER.get(1)),
-                colorAt(entry.backgroundColors, 0, BACKGROUND_GRADIENT.get(0)),
+                backgroundColorStart,
                 backgroundColorEnd,
                 backgroundTexture,
                 backgroundTexture != null ? atlasSpriteOf(entry.backgroundTexture) : null,

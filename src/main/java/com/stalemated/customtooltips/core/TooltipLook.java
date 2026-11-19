@@ -48,11 +48,7 @@ public record TooltipLook(TooltipEntry background, float backgroundOpacity, Tool
         return !List.of(cache.borderColorStart(), cache.borderColorEnd()).equals(BORDER);
     }
 
-    public boolean changesBackground() {
-        return this.background != null || this.backgroundOpacity != UNCHANGED_OPACITY;
-    }
-
-    public BackgroundType backgroundType() {
-        return this.background != null ? this.background.backgroundType : BackgroundType.SOLID;
+    public boolean isVanilla() {
+        return this.equals(VANILLA);
     }
 }
