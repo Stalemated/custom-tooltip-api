@@ -21,7 +21,7 @@ public final class TextureQuads {
 
         drawQuad(buffer, matrix, x, y, width, height, uv.minU(), uv.minV(), uv.maxU(), uv.maxV());
 
-        BufferUploader.drawWithShader(buffer.end());
+        upload(buffer);
     }
 
     public static void nineSlice(GuiGraphics graphics, UvRect uv, int x, int y, int width, int height, int scale) {
@@ -67,7 +67,7 @@ public final class TextureQuads {
         // Center
         drawQuad(buffer, matrix, x + scaledCorner, y + scaledCorner, width - scaledCorner * 2, height - scaledCorner * 2, minU + cornerU, minV + cornerV, maxU - cornerU, maxV - cornerV);
 
-        BufferUploader.drawWithShader(buffer.end());
+        upload(buffer);
     }
 
     public static void repeating(GuiGraphics graphics, UvRect uv, int x, int y, int width, int height, int scale) {
@@ -96,13 +96,33 @@ public final class TextureQuads {
             }
         }
 
-        BufferUploader.drawWithShader(buffer.end());
+        upload(buffer);
     }
 
+    //? if >=1.21 {
+    /*private static BufferBuilder beginQuads() {
+        return Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+    }
+
+    private static void upload(BufferBuilder buffer) {
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+    }
+
+    private static void drawQuad(BufferBuilder buffer, Matrix4f matrix, int x, int y, int width, int height, float minU, float minV, float maxU, float maxV) {
+        buffer.addVertex(matrix, x, y, 0).setUv(minU, minV);
+        buffer.addVertex(matrix, x, y + height, 0).setUv(minU, maxV);
+        buffer.addVertex(matrix, x + width, y + height, 0).setUv(maxU, maxV);
+        buffer.addVertex(matrix, x + width, y, 0).setUv(maxU, minV);
+    }
+    *///?} else {
     private static BufferBuilder beginQuads() {
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         return buffer;
+    }
+
+    private static void upload(BufferBuilder buffer) {
+        BufferUploader.drawWithShader(buffer.end());
     }
 
     private static void drawQuad(BufferBuilder buffer, Matrix4f matrix, int x, int y, int width, int height, float minU, float minV, float maxU, float maxV) {
@@ -111,4 +131,5 @@ public final class TextureQuads {
         buffer.vertex(matrix, x + width, y + height, 0).uv(maxU, maxV).endVertex();
         buffer.vertex(matrix, x + width, y, 0).uv(maxU, minV).endVertex();
     }
+    //?}
 }

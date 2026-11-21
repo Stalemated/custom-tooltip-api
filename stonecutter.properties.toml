@@ -7,6 +7,7 @@ mod.description = "A completely customizable, tag-based tooltip manager for deve
 mod.author = "Stalemated"
 mod.sources = "https://github.com/Stalemated/custom-tooltip-api"
 mod.environment = "client"
+mod.neoforge_compat = "[20.4.70-beta,)"
 
 deps.fabric_loader = "0.18.4"
 loomx.loom_version = "1.18-SNAPSHOT"
@@ -60,3 +61,17 @@ deps.prism = "curse.maven:prism-lib-638111:4650325"
 deps.emi = "dev.emi:emi-forge:1.1.24+1.20.1"
 runtime.legendary_tooltips = ["legendary_tooltips", "iceberg", "prism"]
 runtime.emi = ["emi"]
+
+
+["1.21.1"]
+mod.mc_releases = ["1.21", "1.21.1"]
+deps.yacl = "3.8.1+1.21.1"
+
+[fabric."1.21.1"]
+mod.mc_compat = ">=1.21 <=1.21.1"
+deps.fabric_api = "0.116.17+1.21.1"
+deps.modmenu = "11.0.5"
+
+[neoforge."1.21.1"]
+mod.mc_compat = "[1.21, 1.21.1]"
+deps.neo_loader = "21.1.251"

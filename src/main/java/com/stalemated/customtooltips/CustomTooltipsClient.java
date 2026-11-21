@@ -38,6 +38,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+*///?} elif neoforge {
+/*import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 *///?}
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.OPEN_CONFIG;
@@ -66,7 +73,11 @@ implements ClientModInitializer
     //? if fabric {
     private static void registerLoaderEvents() {
         ClientTickEvents.END_CLIENT_TICK.register(CustomTooltipsClient::onClientTick);
+        //? if >=1.20.5 {
+        /*ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> onItemTooltip(stack, lines));
+        *///?} else {
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> onItemTooltip(stack, lines));
+        //?}
         ResourceManagerHelper resources = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES);
         resources.registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
@@ -102,6 +113,15 @@ implements ClientModInitializer
             if (event.phase == TickEvent.Phase.END) onClientTick(Minecraft.getInstance());
         });
         MinecraftForge.EVENT_BUS.addListener((ItemTooltipEvent event) -> onItemTooltip(event.getItemStack(), event.getToolTip()));
+    }
+    *///?} elif neoforge {
+    /*private static void registerLoaderEvents() {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((RegisterClientReloadListenersEvent event) -> {
+            event.registerReloadListener(TooltipBackgroundAtlas::reload);
+            event.registerReloadListener((ResourceManagerReloadListener) CustomTooltipsClient::onResourceReload);
+        });
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> onClientTick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener((ItemTooltipEvent event) -> onItemTooltip(event.getItemStack(), event.getToolTip()));
     }
     *///?}
 

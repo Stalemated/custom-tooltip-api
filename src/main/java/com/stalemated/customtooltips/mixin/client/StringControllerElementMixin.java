@@ -20,7 +20,11 @@ public abstract class StringControllerElementMixin {
     @Shadow
     protected abstract boolean doSelectAll();
 
+    //? if >=1.21 {
+    /*@Inject(method = "onMouseClicked", at = @At("RETURN"))
+    *///?} else {
     @Inject(method = "mouseClicked", at = @At("RETURN"))
+    //?}
     private void customtooltips$selectAllOnDoubleClick(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ() && this.customtooltips$doubleClick.selectsAll()) this.doSelectAll();
     }
