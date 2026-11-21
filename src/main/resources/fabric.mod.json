@@ -13,7 +13,7 @@
         "issues": "${sources}/issues"
     },
     "license": "MIT",
-    "icon": "assets/custom-tooltip-api/icon.jpg",
+    "icon": "assets/custom-tooltip-api/icon.png",
     "environment": "${environment}",
     "entrypoints": {
         "client": [

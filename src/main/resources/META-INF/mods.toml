@@ -12,7 +12,7 @@ authors = "${author}"
 description = '''
 ${description}
 '''
-logoFile = "assets/custom-tooltip-api/icon.jpg"
+logoFile = "assets/custom-tooltip-api/icon.png"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/custom-tooltip-api"
 
 [[mixins]]
