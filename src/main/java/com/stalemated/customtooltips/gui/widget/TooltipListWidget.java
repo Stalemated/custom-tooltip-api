@@ -23,7 +23,11 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
     private final TooltipListScreen screen;
 
     public TooltipListWidget(Minecraft client, int width, int height, int top, int bottom, int itemHeight, TooltipListScreen screen) {
+        //? if >=1.20.4 {
+        /*super(client, width, bottom - top, top, itemHeight);
+        *///?} else {
         super(client, width, height, top, bottom, itemHeight);
+        //?}
         this.screen = screen;
         this.updateEntries();
     }

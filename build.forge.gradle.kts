@@ -87,7 +87,7 @@ publishMods {
 
 tasks {
     processResources {
-        exclude("fabric.mod.json", "META-INF/neoforge.mods.toml")
+        exclude("fabric.mod.json", "META-INF/neoforge.mods.toml", "*-fabric.mixins.json")
 
         val mixinConfig = destinationDir.resolve("$modId.mixins.json")
         val refmap = "$modId.refmap.json"

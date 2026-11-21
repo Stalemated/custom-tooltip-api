@@ -7,9 +7,13 @@ import org.slf4j.LoggerFactory;
 /*import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+*///?} elif neoforge {
+/*import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 *///?}
 
-//? if forge {
+//? if !fabric {
 /*@Mod(CustomTooltips.MOD_ID)
 *///?}
 public final class CustomTooltips {
@@ -18,7 +22,7 @@ public final class CustomTooltips {
     public static final String PACK_NAMESPACE = "custom_tooltip_api";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    //? if forge {
+    //? if !fabric {
     /*public CustomTooltips() {
         if (FMLEnvironment.dist == Dist.CLIENT) CustomTooltipsClient.init();
     }

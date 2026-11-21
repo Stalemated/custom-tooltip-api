@@ -40,10 +40,10 @@ public class TooltipListScreen extends Screen {
     @Override
     protected void init() {
         this.listWidget = new TooltipListWidget(this.minecraft, this.width, this.height, 55, this.height - 32, 25, this);
-        this.addWidget(this.listWidget);
+        this.addRenderableWidget(this.listWidget);
 
         this.searchBox = TooltipListControls.createSearchBox(this, this.font, this.searchText);
-        this.addWidget(this.searchBox);
+        this.addRenderableWidget(this.searchBox);
         this.setInitialFocus(this.searchBox);
 
         refreshList();
@@ -87,22 +87,22 @@ public class TooltipListScreen extends Screen {
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.activeTooltipText = null;
 
-        this.listWidget.render(context, mouseX, mouseY, delta);
-        this.searchBox.render(context, mouseX, mouseY, delta);
-        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
         super.render(context, mouseX, mouseY, delta);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
         
         if (this.activeTooltipText != null) {
             TooltipPreview.render(this.activeTooltip, this.activeTooltipText, context, mouseX, mouseY);
         }
     }
 
+    //? if <1.20.4 {
     @Override
     public void tick() {
         if (this.searchBox != null) {
             this.searchBox.tick();
         }
     }
+    //?}
 
     @Override
     public void onClose() {

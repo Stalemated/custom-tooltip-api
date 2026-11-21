@@ -5,6 +5,9 @@ import com.stalemated.lib.helper.attribute.AttributeGetter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+//? if >=1.20.5 {
+/*import net.minecraft.core.component.DataComponents;
+*///?}
 
 public class DefaultPlaceholders {
 
@@ -20,7 +23,11 @@ public class DefaultPlaceholders {
         PlaceholderRegistry.register("item_id", stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
 
         PlaceholderRegistry.register("enchantments", AttributeGetter::getEnchantments);
+        //? if >=1.20.5 {
+        /*PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getOrDefault(DataComponents.REPAIR_COST, 0)));
+        *///?} else {
         PlaceholderRegistry.register("repair_cost", stack -> String.valueOf(stack.getBaseRepairCost()));
+        //?}
         PlaceholderRegistry.register("unbreakable", stack -> ItemConditions.isUnbreakable(stack) ? Component.translatable("customtooltips.unbreakable_item").getString() : "");
 
         PlaceholderRegistry.register("weapon_damage", AttributeGetter::calculateWeaponDamage);
@@ -29,6 +36,10 @@ public class DefaultPlaceholders {
         PlaceholderRegistry.register("food_hunger", AttributeGetter::getHunger);
         PlaceholderRegistry.register("food_saturation", AttributeGetter::getSaturation);
 
+        //? if >=1.20.5 {
+        /*PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getComponentsPatch()));
+        *///?} else {
         PlaceholderRegistry.register("nbt", stack -> String.valueOf(stack.getTag()));
+        //?}
     }
 }

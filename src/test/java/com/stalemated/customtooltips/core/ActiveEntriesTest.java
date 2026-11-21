@@ -6,6 +6,14 @@ import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+//? if >=1.21 {
+/*import net.minecraft.core.registries.Registries;
+import net.minecraft.data.registries.VanillaRegistries;
+*///?}
+//? if >=1.20.5 {
+/*import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.Unbreakable;
+*///?}
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -84,9 +92,17 @@ class ActiveEntriesTest {
         ItemStack damaged = new ItemStack(Items.DIAMOND_SWORD);
         damaged.setDamageValue(10);
         ItemStack enchanted = new ItemStack(Items.DIAMOND_SWORD);
+        //? if >=1.21 {
+        /*enchanted.enchant(VanillaRegistries.createLookup().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+        *///?} else {
         enchanted.enchant(Enchantments.SHARPNESS, 1);
+        //?}
         ItemStack unbreakable = new ItemStack(Items.DIAMOND_SWORD);
+        //? if >=1.20.5 {
+        /*unbreakable.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
+        *///?} else {
         unbreakable.getOrCreateTag().putBoolean("Unbreakable", true);
+        //?}
 
         assertEquals(List.of(), active.match(new ItemStack(Items.DIAMOND_SWORD), false).shown());
         assertEquals(List.of(damagedOnly), active.match(damaged, false).shown());
