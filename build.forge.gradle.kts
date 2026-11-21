@@ -12,9 +12,21 @@ plugins {
     id("mod-conventions")
     id("mod-publishing")
     id("slib")
+    id("dev-mods")
 }
 
 val modId = property("mod.id") as String
+
+repositories {
+    exclusiveContent {
+        forRepository { maven("https://cursemaven.com") { name = "CurseMaven" } }
+        filter { includeGroup("curse.maven") }
+    }
+    exclusiveContent {
+        forRepository { maven("https://maven.terraformersmc.com/releases") { name = "TerraformersMC EMI" } }
+        filter { includeGroup("dev.emi") }
+    }
+}
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")

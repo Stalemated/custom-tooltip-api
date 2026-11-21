@@ -3,12 +3,17 @@ plugins {
     id("mod-conventions")
     id("mod-publishing")
     id("slib")
+    id("dev-mods")
 }
 
 repositories {
     exclusiveContent {
         forRepository { maven("https://cursemaven.com") { name = "CurseMaven" } }
         filter { includeGroup("curse.maven") }
+    }
+    exclusiveContent {
+        forRepository { maven("https://maven.terraformersmc.com/releases") { name = "TerraformersMC EMI" } }
+        filter { includeGroup("dev.emi") }
     }
 }
 
@@ -18,8 +23,7 @@ dependencies {
 
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
-    findProperty("deps.tierify")?.let { modCompileOnly("curse.maven:tierify-$it") }
-    findProperty("deps.necronomicon")?.let { modCompileOnly("maven.modrinth:necronomicon:$it") }
+    listOf("tierify", "necronomicon").forEach { mod -> findProperty("deps.$mod")?.let { modCompileOnly(it as String) } }
 
     testRuntimeOnly(files(sourceSets.main.get().compileClasspath))
 }

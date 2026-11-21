@@ -25,6 +25,10 @@ publish.modrinth_environment = "client_only"
 publish.requires = ["s-lib"]
 publish.optional = ["yacl"]
 
+dev.tierify = true
+dev.legendary_tooltips = true
+dev.emi = true
+
 
 ["1.20.1"]
 mod.mc_releases = ["1.20.1"]
@@ -34,10 +38,25 @@ deps.yacl = "3.6.6+1.20.1"
 mod.mc_compat = "~1.20.1"
 deps.fabric_api = "0.92.9+1.20.1"
 deps.modmenu = "7.2.2"
-deps.tierify = "974356:5803071"
-deps.necronomicon = "1.6.0+1.20.1-fabric"
+deps.tierify = "curse.maven:tierify-974356:5803071"
+deps.necronomicon = "maven.modrinth:necronomicon:1.6.0+1.20.1-fabric"
+deps.cloth_config = "maven.modrinth:cloth-config:11.1.136+fabric"
+deps.legendary_tooltips = "curse.maven:legendary-tooltips-fabric-542478:4940615"
+deps.iceberg = "curse.maven:iceberg-fabric-539382:5838145"
+deps.prism = "curse.maven:prism-fabric-665526:4650327"
+deps.forge_config_api_port = "curse.maven:forge-config-api-port-547434:7260491"
+deps.emi = "dev.emi:emi-fabric:1.1.24+1.20.1"
+runtime.tierify = ["tierify", "necronomicon", "cloth_config"]
+runtime.legendary_tooltips = ["legendary_tooltips", "iceberg", "prism", "forge_config_api_port"]
+runtime.emi = ["emi"]
 
 [forge."1.20.1"]
 mod.mc_compat = "[1.20.1]"
 deps.forge_loader = "1.20.1-47.4.10"
 deps.mixinextras = "0.5.5"
+deps.legendary_tooltips = "curse.maven:legendary-tooltips-532127:4662781"
+deps.iceberg = "curse.maven:iceberg-520110:5838149"
+deps.prism = "curse.maven:prism-lib-638111:4650325"
+deps.emi = "dev.emi:emi-forge:1.1.24+1.20.1"
+runtime.legendary_tooltips = ["legendary_tooltips", "iceberg", "prism"]
+runtime.emi = ["emi"]
