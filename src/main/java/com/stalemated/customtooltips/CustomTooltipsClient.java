@@ -41,10 +41,14 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 *///?} elif neoforge {
 /*import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+*///?}
+//? if neoforge && >=1.20.5 {
+/*import net.neoforged.neoforge.client.event.ClientTickEvent;
+*///?} elif neoforge {
+/*import net.neoforged.neoforge.event.TickEvent;
 *///?}
 
 import static com.stalemated.customtooltips.registry.KeybindRegistry.OPEN_CONFIG;
@@ -120,8 +124,20 @@ implements ClientModInitializer
             event.registerReloadListener(TooltipBackgroundAtlas::reload);
             event.registerReloadListener((ResourceManagerReloadListener) CustomTooltipsClient::onResourceReload);
         });
-        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> onClientTick(Minecraft.getInstance()));
+        registerClientTick();
         NeoForge.EVENT_BUS.addListener((ItemTooltipEvent event) -> onItemTooltip(event.getItemStack(), event.getToolTip()));
+    }
+    *///?}
+
+    //? if neoforge && >=1.20.5 {
+    /*private static void registerClientTick() {
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> onClientTick(Minecraft.getInstance()));
+    }
+    *///?} elif neoforge {
+    /*private static void registerClientTick() {
+        NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
+            if (event.phase == TickEvent.Phase.END) onClientTick(Minecraft.getInstance());
+        });
     }
     *///?}
 
