@@ -41,8 +41,13 @@ public class RowActionsWidget {
         boolean isDisabled = TooltipRegistry.isDisabled(entry);
 
         buttons.add(Button.builder(GuiIcon.DELETE.text().withStyle(ChatFormatting.RED), button -> {
+            //? if >=26.2 {
+            /*Screen currentScreen = client.gui.screen();
+            client.gui.setScreen(new ConfirmScreen(
+            *///?} else {
             Screen currentScreen = client.screen;
             client.setScreen(new ConfirmScreen(
+            //?}
                     (confirmed) -> {
                         int index = CustomTooltipsConfigRegistry.CONFIG.get().entries.indexOf(entry);
                         if (confirmed && index >= 0) {
@@ -52,7 +57,11 @@ public class RowActionsWidget {
                             });
                             refreshList.run();
                         }
+                        //? if >=26.2 {
+                        /*client.gui.setScreen(currentScreen);
+                        *///?} else {
                         client.setScreen(currentScreen);
+                        //?}
                     },
                     Component.translatable("customtooltips.tooltip_list_widget.delete_confirm.title"),
                     Component.translatable("customtooltips.tooltip_list_widget.delete_confirm.message", TargetName.of(entry))
@@ -61,7 +70,11 @@ public class RowActionsWidget {
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.delete_button")))
                 .build());
 
+        //? if >=26.2 {
+        /*buttons.add(EditButtons.requireYacl(Button.builder(GuiIcon.EDIT.text(), btn -> client.gui.setScreen(TooltipEditScreen.edit(client.gui.screen(), entry)))
+        *///?} else {
         buttons.add(EditButtons.requireYacl(Button.builder(GuiIcon.EDIT.text(), btn -> client.setScreen(TooltipEditScreen.edit(client.screen, entry)))
+        //?}
                 .tooltip(Tooltip.create(Component.translatable("customtooltips.tooltip_list_widget.edit_button")))
                 .build()));
 

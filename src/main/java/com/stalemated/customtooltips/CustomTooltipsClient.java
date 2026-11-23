@@ -175,7 +175,11 @@ implements ClientModInitializer
 
     private static void onClientTick(Minecraft client) {
         while (OPEN_CONFIG.consumeClick()) {
+            //? if >=26.2 {
+            /*client.gui.setScreen(new TooltipListScreen(client.gui.screen()));
+            *///?} else {
             client.setScreen(new TooltipListScreen(client.screen));
+            //?}
         }
     }
 

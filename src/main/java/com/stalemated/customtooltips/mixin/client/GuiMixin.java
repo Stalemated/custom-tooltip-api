@@ -3,13 +3,21 @@ package com.stalemated.customtooltips.mixin.client;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.stalemated.customtooltips.core.TooltipProcessor;
+//? if >=26.2 {
+/*import net.minecraft.client.gui.Hud;
+*///?} else {
 import net.minecraft.client.gui.Gui;
+//?}
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+//? if >=26.2 {
+/*@Mixin(Hud.class)
+*///?} else {
 @Mixin(Gui.class)
+//?}
 public abstract class GuiMixin {
 
     @WrapOperation(

@@ -99,7 +99,11 @@ final class TooltipListControls {
         int btnY = screen.height - 28;
 
         buttons.add(EditButtons.requireYacl(Button.builder(Component.translatable("customtooltips.tooltip_list_screen.add_new_tooltip"),
+                        //? if >=26.2 {
+                        /*button -> Minecraft.getInstance().gui.setScreen(TooltipEditScreen.add(screen)))
+                        *///?} else {
                         button -> Minecraft.getInstance().setScreen(TooltipEditScreen.add(screen)))
+                        //?}
                 .bounds(screen.width / 2 - 155, btnY, btnWidth, BUTTON_SIZE)
                 .build()));
 

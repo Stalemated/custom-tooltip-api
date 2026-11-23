@@ -125,7 +125,11 @@ public class TooltipListScreen extends Screen {
     @Override
     public void onClose() {
         if (this.minecraft != null) {
+            //? if >=26.2 {
+            /*this.minecraft.gui.setScreen(this.parent);
+            *///?} else {
             this.minecraft.setScreen(this.parent);
+            //?}
         }
     }
 }

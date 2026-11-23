@@ -69,7 +69,11 @@ public final class TooltipListToasts {
         SystemToast.add(toasts(), HINT, title, description);
     }
 
-    //? if >=1.21.2 {
+    //? if >=26.2 {
+    /*private static ToastManager toasts() {
+        return Minecraft.getInstance().gui.toastManager();
+    }
+    *///?} elif >=1.21.2 {
     /*private static ToastManager toasts() {
         return Minecraft.getInstance().getToastManager();
     }
