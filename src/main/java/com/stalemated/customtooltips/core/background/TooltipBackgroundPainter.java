@@ -1,12 +1,11 @@
 package com.stalemated.customtooltips.core.background;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.stalemated.customtooltips.TooltipEntry;
 import com.stalemated.customtooltips.core.TooltipColors;
 import com.stalemated.customtooltips.core.TooltipLook;
 import com.stalemated.customtooltips.core.TooltipPalette;
+import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
@@ -50,22 +49,17 @@ public final class TooltipBackgroundPainter {
         boolean inAtlas = !isMissing(sprite);
         UvRect uv = inAtlas ? UvRect.of(sprite) : UvRect.FULL;
 
+        List<TexturedQuad> quads = switch (background.backgroundType) {
+            case SIMPLE_TEXTURE -> TextureQuads.simple(uv, x, y, width, height);
+            case TEXTURE -> TextureQuads.nineSlice(uv, x, y, width, height, background.backgroundScale);
+            case REPEATING_TEXTURE -> TextureQuads.repeating(uv, x, y, width, height, background.backgroundScale);
+            case SOLID, GRADIENT -> List.of();
+        };
+        if (quads.isEmpty()) return;
+
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, z);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, look.backgroundOpacity());
-        RenderSystem.setShaderTexture(0, inAtlas ? TooltipBackgroundAtlas.LOCATION : texture);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
-        switch (background.backgroundType) {
-            case SIMPLE_TEXTURE -> TextureQuads.simple(graphics, uv, x, y, width, height);
-            case TEXTURE -> TextureQuads.nineSlice(graphics, uv, x, y, width, height, background.backgroundScale);
-            case REPEATING_TEXTURE -> TextureQuads.repeating(graphics, uv, x, y, width, height, background.backgroundScale);
-        }
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
+        BackgroundTextureDrawer.draw(graphics, inAtlas ? TooltipBackgroundAtlas.LOCATION : texture, look.backgroundOpacity(), quads);
         graphics.pose().popPose();
     }
 
