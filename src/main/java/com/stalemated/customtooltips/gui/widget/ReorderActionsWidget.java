@@ -9,6 +9,9 @@ import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+//? if >=1.21.9 {
+/*import net.minecraft.client.input.MouseButtonEvent;
+*///?}
 
 public class ReorderActionsWidget {
     private final Button moveUpButton;
@@ -48,7 +51,13 @@ public class ReorderActionsWidget {
         moveDownButton.render(context, mouseX, mouseY, tickDelta);
     }
 
+    //? if >=1.21.9 {
+    /*public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        return moveUpButton.mouseClicked(event, doubleClick) || moveDownButton.mouseClicked(event, doubleClick);
+    }
+    *///?} else {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return moveUpButton.mouseClicked(mouseX, mouseY, button) || moveDownButton.mouseClicked(mouseX, mouseY, button);
     }
+    //?}
 }

@@ -7,9 +7,13 @@ public final class DoubleClickSelection {
 
     private long lastClickMs;
 
+    public static boolean isEnabled() {
+        return CustomTooltipsConfigRegistry.CONFIG.get().enable_double_click_selection;
+    }
+
     public boolean selectsAll() {
         boolean doubleClick = isDoubleClick(System.currentTimeMillis());
-        return doubleClick && CustomTooltipsConfigRegistry.CONFIG.get().enable_double_click_selection;
+        return doubleClick && isEnabled();
     }
 
     boolean isDoubleClick(long clickMs) {

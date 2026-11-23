@@ -5,16 +5,29 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.stalemated.customtooltips.gui.DoubleClickSelection;
 import net.minecraft.client.gui.components.EditBox;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+//? if >=1.21.9 {
+/*import net.minecraft.client.input.MouseButtonEvent;
+*///?} else {
+import org.spongepowered.asm.mixin.Unique;
+//?}
 
 @Mixin(EditBox.class)
 public abstract class EditBoxMixin {
 
+    //? if <1.21.9 {
     @Unique
     private final DoubleClickSelection customtooltips$doubleClick = new DoubleClickSelection();
+    //?}
 
-    //? if >=1.20.4 {
+    //? if >=1.21.9 {
+    /*@WrapOperation(method = "onClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/EditBox;selectWord(Lnet/minecraft/client/input/MouseButtonEvent;)V"))
+    private void customtooltips$selectAllOnDoubleClick(EditBox editBox, MouseButtonEvent event, Operation<Void> original) {
+        if (!DoubleClickSelection.isEnabled()) {
+            original.call(editBox, event);
+            return;
+        }
+    *///?} elif >=1.20.4 {
     /*@WrapOperation(method = "onClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/EditBox;moveCursorTo(IZ)V"))
     private void customtooltips$selectAllOnDoubleClick(EditBox editBox, int cursor, boolean extendSelection, Operation<Void> original) {
         if (!this.customtooltips$doubleClick.selectsAll()) {

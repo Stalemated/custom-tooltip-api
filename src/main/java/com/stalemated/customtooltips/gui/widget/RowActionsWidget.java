@@ -21,6 +21,9 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+//? if >=1.21.9 {
+/*import net.minecraft.client.input.MouseButtonEvent;
+*///?}
 
 public class RowActionsWidget {
     private final List<Button> buttons = new ArrayList<>();
@@ -108,12 +111,21 @@ public class RowActionsWidget {
         }
     }
 
+    //? if >=1.21.9 {
+    /*public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        for (Button btn : buttons) {
+            if (btn.mouseClicked(event, doubleClick)) return true;
+        }
+        return false;
+    }
+    *///?} else {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (Button btn : buttons) {
             if (btn.mouseClicked(mouseX, mouseY, button)) return true;
         }
         return false;
     }
+    //?}
 
     public int getWidth() {
         int btnAmount = buttons.size();

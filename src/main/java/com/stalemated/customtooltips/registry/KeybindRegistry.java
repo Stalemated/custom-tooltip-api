@@ -4,9 +4,17 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.stalemated.lib.client.ClientPlatformHelper;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
+//? if >=1.21.9 {
+/*import com.stalemated.customtooltips.CustomTooltips;
+import com.stalemated.lib.util.ResourceIds;
+*///?}
 
 public final class KeybindRegistry {
+    //? if >=1.21.9 {
+    /*private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceIds.of(CustomTooltips.MOD_ID, "keys"));
+    *///?} else {
     private static final String CATEGORY = "category.customtooltips.keys";
+    //?}
 
     public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.customtooltips.open_config",

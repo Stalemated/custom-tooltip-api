@@ -10,7 +10,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 *///?} elif neoforge {
 /*import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.FMLEnvironment;
 *///?}
 
 //? if !fabric {
@@ -22,9 +21,13 @@ public final class CustomTooltips {
     public static final String PACK_NAMESPACE = "custom_tooltip_api";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    //? if !fabric {
+    //? if forge {
     /*public CustomTooltips() {
         if (FMLEnvironment.dist == Dist.CLIENT) CustomTooltipsClient.init();
+    }
+    *///?} elif neoforge {
+    /*public CustomTooltips(Dist dist) {
+        if (dist == Dist.CLIENT) CustomTooltipsClient.init();
     }
     *///?} else {
     private CustomTooltips() {

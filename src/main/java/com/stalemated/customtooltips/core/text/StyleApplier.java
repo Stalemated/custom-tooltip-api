@@ -9,6 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+//? if >=1.21.9 {
+/*import net.minecraft.network.chat.FontDescription;
+*///?}
 
 public class StyleApplier {
 
@@ -37,7 +40,11 @@ public class StyleApplier {
     public static Style buildStyleModifier(TooltipEntry entry) {
         Style style = Style.EMPTY;
         if (entry.font != null && !entry.font.getPath().isEmpty() && !entry.font.equals(ResourceIds.of("minecraft", "default"))) {
+            //? if >=1.21.9 {
+            /*style = style.withFont(new FontDescription.Resource(entry.font));
+            *///?} else {
             style = style.withFont(entry.font);
+            //?}
         }
         if (entry.bold) style = style.withBold(true);
         if (entry.italic) style = style.withItalic(true);

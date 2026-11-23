@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+//? if >=1.21.9 {
+/*import net.minecraft.client.Minecraft;
+*///?}
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
@@ -39,7 +42,11 @@ public class TooltipEditScreen {
     }
 
     private static void renderPreview(TooltipEntry preview, GuiGraphics context, int mouseX, int mouseY) {
+        //? if >=1.21.9 {
+        /*if (!Minecraft.getInstance().hasControlDown()) return;
+        *///?} else {
         if (!Screen.hasControlDown()) return;
+        //?}
         TooltipPreview.render(preview, new ArrayList<>(preview.getTextComponents(ItemStack.EMPTY)), context, mouseX, mouseY);
     }
 

@@ -96,7 +96,12 @@ implements ClientModInitializer
                 return ResourceIds.of(CustomTooltips.MOD_ID, "tooltip_backgrounds");
             }
 
-            //? if >=1.21.2 {
+            //? if >=1.21.9 {
+            /*@Override
+            public @NotNull CompletableFuture<Void> reload(PreparableReloadListener.SharedState state, Executor backgroundExecutor, PreparableReloadListener.PreparationBarrier barrier, Executor gameExecutor) {
+                return TooltipBackgroundAtlas.reload(state, backgroundExecutor, barrier, gameExecutor);
+            }
+            *///?} elif >=1.21.2 {
             /*@Override
             public @NotNull CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier barrier, ResourceManager manager, Executor backgroundExecutor, Executor gameExecutor) {
                 return TooltipBackgroundAtlas.reload(barrier, manager, backgroundExecutor, gameExecutor);

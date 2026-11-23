@@ -121,6 +121,7 @@
   "customtooltips.tooltip_processor.shift_prompt": "Mantén [%s] para detalles",
 
   "category.customtooltips.keys": "Custom Tooltip API",
+  "key.category.customtooltips.keys": "Custom Tooltip API",
   "key.customtooltips.open_config": "Abrir Configuración",
   "key.customtooltips.hold_key": "Mostrar Tooltips Extendidos",
 

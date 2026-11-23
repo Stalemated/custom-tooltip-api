@@ -4,7 +4,11 @@ import com.stalemated.customtooltips.CustomTooltips;
 import com.stalemated.lib.util.ResourceIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+//? if >=1.21.9 {
+/*import net.minecraft.network.chat.FontDescription;
+*///?} else {
 import net.minecraft.resources.ResourceLocation;
+//?}
 
 public enum GuiIcon {
     SHIFT_PROMPT("\uDAC1\uDF22"),
@@ -20,7 +24,11 @@ public enum GuiIcon {
     COPY("\uDAC1\uDF32"),
     PASTE("\uDAC1\uDF33");
 
+    //? if >=1.21.9 {
+    /*private static final FontDescription FONT = new FontDescription.Resource(ResourceIds.of(CustomTooltips.ASSETS_NAMESPACE, "icons"));
+    *///?} else {
     private static final ResourceLocation FONT = ResourceIds.of(CustomTooltips.ASSETS_NAMESPACE, "icons");
+    //?}
 
     private final String glyph;
 

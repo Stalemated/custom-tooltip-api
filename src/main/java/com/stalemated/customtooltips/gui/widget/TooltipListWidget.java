@@ -17,6 +17,9 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+//? if >=1.21.9 {
+/*import net.minecraft.client.input.MouseButtonEvent;
+*///?}
 
 public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Entry> {
 
@@ -99,8 +102,19 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
             this.scrollingText = new ScrollingTextRenderer();
         }
 
+        //? if >=1.21.9 {
+        /*@Override
+        public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            renderRow(context, getContentX(), getContentY(), getContentWidth(), getContentHeight(), mouseX, mouseY, tickDelta);
+        }
+        *///?} else {
         @Override
         public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            renderRow(context, x, y, entryWidth, entryHeight, mouseX, mouseY, tickDelta);
+        }
+        //?}
+
+        private void renderRow(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY, float tickDelta) {
             boolean isDisabled = TooltipRegistry.isDisabled(this.tooltipEntry);
             String targetText = TargetName.of(this.tooltipEntry).getString();
             if (this.tooltipEntry.apiEntry) targetText += "  (" + this.tooltipEntry.getIdentifier() + ")";
@@ -127,12 +141,21 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
             }
         }
 
+        //? if >=1.21.9 {
+        /*@Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+            if (rowActions.mouseClicked(event, doubleClick)) return true;
+            if (!tooltipEntry.apiEntry && reorderActions.mouseClicked(event, doubleClick)) return true;
+            return super.mouseClicked(event, doubleClick);
+        }
+        *///?} else {
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             if (rowActions.mouseClicked(mouseX, mouseY, button)) return true;
             if (!tooltipEntry.apiEntry && reorderActions.mouseClicked(mouseX, mouseY, button)) return true;
             return super.mouseClicked(mouseX, mouseY, button);
         }
+        //?}
 
         @Override
         public @NotNull Component getNarration() {
