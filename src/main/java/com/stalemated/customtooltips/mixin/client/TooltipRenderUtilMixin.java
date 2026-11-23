@@ -21,16 +21,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TooltipRenderUtil.class)
 public abstract class TooltipRenderUtilMixin {
 
-    //? if >=1.21.2 {
+    //? if >=1.21.6 {
+    /*@WrapMethod(method = "renderTooltipBackground(Lnet/minecraft/client/gui/GuiGraphics;IIIILnet/minecraft/resources/ResourceLocation;)V")
+    private static void customtooltips$paintBackground(GuiGraphics graphics, int x, int y, int width, int height, ResourceLocation sprite, Operation<Void> original) {
+        boolean painted = TooltipBackgroundPainter.paint(graphics, CurrentTooltip.look(), x, y, width, height, TooltipPalette.VANILLA);
+        if (!painted) original.call(graphics, x, y, width, height, sprite);
+    }
+    *///?} elif >=1.21.2 {
     /*@WrapMethod(method = "renderTooltipBackground(Lnet/minecraft/client/gui/GuiGraphics;IIIIILnet/minecraft/resources/ResourceLocation;)V")
     private static void customtooltips$paintBackground(GuiGraphics graphics, int x, int y, int width, int height, int z, ResourceLocation sprite, Operation<Void> original) {
-        boolean painted = TooltipBackgroundPainter.paint(graphics, CurrentTooltip.look(), x, y, width, height, z, TooltipPalette.VANILLA);
+        boolean painted = TooltipBackgroundPainter.paintAtDepth(graphics, CurrentTooltip.look(), x, y, width, height, z, TooltipPalette.VANILLA);
         if (!painted) original.call(graphics, x, y, width, height, z, sprite);
     }
     *///?} elif fabric {
     @WrapMethod(method = "renderTooltipBackground(Lnet/minecraft/client/gui/GuiGraphics;IIIII)V")
     private static void customtooltips$paintBackground(GuiGraphics graphics, int x, int y, int width, int height, int z, Operation<Void> original) {
-        boolean painted = TooltipBackgroundPainter.paint(graphics, CurrentTooltip.look(), x, y, width, height, z, TooltipPalette.VANILLA);
+        boolean painted = TooltipBackgroundPainter.paintAtDepth(graphics, CurrentTooltip.look(), x, y, width, height, z, TooltipPalette.VANILLA);
         if (!painted) original.call(graphics, x, y, width, height, z);
     }
     //?} else {
@@ -40,7 +46,7 @@ public abstract class TooltipRenderUtilMixin {
     private static void customtooltips$paintBackground(GuiGraphics graphics, int x, int y, int width, int height, int z,
                                                        int backgroundTop, int backgroundBottom, int borderTop, int borderBottom, CallbackInfo ci) {
         TooltipPalette eventColors = new TooltipPalette(backgroundTop, backgroundBottom, borderTop, borderBottom);
-        if (TooltipBackgroundPainter.paint(graphics, CurrentTooltip.look(), x, y, width, height, z, eventColors)) ci.cancel();
+        if (TooltipBackgroundPainter.paintAtDepth(graphics, CurrentTooltip.look(), x, y, width, height, z, eventColors)) ci.cancel();
     }
     *///?}
 }

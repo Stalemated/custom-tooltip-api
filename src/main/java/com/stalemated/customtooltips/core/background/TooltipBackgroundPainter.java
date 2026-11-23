@@ -15,7 +15,17 @@ public final class TooltipBackgroundPainter {
     private TooltipBackgroundPainter() {
     }
 
-    public static boolean paint(GuiGraphics graphics, TooltipLook look, int x, int y, int width, int height, int z, TooltipPalette base) {
+    //? if <1.21.6 {
+    public static boolean paintAtDepth(GuiGraphics graphics, TooltipLook look, int x, int y, int width, int height, int z, TooltipPalette base) {
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, z);
+        boolean painted = paint(graphics, look, x, y, width, height, base);
+        graphics.pose().popPose();
+        return painted;
+    }
+    //?}
+
+    public static boolean paint(GuiGraphics graphics, TooltipLook look, int x, int y, int width, int height, TooltipPalette base) {
         if (look.isVanilla()) return false;
 
         TooltipPalette palette = TooltipColors.palette(look, base);
@@ -24,24 +34,24 @@ public final class TooltipBackgroundPainter {
         int right = x + width + PADDING;
         int bottom = y + height + PADDING;
 
-        graphics.fill(left, top - 1, right, top, z, palette.backgroundTop());
-        graphics.fill(left, bottom, right, bottom + 1, z, palette.backgroundBottom());
-        paintBackground(graphics, look, left, top, right - left, bottom - top, z, palette);
-        graphics.fillGradient(left - 1, top, left, bottom, z, palette.backgroundTop(), palette.backgroundBottom());
-        graphics.fillGradient(right, top, right + 1, bottom, z, palette.backgroundTop(), palette.backgroundBottom());
+        graphics.fill(left, top - 1, right, top, palette.backgroundTop());
+        graphics.fill(left, bottom, right, bottom + 1, palette.backgroundBottom());
+        paintBackground(graphics, look, left, top, right - left, bottom - top, palette);
+        graphics.fillGradient(left - 1, top, left, bottom, palette.backgroundTop(), palette.backgroundBottom());
+        graphics.fillGradient(right, top, right + 1, bottom, palette.backgroundTop(), palette.backgroundBottom());
 
-        graphics.fillGradient(left, top + 1, left + 1, bottom - 1, z, palette.borderTop(), palette.borderBottom());
-        graphics.fillGradient(right - 1, top + 1, right, bottom - 1, z, palette.borderTop(), palette.borderBottom());
-        graphics.fill(left, top, right, top + 1, z, palette.borderTop());
-        graphics.fill(left, bottom - 1, right, bottom, z, palette.borderBottom());
+        graphics.fillGradient(left, top + 1, left + 1, bottom - 1, palette.borderTop(), palette.borderBottom());
+        graphics.fillGradient(right - 1, top + 1, right, bottom - 1, palette.borderTop(), palette.borderBottom());
+        graphics.fill(left, top, right, top + 1, palette.borderTop());
+        graphics.fill(left, bottom - 1, right, bottom, palette.borderBottom());
         return true;
     }
 
-    private static void paintBackground(GuiGraphics graphics, TooltipLook look, int x, int y, int width, int height, int z, TooltipPalette palette) {
+    private static void paintBackground(GuiGraphics graphics, TooltipLook look, int x, int y, int width, int height, TooltipPalette palette) {
         TooltipEntry background = look.background();
         ResourceLocation texture = background != null ? background.runtimeCache().backgroundTexture() : null;
         if (texture == null) {
-            graphics.fillGradient(x, y, x + width, y + height, z, palette.backgroundTop(), palette.backgroundBottom());
+            graphics.fillGradient(x, y, x + width, y + height, palette.backgroundTop(), palette.backgroundBottom());
             return;
         }
 
@@ -57,10 +67,7 @@ public final class TooltipBackgroundPainter {
         };
         if (quads.isEmpty()) return;
 
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, z);
         BackgroundTextureDrawer.draw(graphics, inAtlas ? TooltipBackgroundAtlas.LOCATION : texture, look.backgroundOpacity(), quads);
-        graphics.pose().popPose();
     }
 
     @SuppressWarnings("resource")

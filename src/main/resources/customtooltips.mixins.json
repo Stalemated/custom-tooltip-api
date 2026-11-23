@@ -6,6 +6,7 @@
   "plugin": "com.stalemated.lib.mixin.ConditionalMixinPlugin",
   "client": [
     "GuiGraphicsMixin",
+    "GuiGraphicsInvoker",
     "TooltipRenderUtilMixin",
     "AbstractContainerScreenMixin",
     "GuiMixin",

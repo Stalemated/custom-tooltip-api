@@ -20,6 +20,10 @@ public final class TooltipPreview {
             lines.add(0, Component.nullToEmpty(entry.target));
         }
 
+        //? if >=1.21.6 {
+        /*CurrentTooltip.render(TooltipLook.of(List.of(entry)), () -> SharedTooltipState.withCustomDimensions(() -> context.setComponentTooltipForNextFrame(Minecraft.getInstance().font, lines, mouseX, mouseY)));
+        *///?} else {
         CurrentTooltip.render(TooltipLook.of(List.of(entry)), () -> SharedTooltipState.withCustomDimensions(() -> context.renderComponentTooltip(Minecraft.getInstance().font, lines, mouseX, mouseY)));
+        //?}
     }
 }

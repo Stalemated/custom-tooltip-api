@@ -3,11 +3,15 @@ package com.stalemated.customtooltips.core.background;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import org.joml.Matrix4f;
-//? if >=1.21.2 {
+//? if >=1.21.6 {
+/*import com.stalemated.customtooltips.mixin.client.GuiGraphicsInvoker;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.ARGB;
+*///?} elif >=1.21.2 {
 /*import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.ARGB;
+import org.joml.Matrix4f;
 *///?} else {
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -16,13 +20,21 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
+import org.joml.Matrix4f;
 //?}
 
 final class BackgroundTextureDrawer {
     private BackgroundTextureDrawer() {
     }
 
-    //? if >=1.21.2 {
+    //? if >=1.21.6 {
+    /*static void draw(GuiGraphics graphics, ResourceLocation texture, float opacity, List<TexturedQuad> quads) {
+        GuiGraphicsInvoker blitter = (GuiGraphicsInvoker) graphics;
+        int color = ARGB.white(opacity);
+        for (TexturedQuad quad : quads)
+            blitter.customtooltips$innerBlit(RenderPipelines.GUI_TEXTURED, texture, quad.x(), quad.right(), quad.y(), quad.bottom(), quad.minU(), quad.maxU(), quad.minV(), quad.maxV(), color);
+    }
+    *///?} elif >=1.21.2 {
     /*static void draw(GuiGraphics graphics, ResourceLocation texture, float opacity, List<TexturedQuad> quads) {
         Matrix4f matrix = graphics.pose().last().pose();
         int color = ARGB.white(opacity);
