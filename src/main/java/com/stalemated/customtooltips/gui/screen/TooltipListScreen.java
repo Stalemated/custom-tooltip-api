@@ -9,7 +9,11 @@ import com.stalemated.customtooltips.gui.widget.TooltipListWidget;
 import static com.stalemated.customtooltips.registry.KeybindRegistry.OPEN_CONFIG;
 
 import java.util.List;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -83,17 +87,31 @@ public class TooltipListScreen extends Screen {
 
     // Overrides
 
+    //? if >=26.1 {
+    /*@Override
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        this.activeTooltipText = null;
+
+        super.extractRenderState(context, mouseX, mouseY, delta);
+        context.centeredText(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
+
+        if (this.activeTooltipText != null) {
+            TooltipPreview.render(this.activeTooltip, this.activeTooltipText, context, mouseX, mouseY);
+        }
+    }
+    *///?} else {
     @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.activeTooltipText = null;
 
         super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
         
         if (this.activeTooltipText != null) {
             TooltipPreview.render(this.activeTooltip, this.activeTooltipText, context, mouseX, mouseY);
         }
     }
+    //?}
 
     //? if <1.20.4 {
     @Override

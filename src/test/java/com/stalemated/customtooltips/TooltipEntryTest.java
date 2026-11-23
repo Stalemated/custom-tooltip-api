@@ -9,6 +9,10 @@ import net.minecraft.tags.TagKey;
 //? if >=1.21.2 {
 /*import net.minecraft.tags.TagLoader;
 *///?}
+//? if >=26.1 {
+/*import net.minecraft.core.component.DataComponentInitializers;
+import net.minecraft.data.registries.VanillaRegistries;
+*///?}
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,6 +32,9 @@ class TooltipEntryTest {
     static void bootMinecraft() {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
+        //? if >=26.1 {
+        /*BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(VanillaRegistries.createLookup()).forEach(DataComponentInitializers.PendingComponents::apply);
+        *///?}
         TagKey<Item> swords = TagKey.create(Registries.ITEM, ResourceIds.of("c", "swords"));
         //? if >=1.21.2 {
         /*BuiltInRegistries.ITEM.prepareTagReload(new TagLoader.LoadResult<Item>(Registries.ITEM, Map.of(swords, List.of(Items.DIAMOND_SWORD.builtInRegistryHolder(), Items.IRON_SWORD.builtInRegistryHolder())))).apply();

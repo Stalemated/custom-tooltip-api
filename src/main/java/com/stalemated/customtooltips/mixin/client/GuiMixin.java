@@ -13,7 +13,11 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class GuiMixin {
 
     @WrapOperation(
-            //? if fabric {
+            //? if >=26.1 && fabric {
+            /*method = "extractSelectedItemName(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            *///?} elif >=26.1 {
+            /*method = "extractSelectedItemName(Lnet/minecraft/client/gui/GuiGraphicsExtractor;I)V",
+            *///?} elif fabric {
             method = "renderSelectedItemName(Lnet/minecraft/client/gui/GuiGraphics;)V",
             //?} else {
             /*method = "renderSelectedItemName(Lnet/minecraft/client/gui/GuiGraphics;I)V",

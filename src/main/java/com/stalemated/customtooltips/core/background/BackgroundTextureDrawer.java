@@ -1,7 +1,11 @@
 package com.stalemated.customtooltips.core.background;
 
 import java.util.List;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import net.minecraft.resources.ResourceLocation;
 //? if >=1.21.6 {
 /*import com.stalemated.customtooltips.mixin.client.GuiGraphicsInvoker;
@@ -27,7 +31,14 @@ final class BackgroundTextureDrawer {
     private BackgroundTextureDrawer() {
     }
 
-    //? if >=1.21.6 {
+    //? if >=26.1 {
+    /*static void draw(GuiGraphicsExtractor graphics, ResourceLocation texture, float opacity, List<TexturedQuad> quads) {
+        GuiGraphicsInvoker blitter = (GuiGraphicsInvoker) graphics;
+        int color = ARGB.white(opacity);
+        for (TexturedQuad quad : quads)
+            blitter.customtooltips$innerBlit(RenderPipelines.GUI_TEXTURED, texture, quad.x(), quad.right(), quad.y(), quad.bottom(), quad.minU(), quad.maxU(), quad.minV(), quad.maxV(), color);
+    }
+    *///?} elif >=1.21.6 {
     /*static void draw(GuiGraphics graphics, ResourceLocation texture, float opacity, List<TexturedQuad> quads) {
         GuiGraphicsInvoker blitter = (GuiGraphicsInvoker) graphics;
         int color = ARGB.white(opacity);

@@ -225,3 +225,17 @@ deps.modmenu = "17.0.1"
 [neoforge."1.21.11"]
 mod.mc_compat = "[1.21.11]"
 deps.neo_loader = "21.11.45"
+
+
+["26.1"]
+mod.mc_releases = ["26.1", "26.1.1", "26.1.2"]
+deps.yacl = "3.9.7+26.1"
+
+[fabric."26.1"]
+mod.mc_compat = "~26.1"
+deps.fabric_api = "0.144.3+26.1"
+deps.modmenu = "18.0.2"
+
+[neoforge."26.1"]
+mod.mc_compat = "[26.1, 26.2)"
+deps.neo_loader = "26.1.0.19-beta"

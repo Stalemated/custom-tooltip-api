@@ -5,7 +5,11 @@ import com.stalemated.customtooltips.core.TooltipColors;
 import com.stalemated.customtooltips.core.TooltipLook;
 import com.stalemated.customtooltips.core.TooltipPalette;
 import java.util.List;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
@@ -25,7 +29,11 @@ public final class TooltipBackgroundPainter {
     }
     //?}
 
+    //? if >=26.1 {
+    /*public static boolean paint(GuiGraphicsExtractor graphics, TooltipLook look, int x, int y, int width, int height, TooltipPalette base) {
+    *///?} else {
     public static boolean paint(GuiGraphics graphics, TooltipLook look, int x, int y, int width, int height, TooltipPalette base) {
+    //?}
         if (look.isVanilla()) return false;
 
         TooltipPalette palette = TooltipColors.palette(look, base);
@@ -47,7 +55,11 @@ public final class TooltipBackgroundPainter {
         return true;
     }
 
+    //? if >=26.1 {
+    /*private static void paintBackground(GuiGraphicsExtractor graphics, TooltipLook look, int x, int y, int width, int height, TooltipPalette palette) {
+    *///?} else {
     private static void paintBackground(GuiGraphics graphics, TooltipLook look, int x, int y, int width, int height, TooltipPalette palette) {
+    //?}
         TooltipEntry background = look.background();
         ResourceLocation texture = background != null ? background.runtimeCache().backgroundTexture() : null;
         if (texture == null) {

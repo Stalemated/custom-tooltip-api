@@ -15,7 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -97,7 +101,11 @@ public class RowActionsWidget {
         buttons.addAll(apiButtons);
     }
 
+    //? if >=26.1 {
+    /*public void render(GuiGraphicsExtractor context, int x, int y, int entryWidth, int mouseX, int mouseY, float tickDelta, boolean isApiEntry) {
+    *///?} else {
     public void render(GuiGraphics context, int x, int y, int entryWidth, int mouseX, int mouseY, float tickDelta, boolean isApiEntry) {
+    //?}
         int currentX = x + entryWidth;
 
         List<Button> visibleButtons = isApiEntry ? apiButtons : buttons;
@@ -107,7 +115,11 @@ public class RowActionsWidget {
             button.setX(currentX);
             button.setY(y);
             button.setWidth(20);
+            //? if >=26.1 {
+            /*button.extractRenderState(context, mouseX, mouseY, tickDelta);
+            *///?} else {
             button.render(context, mouseX, mouseY, tickDelta);
+            //?}
         }
     }
 

@@ -10,6 +10,10 @@ import net.minecraft.world.item.enchantment.Enchantments;
 /*import net.minecraft.core.registries.Registries;
 import net.minecraft.data.registries.VanillaRegistries;
 *///?}
+//? if >=26.1 {
+/*import net.minecraft.core.component.DataComponentInitializers;
+import net.minecraft.core.registries.BuiltInRegistries;
+*///?}
 //? if >=1.21.5 {
 /*import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
@@ -33,6 +37,9 @@ class ActiveEntriesTest {
     static void bootMinecraft() {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
+        //? if >=26.1 {
+        /*BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(VanillaRegistries.createLookup()).forEach(DataComponentInitializers.PendingComponents::apply);
+        *///?}
     }
 
     @Test

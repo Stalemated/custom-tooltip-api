@@ -1,6 +1,10 @@
 package com.stalemated.customtooltips.mixin.client;
 
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import org.spongepowered.asm.mixin.Mixin;
 //? if >=1.21.6 {
 /*import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -8,7 +12,11 @@ import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.gen.Invoker;
 *///?}
 
+//? if >=26.1 {
+/*@Mixin(GuiGraphicsExtractor.class)
+*///?} else {
 @Mixin(GuiGraphics.class)
+//?}
 public interface GuiGraphicsInvoker {
     //? if >=1.21.6 {
     /*@Invoker("innerBlit")

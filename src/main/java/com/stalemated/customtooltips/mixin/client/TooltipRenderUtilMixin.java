@@ -3,7 +3,11 @@ package com.stalemated.customtooltips.mixin.client;
 import com.stalemated.customtooltips.core.CurrentTooltip;
 import com.stalemated.customtooltips.core.TooltipPalette;
 import com.stalemated.customtooltips.core.background.TooltipBackgroundPainter;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import org.spongepowered.asm.mixin.Mixin;
 //? if >=1.21.2 || fabric {
@@ -21,7 +25,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TooltipRenderUtil.class)
 public abstract class TooltipRenderUtilMixin {
 
-    //? if >=1.21.6 {
+    //? if >=26.1 {
+    /*@WrapMethod(method = "extractTooltipBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIILnet/minecraft/resources/ResourceLocation;)V")
+    private static void customtooltips$paintBackground(GuiGraphicsExtractor graphics, int x, int y, int width, int height, ResourceLocation sprite, Operation<Void> original) {
+        boolean painted = TooltipBackgroundPainter.paint(graphics, CurrentTooltip.look(), x, y, width, height, TooltipPalette.VANILLA);
+        if (!painted) original.call(graphics, x, y, width, height, sprite);
+    }
+    *///?} elif >=1.21.6 {
     /*@WrapMethod(method = "renderTooltipBackground(Lnet/minecraft/client/gui/GuiGraphics;IIIILnet/minecraft/resources/ResourceLocation;)V")
     private static void customtooltips$paintBackground(GuiGraphics graphics, int x, int y, int width, int height, ResourceLocation sprite, Operation<Void> original) {
         boolean painted = TooltipBackgroundPainter.paint(graphics, CurrentTooltip.look(), x, y, width, height, TooltipPalette.VANILLA);

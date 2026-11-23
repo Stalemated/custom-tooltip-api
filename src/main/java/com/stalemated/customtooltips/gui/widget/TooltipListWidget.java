@@ -12,7 +12,11 @@ import com.stalemated.lib.helper.text.ScrollingTextRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -102,7 +106,12 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
             this.scrollingText = new ScrollingTextRenderer();
         }
 
-        //? if >=1.21.9 {
+        //? if >=26.1 {
+        /*@Override
+        public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            renderRow(context, getContentX(), getContentY(), getContentWidth(), getContentHeight(), mouseX, mouseY, tickDelta);
+        }
+        *///?} elif >=1.21.9 {
         /*@Override
         public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             renderRow(context, getContentX(), getContentY(), getContentWidth(), getContentHeight(), mouseX, mouseY, tickDelta);
@@ -114,7 +123,11 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
         }
         //?}
 
+        //? if >=26.1 {
+        /*private void renderRow(GuiGraphicsExtractor context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY, float tickDelta) {
+        *///?} else {
         private void renderRow(GuiGraphics context, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY, float tickDelta) {
+        //?}
             boolean isDisabled = TooltipRegistry.isDisabled(this.tooltipEntry);
             String targetText = TargetName.of(this.tooltipEntry).getString();
             if (this.tooltipEntry.apiEntry) targetText += "  (" + this.tooltipEntry.getIdentifier() + ")";
@@ -131,7 +144,11 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
             int availableTextWidth = buttonsStartX - textStartX - 5;
 
             context.enableScissor(textStartX, y, buttonsStartX, y + entryHeight);
+            //? if >=26.1 {
+            /*scrollingText.extract(context, targetText, textStartX + 4, y + 6, availableTextWidth, isDisabled);
+            *///?} else {
             scrollingText.render(context, targetText, textStartX + 4, y + 6, availableTextWidth, isDisabled);
+            //?}
             context.disableScissor();
 
             boolean isHoveringOverText = mouseX >= textStartX && mouseX < buttonsStartX && mouseY >= y && mouseY < y + entryHeight;

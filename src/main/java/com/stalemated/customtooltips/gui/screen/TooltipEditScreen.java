@@ -12,7 +12,11 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 //? if >=1.21.9 {
 /*import net.minecraft.client.Minecraft;
 *///?}
@@ -41,7 +45,11 @@ public class TooltipEditScreen {
         return builder(parent, entryManager, AssetChoices.fonts(), AssetChoices.backgrounds()).generateScreen();
     }
 
+    //? if >=26.1 {
+    /*private static void renderPreview(TooltipEntry preview, GuiGraphicsExtractor context, int mouseX, int mouseY) {
+    *///?} else {
     private static void renderPreview(TooltipEntry preview, GuiGraphics context, int mouseX, int mouseY) {
+    //?}
         //? if >=1.21.9 {
         /*if (!Minecraft.getInstance().hasControlDown()) return;
         *///?} else {

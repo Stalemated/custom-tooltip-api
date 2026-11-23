@@ -6,7 +6,11 @@ import com.stalemated.customtooltips.config.TooltipConfig;
 import com.stalemated.customtooltips.gui.TooltipListChanges;
 import java.util.Collections;
 import java.util.List;
+//? if >=26.1 {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?} else {
 import net.minecraft.client.gui.GuiGraphics;
+//?}
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 //? if >=1.21.9 {
@@ -36,19 +40,31 @@ public class ReorderActionsWidget {
         this.refreshList.run();
     }
 
+    //? if >=26.1 {
+    /*public void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+    *///?} else {
     public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+    //?}
         TooltipConfig config = CustomTooltipsConfigRegistry.CONFIG.get();
         int idx = config.entries.indexOf(this.entry);
 
         moveUpButton.setX(x);
         moveUpButton.setY(y);
         moveUpButton.active = (idx > 0);
+        //? if >=26.1 {
+        /*moveUpButton.extractRenderState(context, mouseX, mouseY, tickDelta);
+        *///?} else {
         moveUpButton.render(context, mouseX, mouseY, tickDelta);
+        //?}
 
         moveDownButton.setX(x + 24);
         moveDownButton.setY(y);
         moveDownButton.active = (idx >= 0 && idx < config.entries.size() - 1);
+        //? if >=26.1 {
+        /*moveDownButton.extractRenderState(context, mouseX, mouseY, tickDelta);
+        *///?} else {
         moveDownButton.render(context, mouseX, mouseY, tickDelta);
+        //?}
     }
 
     //? if >=1.21.9 {
