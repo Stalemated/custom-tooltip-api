@@ -10,7 +10,10 @@ import net.minecraft.world.item.enchantment.Enchantments;
 /*import net.minecraft.core.registries.Registries;
 import net.minecraft.data.registries.VanillaRegistries;
 *///?}
-//? if >=1.20.5 {
+//? if >=1.21.5 {
+/*import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Unit;
+*///?} elif >=1.20.5 {
 /*import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.Unbreakable;
 *///?}
@@ -98,7 +101,9 @@ class ActiveEntriesTest {
         enchanted.enchant(Enchantments.SHARPNESS, 1);
         //?}
         ItemStack unbreakable = new ItemStack(Items.DIAMOND_SWORD);
-        //? if >=1.20.5 {
+        //? if >=1.21.5 {
+        /*unbreakable.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+        *///?} elif >=1.20.5 {
         /*unbreakable.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
         *///?} else {
         unbreakable.getOrCreateTag().putBoolean("Unbreakable", true);

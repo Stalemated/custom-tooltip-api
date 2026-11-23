@@ -3,6 +3,11 @@ package com.stalemated.customtooltips.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
+//? if >=1.21.2 {
+/*import net.minecraft.client.gui.components.toasts.ToastManager;
+*///?} else {
+import net.minecraft.client.gui.components.toasts.ToastComponent;
+//?}
 
 public final class TooltipListToasts {
     //? if >=1.20.4 {
@@ -26,7 +31,7 @@ public final class TooltipListToasts {
     }
 
     public static void showBrokenConfigToast() {
-        SystemToast.add(Minecraft.getInstance().getToasts(), BROKEN_CONFIG,
+        SystemToast.add(toasts(), BROKEN_CONFIG,
                 Component.translatable("customtooltips.toast.config_backup.title"),
                 Component.translatable("customtooltips.toast.config_backup.desc")
         );
@@ -54,13 +59,23 @@ public final class TooltipListToasts {
     }
 
     public static void showSaveFailedToast() {
-        SystemToast.addOrUpdate(Minecraft.getInstance().getToasts(), SAVE_FAILED,
+        SystemToast.addOrUpdate(toasts(), SAVE_FAILED,
                 Component.translatable("customtooltips.toast.save_failed.title"),
                 Component.translatable("customtooltips.toast.save_failed.desc")
         );
     }
 
     private static void addHint(Component title, Component description) {
-        SystemToast.add(Minecraft.getInstance().getToasts(), HINT, title, description);
+        SystemToast.add(toasts(), HINT, title, description);
     }
+
+    //? if >=1.21.2 {
+    /*private static ToastManager toasts() {
+        return Minecraft.getInstance().getToastManager();
+    }
+    *///?} else {
+    private static ToastComponent toasts() {
+        return Minecraft.getInstance().getToasts();
+    }
+    //?}
 }

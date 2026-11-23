@@ -135,3 +135,40 @@ deps.prism = "maven.modrinth:prism-lib:kMcz2lDj"
 deps.emi = "dev.emi:emi-neoforge:1.1.24+1.21.1"
 runtime.legendary_tooltips = ["legendary_tooltips", "iceberg", "prism"]
 runtime.emi = ["emi"]
+
+
+["1.21.4"]
+mod.mc_releases = ["1.21.2", "1.21.3", "1.21.4"]
+deps.yacl = "3.8.1+1.21.4"
+
+[fabric."1.21.4"]
+mod.mc_compat = ">=1.21.2 <=1.21.4"
+deps.fabric_api = "0.115.0+1.21.4"
+deps.modmenu = "13.0.4"
+deps.legendary_tooltips = "maven.modrinth:legendary-tooltips:7xI8xla5"
+deps.iceberg = "maven.modrinth:iceberg:JQsyoArU"
+deps.prism = "maven.modrinth:prism-lib:gFPeFgX2"
+deps.forge_config_api_port = "maven.modrinth:forge-config-api-port:SSKF75hc"
+runtime.legendary_tooltips = ["legendary_tooltips", "iceberg", "prism", "forge_config_api_port"]
+
+[neoforge."1.21.4"]
+mod.mc_compat = "[1.21.2, 1.21.4]"
+deps.neo_loader = "21.4.150"
+deps.legendary_tooltips = "maven.modrinth:legendary-tooltips:6KgbcZvj"
+deps.iceberg = "maven.modrinth:iceberg:LXZoNxtR"
+deps.prism = "maven.modrinth:prism-lib:AM3oL6VK"
+runtime.legendary_tooltips = ["legendary_tooltips", "iceberg", "prism"]
+
+
+["1.21.5"]
+mod.mc_releases = ["1.21.5"]
+deps.yacl = "3.8.1+1.21.5"
+
+[fabric."1.21.5"]
+mod.mc_compat = "1.21.5"
+deps.fabric_api = "0.128.2+1.21.5"
+deps.modmenu = "14.0.2"
+
+[neoforge."1.21.5"]
+mod.mc_compat = "[1.21.5]"
+deps.neo_loader = "21.5.101"

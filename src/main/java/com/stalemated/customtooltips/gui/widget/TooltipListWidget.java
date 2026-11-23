@@ -78,8 +78,13 @@ public class TooltipListWidget extends ObjectSelectionList<TooltipListWidget.Ent
         return Math.min(rowWidth, maxRowWidth);
     }
 
+    //? if >=1.21.4 {
+    /*@Override
+    protected int scrollBarX() { return this.width - 5; }
+    *///?} else {
     @Override
     protected int getScrollbarPosition() { return this.width - 5; }
+    //?}
 
     public class Entry extends ObjectSelectionList.Entry<TooltipListWidget.Entry> {
         private final TooltipEntry tooltipEntry;

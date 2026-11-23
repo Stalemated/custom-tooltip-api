@@ -11,7 +11,9 @@ import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
+//? if <1.21.2 {
 import net.minecraft.util.profiling.ProfilerFiller;
+//?}
 
 public final class TooltipBackgroundAtlas {
     public static final ResourceLocation LOCATION = ResourceIds.of(CustomTooltips.ASSETS_NAMESPACE, "textures/atlas/tooltip_backgrounds.png");
@@ -22,9 +24,20 @@ public final class TooltipBackgroundAtlas {
     private TooltipBackgroundAtlas() {
     }
 
+    @SuppressWarnings("resource")
+    //? if >=1.21.2 {
+    /*public static CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier barrier, ResourceManager manager, Executor backgroundExecutor, Executor gameExecutor) {
+        return atlas().reload(barrier, manager, backgroundExecutor, gameExecutor);
+    }
+    *///?} else {
     public static CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier barrier, ResourceManager manager, ProfilerFiller preparationProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+        return atlas().reload(barrier, manager, preparationProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+    }
+    //?}
+
+    private static Atlas atlas() {
         if (atlas == null) atlas = new Atlas(Minecraft.getInstance().getTextureManager());
-        return atlas.reload(barrier, manager, preparationProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+        return atlas;
     }
 
     static TextureAtlasSprite sprite(ResourceLocation spriteId) {

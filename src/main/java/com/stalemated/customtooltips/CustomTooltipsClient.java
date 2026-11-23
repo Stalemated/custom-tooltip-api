@@ -29,7 +29,9 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+//? if <1.21.2 {
 import net.minecraft.util.profiling.ProfilerFiller;
+//?}
 import org.jetbrains.annotations.NotNull;
 //?} elif forge {
 /*import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -41,9 +43,14 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 *///?} elif neoforge {
 /*import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+*///?}
+//? if neoforge && >=1.21.4 {
+/*import com.stalemated.lib.util.ResourceIds;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+*///?} elif neoforge {
+/*import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 *///?}
 //? if neoforge && >=1.20.5 {
 /*import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -89,10 +96,17 @@ implements ClientModInitializer
                 return ResourceIds.of(CustomTooltips.MOD_ID, "tooltip_backgrounds");
             }
 
+            //? if >=1.21.2 {
+            /*@Override
+            public @NotNull CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier barrier, ResourceManager manager, Executor backgroundExecutor, Executor gameExecutor) {
+                return TooltipBackgroundAtlas.reload(barrier, manager, backgroundExecutor, gameExecutor);
+            }
+            *///?} else {
             @Override
             public @NotNull CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier barrier, ResourceManager manager, ProfilerFiller preparationProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
                 return TooltipBackgroundAtlas.reload(barrier, manager, preparationProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
             }
+            //?}
         });
         resources.registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
@@ -120,12 +134,25 @@ implements ClientModInitializer
     }
     *///?} elif neoforge {
     /*private static void registerLoaderEvents() {
+        registerReloadListeners();
+        registerClientTick();
+        NeoForge.EVENT_BUS.addListener((ItemTooltipEvent event) -> onItemTooltip(event.getItemStack(), event.getToolTip()));
+    }
+    *///?}
+
+    //? if neoforge && >=1.21.4 {
+    /*private static void registerReloadListeners() {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((AddClientReloadListenersEvent event) -> {
+            event.addListener(ResourceIds.of(CustomTooltips.MOD_ID, "tooltip_backgrounds"), TooltipBackgroundAtlas::reload);
+            event.addListener(ResourceIds.of(CustomTooltips.MOD_ID, "resources"), (ResourceManagerReloadListener) CustomTooltipsClient::onResourceReload);
+        });
+    }
+    *///?} elif neoforge {
+    /*private static void registerReloadListeners() {
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener((RegisterClientReloadListenersEvent event) -> {
             event.registerReloadListener(TooltipBackgroundAtlas::reload);
             event.registerReloadListener((ResourceManagerReloadListener) CustomTooltipsClient::onResourceReload);
         });
-        registerClientTick();
-        NeoForge.EVENT_BUS.addListener((ItemTooltipEvent event) -> onItemTooltip(event.getItemStack(), event.getToolTip()));
     }
     *///?}
 
