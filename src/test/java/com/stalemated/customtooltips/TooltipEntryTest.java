@@ -32,7 +32,9 @@ class TooltipEntryTest {
     static void bootMinecraft() {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
-        //? if >=26.1 {
+        //? if >=26.3 {
+        /*BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(VanillaRegistries.createWorldLookup()).forEach(DataComponentInitializers.PendingComponents::apply);
+        *///?} elif >=26.1 {
         /*BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(VanillaRegistries.createLookup()).forEach(DataComponentInitializers.PendingComponents::apply);
         *///?}
         TagKey<Item> swords = TagKey.create(Registries.ITEM, ResourceIds.of("c", "swords"));

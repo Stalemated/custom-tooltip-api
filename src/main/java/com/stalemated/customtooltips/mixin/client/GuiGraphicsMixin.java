@@ -36,7 +36,12 @@ public abstract class GuiGraphicsMixin {
     }
     //?}
 
-    //? if >=26.1 {
+    //? if >=26.3 {
+    /*@WrapOperation(method = "setTooltipForNextFrameInternal(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;Lnet/minecraft/resources/ResourceLocation;ZZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;deferredTooltip:Ljava/lang/Runnable;", opcode = Opcodes.PUTFIELD))
+    private void customtooltips$keepLookUntilDrawn(GuiGraphicsExtractor graphics, Runnable tooltip, Operation<Void> original) {
+        original.call(graphics, CurrentTooltip.drawLater(tooltip));
+    }
+    *///?} elif >=26.1 {
     /*@WrapOperation(method = "setTooltipForNextFrameInternal", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;deferredTooltip:Ljava/lang/Runnable;", opcode = Opcodes.PUTFIELD))
     private void customtooltips$keepLookUntilDrawn(GuiGraphicsExtractor graphics, Runnable tooltip, Operation<Void> original) {
         original.call(graphics, CurrentTooltip.drawLater(tooltip));

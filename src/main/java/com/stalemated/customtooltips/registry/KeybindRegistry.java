@@ -3,7 +3,6 @@ package com.stalemated.customtooltips.registry;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.stalemated.lib.client.ClientPlatformHelper;
 import net.minecraft.client.KeyMapping;
-import org.lwjgl.glfw.GLFW;
 //? if >=1.21.9 {
 /*import com.stalemated.customtooltips.CustomTooltips;
 import com.stalemated.lib.util.ResourceIds;
@@ -18,14 +17,12 @@ public final class KeybindRegistry {
 
     public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.customtooltips.open_config",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_UNKNOWN,
+            InputConstants.UNKNOWN.getValue(),
             CATEGORY
     );
     public static final KeyMapping HOLD_KEY = new KeyMapping(
             "key.customtooltips.hold_key",
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_LEFT_SHIFT,
+            InputConstants.KEY_LSHIFT,
             CATEGORY
     );
 

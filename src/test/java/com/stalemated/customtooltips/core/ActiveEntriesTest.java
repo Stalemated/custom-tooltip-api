@@ -37,7 +37,9 @@ class ActiveEntriesTest {
     static void bootMinecraft() {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
-        //? if >=26.1 {
+        //? if >=26.3 {
+        /*BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(VanillaRegistries.createWorldLookup()).forEach(DataComponentInitializers.PendingComponents::apply);
+        *///?} elif >=26.1 {
         /*BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(VanillaRegistries.createLookup()).forEach(DataComponentInitializers.PendingComponents::apply);
         *///?}
     }
@@ -102,7 +104,9 @@ class ActiveEntriesTest {
         ItemStack damaged = new ItemStack(Items.DIAMOND_SWORD);
         damaged.setDamageValue(10);
         ItemStack enchanted = new ItemStack(Items.DIAMOND_SWORD);
-        //? if >=1.21 {
+        //? if >=26.3 {
+        /*enchanted.enchant(VanillaRegistries.createWorldLookup().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
+        *///?} elif >=1.21 {
         /*enchanted.enchant(VanillaRegistries.createLookup().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SHARPNESS), 1);
         *///?} else {
         enchanted.enchant(Enchantments.SHARPNESS, 1);

@@ -6,9 +6,13 @@ package com.stalemated.customtooltips.mixin.client;
 import net.minecraft.client.gui.GuiGraphics;
 //?}
 import org.spongepowered.asm.mixin.Mixin;
-//? if >=1.21.6 {
+//? if >=26.3 {
+/*import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+*///?} elif >=1.21.6 {
 /*import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.minecraft.resources.ResourceLocation;
+*///?}
+//? if >=1.21.6 {
+/*import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.gen.Invoker;
 *///?}
 
